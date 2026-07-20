@@ -1,9 +1,9 @@
 protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение острых средних отитов дет
+  title: Диагностика лечение острых средних отитов
   url: null
   local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
   document_sha256: null
@@ -19,31 +19,227 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_лечение_острых_средних_отитов_дет
-  name: Диагностика лечение острых средних отитов дет
+- condition_id: ostryi_srednii_otit
+  name: Острый средний отит
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B24
-  - E11.9
-  - E66.9
-  - G40.9
+  - H65.0
+  - H65.1
+  - H66.0
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
-  required_exams: []
+  diagnostic_criteria:
+    required:
+    - text: Воспаление слизистой среднего уха с характерными симптомами (боль в ухе,
+        гипертермия, снижение слуха, оторея, воспаление по ОАК/СРБ), длительность
+        до 8 недель.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
+        document_url: null
+        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Воспаление слизистой среднего уха с характерными симптомами (боль в
+          ухе, гипертермия, снижение слуха, оторея, воспаление по ОАК/СРБ), длительность
+          до 8 недель.
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Сбор анамнеза и жалоб
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: сбор анамнеза и жалоб
+  - name: Оториноларингологический осмотр
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: оториноларингологический осмотр
+  - name: Исследование слуховой функции с составлением слухового паспорта
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование слуховой функции с составлением слухового паспорта (выполняется
+        до и после проведенного лечения)
+  - name: Акуметрия
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: акуметрия – исследование слуха при помощи шепотной и разговорной речи
+        (при развитии речевой функции)
+  - name: ОАК (с лейкоцитарной формулой, тромбоцитами, СОЭ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ОАК (определение уровня гемоглобина, числа эритроцитов и лейкоцитов,
+        лейкоцитарной формулы, уровня тромбоцитов, скорости оседания эритроцитов)
+        1 раз в первый день госпитализации, далее 1 раз в 7–10 дней
+  - name: ОАМ
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ОАМ
+  - name: Исследование уровня С-реактивного белка в крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование уровня С-реактивного белка в крови
+  - name: Термометрия ежедневно
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: термометрия ежедневно
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] 6. Фармакотерапия (стр. 2)'
+    - text: Регулярное проветривание помещений.
       source_ref:
         protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
         document_url: null
@@ -54,9 +250,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 6. Фармакотерапия (стр. 2)'
-    - text: протоколом с учетом всех индивидуальных особенностей пациента, тяжести
-        заболевания,
+        quote: Регулярное проветривание помещений.
+    - text: Полупостельный режим на период подъема температуры тела до фебрильной.
       source_ref:
         protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
         document_url: null
@@ -67,9 +262,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: протоколом с учетом всех индивидуальных особенностей пациента, тяжести
-          заболевания,
-    - text: лекарственных препаратов (далее – ЛП). При этом необходимо учитывать наличие
+        quote: Полупостельный режим на период подъема температуры тела до фебрильной.
+    - text: Общий режим при нормализации температуры тела.
       source_ref:
         protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
         document_url: null
@@ -80,10 +274,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: лекарственных препаратов (далее – ЛП). При этом необходимо учитывать
-          наличие
-    - text: дозирования в соответствии с общей характеристикой ЛП и инструкцией по
-        медицинскому
+        quote: Общий режим при нормализации температуры тела.
+    - text: Адекватная гидратация (оральный прием жидкости 50–70% от физиологической
+        потребности).
       source_ref:
         protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
         document_url: null
@@ -94,42 +287,16 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: дозирования в соответствии с общей характеристикой ЛП и инструкцией
-          по медицинскому
-    - text: применению (листком-вкладышем). Допускается включение в схему лечения
-        ЛП
-      source_ref:
-        protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
-        document_url: null
-        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: применению (листком-вкладышем). Допускается включение в схему лечения
-          ЛП
-    - text: применению (листке-вкладыше), дополнительно указываются особые условия
-        назначения,
-      source_ref:
-        protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
-        document_url: null
-        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: применению (листке-вкладыше), дополнительно указываются особые условия
-          назначения,
+        quote: Адекватная гидратация (оральный прием жидкости 50–70% от физиологической
+          потребности).
     drug_groups: []
     drugs:
-    - drug_name: доза
+    - drug_name: Парацетамол
       active_substance: null
       drug_group: null
-      dose_text: 60 мг
+      dose_text: 'Детям 6–11 лет: 10–15 мг/кг разовая, до 60 мг/кг/сутки; 200–500
+        мг каждые 4–6 ч (не >4 доз/сутки). >12 лет: 500–1000 мг каждые 4–6 ч, до 4000
+        мг/сутки.'
       frequency_text: null
       duration_text: null
       route: null
@@ -141,17 +308,22 @@ conditions:
         protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
         document_url: null
         local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
-        page_start: null
+        page_start: 5
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: доза 60 мг/кг массы тела
-    - drug_name: применения
+        quote: таблетки, покрытые пленочной оболочкой, 200 мг, 500 мг – детям в возрасте
+          6–11 лет разовая доза 10–15 мг/кг массы тела, максимальная суточная доза
+          60 мг/кг массы тела ... детям старше 12 лет до 500–1000 мг каждые 4–6 часов,
+          максимальная суточная доза 4000 мг
+    - drug_name: Ибупрофен
       active_substance: null
       drug_group: null
-      dose_text: 100 мг
+      dose_text: 'Суспензия (>3 мес, >5 кг): 20–30 мг/кг/сутки в несколько доз (интервал
+        6–8 ч). Таб/капс (>12 лет): 200–400 мг до 3 р/сутки. Суппозитории (3–9 мес,
+        >6 кг): 60 мг 3 р/сутки (6–8 ч); (9 мес–2 года, 8–12 '
       frequency_text: null
       duration_text: null
       route: null
@@ -163,17 +335,24 @@ conditions:
         protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
         document_url: null
         local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
-        page_start: null
+        page_start: 5
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "применения 100 мг/5 мл, суспензия для внутреннего \nпримен"
-    - drug_name: ения
+        quote: суспензия для внутреннего применения 100 мг/5 мл, суспензия для внутреннего
+          применения 200 мг/5 мл детям старше 3 месяцев с массой тела не менее 5 кг
+          – суточная доза 20–30 мг/кг ... таблетки, покрытые пленочной оболочкой,
+          200 мг, 400 мг ... детям старше 12 лет – 200–400 мг до 3 раз в сутки; суппозитории
+          ректальные 60 мг детям 3–9 месяцев с массой тела не менее 6 кг – 60 мг 3
+          раза в сутки ...
+    - drug_name: Амоксициллин
       active_substance: null
       drug_group: null
-      dose_text: 200 мг
+      dose_text: 'Детям до 12 лет (<40 кг): 45–60 мг/кг/сутки внутрь в 2–3 приема.
+        >12 лет (>40 кг): 500–1000 мг/сутки внутрь в 2–3 приема. Курс 7–10 дней (до
+        14 при РОСО, ЗОСО, оторее, тяжелых сопутствующих).'
       frequency_text: null
       duration_text: null
       route: null
@@ -185,153 +364,70 @@ conditions:
         protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
         document_url: null
         local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
-        page_start: null
+        page_start: 5
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: ения 200 мг/5 мл детям старше 3 месяцев с массой те
-    - drug_name: капсулы
-      active_substance: null
-      drug_group: null
-      dose_text: 200 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
-        document_url: null
-        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "капсулы 200 мг, 400 мг \nдетям старше 12 лет – 200–400 "
-    - drug_name: ректальные
-      active_substance: null
-      drug_group: null
-      dose_text: 60 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
-        document_url: null
-        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ректальные 60 мг детям 3–9 месяцев с массой тела не менее
-    - drug_name: внутрь
-      active_substance: null
-      drug_group: null
-      dose_text: 25 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
-        document_url: null
-        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: внутрь 25 мг/мл, 50 мг/мл, таблетки диспергируемые 1
-    - drug_name: ноября
-      active_substance: null
-      drug_group: null
-      dose_text: 2024 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
-        document_url: null
-        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ноября 2024 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
-        document_url: null
-        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
-        document_url: null
-        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "октября \n2011 г"
+        quote: В качестве ЛП первой линии системной антибактериальной терапии детям
+          с ОСО назначается амоксициллин ... детям до 12 лет с массой тела менее 40
+          кг – внутрь 45–60 мг/кг массы тела в сутки в 2–3 приема; детям старше 12
+          лет или с массой тела более 40 кг – внутрь 500–1000 мг в сутки на 2–3 приема.
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Исследование слуховой функции до и после лечения.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Исследование слуховой функции до и после лечения.
+  - text: Контроль ОАК каждые 7-10 дней при стационарном лечении.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль ОАК каждые 7-10 дней при стационарном лечении.
+  - text: Длительность антибактериальной терапии 7-10 дней, при осложнениях до 14
+      дней.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Длительность антибактериальной терапии 7-10 дней, при осложнениях до
+        14 дней.
   hospitalization: []
   routing:
-  - text: '[routing] 11. В случае необходимости экстренной госпитализации пациента
-      в амбулаторных (стр. 3)'
+  - text: амбулаторно
     timing: null
     required_if: []
     source_ref:
@@ -344,35 +440,161 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 11. В случае необходимости экстренной госпитализации пациента
-        в амбулаторных (стр. 3)'
-  red_flags: []
+      quote: амбулаторно
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: Амбулаторное лечение.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторное лечение.
+  - text: Госпитализация при осложнениях, отсутствии динамики на АБТ, возрасте до
+      3 мес с фебрильной лихорадкой, или тяжелой сопутствующей патологии.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация при осложнениях, отсутствии динамики на АБТ, возрасте
+        до 3 мес с фебрильной лихорадкой, или тяжелой сопутствующей патологии.
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags:
+  - text: Отсутствие положительной динамики симптомов ОСО и/или наличие симптомов
+      общей интоксикации через 48–72 часа после начала системной антибактериальной
+      терапии.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: отсутствие положительной динамики в выраженности симптомов ОСО и (или)
+        наличие симптомов общей интоксикации через 48–72 часа после начала проведения
+        системной антибактериальной терапии
+  - text: Подозрение на мастоидит, зигоматицит, нейропатию лицевого нерва и внутричерепные
+      осложнения.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: подозрение на мастоидит, зигоматицит, нейропатию лицевого нерва и внутричерепные
+        осложнения
+  - text: ОСО у детей до 3 месяцев с фебрильной лихорадкой.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ОСО у детей в возрасте до 3 месяцев с фебрильной лихорадкой в связи с
+        высоким риском развития осложнений
+  - text: 'Тяжелая сопутствующая патология: иммунодефицит, иммуносупрессивная терапия,
+      онко/онкогематологические заболевания, пороки/заболевания сердца/легких и др.'
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'наличие тяжелой сопутствующей патологии: иммунодефицитное состояние,
+        лечение иммуносупрессивными ЛП; онкологические и онкогематологические заболевания;
+        врожденные и приобретенные пороки и заболевания сердца'
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: otorinolaringologiya_кп_диагностика_лечение_острых_средних_отитов_дет_пост_мз_20
-    document_url: null
-    local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_средних_отитов_дет_пост_МЗ_2024_153.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика лечение острых средних отитов дет
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:44.884401+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T16:43:13.821513+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:44.888013+00:00'
+  validated_at: '2026-07-20T16:43:13.827697+00:00'

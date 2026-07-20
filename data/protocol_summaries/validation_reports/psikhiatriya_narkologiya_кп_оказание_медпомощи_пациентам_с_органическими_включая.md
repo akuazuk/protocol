@@ -1,6 +1,61 @@
 # Validation: psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_органическими_включая
 
-- **status:** valid
-- **validated_at:** 2026-06-23T19:16:26.645378+00:00
+- **status:** needs_human_review
+- **validated_at:** 2026-07-20T17:35:41.378296+00:00
 - **review_status:** needs_review
-- **extraction_status:** auto_extracted
+- **extraction_status:** llm_extracted
+
+## Warnings
+- `duplicate_exam` conditions[dementia_parkinsons_disease].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[dementia_parkinsons_disease].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[dementia_parkinsons_disease].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[dementia_parkinsons_disease].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[dementia_parkinsons_disease].required_exams[4]: Дублирующееся обследование
+- `duplicate_exam` conditions[dementia_parkinsons_disease].required_exams[5]: Дублирующееся обследование
+- `duplicate_exam` conditions[dementia_parkinsons_disease].required_exams[6]: Дублирующееся обследование
+- `duplicate_exam` conditions[dementia_parkinsons_disease].required_exams[7]: Дублирующееся обследование
+- `duplicate_exam` conditions[dementia_parkinsons_disease].required_exams[9]: Дублирующееся обследование
+- `duplicate_exam` conditions[dementia_parkinsons_disease].required_exams[10]: Дублирующееся обследование
+- `duplicate_drug` conditions[dementia_parkinsons_disease].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[dementia_parkinsons_disease].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[dementia_parkinsons_disease].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[dementia_parkinsons_disease].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[delirium_non_alcohol_induced].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[delirium_non_alcohol_induced].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[delirium_non_alcohol_induced].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_hallucinosis].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_catatonic_state].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_catatonic_state].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_catatonic_state].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_catatonic_state].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_catatonic_state].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_delusional_schizophrenia_like_disorder].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_delusional_schizophrenia_like_disorder].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_delusional_schizophrenia_like_disorder].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_delusional_schizophrenia_like_disorder].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_delusional_schizophrenia_like_disorder].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_delusional_schizophrenia_like_disorder].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_anxiety_disorder].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_anxiety_disorder].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_anxiety_disorder].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_anxiety_disorder].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_anxiety_disorder].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_anxiety_disorder].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_dissociative_disorder].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_dissociative_disorder].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_dissociative_disorder].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_dissociative_disorder].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_dissociative_disorder].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_dissociative_disorder].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_emotional_labile_asthenic_disorder].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_emotional_labile_asthenic_disorder].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_emotional_labile_asthenic_disorder].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_emotional_labile_asthenic_disorder].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_emotional_labile_asthenic_disorder].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[organic_emotional_labile_asthenic_disorder].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[mild_cognitive_disorder].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[mild_cognitive_disorder].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[mild_cognitive_disorder].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[mild_cognitive_disorder].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[mild_cognitive_disorder].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[mild_cognitive_disorder].treatment.drugs[5]: Дублирующийся препарат

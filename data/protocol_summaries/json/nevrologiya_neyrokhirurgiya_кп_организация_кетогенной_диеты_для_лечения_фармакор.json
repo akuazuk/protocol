@@ -1,7 +1,7 @@
 {
   "protocol_id": "nevrologiya_neyrokhirurgiya_кп_организация_кетогенной_диеты_для_лечения_фармакор",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста",
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,54 +32,50 @@
   },
   "conditions": [
     {
-      "condition_id": "организация_кетогенной_диеты_для_лечения_фармако",
-      "name": "Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста",
+      "condition_id": "farmakorezistentnaya_epilepsiya",
+      "name": "фармакорезистентная эпилепсия",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
         "G40",
-        "R64",
-        "E61.8",
-        "E80",
-        "B24",
         "G40.9"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
-      "diagnostic_criteria": {
-        "required": [
-          {
-            "text": "[classification] 4. Диагноз или обоснованное предположение о наличии ФРЭ служит основанием (стр. 2)",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_организация_кетогенной_диеты_для_лечения_фармакор",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста_пост_МЗ_31_12_2021_№135.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[classification] 4. Диагноз или обоснованное предположение о наличии ФРЭ служит основанием (стр. 2)"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
+      "diagnostic_criteria": null,
       "required_exams": [],
-      "conditional_exams": [],
+      "conditional_exams": [
+        {
+          "name": "Обследование для подтверждения пищевой непереносимости",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_организация_кетогенной_диеты_для_лечения_фармакор",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста_пост_МЗ_31_12_2021_№135.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "наличии пищевой непереносимости, подтвержденной клинико-лабораторными, инструментальными методами обследования"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 1. Утвердить клинический протокол «Организация кетогенной диеты для лечения (стр. 1)",
+            "text": "Исключение причинно-значимых продуктов и блюд из рациона при подтвержденной пищевой непереносимости с адекватной заменой.",
             "source_ref": {
               "protocol_id": "nevrologiya_neyrokhirurgiya_кп_организация_кетогенной_диеты_для_лечения_фармакор",
               "document_url": null,
@@ -90,11 +86,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 1. Утвердить клинический протокол «Организация кетогенной диеты для лечения (стр. 1)"
+              "quote": "Исключение причинно-значимых продуктов и блюд из рациона при подтвержденной пищевой непереносимости с адекватной заменой."
             }
           },
           {
-            "text": "фармакорезистентной эпилепсии у пациентов детского возраста» (прилагается).",
+            "text": "Приготовление кетогенной диеты в форме для зондового кормления по показаниям.",
             "source_ref": {
               "protocol_id": "nevrologiya_neyrokhirurgiya_кп_организация_кетогенной_диеты_для_лечения_фармакор",
               "document_url": null,
@@ -105,266 +101,146 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "фармакорезистентной эпилепсии у пациентов детского возраста» (прилагается)."
-            }
-          },
-          {
-            "text": "[treatment] 31.12.2021 № 135 (стр. 1)",
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_организация_кетогенной_диеты_для_лечения_фармакор",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста_пост_МЗ_31_12_2021_№135.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 31.12.2021 № 135 (стр. 1)"
-            }
-          },
-          {
-            "text": "«Организация кетогенной диеты для лечения фармакорезистентной эпилепсии",
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_организация_кетогенной_диеты_для_лечения_фармакор",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста_пост_МЗ_31_12_2021_№135.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "«Организация кетогенной диеты для лечения фармакорезистентной эпилепсии"
-            }
-          },
-          {
-            "text": "[treatment] 5. Применение КД для лечения ФРЭ направлено на повышение контроля над (стр. 2)",
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_организация_кетогенной_диеты_для_лечения_фармакор",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста_пост_МЗ_31_12_2021_№135.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 5. Применение КД для лечения ФРЭ направлено на повышение контроля над (стр. 2)"
-            }
-          },
-          {
-            "text": "припадками (снижение частоты и интенсивности эпилептических приступов). КД",
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_организация_кетогенной_диеты_для_лечения_фармакор",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста_пост_МЗ_31_12_2021_№135.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "припадками (снижение частоты и интенсивности эпилептических приступов). КД"
+              "quote": "Приготовление кетогенной диеты в форме для зондового кормления по показаниям."
             }
           }
         ],
         "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "внутривенно",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "50 мл",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_организация_кетогенной_диеты_для_лечения_фармакор",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста_пост_МЗ_31_12_2021_№135.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "внутривенно 50 мл раствора \nглюкозы 10 % и через 30 минут "
-            }
-          },
-          {
-            "drug_name": "июля",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2017 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_организация_кетогенной_диеты_для_лечения_фармакор",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста_пост_МЗ_31_12_2021_№135.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июля 2017 г"
-            }
-          },
-          {
-            "drug_name": "декабря",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2021 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_организация_кетогенной_диеты_для_лечения_фармакор",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста_пост_МЗ_31_12_2021_№135.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "декабря 2021 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_организация_кетогенной_диеты_для_лечения_фармакор",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста_пост_МЗ_31_12_2021_№135.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_организация_кетогенной_диеты_для_лечения_фармакор",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста_пост_МЗ_31_12_2021_№135.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "ноября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_организация_кетогенной_диеты_для_лечения_фармакор",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста_пост_МЗ_31_12_2021_№135.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "ноября \n1993 г"
-            }
-          }
-        ],
+        "drugs": [],
         "procedures": [],
         "surgery": [],
         "source_refs": []
       },
       "follow_up": [],
       "hospitalization": [],
-      "routing": [],
+      "routing": [
+        {
+          "text": "Медицинские противопоказания к применению КД: острые заболевания.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_организация_кетогенной_диеты_для_лечения_фармакор",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста_пост_МЗ_31_12_2021_№135.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинские противопоказания к применению КД: острые заболевания."
+          }
+        },
+        {
+          "text": "Медицинские противопоказания к применению КД: хронические заболевания в стадии обострения.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_организация_кетогенной_диеты_для_лечения_фармакор",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста_пост_МЗ_31_12_2021_№135.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинские противопоказания к применению КД: хронические заболевания в стадии обострения."
+          }
+        },
+        {
+          "text": "Медицинские противопоказания к применению КД: R64 Кахексия.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_организация_кетогенной_диеты_для_лечения_фармакор",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста_пост_МЗ_31_12_2021_№135.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинские противопоказания к применению КД: R64 Кахексия."
+          }
+        },
+        {
+          "text": "Медицинские противопоказания к применению КД: E61.8 Первичный системный дефицит карнитина и нарушение процессов -окисления жирных кислот.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_организация_кетогенной_диеты_для_лечения_фармакор",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста_пост_МЗ_31_12_2021_№135.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинские противопоказания к применению КД: E61.8 Первичный системный дефицит карнитина и нарушение процессов -окисления жирных кислот."
+          }
+        },
+        {
+          "text": "Медицинские противопоказания к применению КД: E80 Нарушения обмена порфирина.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_организация_кетогенной_диеты_для_лечения_фармакор",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста_пост_МЗ_31_12_2021_№135.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинские противопоказания к применению КД: E80 Нарушения обмена порфирина."
+          }
+        },
+        {
+          "text": "Инициация кетогенной диеты посредством приема полноценного рациона показана пациентам до 7 лет.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_организация_кетогенной_диеты_для_лечения_фармакор",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста_пост_МЗ_31_12_2021_№135.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Инициация кетогенной диеты посредством приема полноценного рациона показана пациентам до 7 лет."
+          }
+        }
+      ],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "nevrologiya_neyrokhirurgiya_кп_организация_кетогенной_диеты_для_лечения_фармакор",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста_пост_МЗ_31_12_2021_№135.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:43.474808+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T16:49:26.267003+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:43.476639+00:00"
+    "validated_at": "2026-07-20T16:49:26.267293+00:00"
   }
 }

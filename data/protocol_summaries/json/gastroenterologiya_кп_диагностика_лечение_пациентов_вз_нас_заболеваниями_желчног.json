@@ -1,10 +1,10 @@
 {
   "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика лечение пациентов вз нас заболеваниями желчного пузыря желчевыводящих путей поджелудочной железы",
+    "title": "Диагностика и лечение заболеваний желчного пузыря, желчевыводящих путей и поджелудочной железы",
     "url": null,
     "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
     "document_sha256": null,
@@ -32,20 +32,12 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_лечение_пациентов_вз_нас_заболевания",
-      "name": "Диагностика лечение пациентов вз нас заболеваниями желчного пузыря желчевыводящих путей поджелудочной железы",
+      "condition_id": "functional_disorder_gallbladder",
+      "name": "Функциональное расстройство желчного пузыря",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "K82.8",
-        "K83.4",
-        "K86.0",
-        "K86.1",
-        "E11.9",
-        "E66.9",
-        "J18.9",
-        "J44.9",
-        "K74.6"
+        "K82.8"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -53,7 +45,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[classification] 8. Формулировка диагноза функциональное расстройство ЖП включает: (стр. 4)",
+            "text": "Наличие билиарной боли: локализация в эпигастрии/правом верхнем квадранте, длительность ≥30 мин, рецидивирующая, сильная, не облегчается дефекацией/положением/антисекреторными ЛП.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -70,11 +62,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 8. Формулировка диагноза функциональное расстройство ЖП включает: (стр. 4)"
+              "quote": "Наличие билиарной боли: локализация в эпигастрии/правом верхнем квадранте, длительность ≥30 мин, рецидивирующая, сильная, не облегчается дефекацией/положением/антисекреторными ЛП."
             }
           },
           {
-            "text": "Пример формулировки диагноза:",
+            "text": "Отсутствие желчных камней или другой структурной патологии, объясняющей существующие симптомы.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -91,11 +83,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Пример формулировки диагноза:"
+              "quote": "Отсутствие желчных камней или другой структурной патологии, объясняющей существующие симптомы."
             }
           },
           {
-            "text": "функциональное расстройство СО неопределенного типа.",
+            "text": "Нормальные показатели печеночных ферментов, конъюгированного билирубина, амилазы, липазы.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -112,11 +104,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "функциональное расстройство СО неопределенного типа."
+              "quote": "Нормальные показатели печеночных ферментов, конъюгированного билирубина, амилазы, липазы."
             }
           },
           {
-            "text": "[classification] 18. Формулировка диагноза функциональное расстройство СО включает: (стр. 6)",
+            "text": "Билиарная боль",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -133,11 +125,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 18. Формулировка диагноза функциональное расстройство СО включает: (стр. 6)"
+              "quote": "Билиарная боль"
             }
           },
           {
-            "text": "Примеры формулировки диагноза:",
+            "text": "Легкий острый панкреатит при APACHEII < 8 баллов",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -154,11 +146,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Примеры формулировки диагноза:"
+              "quote": "Легкий острый панкреатит при APACHEII < 8 баллов"
             }
           },
           {
-            "text": "наличие критериев, выявленных при ультразвуковом",
+            "text": "Тяжелый острый панкреатит при APACHEII >= 8 баллов",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -175,11 +167,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "наличие критериев, выявленных при ультразвуковом"
+              "quote": "Тяжелый острый панкреатит при APACHEII >= 8 баллов"
             }
           },
           {
-            "text": "наличие критериев, выявленных при УЗИ, КТ, РХПГ,",
+            "text": "Тяжелый острый панкреатит при более чем 3 критериях по шкале Glasgow",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -196,28 +188,7 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "наличие критериев, выявленных при УЗИ, КТ, РХПГ,"
-            }
-          },
-          {
-            "text": "наличие критериев, выявленных при УЗИ, КТ, РХПГ,",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "наличие критериев, выявленных при УЗИ, КТ, РХПГ,"
+              "quote": "Тяжелый острый панкреатит при более чем 3 критериях по шкале Glasgow"
             }
           }
         ],
@@ -226,7 +197,7 @@
       },
       "required_exams": [
         {
-          "name": "УЗИ",
+          "name": "Определение уровня печеночных ферментов, конъюгированного билирубина, амилазы, липазы в крови",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -241,17 +212,17 @@
             "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
             "document_url": null,
             "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
-            "page_start": null,
+            "page_start": 4,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "и ультразвуковом \nисследовании (далее – УЗИ), компьютерной томографии (далее – КТ), ретроградной \nхолангиопанкреатографии ("
+            "quote": "нормальные показатели печеночных ферментов, конъюгированного билирубина, амилазы, липазы."
           }
         },
         {
-          "name": "КТ",
+          "name": "Инструментальная диагностика (например, УЗИ) для исключения желчных камней и структурной патологии",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -266,13 +237,63 @@
             "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
             "document_url": null,
             "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
-            "page_start": null,
+            "page_start": 4,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "УЗИ), компьютерной томографии (далее – КТ), ретроградной \nхолангиопанкреатографии (далее – РХПГ), эндоскопическом УЗИ (да"
+            "quote": "отсутствие желчных камней или другой структурной патологии, которая могла бы объяснить существующие симптомы."
+          }
+        },
+        {
+          "name": "Оценка состояния по шкале APACHEII",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 17,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Оценка состояния по шкале APACHEII (в первые 48 часов после госпитализации)"
+          }
+        },
+        {
+          "name": "Оценка тяжести ОП по шкале Glasgow",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 17,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Оценка тяжести ОП по шкале Glasgow (в первые 48 часов после госпитализации)"
           }
         }
       ],
@@ -280,7 +301,7 @@
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 3. Фармакотерапия (стр. 3)",
+            "text": "рациональная психотерапия",
             "source_ref": {
               "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
               "document_url": null,
@@ -291,11 +312,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 3. Фармакотерапия (стр. 3)"
+              "quote": "рациональная психотерапия"
             }
           },
           {
-            "text": "протоколом с учетом всех индивидуальных особенностей пациента, тяжести заболевания,",
+            "text": "оптимизация режима и характера питания: частые приемы пищи; сокращение потребления животных жиров, простых углеводов; увеличение потребления клетчатки, рыбы, растительных масел",
             "source_ref": {
               "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
               "document_url": null,
@@ -306,11 +327,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "протоколом с учетом всех индивидуальных особенностей пациента, тяжести заболевания,"
+              "quote": "оптимизация режима и характера питания: частые приемы пищи; сокращение потребления животных жиров, простых углеводов; увеличение потребления клетчатки, рыбы, растительных масел"
             }
           },
           {
-            "text": "лекарственных препаратов (далее – ЛП). При этом необходимо учитывать наличие",
+            "text": "повседневная двигательная активность",
             "source_ref": {
               "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
               "document_url": null,
@@ -321,62 +342,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "лекарственных препаратов (далее – ЛП). При этом необходимо учитывать наличие"
-            }
-          },
-          {
-            "text": "по медицинскому применению (листком-вкладышем). Допускается включение в схему",
-            "source_ref": {
-              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "по медицинскому применению (листком-вкладышем). Допускается включение в схему"
-            }
-          },
-          {
-            "text": "лечения ЛП по медицинским показаниям, не указанным в инструкции по медицинскому",
-            "source_ref": {
-              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "лечения ЛП по медицинским показаниям, не указанным в инструкции по медицинскому"
-            }
-          },
-          {
-            "text": "Национальный правовой Интернет-портал Республики Беларусь, 04.02.2026, 11-3/44531",
-            "source_ref": {
-              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Национальный правовой Интернет-портал Республики Беларусь, 04.02.2026, 11-3/44531"
+              "quote": "повседневная двигательная активность"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "таблетка",
+            "drug_name": "Дротаверин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "40 мг",
+            "dose_text": "80 мг 3 раза в сутки внутрь до 5 дней",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -388,20 +364,20 @@
               "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
               "document_url": null,
               "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "таблетка 40 мг, 80 мг) \n80 мг 3 раза в сутки внутрь до"
+              "quote": "пробная терапия миотропными спазмолитиками: дротаверин (таблетка 40 мг, 80 мг) 80 мг 3 раза в сутки внутрь до 5 дней"
             }
           },
           {
-            "drug_name": "капсула",
+            "drug_name": "Гимекромон",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "200 мг",
+            "dose_text": "200 мг 3 раза в сутки внутрь до 14 дней",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -413,20 +389,20 @@
               "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
               "document_url": null,
               "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "капсула 200 мг) \n200 мг 2 раза в сутки, или тримебутин"
+              "quote": "желчегонные ЛП: гимекромон (таблетка 200 мг) 200 мг 3 раза в сутки внутрь до 14 дней"
             }
           },
           {
-            "drug_name": "суппозитории",
+            "drug_name": "Отилония бромид",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "10 мг",
+            "dose_text": "40–80 мг 3 раза в сутки внутрь в течение 4–8 недель, при необходимости возможен более длительный прием",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -438,20 +414,20 @@
               "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
               "document_url": null,
               "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "суппозитории 10 мг 3 раза в сутки"
+              "quote": "отилония бромид (таблетка 40 мг) 40–80 мг 3 раза в сутки"
             }
           },
           {
-            "drug_name": "ноября",
+            "drug_name": "Мебеверина гидрохлорид",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2025 г",
+            "dose_text": "200 мг 2 раза в сутки внутрь в течение 4–8 недель, при необходимости возможен более длительный прием",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -463,20 +439,20 @@
               "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
               "document_url": null,
               "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ноября 2025 г"
+              "quote": "мебеверина гидрохлорид (капсула 200 мг) 200 мг 2 раза в сутки"
             }
           },
           {
-            "drug_name": "июня",
+            "drug_name": "Тримебутин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1993 г",
+            "dose_text": "100–200 мг 3 раза в сутки либо 300 мг 2 раза в сутки внутрь в течение 4–8 недель, при необходимости возможен более длительный прием",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -488,20 +464,20 @@
               "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
               "document_url": null,
               "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июня 1993 г"
+              "quote": "тримебутин (таблетка 100 мг, 300 мг) 100–200 мг 3 раза в сутки либо 300 мг 2 раза в сутки"
             }
           },
           {
-            "drug_name": "октября",
+            "drug_name": "Альверина цитрат",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2011 г",
+            "dose_text": "60 мг 3 раза в сутки внутрь в течение 4–8 недель, при необходимости возможен более длительный прием",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -513,13 +489,771 @@
               "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
               "document_url": null,
               "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "альверина цитрат (капсула 60 мг) 60 мг 3 раза в сутки"
+            }
+          },
+          {
+            "drug_name": "Дицикломина гидрохлорид",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "10–20 мг 1–2 раза в сутки (до 4 раз в сутки) внутрь в течение 4–8 недель, при необходимости возможен более длительный прием",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "дицикломина гидрохлорид (таблетка 10 мг) 10–20 мг 1–2 раза в сутки (до 4 раз в сутки)"
+            }
+          },
+          {
+            "drug_name": "Гиосцина бутилбромид",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "10 мг 3 раза в сутки внутрь или ректально в течение 4–8 недель, при необходимости возможен более длительный прием",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "гиосцина бутилбромид (таблетка 10 мг, ректальная суппозитория 10 мг) внутрь 10 мг 3 раза в сутки или ректально суппозитории 10 мг 3 раза в сутки"
+            }
+          }
+        ],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [
+        {
+          "text": "Рассмотрение вопроса о проведении холецистэктомии при отсутствии эффекта от фармакотерапии, тяжелом течении и явных признаках нарушения эвакуаторной функции ЖП",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Рассмотрение вопроса о проведении холецистэктомии при отсутствии эффекта от фармакотерапии, тяжелом течении и явных признаках нарушения эвакуаторной функции ЖП"
+          }
+        }
+      ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        },
+        {
+          "text": "госпитализация в хирургическое отделение",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация в хирургическое отделение"
+          }
+        },
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Выраженный болевой синдром",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При выраженном болевом синдроме возможна экстренная госпитализация в хирургическое отделение районной организации здравоохранения (далее – РОЗ), городской организации здравоохранения (далее – ГОЗ), областной организации здравоохранения (далее – ООЗ)."
+          }
+        },
+        {
+          "text": "Отсутствие эффекта от фармакотерапии, тяжелое течение и явные признаки нарушения эвакуаторной функции ЖП",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При отсутствии эффекта от фармакотерапии, тяжелом течении и явных признаках нарушения эвакуаторной функции ЖП может рассматриваться вопрос о проведении холецистэктомии."
+          }
+        },
+        {
+          "text": "Тяжелый острый панкреатит при APACHEII 8 и более баллов",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 17,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "8 и более баллов – тяжелый ОП"
+          }
+        },
+        {
+          "text": "Тяжелый острый панкреатит при более чем 3 критериях по шкале Glasgow",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 17,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Оценка тяжести: более 3 критериев – тяжелый ОП"
+          }
+        }
+      ],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "functional_disorder_sphincter_oddi",
+      "name": "Функциональное расстройство сфинктера Одди",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "K83.4"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": {
+        "required": [
+          {
+            "text": "Клинические критерии билиарного типа: боль в животе после холецистэктомии или эпизодическая боль, похожая на боль при заболеваниях ЖП, но с отрицательными результатами исследований.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
               "page_start": null,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "октября 2011 г"
+              "quote": "Клинические критерии билиарного типа: боль в животе после холецистэктомии или эпизодическая боль, похожая на боль при заболеваниях ЖП, но с отрицательными результатами исследований."
+            }
+          },
+          {
+            "text": "Клинические критерии панкреатического типа: наличие эпизодов идиопатического рецидивирующего панкреатита.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Клинические критерии панкреатического типа: наличие эпизодов идиопатического рецидивирующего панкреатита."
+            }
+          },
+          {
+            "text": "Диагностические критерии билиарного типа: эпизоды билиарной боли (согласно п.5 протокола).",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Диагностические критерии билиарного типа: эпизоды билиарной боли (согласно п.5 протокола)."
+            }
+          },
+          {
+            "text": "Диагностические критерии билиарного типа: повышенный уровень печеночных ферментов или расширение общего желчного протока.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Диагностические критерии билиарного типа: повышенный уровень печеночных ферментов или расширение общего желчного протока."
+            }
+          },
+          {
+            "text": "Диагностические критерии билиарного типа: отсутствие желчных камней или другой структурной патологии, объясняющей симптомы.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Диагностические критерии билиарного типа: отсутствие желчных камней или другой структурной патологии, объясняющей симптомы."
+            }
+          },
+          {
+            "text": "Диагностические критерии билиарного типа: нормальный уровень амилазы (липазы).",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Диагностические критерии билиарного типа: нормальный уровень амилазы (липазы)."
+            }
+          }
+        ],
+        "optional": [],
+        "exclusion": []
+      },
+      "required_exams": [
+        {
+          "name": "Определение уровня печеночных ферментов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "повышенный уровень печеночных ферментов или расширение общего желчного протока"
+          }
+        },
+        {
+          "name": "Определение уровня амилазы и липазы",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "нормальный уровень амилазы (липазы) (поддерживающий критерий)"
+          }
+        },
+        {
+          "name": "Визуализация желчных путей (УЗИ, МРХПГ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "повышенный уровень печеночных ферментов или расширение общего желчного протока; отсутствие желчных камней или другой структурной патологии"
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "КТА или МРТ поджелудочной железы",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 13,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Наличие признаков ПЭН требует визуализации поперечного сечения ПЖ (КТА, МРТ), чтобы исключить развивающуюся обструктивную опухоль или другие органические изменения ПЖ."
+          }
+        }
+      ],
+      "treatment": {
+        "non_drug": [
+          {
+            "text": "Папиллосфинктеротомия может рассматриваться при отсутствии эффекта от фармакотерапии и тяжелом течении.",
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Папиллосфинктеротомия может рассматриваться при отсутствии эффекта от фармакотерапии и тяжелом течении."
+            }
+          }
+        ],
+        "drug_groups": [],
+        "drugs": [
+          {
+            "drug_name": "Панкреатин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "не менее 50000 ЕД Ph. Eur. липазы на каждый прием пищи и 25000 ЕД Ph. Eur. липазы на перекус постоянно",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": 9,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При наличии клинических признаков ПЭН, назначается панкреатин в капсуле... из расчета не менее 50000 ЕД Ph. Eur. липазы на каждый прием пищи и 25000 ЕД на перекус постоянно."
+            }
+          },
+          {
+            "drug_name": "Нифедипин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "1–2 таблетки под язык",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "купирование приступа болей: нифедипин (таблетка, 10 мг) 1–2 таблетки под язык"
+            }
+          },
+          {
+            "drug_name": "Нитроглицерин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,5 мг под язык",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "купирование приступа болей: нитроглицерин (таблетка 0,5 мг) 0,5 мг под язык"
+            }
+          },
+          {
+            "drug_name": "Дротаверин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "80 мг 3 раза в сутки внутрь",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "пробная терапия миотропными спазмолитиками: дротаверин (таблетка 40 мг, 80 мг) внутрь 80 мг 3 раза в сутки внутрь"
+            }
+          },
+          {
+            "drug_name": "Гимекромон",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "200 мг 3 раза в сутки внутрь",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "желчегонные ЛП: гимекромон (таблетка 200 мг) 200 мг 3 раза в сутки внутрь"
+            }
+          },
+          {
+            "drug_name": "Отилония бромид",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "40–80 мг 3 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "отилония бромид (таблетка 40 мг) 40–80 мг 3 раза в сутки"
+            }
+          },
+          {
+            "drug_name": "Мебеверина гидрохлорид",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "200 мг 2 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "мебеверина гидрохлорид (капсула 200 мг) 200 мг 2 раза в сутки"
+            }
+          },
+          {
+            "drug_name": "Тримебутин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "100–200 мг 3 раза в сутки либо 300 мг 2 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "тримебутин (таблетка 100 мг, 300 мг) 100–200 мг 3 раза в сутки либо 300 мг 2 раза в сутки"
+            }
+          },
+          {
+            "drug_name": "Альверина цитрат",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "60 мг 3 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "альверина цитрат (капсула 60 мг) 60 мг 3 раза в сутки"
+            }
+          },
+          {
+            "drug_name": "Дицикломина гидрохлорид",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "10–20 мг 1–2 раза в сутки (до 4 раз в сутки)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "дицикломина гидрохлорид (таблетка 10 мг) 10–20 мг 1–2 раза в сутки (до 4 раз в сутки)"
+            }
+          },
+          {
+            "drug_name": "Гиосцина бутилбромид",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "внутрь 10 мг 3 раза в сутки или ректально суппозитории 10 мг 3 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "гиосцина бутилбромид (таблетка 10 мг, ректальная суппозитория 10 мг) внутрь 10 мг 3 раза в сутки или ректально суппозитории 10 мг 3 раза в сутки"
             }
           }
         ],
@@ -531,7 +1265,7 @@
       "hospitalization": [],
       "routing": [
         {
-          "text": "[routing] 1. Оценка состояния по шкале APACHEII (в первые 48 часов после госпитализации): (стр. 17)",
+          "text": "Госпитализация при эпизоде обострения хронического панкреатита.",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -544,11 +1278,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "[routing] 1. Оценка состояния по шкале APACHEII (в первые 48 часов после госпитализации): (стр. 17)"
+            "quote": "Госпитализация при эпизоде обострения хронического панкреатита."
           }
         },
         {
-          "text": "[routing] 2. Оценка тяжести ОП по шкале Glasgow (в первые 48 часов после госпитализации): (стр. 17)",
+          "text": "Госпитализация для хирургического вмешательства при механической (обтурационной) билиарной гипертензии.",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -561,15 +1295,103 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "[routing] 2. Оценка тяжести ОП по шкале Glasgow (в первые 48 часов после госпитализации): (стр. 17)"
+            "quote": "Госпитализация для хирургического вмешательства при механической (обтурационной) билиарной гипертензии."
+          }
+        },
+        {
+          "text": "Госпитализация в хирургическое отделение при эпизоде с выраженным болевым синдромом и панкреатитом",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация в хирургическое отделение при эпизоде с выраженным болевым синдромом и панкреатитом"
+          }
+        },
+        {
+          "text": "Госпитализация в хирургическое или гастроэнтерологическое отделение при необходимости уточнения диагноза (исключение стриктуры протока, опухоли)",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация в хирургическое или гастроэнтерологическое отделение при необходимости уточнения диагноза (исключение стриктуры протока, опухоли)"
+          }
+        },
+        {
+          "text": "Оценка состояния по шкале APACHEII (в первые 48 часов после госпитализации): < 8 баллов – легкий ОП; 8 и более баллов – тяжелый ОП",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Оценка состояния по шкале APACHEII (в первые 48 часов после госпитализации): < 8 баллов – легкий ОП; 8 и более баллов – тяжелый ОП"
+          }
+        },
+        {
+          "text": "Оценка тяжести ОП по шкале Glasgow (в первые 48 часов после госпитализации): более 3 критериев – тяжелый ОП",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Оценка тяжести ОП по шкале Glasgow (в первые 48 часов после госпитализации): более 3 критериев – тяжелый ОП"
           }
         }
       ],
       "red_flags": [
         {
-          "text": "более чем в 2 раза, тромбоз селезеночной вены |\n| 3 | Эндоультрасонография: |  |\n| 3.1 | Кембридж 0 | Отсутствие изменений |\n| 3.2 | Кембридж 1 | Д",
+          "text": "Необъяснимая потеря веса и/или диарея у пациентов старше 60 лет.",
           "aliases": [],
-          "red_flag_type": "thrombosis",
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 13,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Пациентам в возрасте старше 60 лет необходимо проведение тестирования на ПЭН, особенно при наличии необъяснимой потери веса и (или) диареи."
+          }
+        },
+        {
+          "text": "Признаки панкреатической экзокринной недостаточности (стеаторея, потеря веса, диарея, боль/вздутие живота), требующие исключения обструктивной опухоли ПЖ.",
+          "aliases": [],
+          "red_flag_type": "other",
           "severity": "high",
           "expected_actions": [],
           "cap_if_unhandled": null,
@@ -577,51 +1399,756 @@
             "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
             "document_url": null,
             "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
-            "page_start": null,
+            "page_start": 13,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "более чем в 2 раза, тромбоз селезеночной вены |\n| 3 | Эндоультрасонография: |  |\n| 3.1 | Кембридж 0 | Отсутствие изменений |\n| 3.2 | Кембридж 1 | Д"
+            "quote": "Наличие признаков ПЭН требует визуализации поперечного сечения ПЖ (КТА, МРТ), чтобы исключить развивающуюся обструктивную опухоль или другие органические изменения ПЖ."
+          }
+        },
+        {
+          "text": "Высокий нутритивный риск (потеря веса >10-15% за 6 мес, ИМТ <18.5 кг/м2, альбумин <30 г/л).",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Критерии высокого нутритивного риска: Потеря веса более 10–15 % за 6 месяцев; ИМТ < 18,5 кг/м2; Сывороточный альбумин < 30 г/л (без дисфункции печени/почек)."
+          }
+        },
+        {
+          "text": "Эпизод с выраженным болевым синдромом и панкреатитом",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "эпизод с выраженным болевым синдромом и панкреатитом (госпитализация пациента осуществляется в хирургическое отделение РОЗ, ГОЗ, ООЗ)"
+          }
+        },
+        {
+          "text": "Отсутствие эффекта от фармакотерапии, тяжелое течение",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При отсутствии эффекта от фармакотерапии, тяжелом течении требуется консультация врача-хирурга с решением вопроса о проведении папиллосфинктеротомии."
           }
         }
       ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
+      "source_refs": []
+    },
+    {
+      "condition_id": "chronic_pancreatitis",
+      "name": "Хронический панкреатит",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "K86.0",
+        "K86.1"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": {
+        "required": [
+          {
+            "text": "Наличие факторов риска, эпизодов болевого синдрома с повышением амилазы/липазы сыворотки крови и визуализационных диагностических критериев Кембридж 1 и выше.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Наличие факторов риска, эпизодов болевого синдрома с повышением амилазы/липазы сыворотки крови и визуализационных диагностических критериев Кембридж 1 и выше."
+            }
+          },
+          {
+            "text": "Снижение экзокринной функции ПЖ, доказанное объективными методами (13С-дыхательный тест или определение эластазы в кале) или ответом на пробное лечение ферментами, и наличие визуализационных диагностических критериев Кембридж 1 и выше.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Снижение экзокринной функции ПЖ, доказанное объективными методами (13С-дыхательный тест или определение эластазы в кале) или ответом на пробное лечение ферментами, и наличие визуализационных диагности"
+            }
+          },
+          {
+            "text": "Наличие визуализационных диагностических критериев Кембридж 3 или Кембридж 4 модифицированной Кембриджской классификации.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Наличие визуализационных диагностических критериев Кембридж 3 или Кембридж 4 модифицированной Кембриджской классификации."
+            }
+          },
+          {
+            "text": "Клинические критерии: факторы риска (злоупотребление алкоголем, курение, гиперкальциемия, гипертриглицеридемия, аутоиммунные заболевания, рецидивы ОП); хроническая или рецидивирующая боль в верхней половине живота и/или признаки ПЭН (синдром мальдигестии/мальнутриции, хроническая диарея, полифекалия, стеаторея, снижение массы тела) и/или нарушение углеводного обмена.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Клинические критерии: факторы риска (злоупотребление алкоголем, курение, гиперкальциемия, гипертриглицеридемия, аутоиммунные заболевания, рецидивы ОП); хроническая или рецидивирующая боль в верхней по"
+            }
+          }
+        ],
+        "optional": [],
+        "exclusion": []
+      },
+      "required_exams": [
         {
-          "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика лечение пациентов вз нас заболеваниями желчного пузыря желчевыводящих путей поджелудочной железы"
+          "name": "Амилаза сыворотки крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "эпизоды болевого синдрома типичной локализации (эпигастральная область, возможна иррадиация в подреберья или спину), ассоциированные с повышением амилазы или липазы сыворотки крови;"
+          }
+        },
+        {
+          "name": "Липаза сыворотки крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "эпизоды болевого синдрома типичной локализации (эпигастральная область, возможна иррадиация в подреберья или спину), ассоциированные с повышением амилазы или липазы сыворотки крови;"
+          }
+        },
+        {
+          "name": "13С-дыхательный тест",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "снижение экзокринной функции ПЖ, доказанное объективными методами (13С-дыхательный тест или определение эластазы в кале) либо ответом на пробное лечение панкреатическими ферментами..."
+          }
+        },
+        {
+          "name": "Определение эластазы в кале",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "снижение экзокринной функции ПЖ, доказанное объективными методами (13С-дыхательный тест или определение эластазы в кале) либо ответом на пробное лечение панкреатическими ферментами..."
+          }
         }
-      ]
+      ],
+      "conditional_exams": [
+        {
+          "name": "КТА (визуализация поперечного сечения ПЖ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 13,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Наличие признаков ПЭН требует визуализации поперечного сечения ПЖ (КТА, МРТ), чтобы исключить развивающуюся обструктивную опухоль или другие органические изменения ПЖ."
+          }
+        },
+        {
+          "name": "МРТ (визуализация поперечного сечения ПЖ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 13,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Наличие признаков ПЭН требует визуализации поперечного сечения ПЖ (КТА, МРТ), чтобы исключить развивающуюся обструктивную опухоль или другие органические изменения ПЖ."
+          }
+        }
+      ],
+      "treatment": {
+        "non_drug": [
+          {
+            "text": "Хирургическое вмешательство при механической (обтурационной) билиарной гипертензии",
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Хирургическое вмешательство при механической (обтурационной) билиарной гипертензии"
+            }
+          }
+        ],
+        "drug_groups": [],
+        "drugs": [
+          {
+            "drug_name": "Панкреатин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "не менее 50000 тыс. ЕД Ph. Eur. липазы на каждый прием пищи и 25000 тыс. ЕД Ph. Eur. липазы на перекус постоянно.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+              "page_start": 9,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При наличии клинических признаков ПЭН (хроническая диарея, прогрессирующее снижение массы тела) или ПЭН, подтвержденной лабораторными исследованиями, назначается панкреатин..."
+            }
+          }
+        ],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "Госпитализация при обострении хронического панкреатита с функциональной билиарной гипертензией (в соответствии с протоколом по острому панкреатиту).",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация при обострении хронического панкреатита с функциональной билиарной гипертензией (в соответствии с протоколом по острому панкреатиту)."
+          }
+        },
+        {
+          "text": "Амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Амбулаторно"
+          }
+        },
+        {
+          "text": "Госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация"
+          }
+        },
+        {
+          "text": "Оценка состояния по шкале APACHEII в первые 48 часов после госпитализации: менее 8 баллов – легкий ОП; 8 и более баллов – тяжелый ОП.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Оценка состояния по шкале APACHEII в первые 48 часов после госпитализации: менее 8 баллов – легкий ОП; 8 и более баллов – тяжелый ОП."
+          }
+        },
+        {
+          "text": "Оценка тяжести ОП по шкале Glasgow в первые 48 часов после госпитализации: при наличии более 3 критериев – тяжелый ОП.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Оценка тяжести ОП по шкале Glasgow в первые 48 часов после госпитализации: при наличии более 3 критериев – тяжелый ОП."
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Потеря веса более 10–15 % за 6 месяцев (высокий нутритивный риск)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Потеря веса более 10–15 % за 6 месяцев"
+          }
+        },
+        {
+          "text": "Индекс массы тела (ИМТ) < 18,5 кг/м2 (высокий нутритивный риск)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ИМТ < 18,5 кг/м2"
+          }
+        },
+        {
+          "text": "Балл по шкале скрининга нутритивного риска (NSR) > 3 (высокий нутритивный риск)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Балл по шкале скрининга нутритивного риска (NSR) > 3"
+          }
+        },
+        {
+          "text": "Сывороточный альбумин < 30 г/л (при отсутствии дисфункции печени или почек) (высокий нутритивный риск)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Сывороточный альбумин < 30 г/л (при отсутствии дисфункции печени или почек)"
+          }
+        },
+        {
+          "text": "Синдром диспепсии при резистентности к лечению, требующий обследования на наличие ПЭН",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 13,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "синдром диспепсии при резистентности к лечению, с известными сопутствующими заболеваниями или без них"
+          }
+        },
+        {
+          "text": "Симптомы нарушения пищеварения (стеаторея, потеря веса, диарея, боль в животе и/или вздутие живота), требующие обследования на наличие ПЭН",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 13,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "симптомы нарушения пищеварения в виде стеаторе"
+          }
+        },
+        {
+          "text": "Пациентам в возрасте старше 60 лет с необъяснимой потерей веса и/или диареей, требующим тестирования на ПЭН",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 13,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Пациентам в возрасте старше 60 лет необходимо проведение тестирования на ПЭН, особенно при наличии необъяснимой потери веса и (или) диареи."
+          }
+        },
+        {
+          "text": "Наличие признаков ПЭН требует визуализации ПЖ для исключения развивающейся обструктивной опухоли или других органических изменений",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 13,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Наличие признаков ПЭН требует визуализации поперечного сечения ПЖ (КТА, МРТ), чтобы исключить развивающуюся обструктивную опухоль или другие органические изменения ПЖ."
+          }
+        },
+        {
+          "text": "Обострение нетяжелой степени, резистентность к амбулаторной терапии или недостаточность питания средней/тяжелой степени.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "обострение нетяжелой степени, резистентность к терапии в амбулаторных условиях, недостаточность питания средней или тяжелой степени"
+          }
+        },
+        {
+          "text": "Обострение тяжелой степени.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_желчног",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "обострение тяжелой степени"
+          }
+        }
+      ],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:28.471826+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T15:35:06.732665+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=3"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-06-23T19:15:28.477414+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[functional_disorder_sphincter_oddi].treatment.drugs[3]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[functional_disorder_sphincter_oddi].treatment.drugs[4]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[functional_disorder_sphincter_oddi].treatment.drugs[5]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[functional_disorder_sphincter_oddi].treatment.drugs[6]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[functional_disorder_sphincter_oddi].treatment.drugs[7]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[functional_disorder_sphincter_oddi].treatment.drugs[8]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[functional_disorder_sphincter_oddi].treatment.drugs[9]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[functional_disorder_sphincter_oddi].treatment.drugs[10]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[chronic_pancreatitis].treatment.drugs[0]"
+      }
+    ],
+    "validated_at": "2026-07-20T15:35:06.773054+00:00"
   }
 }

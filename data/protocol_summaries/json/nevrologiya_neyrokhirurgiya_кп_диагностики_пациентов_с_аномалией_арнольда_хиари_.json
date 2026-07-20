@@ -1,10 +1,10 @@
 {
   "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "диагностики пациентов с аномалией Арнольда Хиари",
+    "title": "Диагностика пациентов с аномалией Арнольда Хиари",
     "url": null,
     "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП диагностики пациентов с аномалией Арнольда-Хиари 16.12.2013 № 1272.pdf",
     "document_sha256": null,
@@ -32,26 +32,302 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностики_пациентов_с_аномалией_арнольда_хиари",
-      "name": "диагностики пациентов с аномалией Арнольда Хиари",
+      "condition_id": "arnold_chiari_syringohydromyelia",
+      "name": "Аномалия Арнольда-Киари, осложненная развитием сирингогидромиелии",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
         "Q07",
-        "Q07.0",
-        "N20",
-        "B24"
+        "Q07.0"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
+      "diagnostic_criteria": {
+        "required": [
+          {
+            "text": "Установление типа аномалии Арнольда-Киари и наличия сирингогидромиелии по МРТ, а также выявление ликвородинамических нарушений.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП диагностики пациентов с аномалией Арнольда-Хиари 16.12.2013 № 1272.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Установление типа аномалии Арнольда-Киари и наличия сирингогидромиелии по МРТ, а также выявление ликвородинамических нарушений."
+            }
+          }
+        ],
+        "optional": [],
+        "exclusion": []
+      },
+      "required_exams": [
+        {
+          "name": "Магнитно-резонансная томография (МРТ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП диагностики пациентов с аномалией Арнольда-Хиари 16.12.2013 № 1272.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Детальное обследование с использованием Магнитно-резонансной томографии (далее-МРТ) всех отделов спинного мозга, кранио-спинального перехода, а при наличии общемозговой симптоматики и структур головного мозга"
+          }
+        },
+        {
+          "name": "МРТ по flow программе",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП диагностики пациентов с аномалией Арнольда-Хиари 16.12.2013 № 1272.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Наличие ликвородинамических нарушений при аномалии Арнольда-Киари выявляется при МРТ исследовании по flow программе, что позволяет оценить степень и характер нарушений."
+          }
+        },
+        {
+          "name": "Суммарная электромиография (ЭМГ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП диагностики пациентов с аномалией Арнольда-Хиари 16.12.2013 № 1272.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "С помощью суммарной ЭМГ регистрируется биоэлектрическая активность (БА) мышц верхних конечностей в условиях относительного физиологического \"покоя\" и при произвольном максимальном напряжении."
+          }
+        },
+        {
+          "name": "Транскраниальная магнитная стимуляция (ТМС)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП диагностики пациентов с аномалией Арнольда-Хиари 16.12.2013 № 1272.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Состояние нисходящих моторных путей спинного мозга (СМ) и двигательных корешков оценивается по данным ТМС."
+          }
+        },
+        {
+          "name": "Соматосенсорные вызванные потенциалы (ССВП) на раздражение срединного нерва",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП диагностики пациентов с аномалией Арнольда-Хиари 16.12.2013 № 1272.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Для оценки проводимости восходящих путей спинного и головного мозга регистрируется ССВП в ответ на электрическое раздражение срединного нерва."
+          }
+        },
+        {
+          "name": "Мигательный рефлекс",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП диагностики пациентов с аномалией Арнольда-Хиари 16.12.2013 № 1272.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Мигательный рефлекс регистрируется накожными электродами в круговой мышце глаза при электрической стимуляции супраорбитального нерва."
+          }
+        },
+        {
+          "name": "Реографическое исследование (РЭГ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП диагностики пациентов с аномалией Арнольда-Хиари 16.12.2013 № 1272.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Проводится реографическое исследование (РЭГ) обеих верхних и нижних конечностей в области плеча, предплечья, кистей, бедра, голени и стопы."
+          }
+        },
+        {
+          "name": "Цветовая дуплексная сонография (ЦДС) брахиоцефальных артерий",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП диагностики пациентов с аномалией Арнольда-Хиари 16.12.2013 № 1272.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Методом цветовой дуплексной сонографии (ЦДС) исследуются брахиоцефальные артерии (БЦА): a.a.subclavia (SC), carotis communis(CCA), carotis interna(ICA), carotis externa (ECA), vertebralis (V1-V3 сегменты)..."
+          }
+        },
+        {
+          "name": "Измерение артериального давления",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП диагностики пациентов с аномалией Арнольда-Хиари 16.12.2013 № 1272.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Измеряется артериальное давление."
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Электрофизиологические методики вызванных потенциалов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП диагностики пациентов с аномалией Арнольда-Хиари 16.12.2013 № 1272.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Верификацию начальных проявлений прогрессирующего поражения структур мозга, состояние структур мозга в динамике при проведении консервативных мероприятий, хирургического лечения осуществляют с использованием электрофизиологических методик вызванных потенциалов."
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[other] Описание протокола (стр. 1)",
+            "text": "Консервативные мероприятия",
             "source_ref": {
               "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
               "document_url": null,
@@ -62,11 +338,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[other] Описание протокола (стр. 1)"
+              "quote": "Консервативные мероприятия"
             }
           },
           {
-            "text": "Клинический протокол: диагностики пациентов с аномалией Арнольда Хиари",
+            "text": "Хирургическое лечение",
             "source_ref": {
               "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
               "document_url": null,
@@ -77,67 +353,7 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Клинический протокол: диагностики пациентов с аномалией Арнольда Хиари"
-            }
-          },
-          {
-            "text": "Рубрика: Неврология и нейрохирургия",
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП диагностики пациентов с аномалией Арнольда-Хиари 16.12.2013 № 1272.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Рубрика: Неврология и нейрохирургия"
-            }
-          },
-          {
-            "text": "Тип: Клинический КП (есть коды МКБ)",
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП диагностики пациентов с аномалией Арнольда-Хиари 16.12.2013 № 1272.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Тип: Клинический КП (есть коды МКБ)"
-            }
-          },
-          {
-            "text": "МКБ-10: Q07 (98%), Q07.0 (96%), N20 (94%), B24 (28%)",
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП диагностики пациентов с аномалией Арнольда-Хиари 16.12.2013 № 1272.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "МКБ-10: Q07 (98%), Q07.0 (96%), N20 (94%), B24 (28%)"
-            }
-          },
-          {
-            "text": "Метки: kind:clinical, rubric:nevrologiya-neyrokhirurgiya, audience:adult, diagnostics",
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП диагностики пациентов с аномалией Арнольда-Хиари 16.12.2013 № 1272.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Метки: kind:clinical, rubric:nevrologiya-neyrokhirurgiya, audience:adult, diagnostics"
+              "quote": "Хирургическое лечение"
             }
           }
         ],
@@ -149,7 +365,7 @@
       },
       "follow_up": [
         {
-          "text": "Контроль",
+          "text": "Оценка состояния структур мозга в динамике при проведении консервативных мероприятий и хирургического лечения.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -163,84 +379,147 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Контроль"
-          }
-        },
-        {
-          "text": "Контроль",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП диагностики пациентов с аномалией Арнольда-Хиари 16.12.2013 № 1272.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Контроль"
-          }
-        },
-        {
-          "text": "Контроль",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП диагностики пациентов с аномалией Арнольда-Хиари 16.12.2013 № 1272.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Контроль"
+            "quote": "Оценка состояния структур мозга в динамике при проведении консервативных мероприятий и хирургического лечения."
           }
         }
       ],
       "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
+      "routing": [
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП диагностики пациентов с аномалией Арнольда-Хиари 16.12.2013 № 1272.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        },
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП диагностики пациентов с аномалией Арнольда-Хиари 16.12.2013 № 1272.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Прогрессирующее поражение структур мозга",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП диагностики пациентов с аномалией Арнольда-Хиари 16.12.2013 № 1272.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Верификацию начальных проявлений прогрессирующего поражения структур мозга... осуществляют с использованием электрофизиологических методик вызванных потенциалов."
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "nevrologiya_neyrokhirurgiya_кп_диагностики_пациентов_с_аномалией_арнольда_хиари_",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП диагностики пациентов с аномалией Арнольда-Хиари 16.12.2013 № 1272.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "диагностики пациентов с аномалией Арнольда Хиари"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:42.544146+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T16:59:31.194611+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-06-23T19:15:42.544209+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "quote_not_in_source",
+        "message": "Цитата не найдена в исходном тексте",
+        "path": "conditions[arnold_chiari_syringohydromyelia].required_exams[0]"
+      },
+      {
+        "level": "warning",
+        "code": "quote_not_in_source",
+        "message": "Цитата не найдена в исходном тексте",
+        "path": "conditions[arnold_chiari_syringohydromyelia].required_exams[1]"
+      },
+      {
+        "level": "warning",
+        "code": "quote_not_in_source",
+        "message": "Цитата не найдена в исходном тексте",
+        "path": "conditions[arnold_chiari_syringohydromyelia].required_exams[2]"
+      },
+      {
+        "level": "warning",
+        "code": "quote_not_in_source",
+        "message": "Цитата не найдена в исходном тексте",
+        "path": "conditions[arnold_chiari_syringohydromyelia].required_exams[3]"
+      },
+      {
+        "level": "warning",
+        "code": "quote_not_in_source",
+        "message": "Цитата не найдена в исходном тексте",
+        "path": "conditions[arnold_chiari_syringohydromyelia].required_exams[4]"
+      },
+      {
+        "level": "warning",
+        "code": "quote_not_in_source",
+        "message": "Цитата не найдена в исходном тексте",
+        "path": "conditions[arnold_chiari_syringohydromyelia].required_exams[5]"
+      },
+      {
+        "level": "warning",
+        "code": "quote_not_in_source",
+        "message": "Цитата не найдена в исходном тексте",
+        "path": "conditions[arnold_chiari_syringohydromyelia].required_exams[6]"
+      },
+      {
+        "level": "warning",
+        "code": "quote_not_in_source",
+        "message": "Цитата не найдена в исходном тексте",
+        "path": "conditions[arnold_chiari_syringohydromyelia].required_exams[7]"
+      },
+      {
+        "level": "warning",
+        "code": "quote_not_in_source",
+        "message": "Цитата не найдена в исходном тексте",
+        "path": "conditions[arnold_chiari_syringohydromyelia].required_exams[8]"
+      }
+    ],
+    "validated_at": "2026-07-20T16:59:31.198976+00:00"
   }
 }

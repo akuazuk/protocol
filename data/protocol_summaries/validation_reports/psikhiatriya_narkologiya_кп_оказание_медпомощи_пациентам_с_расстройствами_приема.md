@@ -1,6 +1,6 @@
 # Validation: psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_расстройствами_приема
 
 - **status:** valid
-- **validated_at:** 2026-06-23T19:16:26.646164+00:00
+- **validated_at:** 2026-07-20T17:30:22.774745+00:00
 - **review_status:** needs_review
-- **extraction_status:** auto_extracted
+- **extraction_status:** llm_extracted

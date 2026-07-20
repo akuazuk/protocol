@@ -1,10 +1,9 @@
 protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов с черепно мозговой травмой детское население
-    17
+  title: Диагностика и лечение пациентов с черепно-мозговой травмой детское население
   url: null
   local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
   document_sha256: null
@@ -20,29 +19,34 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов_с_черепно_мозгов
-  name: Диагностика и лечение пациентов с черепно мозговой травмой детское население
-    17
+- condition_id: craniocerebral_trauma
+  name: Черепно-мозговая травма
   synonyms: []
   abbreviations: []
   icd10_codes:
   - S00
+  - S01
+  - S02
+  - S03
+  - S04
+  - S05
+  - S06
+  - S07
+  - S08
   - S09
-  - B24
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[classification] 13. Транспортировка пациентов с диагнозом ЧМТ в больничную
-        организацию (стр. 4)'
+    - text: Пациент после травмы находится в коматозном состоянии (для ДАП)
       logic_group: null
       operator: unknown
       values: []
@@ -59,9 +63,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 13. Транспортировка пациентов с диагнозом ЧМТ в больничную
-          организацию (стр. 4)'
-    - text: '[diagnostics] 8. Диагностические критерии ДАП: (стр. 3)'
+        quote: Пациент после травмы находится в коматозном состоянии (для ДАП)
+    - text: ШКГ менее 9 баллов (для ДАП)
       logic_group: null
       operator: unknown
       values: []
@@ -78,11 +81,159 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 8. Диагностические критерии ДАП: (стр. 3)'
+        quote: ШКГ менее 9 баллов (для ДАП)
+    - text: Картина КТ близка к нормальной, могут выявляться мелкоочаговые геморрагии
+        (для ДАП)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Картина КТ близка к нормальной, могут выявляться мелкоочаговые геморрагии
+          (для ДАП)
+    - text: 'Ясное сознание: ШКГ 15 баллов'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Ясное сознание: ШКГ 15 баллов'
+    - text: 'Умеренное оглушение: ШКГ 13–14 баллов'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Умеренное оглушение: ШКГ 13–14 баллов'
+    - text: 'Глубокое оглушение: ШКГ 11–12 баллов'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Глубокое оглушение: ШКГ 11–12 баллов'
+    - text: 'Сопор: ШКГ 9–10 баллов'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Сопор: ШКГ 9–10 баллов'
+    - text: 'Умеренная кома: ШКГ 7–8 баллов'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Умеренная кома: ШКГ 7–8 баллов'
+    - text: 'Глубокая кома: ШКГ 4–6 баллов'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Глубокая кома: ШКГ 4–6 баллов'
+    - text: 'Терминальная кома: Атония, арефлексия, двусторонний мидриаз, систолическое
+        АД снижено до 60 мм рт.ст.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Терминальная кома: Атония, арефлексия, двусторонний мидриаз, систолическое
+          АД снижено до 60 мм рт.ст.'
     optional: []
     exclusion: []
   required_exams:
-  - name: МРТ
+  - name: Компьютерная томография (КТ)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -96,15 +247,16 @@ conditions:
       protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
       document_url: null
       local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
-      page_start: null
+      page_start: 3
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "агнитно-резонансной томографии (далее – МРТ) в режимах характерных \n\
-        для ДАП (SWI или SWAN)); \nтяжелая степень (ушиб головно"
-  - name: КТ
+      quote: картина исследования компьютерной томографии (далее – КТ) близка к нормальной,
+        могут выявляться мелкоочаговые геморрагии в белом веществе полушарий мозга,
+        мозолистом теле, а также в подкорковых и стволовых структурах.
+  - name: Шкала комы Глазго (ШКГ)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -118,190 +270,19 @@ conditions:
       protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
       document_url: null
       local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
-      page_start: null
+      page_start: 3
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "медицинской \nпомощи.\n\n[classification] КТ-классификация ЧМТ (Marshall\
-        \ et al., 1991) (стр. 13)\n| Первый тип (диффузное пов"
+      quote: пациент после травмы находится в коматозном состоянии, ШКГ менее 9 баллов;
   conditional_exams: []
-  treatment:
-    non_drug:
-    - text: '[treatment] 6. Системное (стр. 2)'
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 6. Системное (стр. 2)'
-    - text: клиническим протоколом с учетом индивидуальных особенностей пациента (возраст,
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: клиническим протоколом с учетом индивидуальных особенностей пациента
-          (возраст,
-    - text: степень тяжести заболевания, наличие осложнений и сопутствующей патологии),
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: степень тяжести заболевания, наличие осложнений и сопутствующей патологии),
-    - text: клинико-фармакологической характеристики лекарственного препарата и характеристик
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: клинико-фармакологической характеристики лекарственного препарата и
-          характеристик
-    - text: '[treatment] 12. Стационарный этап оказания медицинской помощи пациентам
-        с ЧМТ включает: (стр. 4)'
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 12. Стационарный этап оказания медицинской помощи пациентам
-          с ЧМТ включает: (стр. 4)'
-    - text: проведение необходимого объема обследований
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: проведение необходимого объема обследований
-    drug_groups: []
-    drugs:
-    - drug_name: более
-      active_substance: null
-      drug_group: null
-      dose_text: 25 мл
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: более 25 мл (третий тип повреждения по КТ-классифика
-    - drug_name: января
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: января 2023 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    procedures: []
-    surgery: []
-    source_refs: []
+  treatment: null
   follow_up: []
   hospitalization: []
   routing:
-  - text: '[routing] 5. Направление (стр. 2)'
+  - text: госпитализация
     timing: null
     required_if: []
     source_ref:
@@ -314,79 +295,78 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 5. Направление (стр. 2)'
-  - text: '[routing] 18. Объем диагностических исследований, выполняемых при госпитализации:
-      (стр. 5)'
-    timing: null
-    required_if: []
+      quote: госпитализация
+  red_flags:
+  - text: Насыщение артериальной крови кислородом (сатурация) менее 60%
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
     source_ref:
       protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
       document_url: null
       local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
-      page_start: null
+      page_start: 11
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 18. Объем диагностических исследований, выполняемых при госпитализации:
-        (стр. 5)'
-  - text: '[routing] 21. Медицинские показания к госпитализации: (стр. 6)'
-    timing: null
-    required_if: []
+      quote: 'Насыщение артериальной крови кислородом (сатурация) <60: Летальность
+        50%, Выраженный неврологический дефицит 50%.'
+  - text: Терминальная кома
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
     source_ref:
       protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
       document_url: null
       local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
-      page_start: null
+      page_start: 12
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 21. Медицинские показания к госпитализации: (стр. 6)'
-  - text: 21.1. медицинские показания для госпитализации пациентов с ЧМТ в отделение
-    timing: null
-    required_if: []
+      quote: 'Терминальная кома: Атония, арефлексия, двусторонний мидриаз, систолическое
+        артериальное давление снижено до 60 мм рт.ст.'
+  - text: Растущий перелом черепа
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
     source_ref:
       protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
       document_url: null
       local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
-      page_start: null
+      page_start: 14
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: 21.1. медицинские показания для госпитализации пациентов с ЧМТ в отделение
-  red_flags: []
+      quote: '«Растущий» перелом черепа: Линия перелома, расширяющаяся со временем'
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_с_черепно_мозгово
-    document_url: null
-    local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_и_лечение_пациентов_с_черепно-мозговой_травмой_детское_население_27.01.2023_17.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов с черепно мозговой травмой детское население
-      17
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:42.650150+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T16:45:27.505977+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:42.654780+00:00'
+  validated_at: '2026-07-20T16:45:27.510439+00:00'

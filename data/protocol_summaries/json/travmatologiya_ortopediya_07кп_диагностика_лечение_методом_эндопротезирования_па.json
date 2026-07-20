@@ -1,10 +1,10 @@
 {
   "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "07КП Диагностика лечение методом эндопротезирования пациентов взрослое население заболеваниями тазобедренного сустава",
+    "title": "Диагностика лечение методом эндопротезирования пациентов взрослое население заболеваниями тазобедренного сустава",
     "url": null,
     "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
     "document_sha256": null,
@@ -32,34 +32,261 @@
   },
   "conditions": [
     {
-      "condition_id": "07кп_диагностика_лечение_методом_эндопротезирова",
-      "name": "07КП Диагностика лечение методом эндопротезирования пациентов взрослое население заболеваниями тазобедренного сустава",
+      "condition_id": "hip_joint_diseases_and_injuries",
+      "name": "Заболевания и травматические повреждения тазобедренного сустава, требующие эндопротезирования",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
+        "M05",
+        "M06",
+        "M07",
         "M15",
         "M16",
+        "M45",
+        "M87",
+        "M96.0",
+        "M96.6",
         "S72.0",
         "S72.1",
-        "S72.8",
-        "C90.0",
-        "I21.9",
-        "I50.9",
-        "I64",
-        "J18.9",
-        "J44.9",
-        "K21.9"
+        "S72.8"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
       "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
+      "required_exams": [
+        {
+          "name": "Общий анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "общий анализ крови с целью контроля за динамикой уровня гемоглобина, эритроцитов и воспалительных изменений крови;"
+          }
+        },
+        {
+          "name": "Биохимическое исследование крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "биохимическое исследование крови (общий белок, общий билирубин, мочевина, креатинин, глюкоза, АлАТ, АсАТ, С-реактивный белок, калий, общий кальций, натрий, хлор);"
+          }
+        },
+        {
+          "name": "Определение показателей свертывания крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "определение показателей свертывания крови (активированное частичное тромбопластиновое время, D-димеры, МНО, фибриноген)."
+          }
+        },
+        {
+          "name": "Клинические данные",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Подбор эндопротезов осуществляется индивидуально в ходе предоперационного планирования с помощью специальных шаблонов на основании изучения клинических данных"
+          }
+        },
+        {
+          "name": "Рентгенологическое исследование",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Подбор эндопротезов осуществляется индивидуально в ходе предоперационного планирования с помощью специальных шаблонов на основании изучения клинических данных, данных рентгенологического исследования."
+          }
+        },
+        {
+          "name": "Рентгенограммы (для предоперационного планирования)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Предоперационное планирование хирургического вмешательства осуществляется по рентгенограммам с использованием необходимых шаблонов – теймплестов"
+          }
+        },
+        {
+          "name": "Осмотр врачом-анестезиологом-реаниматологом",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "В ходе предоперационной подготовки пациент осматривается врачом-анестезиологом-реаниматологом"
+          }
+        },
+        {
+          "name": "Рентген-контроль имплантированного эндопротеза (после операции)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "выполнение рентген-контроля имплантированного эндопротеза."
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Лабораторные и функциональные исследования (повторно)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "по медицинским показаниям повторно могут выполняться лабораторные и функциональные исследования."
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 6. Подбор эндопротезов осуществляется индивидуально в ходе предоперационного (стр. 4)",
+            "text": "Максимально быстрая активизация пациентов",
             "source_ref": {
               "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
               "document_url": null,
@@ -70,11 +297,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 6. Подбор эндопротезов осуществляется индивидуально в ходе предоперационного (стр. 4)"
+              "quote": "Максимально быстрая активизация пациентов"
             }
           },
           {
-            "text": "планирования с помощью специальных шаблонов на основании изучения клинических",
+            "text": "Использование компрессионного (профилактического) трикотажа интраоперационно и в послеоперационном периоде",
             "source_ref": {
               "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
               "document_url": null,
@@ -85,11 +312,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "планирования с помощью специальных шаблонов на основании изучения клинических"
+              "quote": "Использование компрессионного (профилактического) трикотажа интраоперационно и в послеоперационном периоде"
             }
           },
           {
-            "text": "компонентов эндопротеза определяется интраоперационно в зависимости от клинической",
+            "text": "Подбор эндопротезов осуществляется индивидуально в ходе предоперационного планирования с помощью специальных шаблонов на основании изучения клинических и рентгенологических данных. Окончательный типоразмер компонентов эндопротеза определяется интраоперационно.",
             "source_ref": {
               "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
               "document_url": null,
@@ -100,11 +327,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "компонентов эндопротеза определяется интраоперационно в зависимости от клинической"
+              "quote": "Подбор эндопротезов осуществляется индивидуально в ходе предоперационного планирования с помощью специальных шаблонов на основании изучения клинических и рентгенологических данных. Окончательный типор"
             }
           },
           {
-            "text": "[treatment] 7. Фармакотерапия (стр. 4)",
+            "text": "Предоперационное планирование по рентгенограммам с использованием теймплестов для оценки деформации вертлужной впадины, костной структуры, возможности использования цементной/бесцементной системы эндопротеза, возможных осложнений, типоразмеров и месторасположения имплантатов.",
             "source_ref": {
               "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
               "document_url": null,
@@ -115,11 +342,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 7. Фармакотерапия (стр. 4)"
+              "quote": "Предоперационное планирование по рентгенограммам с использованием теймплестов для оценки деформации вертлужной впадины, костной структуры, возможности использования цементной/бесцементной системы эндо"
             }
           },
           {
-            "text": "фармакологической характеристики лекарственного препарата (далее – ЛП). При этом",
+            "text": "У женщин проведение хирургического вмешательства планируется не ранее чем на 5–й день от начала менструального цикла и не позднее, чем за 5 дней до предполагаемого его начала.",
             "source_ref": {
               "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
               "document_url": null,
@@ -130,11 +357,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "фармакологической характеристики лекарственного препарата (далее – ЛП). При этом"
+              "quote": "У женщин проведение хирургического вмешательства планируется не ранее чем на 5–й день от начала менструального цикла и не позднее, чем за 5 дней до предполагаемого его начала."
             }
           },
           {
-            "text": "аллергологический и фармакологический анамнез.",
+            "text": "Назначение гигиенического душа перед хирургическим вмешательством.",
             "source_ref": {
               "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
               "document_url": null,
@@ -145,17 +372,167 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "аллергологический и фармакологический анамнез."
+              "quote": "Назначение гигиенического душа перед хирургическим вмешательством."
+            }
+          },
+          {
+            "text": "Бритье кожных покровов зоны оперируемого тазобедренного сустава, лобковой области, бедра по всей окружности осуществляется не ранее, чем 6 часов до хирургического вмешательства.",
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Бритье кожных покровов зоны оперируемого тазобедренного сустава, лобковой области, бедра по всей окружности осуществляется не ранее, чем 6 часов до хирургического вмешательства."
+            }
+          },
+          {
+            "text": "Укладка пациента на операционном столе в положении на боку или на спине в зависимости от выбора вида хирургического вмешательства. Рекомендуется установка упоров для удерживания туловища.",
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Укладка пациента на операционном столе в положении на боку или на спине в зависимости от выбора вида хирургического вмешательства. Рекомендуется установка упоров для удерживания туловища."
+            }
+          },
+          {
+            "text": "Вид обезболивания определяется врачом-анестезиологом-реаниматологом в зависимости от общего состояния пациента, возраста, массы тела, объема и продолжительности хирургического вмешательства.",
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Вид обезболивания определяется врачом-анестезиологом-реаниматологом в зависимости от общего состояния пациента, возраста, массы тела, объема и продолжительности хирургического вмешательства."
+            }
+          },
+          {
+            "text": "Выполнение хирургического доступа к тазобедренному суставу.",
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Выполнение хирургического доступа к тазобедренному суставу."
+            }
+          },
+          {
+            "text": "Удаление головки бедренной кости после остеотомии шейки бедра.",
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Удаление головки бедренной кости после остеотомии шейки бедра."
+            }
+          },
+          {
+            "text": "Обработка вертлужной впадины фрезами (если не монополярный/биполярный эндопротез).",
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Обработка вертлужной впадины фрезами (если не монополярный/биполярный эндопротез)."
+            }
+          },
+          {
+            "text": "Установка ацетабулярного компонента и вкладыша (если не монополярный/биполярный эндопротез).",
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Установка ацетабулярного компонента и вкладыша (если не монополярный/биполярный эндопротез)."
+            }
+          },
+          {
+            "text": "Обработка бедренной кости рашпилями.",
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Обработка бедренной кости рашпилями."
+            }
+          },
+          {
+            "text": "Тестирование эндопротеза (контроль стабильности, длины конечности, объема движений в суставе, определение тенденции к вывиху) с использованием теста ножки и головки.",
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Тестирование эндопротеза (контроль стабильности, длины конечности, объема движений в суставе, определение тенденции к вывиху) с использованием теста ножки и головки."
+            }
+          },
+          {
+            "text": "Имплантация бедренного компонента эндопротеза и головки, вправление головки в чашку.",
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Имплантация бедренного компонента эндопротеза и головки, вправление головки в чашку."
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "июня",
+            "drug_name": "Нефракционный гепарин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2024 г",
+            "dose_text": "в профилактических дозах и в сроки, рекомендуемые для пациентов с умеренным риском.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -167,20 +544,20 @@
               "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
               "document_url": null,
               "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
-              "page_start": null,
+              "page_start": 1,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июня 2024 г"
+              "quote": "Используется нефракционный гепарин, низкомолекулярный гепарин либо фондапаринукс натрия в профилактических дозах и в сроки, рекомендуемые для пациентов с умеренным риском."
             }
           },
           {
-            "drug_name": "октября",
+            "drug_name": "Низкомолекулярный гепарин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2011 г",
+            "dose_text": "в профилактических дозах и в сроки, рекомендуемые для пациентов с умеренным риском.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -192,13 +569,38 @@
               "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
               "document_url": null,
               "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
-              "page_start": null,
+              "page_start": 1,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "октября 2011 г"
+              "quote": "Используется нефракционный гепарин, низкомолекулярный гепарин либо фондапаринукс натрия в профилактических дозах и в сроки, рекомендуемые для пациентов с умеренным риском."
+            }
+          },
+          {
+            "drug_name": "Фондапаринукс натрия",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "в профилактических дозах и в сроки, рекомендуемые для пациентов с умеренным риском.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+              "page_start": 1,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Используется нефракционный гепарин, низкомолекулярный гепарин либо фондапаринукс натрия в профилактических дозах и в сроки, рекомендуемые для пациентов с умеренным риском."
             }
           }
         ],
@@ -208,7 +610,7 @@
       },
       "follow_up": [
         {
-          "text": "контроль",
+          "text": "Медицинское наблюдение пациентов после эндопротезирования в амбулаторных условиях.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -222,11 +624,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
+            "quote": "Медицинское наблюдение пациентов после эндопротезирования в амбулаторных условиях."
           }
         },
         {
-          "text": "контроль",
+          "text": "После завершения хирургического вмешательства пациент переводится в отделение анестезиологии и реанимации или палату пробуждения для медицинского наблюдения.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -240,48 +642,182 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
+            "quote": "После завершения хирургического вмешательства пациент переводится в отделение анестезиологии и реанимации или палату пробуждения для медицинского наблюдения."
+          }
+        },
+        {
+          "text": "После стабилизации показателей сердечно-сосудистой, дыхательной и других систем пациент осматривается врачом-анестезиологом-реаниматором и переводится в ортопедо-травматологическое отделение.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "После стабилизации показателей сердечно-сосудистой, дыхательной и других систем пациент осматривается врачом-анестезиологом-реаниматором и переводится в ортопедо-травматологическое отделение."
+          }
+        },
+        {
+          "text": "В послеоперационном периоде назначается фармакотерапия при травмах опорно-двигательного аппарата согласно приложению 5.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "В послеоперационном периоде назначается фармакотерапия при травмах опорно-двигательного аппарата согласно приложению 5."
           }
         }
       ],
       "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
+      "routing": [
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        },
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        },
+        {
+          "text": "госпитализация/перевод в отделение анестезиологии и реанимации или палату пробуждения",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация/перевод в отделение анестезиологии и реанимации или палату пробуждения"
+          }
+        },
+        {
+          "text": "госпитализация/перевод в ортопедо-травматологическое отделение",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация/перевод в ортопедо-травматологическое отделение"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Активное кровотечение",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+            "page_start": 1,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "С целью медицинской профилактики ВТЭО при отсутствии медицинских противопоказаний (активное кровотечение, уровень тромбоцитов <30 х 109/л):"
+          }
+        },
+        {
+          "text": "Уровень тромбоцитов <30 х 10^9/л",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
+            "page_start": 1,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "С целью медицинской профилактики ВТЭО при отсутствии медицинских противопоказаний (активное кровотечение, уровень тромбоцитов <30 х 109/л):"
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "travmatologiya_ortopediya_07кп_диагностика_лечение_методом_эндопротезирования_па",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/travmatologiya-ortopediya/07КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_тазобедренного_сустава_пост_МЗ_2024_109.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "07КП Диагностика лечение методом эндопротезирования пациентов взрослое население заболеваниями тазобедренного сустава"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:53.247466+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T18:16:26.277618+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:53.248185+00:00"
+    "validated_at": "2026-07-20T18:16:26.286629+00:00"
   }
 }

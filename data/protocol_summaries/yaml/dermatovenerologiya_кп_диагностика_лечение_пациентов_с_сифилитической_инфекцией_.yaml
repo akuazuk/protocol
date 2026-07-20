@@ -1,6 +1,6 @@
 protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Диагностика лечение пациентов с сифилитической инфекцией
@@ -19,37 +19,37 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - adult_and_child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_лечение_пациентов_с_сифилитической_и
-  name: Диагностика лечение пациентов с сифилитической инфекцией
+- condition_id: syphilis
+  name: Сифилис
   synonyms: []
   abbreviations: []
   icd10_codes:
+  - A50
+  - A50.0
+  - A50.1
+  - A50.2
+  - A50.3
+  - A50.4
+  - A50.5
+  - A50.6
+  - A50.7
   - A50.9
-  - A51.9
-  - G05.0
-  - G01
-  - G63.0
-  - I98
-  - L99.8
-  - N74.2
-  - I98.0
-  - I79.0
-  - I39.1
-  - I79.1
+  - A51
+  - A51.0
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[classification] 6. Диагноз «Сифилис» в соответствии с Международной
-        классификацией болезней (стр. 2)'
+    - text: Обнаружение T. pallidum в образцах из очагов поражений при прямых методах
+        диагностики.
       logic_group: null
       operator: unknown
       values: []
@@ -66,10 +66,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 6. Диагноз «Сифилис» в соответствии с Международной
-          классификацией болезней (стр. 2)'
-    - text: лабораторными методами диагностики. В Республике Беларусь данные диагнозы
-        могут
+        quote: Обнаружение T. pallidum в образцах из очагов поражений при прямых методах
+          диагностики.
+    - text: Патологические данные исследования ликвора для асимптомного нейросифилиса.
       logic_group: null
       operator: unknown
       values: []
@@ -86,10 +85,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: лабораторными методами диагностики. В Республике Беларусь данные диагнозы
-          могут
-    - text: '[classification] 6. Диагноз «Сифилис» в соответствии с Международной
-        классификацией болезней (стр. 2)'
+        quote: Патологические данные исследования ликвора для асимптомного нейросифилиса.
+    - text: Комплекс доказательных клинико-лабораторных симптомов для нейросифилиса.
       logic_group: null
       operator: unknown
       values: []
@@ -106,10 +103,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 6. Диагноз «Сифилис» в соответствии с Международной
-          классификацией болезней (стр. 2)'
-    - text: лабораторными методами диагностики. В Республике Беларусь данные диагнозы
-        могут
+        quote: Комплекс доказательных клинико-лабораторных симптомов для нейросифилиса.
+    - text: Положительный результат скрининга (ИФА на суммарные антитела к T. pallidum)
+        с последующим параллельным исследованием НТТ (RPR или VDRL) и другими ТТ (РПГА,
+        РИФ-абс, РИФ-200).
       logic_group: null
       operator: unknown
       values: []
@@ -126,90 +123,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: лабораторными методами диагностики. В Республике Беларусь данные диагнозы
-          могут
-    - text: паренхимы мозга. Асимптомный нейросифилис характеризуется отсутствием
-        клинических проявлений. Диагноз основывается на патологических данных исследования
-        ликвора. В МКБ-10
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: паренхимы мозга. Асимптомный нейросифилис характеризуется отсутствием
-          клинических проявлений. Диагноз основывается на патологических данных исследования
-          ликвора. В МКБ-10
-    - text: определение активности течения инфекции (определение титров антител)
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: определение активности течения инфекции (определение титров антител)
-    - text: 'контроль эффективности терапии (определение титров антител). Трепонемные
-        тесты (ТТ):'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'контроль эффективности терапии (определение титров антител). Трепонемные
-          тесты (ТТ):'
-    - text: дифференцированного и суммарного определения IgM и IgG антител к возбудителю
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: дифференцированного и суммарного определения IgM и IgG антител к возбудителю
+        quote: Положительный результат скрининга (ИФА на суммарные антитела к T. pallidum)
+          с последующим параллельным исследованием НТТ (RPR или VDRL) и другими ТТ
+          (РПГА, РИФ-абс, РИФ-200).
     optional: []
     exclusion: []
   required_exams:
-  - name: ОАК
+  - name: Физикальный осмотр
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -223,164 +143,191 @@ conditions:
       protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
       document_url: null
       local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
-      page_start: null
+      page_start: 13
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "ние крови: \nОбщий анализ крови (далее – ОАК) \nRPR или VDRL \nИФА на\
-        \ антитела к T. pallidum, РПГА, РИФ-абс, РИФ-200"
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: '[treatment] 3. Для целей настоящего клинического протокола используются
-        основные термины (стр. 1)'
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 3. Для целей настоящего клинического протокола используются
-          основные термины (стр. 1)'
-    - text: Для детей старше 3 лет вопрос о лечении решается
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Для детей старше 3 лет вопрос о лечении решается
-    - text: индивидуально с учетом формы сифилиса у контактного взрослого, локализации
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: индивидуально с учетом формы сифилиса у контактного взрослого, локализации
-    - text: высыпаний, степени контакта ребенка с больным
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: высыпаний, степени контакта ребенка с больным
-    - text: специфическое лечение сифилиса – лечение, проводимое с целью этиологического
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: специфическое лечение сифилиса – лечение, проводимое с целью этиологического
-    - text: излечения пациента путем создания трепонемоцидной концентрации антимикробного
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: излечения пациента путем создания трепонемоцидной концентрации антимикробного
-    drug_groups: []
-    drugs:
-    - drug_name: июля
-      active_substance: null
-      drug_group: null
-      dose_text: 2006 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июля 2006 г
-    - drug_name: более
-      active_substance: null
-      drug_group: null
-      dose_text: 2,4 мл
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: более 2,4 млн
-    - drug_name: доза
-      active_substance: null
-      drug_group: null
-      dose_text: 50 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: доза 50 мг/кг (разовая доза не более 1,0 г), разде
-    procedures: []
-    surgery: []
-    source_refs: []
+      quote: Физикальный осмотр
+  - name: Общий анализ крови (ОАК)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
+      page_start: 13
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Исследование крови: Общий анализ крови (далее – ОАК)'
+  - name: RPR или VDRL (НТТ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
+      page_start: 13
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: RPR или VDRL
+  - name: ИФА на антитела к T. pallidum
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
+      page_start: 13
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ИФА на антитела к T. pallidum
+  - name: РПГА
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
+      page_start: 13
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: РПГА
+  - name: РИФ-абс или РИФ-200
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
+      page_start: 13
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: РИФ-абс, РИФ-200
+  conditional_exams:
+  - name: Микроскопическое исследование в темном поле зрения
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обнаружение T. pallidum при микроскопическом исследовании в темном поле
+        зрения и/или иммуногистохимическом исследовании с использованием моноклональных
+        или поликлональных антител.
+  - name: Иммуногистохимическое исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обнаружение T. pallidum при микроскопическом исследовании в темном поле
+        зрения и/или иммуногистохимическом исследовании с использованием моноклональных
+        или поликлональных антител.
+  - name: Исследование ликвора
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диагноз [асимптомного нейросифилиса] основывается на патологических данных
+        исследования ликвора.
+  treatment: null
   follow_up:
-  - text: контроль
+  - text: Контроль эффективности терапии НТТ (RPR или VDRL) путем определения титров
+      антител.
     timing: null
     required_if: []
     expected_actions: []
@@ -394,36 +341,104 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
+      quote: Контроль эффективности терапии НТТ (RPR или VDRL) путем определения титров
+        антител.
   hospitalization: []
   routing: []
-  red_flags: []
+  red_flags:
+  - text: НТТ (RPR, VDRL) могут давать ложноположительные результаты (3% и более).
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
+      page_start: 11
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: НТТ... могут давать ложноположительные результаты (3 % и более).
+  - text: Трепонемные тесты (ТТ) могут давать ложноположительные реакции при аутоиммунных,
+      онкологических, эндокринных заболеваниях, лепре и других патологиях.
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
+      page_start: 11
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ТТ могут давать ложноположительные реакции у больных с аутоиммунными
+        заболеваниями, лепрой, онкологическими заболеваниями, эндокринной патологией
+        и при некоторых других заболеваниях;
+  - text: Трепонемные тесты (ТТ) не могут использоваться для контроля эффективности
+      терапии, так как антитрепонемные антитела длительно циркулируют.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
+      page_start: 11
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ТТ не могут быть использованы для контроля эффективности терапии, т.к.
+        антитрепонемные антитела длительно циркулируют в организме пациента, перенесшего
+        сифилитическую инфекцию;
+  - text: Трепонемные тесты (ТТ) дают положительные результаты при невенерических
+      трепонематозах и спирохетозах.
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
+      page_start: 11
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ТТ дают положительные результаты при невенерических трепонематозах и
+        спирохетозах;
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_с_сифилитической_инфекцией_
-    document_url: null
-    local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_с_сифилитической_инфекцией_пост_МЗ_2019_96.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика лечение пациентов с сифилитической инфекцией
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:19.525996+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T15:21:48.116066+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:19.528593+00:00'
+  validated_at: '2026-07-20T15:21:48.121581+00:00'

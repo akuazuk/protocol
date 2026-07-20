@@ -1,9 +1,9 @@
 protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: 06КП Диагностика и лечение пациентов взр и дет население с дистальным прикусом
+  title: Диагностика и лечение с дистальным прикусом
   url: null
   local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
   document_sha256: null
@@ -19,25 +19,35 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - adult_and_child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: 06кп_диагностика_и_лечение_пациентов_взр_и_дет_н
-  name: 06КП Диагностика и лечение пациентов взр и дет население с дистальным прикусом
+- condition_id: distal_occlusion
+  name: Дистальный прикус
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B24
+  - K07.00
+  - K07.04
+  - K07.12
+  - K07.13
+  - K07.2
+  - K07.5
+  - K07.51
+  - K07.54
+  - K07.55
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: зубоальвеолярном и (или) гнатическом уровне, определение степени выраженности,
+    - text: Выявление факторов, влияющих на возникновение и развитие ДП на зубоальвеолярном
+        и (или) гнатическом уровне, определение степени выраженности, показаний к
+        лечению, выбору метода и тактики врача-специалиста.
       logic_group: null
       operator: unknown
       values: []
@@ -54,8 +64,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: зубоальвеолярном и (или) гнатическом уровне, определение степени выраженности,
-    - text: а также определение медицинских показаний к лечению, выбору метода лечения
+        quote: Выявление факторов, влияющих на возникновение и развитие ДП на зубоальвеолярном
+          и (или) гнатическом уровне, определение степени выраженности, показаний
+          к лечению, выбору метода и тактики врача-специал
+    - text: Проведение дифференциальной диагностики ДП.
       logic_group: null
       operator: unknown
       values: []
@@ -72,16 +84,296 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: а также определение медицинских показаний к лечению, выбору метода
-          лечения
+        quote: Проведение дифференциальной диагностики ДП.
+    - text: Выявление взаимосвязи стоматологического и общего здоровья с ДП.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выявление взаимосвязи стоматологического и общего здоровья с ДП.
+    - text: Выявление патологии, которая может повлиять на выбор метода лечения (бронхиальная
+        астма, эпилепсия, состояние эндокринной системы, аллергические реакции, другие).
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выявление патологии, которая может повлиять на выбор метода лечения
+          (бронхиальная астма, эпилепсия, состояние эндокринной системы, аллергические
+          реакции, другие).
+    - text: Выявление неадекватного психоэмоционального состояния пациента.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выявление неадекватного психоэмоционального состояния пациента.
+    - text: Определение желания лечиться или отказа от лечения.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Определение желания лечиться или отказа от лечения.
     optional: []
     exclusion: []
-  required_exams: []
-  conditional_exams: []
+  required_exams:
+  - name: Определение общесоматического состояния
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При диагностике ДП также определяют общесоматическое состояние пациентов,
+        в первую очередь с выявлением патологии, которая может повлиять на выбор метода
+        лечения.
+  - name: Осмотр полости рта и красной каймы губ
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'целенаправленно выявляют: острые поражения слизистой оболочки полости
+        рта и красной каймы губ; острые воспалительные заболевания органов и тканей
+        рта; болезни периодонта в стадии обострения; неудовлетворительное гигиеническое
+        состояние полости рта'
+  conditional_exams:
+  - name: Консультации врачей-специалистов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультации врачей-специалистов соответствующего профиля (стоматолог-терапевт,
+        стоматолог-ортопед, стоматолог-хирург, челюстно-лицевой хирург, оториноларинголог,
+        травматолог-ортопед, психотерапевт, психиатр-нарколог, стоматолог детский,
+        психиатр детский) при нарушениях осанки, функции дыхания, глотания, смыкания
+        губ, речи, жевания и наличии вредных привычек.
+  - name: Конусно-лучевая компьютерная томография челюстно-лицевой области
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: конусно-лучевая компьютерная томография челюстно-лицевой области (детям
+        с ДП в возрасте 6 лет и старше, детям младше 6 лет для исключения врожденной
+        аномалии)
+  - name: Телерентгенография головы в боковой проекции
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: телерентгенография головы в боковой проекции (детям с ДП в возрасте 6
+        лет и старше, детям младше 6 лет для исключения врожденной аномалии)
+  - name: Прицельная внутриротовая контактная рентгенография или радиовизиография
+      зубов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: прицельная внутриротовая контактная рентгенография или радиовизиография
+        зубов
+  - name: Конусно-лучевая компьютерная томография височно-нижнечелюстных суставов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: конусно-лучевая компьютерная томография височно-нижнечелюстных суставов
+        (детям с ДП в возрасте 6 лет и старше, детям младше 6 лет для исключения врожденной
+        аномалии)
+  - name: Функциональные методы исследования
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: функциональные методы исследования (функциональные пробы; электромиография,
+        миотонометрия)
+  - name: Фотографирование для оценки эстетики лица
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: фотографирование для оценки эстетики лица, симметрии лица, вида профиля,
+        ширины улыбки, наличия или отсутствия «десневой» улыбки
   treatment:
     non_drug:
-    - text: '[treatment] 9. Дополнительные диагностические мероприятия (по медицинским
-        показаниям) (стр. 6)'
+    - text: Ортодонтическое (аппаратное) лечение (для детей и взрослых)
       source_ref:
         protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
         document_url: null
@@ -92,9 +384,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 9. Дополнительные диагностические мероприятия (по медицинским
-          показаниям) (стр. 6)'
-    - text: стоматолога-терапевта, врача-стоматолога-ортопеда, врача-стоматолога-хирурга
+        quote: Ортодонтическое (аппаратное) лечение (для детей и взрослых)
+    - text: Создание условий для роста нижней челюсти (при микрогнатии и ретрогнатии
+        нижней челюсти) у детей
       source_ref:
         protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
         document_url: null
@@ -105,9 +397,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: стоматолога-терапевта, врача-стоматолога-ортопеда, врача-стоматолога-хирурга
-    - text: врача-психотерапевта, врача-психиатра-нарколога, врача-стоматолога детского,
-        врача-
+        quote: Создание условий для роста нижней челюсти (при микрогнатии и ретрогнатии
+          нижней челюсти) у детей
+    - text: Расширение и удлинение нижнего зубного ряда (при его сужении и/или укорочении)
+        у детей
       source_ref:
         protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
         document_url: null
@@ -118,10 +411,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: врача-психотерапевта, врача-психиатра-нарколога, врача-стоматолога
-          детского, врача-
-    - text: психиатра детского) при нарушениях осанки, функции дыхания, глотания,
-        смыкания губ,
+        quote: Расширение и удлинение нижнего зубного ряда (при его сужении и/или
+          укорочении) у детей
+    - text: Сдерживание роста верхней челюсти (при макрогнатии верхней челюсти) у
+        детей
       source_ref:
         protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
         document_url: null
@@ -132,9 +425,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: психиатра детского) при нарушениях осанки, функции дыхания, глотания,
-          смыкания губ,
-    - text: речи, жевания и наличии вредных привычек для выяснения причины нарушения(ий)
+        quote: Сдерживание роста верхней челюсти (при макрогнатии верхней челюсти)
+          у детей
+    - text: Устранение привычного смещения нижней челюсти у детей
       source_ref:
         protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
         document_url: null
@@ -145,9 +438,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: речи, жевания и наличии вредных привычек для выяснения причины нарушения(ий)
-    - text: '[treatment] 11. Общими принципами лечения и медицинской профилактики
-        ДП являются: (стр. 6)'
+        quote: Устранение привычного смещения нижней челюсти у детей
+    - text: Применение несъемной (брекет-системы) и съемной (элайнеры, каппы, корректоры
+        II класса) ортодонтической аппаратуры у взрослых
       source_ref:
         protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
         document_url: null
@@ -158,131 +451,233 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 11. Общими принципами лечения и медицинской профилактики
-          ДП являются: (стр. 6)'
+        quote: Применение несъемной (брекет-системы) и съемной (элайнеры, каппы, корректоры
+          II класса) ортодонтической аппаратуры у взрослых
+    - text: Зубоальвеолярная компенсация ДП при второй и третьей степени выраженности
+      source_ref:
+        protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Зубоальвеолярная компенсация ДП при второй и третьей степени выраженности
+    - text: Удаление отдельных зубов с последующим перемещением зубов для сокращения
+        размеров верхнего зубного ряда
+      source_ref:
+        protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Удаление отдельных зубов с последующим перемещением зубов для сокращения
+          размеров верхнего зубного ряда
+    - text: Дистализация зубов верхней челюсти, в том числе с использованием временных
+        ортодонтических имплантов
+      source_ref:
+        protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Дистализация зубов верхней челюсти, в том числе с использованием временных
+          ортодонтических имплантов
+    - text: Хирургический этап (реконструктивные ортогнатические операции на челюстях)
+        при третьей степени выраженности ДП
+      source_ref:
+        protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хирургический этап (реконструктивные ортогнатические операции на челюстях)
+          при третьей степени выраженности ДП
+    - text: Ретенция результатов лечения с использованием съемных и/или несъемных
+        ретенционных аппаратов
+      source_ref:
+        protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ретенция результатов лечения с использованием съемных и/или несъемных
+          ретенционных аппаратов
+    - text: Избирательное пришлифовывание зубов
+      source_ref:
+        protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Избирательное пришлифовывание зубов
+    - text: Временные ортодонтические имплантаты для корпусной ретракции передней
+        группы зубов
+      source_ref:
+        protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Временные ортодонтические имплантаты для корпусной ретракции передней
+          группы зубов
+    - text: Окклюзионная шина для лечения заболевания височно-нижнечелюстного сустава
+      source_ref:
+        protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Окклюзионная шина для лечения заболевания височно-нижнечелюстного сустава
+    - text: Местосохраняемое, восстановительное и эстетическое протезирование
+      source_ref:
+        protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Местосохраняемое, восстановительное и эстетическое протезирование
+    - text: Компактостеотомия для уменьшения сопротивления кости альвеолярного отростка
+      source_ref:
+        protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Компактостеотомия для уменьшения сопротивления кости альвеолярного
+          отростка
     drug_groups: []
-    drugs:
-    - drug_name: августа
-      active_substance: null
-      drug_group: null
-      dose_text: 2022 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: августа 2022 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: марта
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: марта 2023 г
+    drugs: []
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: 'Медицинское наблюдение врачом-стоматологом-хирургом, далее врачом-стоматологом-ортодонтом:
+      первые 3 месяца – не реже 1 раза; в последующем до года – не реже 1 раза в 6
+      месяцев. После этого пациент в дальнейшем медицинском наблюдении не нуждается.'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Медицинское наблюдение врачом-стоматологом-хирургом, далее врачом-стоматологом-ортодонтом:
+        первые 3 месяца – не реже 1 раза; в последующем до года – не реже 1 раза в
+        6 месяцев. После этого пациент в д'
   hospitalization: []
-  routing: []
-  red_flags: []
+  routing:
+  - text: Амбулаторно для ортодонтического лечения и наблюдения
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторно для ортодонтического лечения и наблюдения
+  - text: Госпитализация для хирургического этапа (реконструктивные ортогнатические
+      операции на челюстях) при третьей степени выраженности ДП
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация для хирургического этапа (реконструктивные ортогнатические
+        операции на челюстях) при третьей степени выраженности ДП
+  red_flags:
+  - text: Состояния, при которых противопоказано ортодонтическое лечение (нахождение
+      на учете у врача-психиатра-нарколога, врача-психиатра детского, другое).
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: состояния, при которых противопоказано ортодонтическое лечение (нахождение
+        на учете у врача-психиатра-нарколога, врача-психиатра детского, другое).
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_дисталь
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_дистальным_прикусом_пост_МЗ_10.08.2022_84.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: 06КП Диагностика и лечение пациентов взр и дет население с дистальным прикусом
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:48.063221+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T17:44:33.209769+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:48.064771+00:00'
+  validated_at: '2026-07-20T17:44:33.211300+00:00'

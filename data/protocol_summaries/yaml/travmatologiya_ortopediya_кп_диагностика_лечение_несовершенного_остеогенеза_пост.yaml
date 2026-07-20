@@ -1,6 +1,6 @@
 protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Диагностика лечение несовершенного остеогенеза
@@ -19,30 +19,27 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
+  - pregnant
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_лечение_несовершенного_остеогенеза
-  name: Диагностика лечение несовершенного остеогенеза
+- condition_id: nesovershennyy_osteogenez
+  name: Несовершенный остеогенез
   synonyms: []
   abbreviations: []
   icd10_codes:
   - Q78.0
-  - B24
-  - C90.0
-  - E66.9
-  - P07.3
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[criteria] Диагностические критерии оценки статуса обеспеченности витамином
-        D'
+    - text: Наличие клинических проявлений НО у родственников в анамнезе (множественные
+        переломы, деформации костей)
       logic_group: null
       operator: unknown
       values: []
@@ -59,10 +56,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[criteria] Диагностические критерии оценки статуса обеспеченности
-          витамином D'
-    - text: '[criteria] Диагностические критерии оценки статуса обеспеченности витамином
-        D'
+        quote: Наличие клинических проявлений НО у родственников в анамнезе (множественные
+          переломы, деформации костей)
+    - text: Выявление множественных низкоэнергетических переломов у пациента (при
+        минимальной травме или ее отсутствии)
       logic_group: null
       operator: unknown
       values: []
@@ -79,10 +76,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[criteria] Диагностические критерии оценки статуса обеспеченности
-          витамином D'
-    - text: которые позволяют установить и подтвердить диагноз. Решением врачебного
-        консилиума
+        quote: Выявление множественных низкоэнергетических переломов у пациента (при
+          минимальной травме или ее отсутствии)
+    - text: Костные деформации черепа и/или скелета, краниоцервикальные аномалии
       logic_group: null
       operator: unknown
       values: []
@@ -99,9 +95,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: которые позволяют установить и подтвердить диагноз. Решением врачебного
-          консилиума
-    - text: верифицированного диагноза НО
+        quote: Костные деформации черепа и/или скелета, краниоцервикальные аномалии
+    - text: Низкорослость, задержка физического развития
       logic_group: null
       operator: unknown
       values: []
@@ -118,362 +113,480 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: верифицированного диагноза НО
+        quote: Низкорослость, задержка физического развития
+    - text: Голубой/серый цвет конъюнктив, несовершенный дентиногенез, прогрессирующая
+        тугоухость
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Голубой/серый цвет конъюнктив, несовершенный дентиногенез, прогрессирующая
+          тугоухость
+    - text: Гипермобильность связок/суставов, мышечная слабость
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Гипермобильность связок/суставов, мышечная слабость
+    - text: 'Рентгенологические признаки: переломы различной давности/стадии, деформации
+        костей, компрессионные переломы позвонков, вормиевы кости, остеопороз'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Рентгенологические признаки: переломы различной давности/стадии, деформации
+          костей, компрессионные переломы позвонков, вормиевы кости, остеопороз'
+    - text: Наличие «зебра»-линий при лечении бисфосфонатами в анамнезе
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие «зебра»-линий при лечении бисфосфонатами в анамнезе
+    - text: 'Дефицит витамина D: концентрация 25(ОН)D <20 нг/мл'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Дефицит витамина D: концентрация 25(ОН)D <20 нг/мл'
+    - text: 'Субоптимальный статус витамина D: концентрация 25(ОН)D 20–30 нг/мл'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Субоптимальный статус витамина D: концентрация 25(ОН)D 20–30 нг/мл'
+    - text: 'Адекватный статус витамина D: концентрация 25(ОН)D 30–50 нг/мл'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Адекватный статус витамина D: концентрация 25(ОН)D 30–50 нг/мл'
+    - text: 'Угрожающий для здоровья уровень витамина D: концентрация 25(ОН)D >100
+        нг/мл'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Угрожающий для здоровья уровень витамина D: концентрация 25(ОН)D >100
+          нг/мл'
+    - text: 'Токсичная концентрация витамина D: концентрация 25(ОН)D >200 нг/мл'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Токсичная концентрация витамина D: концентрация 25(ОН)D >200 нг/мл'
+    - text: Молекулярно-генетическая диагностика мутаций (особенно для типов I–IV,
+        ассоциированных с генами COL1A1, COL1A2, CRTAP, P3H1, CYP11B1, FKBP10, PLOD2,
+        IFITM5, SERPINH1, SP7, WNT1, BMP1, TMEM38B, CREB3L1, SPARC, TAPT1, ZMPSTE24,
+        SEC24D, NBAS, CCDC134, P4HB)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Молекулярно-генетическая диагностика мутаций (особенно для типов I–IV,
+          ассоциированных с генами COL1A1, COL1A2, CRTAP, P3H1, CYP11B1, FKBP10, PLOD2,
+          IFITM5, SERPINH1, SP7, WNT1, BMP1, TMEM38B, CREB3L1
     optional: []
     exclusion: []
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: '[treatment] 6. Настоящий клинический протокол в части лечения НО включает
-        основные (стр. 2)'
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 6. Настоящий клинический протокол в части лечения НО включает
-          основные (стр. 2)'
-    - text: лекарственные препараты, которые представлены в соответствии с международными
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: лекарственные препараты, которые представлены в соответствии с международными
-    - text: наименованиям по систематической или заместительной номенклатуре, с указанием
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: наименованиям по систематической или заместительной номенклатуре, с
-          указанием
-    - text: лекарственной формы и дозировки. Решением врачебного консилиума при наличии
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: лекарственной формы и дозировки. Решением врачебного консилиума при
-          наличии
-    - text: '[treatment] 12. Лечение пациента с НО осуществляется мультидисциплинарной
-        командой (стр. 5)'
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 12. Лечение пациента с НО осуществляется мультидисциплинарной
-          командой (стр. 5)'
-    - text: врачей-специалистов и включает консервативное (фармакотерапию) и хирургическое
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: врачей-специалистов и включает консервативное (фармакотерапию) и хирургическое
-    drug_groups: []
-    drugs:
-    - drug_name: составляет
-      active_substance: null
-      drug_group: null
-      dose_text: 9 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "составляет 9 мг/кг \nмассы тела/год"
-    - drug_name: превышать
-      active_substance: null
-      drug_group: null
-      dose_text: 1 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "превышать 1 мг/мин), \nна протяжении последовательных т"
-    - drug_name: более
-      active_substance: null
-      drug_group: null
-      dose_text: 60 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "более  \n60 мг/сут, вне зависимости от возраста): \nНац"
-    - drug_name: расчета
-      active_substance: null
-      drug_group: null
-      dose_text: 0,5 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "расчета 0,5 мг/кг/сут, курс введения – каждые  \n2 меся"
-    - drug_name: инфузий
-      active_substance: null
-      drug_group: null
-      dose_text: 9 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "инфузий 9 мг/мл) или раствор глюкозы 5 % \n(глюкоза, "
-    - drug_name: выше
-      active_substance: null
-      drug_group: null
-      dose_text: 0,1 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: выше 0,1 мг/мл)
-    - drug_name: дозе
-      active_substance: null
-      drug_group: null
-      dose_text: 0,0125 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: дозе 0,0125 мг/кг, однократная внутривенная инфузия
-    - drug_name: введения
-      active_substance: null
-      drug_group: null
-      dose_text: 4 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: введения 4 мг порошка лиофилизированного для приготовл
-    - drug_name: дозы
-      active_substance: null
-      drug_group: null
-      dose_text: 3,5 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "дозы 3,5 мг, 4,1 мл – для дозы 3,3 мг, 3,8 мл – \nдл"
-    - drug_name: внутрь
-      active_substance: null
-      drug_group: null
-      dose_text: 24 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: внутрь 24 мг/мл
-    - drug_name: таблетки
-      active_substance: null
-      drug_group: null
-      dose_text: 200 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: таблетки 200 мг
-    - drug_name: оболочкой
-      active_substance: null
-      drug_group: null
-      dose_text: 200 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: оболочкой 200 мг, капсулы 200 мг)
-    procedures: []
-    surgery: []
-    source_refs: []
+  required_exams:
+  - name: Сбор генеалогического и анамнеза заболевания, оценка жалоб
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диагностика НО основана на оценке данных генеалогического анамнеза, анамнеза
+        заболевания, жалоб пациента...
+  - name: Медицинский осмотр с антропометрией
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: медицинский осмотр (с проведением антропометрии – измерение длины тела,
+        массы тела, окружности грудной клетки) пациента врачом-специалистом включает
+        выявление клинических симптомов, характерных для НО
+  - name: Определение уровня 25-гидроксивитамина D в крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение уровня общего 25-гидроксивитамина D (далее – 25(OH)D) в крови
+        (интерпретация результатов – в соответствии с приложением 1).
+  - name: Общий анализ крови и мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ крови, мочи;
+  - name: Биохимическое исследование крови (мочевина, креатинин, общий белок, альбумин,
+      билирубин, глюкоза, Ca, P, Mg, ЩФ, АСТ, АЛТ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: биохимическое исследование крови (мочевина, креатинин, общий белок, альбумин,
+        билирубин (общий, прямой, непрямой), глюкоза, общий кальций, неорганический
+        фосфор, магний, общая щелочная фосфатаза, АСТ, АЛТ)
+  - name: Определение маркеров костной резорбции (β-кросслапс) и формирования (остеокальцин)
+      в крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение уровней маркеров костной резорбции (поперечносшитые карбокситерминальные
+        телопептиды коллагена I типа – -кросслапс) и формирования (остеокальцин)
+        в крови.
+  - name: Стандартная рентгенография костных структур
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: для выявления типичных рентгенологических признаков НО проводится стандартная
+        рентгенография пораженных костных структур, включая отделы скелета с наличием
+        костных переломов и деформаций...
+  - name: Рентгеновская морфометрия позвоночника
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Для выявления и оценки тяжести деформации позвонков используется метод
+        рентгеновской морфометрии, основанный на анализе боковых рентгенограмм грудного
+        и поясничного отделов позвоночника
+  - name: Рентгеновская денситометрия (РД)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Рентгеновская денситометрия (далее – РД) проводится пациентам с НО при
+        установлении диагноза и далее с кратностью 1 раз в год (при наличии медицинских
+        показаний – чаще, с минимальным интервалом между денситометрическими исследованиями
+        у детей не менее 6 месяцев).
+  conditional_exams:
+  - name: Определение уровня ПТГ, ТТГ, свободного Т4 в крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение уровня паратиреоидного гормона, тиреотропного гормона, свободной
+        фракции тироксина в крови – по медицинским показаниям;
+  - name: Биопсия и гистоморфометрическое исследование костной ткани
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: По медицинским показаниям, включая необходимость проведения дифференциальной
+        диагностики, пациенту с НО выполняются биопсия и последующее гистоморфометрическое
+        исследование костной ткани
+  - name: Консультация врача-генетика с молекулярно-генетической диагностикой
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'консультацию врача-генетика: по медицинским показаниям проводится молекулярно-генетическая
+        диагностика. При консультации врача-генетика устанавливается диагноз заболевания,
+        определяются тип заболевания...'
+  treatment: null
   follow_up:
-  - text: динамическом медицинском наблюден
+  - text: Рентгеновская денситометрия (РД) проводится 1 раз в год, при наличии медицинских
+      показаний – чаще (не менее 6 месяцев между исследованиями у детей).
     timing: null
     required_if: []
     expected_actions: []
@@ -487,11 +600,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: динамическом медицинском наблюден
+      quote: Рентгеновская денситометрия (РД) проводится 1 раз в год, при наличии
+        медицинских показаний – чаще (не менее 6 месяцев между исследованиями у детей).
   hospitalization: []
   routing:
-  - text: '[routing] 7. Госпитализация пациентов с НО в организации здравоохранения
-      осуществляется (стр. 2)'
+  - text: Госпитализация пациентов с НО в организации здравоохранения осуществляется
+      в соответствии с порядком, установленным законодательством.
     timing: null
     required_if: []
     source_ref:
@@ -504,51 +618,45 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 7. Госпитализация пациентов с НО в организации здравоохранения
-        осуществляется (стр. 2)'
-  - text: '[routing] 7. Госпитализация пациентов с НО в организации здравоохранения
-      осуществляется (стр. 2)'
-    timing: null
-    required_if: []
+      quote: Госпитализация пациентов с НО в организации здравоохранения осуществляется
+        в соответствии с порядком, установленным законодательством.
+  red_flags:
+  - text: Проявления жестокого обращения (насилия) у пациентов раннего возраста, требующие
+      дифференциальной диагностики с НО.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
     source_ref:
       protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
       document_url: null
       local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
-      page_start: null
+      page_start: 5
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 7. Госпитализация пациентов с НО в организации здравоохранения
-        осуществляется (стр. 2)'
-  red_flags: []
+      quote: у пациентов раннего возраста – дифференциальную диагностику НО с проявлениями
+        жестокого обращения (насилия)...
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: travmatologiya_ortopediya_кп_диагностика_лечение_несовершенного_остеогенеза_пост
-    document_url: null
-    local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика лечение несовершенного остеогенеза
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:53.375144+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T18:16:00.228433+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:53.387347+00:00'
+  validated_at: '2026-07-20T18:16:00.249625+00:00'

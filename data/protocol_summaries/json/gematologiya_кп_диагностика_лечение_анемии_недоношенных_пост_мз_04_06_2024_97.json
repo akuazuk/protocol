@@ -1,7 +1,7 @@
 {
   "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "Диагностика лечение анемии недоношенных",
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,13 +32,14 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_лечение_анемии_недоношенных",
-      "name": "Диагностика лечение анемии недоношенных",
+      "condition_id": "anemia_of_prematurity",
+      "name": "Анемия недоношенных",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
         "D64.9",
-        "P07.3"
+        "P07.3",
+        "P61.2"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -46,7 +47,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[diagnostics] 15. Основные лабораторные критерии диагностики анемии недоношенных: (стр. 4)",
+            "text": "Диагностика на основании факторов риска, клинических симптомов заболевания и лабораторных показателей.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -63,11 +64,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 15. Основные лабораторные критерии диагностики анемии недоношенных: (стр. 4)"
+              "quote": "Диагностика на основании факторов риска, клинических симптомов заболевания и лабораторных показателей."
             }
           },
           {
-            "text": "[diagnostics] 17. Диагноз ранней анемии недоношенных устанавливается при наличии основных (стр. 4)",
+            "text": "Основные лабораторные критерии: снижение Hb, эритроцитов, Ht более чем на 2 SD от референсных значений (венозной/капиллярной крови) у детей до 6 месяцев.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -84,11 +85,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 17. Диагноз ранней анемии недоношенных устанавливается при наличии основных (стр. 4)"
+              "quote": "Основные лабораторные критерии: снижение Hb, эритроцитов, Ht более чем на 2 SD от референсных значений (венозной/капиллярной крови) у детей до 6 месяцев."
             }
           },
           {
-            "text": "лабораторных критериев у недоношенных детей на 2–10 неделе жизни.",
+            "text": "Отсутствие признаков анемии раннего неонатального периода.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -105,11 +106,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "лабораторных критериев у недоношенных детей на 2–10 неделе жизни."
+              "quote": "Отсутствие признаков анемии раннего неонатального периода."
             }
           },
           {
-            "text": "[diagnostics] 18. Диагноз поздней анемии недоношенных устанавливается при наличии основных (стр. 4)",
+            "text": "Дополнительные лабораторные критерии: изменение ретикулоцитов, ЭПО, ферритина, железа, трансферрина, растворимых рецепторов трансферрина.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -126,11 +127,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 18. Диагноз поздней анемии недоношенных устанавливается при наличии основных (стр. 4)"
+              "quote": "Дополнительные лабораторные критерии: изменение ретикулоцитов, ЭПО, ферритина, железа, трансферрина, растворимых рецепторов трансферрина."
             }
           },
           {
-            "text": "лабораторных критериев у недоношенных детей после 10 недели жизни.",
+            "text": "Дополнительные лабораторные критерии: отклонения MCV, MCH, MCHC от референсных значений у детей до 6 месяцев.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -147,11 +148,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "лабораторных критериев у недоношенных детей после 10 недели жизни."
+              "quote": "Дополнительные лабораторные критерии: отклонения MCV, MCH, MCHC от референсных значений у детей до 6 месяцев."
             }
           },
           {
-            "text": "Дополнительные лабораторные критерии анемии недоношенных",
+            "text": "Диагноз ранней анемии устанавливается на 2–10 неделе жизни при наличии основных лабораторных критериев.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -168,7 +169,49 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Дополнительные лабораторные критерии анемии недоношенных"
+              "quote": "Диагноз ранней анемии устанавливается на 2–10 неделе жизни при наличии основных лабораторных критериев."
+            }
+          },
+          {
+            "text": "Диагноз поздней анемии устанавливается после 10 недели жизни при наличии основных лабораторных критериев.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Диагноз поздней анемии устанавливается после 10 недели жизни при наличии основных лабораторных критериев."
+            }
+          },
+          {
+            "text": "Снижение концентрации гемоглобина, количества эритроцитов и/или показателя гематокрита в крови",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Снижение концентрации гемоглобина, количества эритроцитов и/или показателя гематокрита в крови"
             }
           }
         ],
@@ -177,7 +220,7 @@
       },
       "required_exams": [
         {
-          "name": "ОАК",
+          "name": "Концентрация Hb, количество эритроцитов и показатель Ht",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -192,21 +235,272 @@
             "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
             "document_url": null,
             "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
-            "page_start": null,
+            "page_start": 4,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "я классификация лекарственных средств; \nОАК – общий анализ крови; \nНациональный правовой Интернет-портал Республики Беларус"
+            "quote": "снижение более чем на 2 SD от референсных значений концентрации Hb, количества эритроцитов и показателя Ht венозной и капиллярной крови у детей первых 6 месяцев жизни согласно приложениям 1, 2"
+          }
+        },
+        {
+          "name": "Кислотно-основное состояние, газы крови, уровень лактата",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При наличии признаков тканевой гипоксии и метаболических нарушений для оценки нарушений газообмена и определения дальнейшей тактики терапии у недоношенного новорожденного ребенка с признаками анемии, сопровождающимися дыхательными и (или) гемодинамическими нарушениями, рекомендуется исследование кислотно-основного состояния, газов крови, уровня лактата в крови."
           }
         }
       ],
-      "conditional_exams": [],
+      "conditional_exams": [
+        {
+          "name": "Количество ретикулоцитов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными лабораторными критериями диагностики анемии недоношенных служат изменение показателей количества ретикулоцитов... согласно приложению 3"
+          }
+        },
+        {
+          "name": "Содержание ЭПО",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными лабораторными критериями диагностики анемии недоношенных служат изменение показателей... содержания ЭПО... согласно приложению 3"
+          }
+        },
+        {
+          "name": "Ферритин сыворотки крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными лабораторными критериями диагностики анемии недоношенных служат изменение показателей... ферритина... в сыворотке крови согласно приложению 3"
+          }
+        },
+        {
+          "name": "Железо сыворотки крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными лабораторными критериями диагностики анемии недоношенных служат изменение показателей... железа... в сыворотке крови согласно приложению 3"
+          }
+        },
+        {
+          "name": "Трансферрин сыворотки крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными лабораторными критериями диагностики анемии недоношенных служат изменение показателей... трансферрина... в сыворотке крови согласно приложению 3"
+          }
+        },
+        {
+          "name": "Растворимые рецепторы трансферрина сыворотки крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными лабораторными критериями диагностики анемии недоношенных служат изменение показателей... растворимых рецепторов трансферрина в сыворотке крови согласно приложению 3"
+          }
+        },
+        {
+          "name": "Средний объем эритроцитов (MCV)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "отклонения от референсных значений показателей среднего объема эритроцитов (MCV)... у детей первых 6 месяцев жизни согласно приложению 4"
+          }
+        },
+        {
+          "name": "Среднее содержание Hb в эритроците (MCH)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "отклонения от референсных значений показателей... среднего содержания... Hb в эритроците (MCH)... у детей первых 6 месяцев жизни согласно приложению 4"
+          }
+        },
+        {
+          "name": "Средняя концентрация Hb в эритроците (MCHC)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "отклонения от референсных значений показателей... средней концентрации Hb в эритроците (MCHC) у детей первых 6 месяцев жизни согласно приложению 4"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 3. Для целей настоящего клинического протокола используются основные термины (стр. 2)",
+            "text": "Гемотрансфузии",
             "source_ref": {
               "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
               "document_url": null,
@@ -217,11 +511,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 3. Для целей настоящего клинического протокола используются основные термины (стр. 2)"
+              "quote": "Гемотрансфузии"
             }
           },
           {
-            "text": "«Об обращении лекарственных средств», Законом Республики Беларусь от 19 ноября",
+            "text": "Соблюдать принцип «один донор – один реципиент», делить ЭКК на мини-дозы для одного новорожденного ребенка.",
             "source_ref": {
               "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
               "document_url": null,
@@ -232,11 +526,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "«Об обращении лекарственных средств», Законом Республики Беларусь от 19 ноября"
+              "quote": "Соблюдать принцип «один донор – один реципиент», делить ЭКК на мини-дозы для одного новорожденного ребенка."
             }
           },
           {
-            "text": "1993 г. № 2570-XII «О правах ребенка», а также следующие термины и их определения:",
+            "text": "Использовать ЭКК в течение всего срока годности при условии предтрансфузионного отмывания компонента.",
             "source_ref": {
               "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
               "document_url": null,
@@ -247,11 +541,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "1993 г. № 2570-XII «О правах ребенка», а также следующие термины и их определения:"
+              "quote": "Использовать ЭКК в течение всего срока годности при условии предтрансфузионного отмывания компонента."
             }
           },
           {
-            "text": "анемия – снижение концентрации гемоглобина, и (или) количества эритроцитов,",
+            "text": "Обязательно проводить лейкоредукцию ЭКК.",
             "source_ref": {
               "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
               "document_url": null,
@@ -262,11 +556,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "анемия – снижение концентрации гемоглобина, и (или) количества эритроцитов,"
+              "quote": "Обязательно проводить лейкоредукцию ЭКК."
             }
           },
           {
-            "text": "и (или) показателя гематокрита в единице объема крови",
+            "text": "Рекомендуется облучение ЭКК (гамма- или рентгеновское) в дозе 25 Гр для инактивации T-лимфоцитов.",
             "source_ref": {
               "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
               "document_url": null,
@@ -277,11 +571,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "и (или) показателя гематокрита в единице объема крови"
+              "quote": "Рекомендуется облучение ЭКК (гамма- или рентгеновское) в дозе 25 Гр для инактивации T-лимфоцитов."
             }
           },
           {
-            "text": "анемия недоношенных поздняя – анемия, развившаяся у недоношенного ребенка,",
+            "text": "ЭКК для новорожденных детей после облучения отмывают. Срок использования компонента после облучения и отмывания составляет 24 часа.",
             "source_ref": {
               "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
               "document_url": null,
@@ -292,17 +586,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "анемия недоношенных поздняя – анемия, развившаяся у недоношенного ребенка,"
+              "quote": "ЭКК для новорожденных детей после облучения отмывают. Срок использования компонента после облучения и отмывания составляет 24 часа."
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "июля",
+            "drug_name": "Фолиевая кислота",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2006 г",
+            "dose_text": "Таблетки 1 мг. Внутрь 0,5 мг/кг 1 раз/сутки; общая продолжительность терапии 2 месяца.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -314,20 +608,20 @@
               "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июля 2006 г"
+              "quote": "фолиевая кислота, таблетки 1 мг; допускается применение таблеток, измельченных в порошок. Внутрь 0,5 мг/кг 1 раз/сутки; общая продолжительность терапии 2 месяца;"
             }
           },
           {
-            "drug_name": "ноября",
+            "drug_name": "Токоферол",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1993 г",
+            "dose_text": "Капли для внутреннего применения масляные (50 мг/мл, 100 мг/мл, 300 мг/мл). 10 мг (2–5 капель 50 мг/мл или 1–2 капли 100 мг/мл) в сутки в течение 2 недель.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -339,20 +633,20 @@
               "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ноября \n1993 г"
+              "quote": "токоферол, капли для внутреннего применения масляные 50 мг/мл, 100 мг/мл, 300 мг/мл. Нельзя принимать внутрь совместно с препаратами железа. Доза: 10 мг (2–5 капель 50 мг/мл, 1–2 капли 100 мг/мл) в сутки в течение 2 недель."
             }
           },
           {
-            "drug_name": "таблетки",
+            "drug_name": "Цианокобаламин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1 мг",
+            "dose_text": "Раствор для инъекций 500 мкг/мл. Подкожно в дозе 1 мкг/кг, максимальная суточная доза 100 мкг.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -364,20 +658,20 @@
               "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "таблетки 1 мг"
+              "quote": "цианокобаламин, раствор для инъекций 500 мкг/мл, подкожно в дозе 1 мкг/кг, максимальная суточная доза – 100 мкг;"
             }
           },
           {
-            "drug_name": "Внутрь",
+            "drug_name": "Пиридоксин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,5 мг",
+            "dose_text": "Раствор для инъекций 50 мг/мл. Детям 20 мг/сутки в 1–2 приема подкожно, внутримышечно или внутривенно в течение 2 недель.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -389,20 +683,20 @@
               "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Внутрь 0,5 мг/кг 1 раз/сутки"
+              "quote": "пиридоксин, раствор для инъекций 50 мг/мл, детям – 20 мг/сутки в 1–2 приема подкожно, внутримышечно или внутривенно в течение 2 недель;"
             }
           },
           {
-            "drug_name": "масляный",
+            "drug_name": "Аскорбиновая кислота",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "50 мг",
+            "dose_text": "Раствор для внутривенного и внутримышечного введения 50 мг/мл. 50 мг в сутки внутримышечно или внутривенно в течение 2 недель.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -414,138 +708,13 @@
               "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "масляный 50 мг/мл, 1–2 капли, раствор масляный 100 мг/"
-            }
-          },
-          {
-            "drug_name": "инъекций",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "500 мкг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "инъекций 500 мкг/мл, подкожно в дозе 1 мкг/кг, \nмаксимал"
-            }
-          },
-          {
-            "drug_name": "введения",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "50 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "введения  \n50 мг/мл, – 50 мг в сутки внутримышечно или в"
-            }
-          },
-          {
-            "drug_name": "дозе",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "25 Г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "дозе 25 Гр, направленное на инактивацию T-лимфоци"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2024 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня 2024 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
+              "quote": "аскорбиновая кислота, раствор для внутривенного и внутримышечного введения 50 мг/мл, – 50 мг в сутки внутримышечно или внутривенно в течение 2 недель."
             }
           }
         ],
@@ -557,7 +726,7 @@
       "hospitalization": [],
       "routing": [
         {
-          "text": "[prevention] 29. Медицинская профилактика анемии недоношенных направлена на предупреждение (стр. 6)",
+          "text": "госпитализация",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -570,11 +739,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "[prevention] 29. Медицинская профилактика анемии недоношенных направлена на предупреждение (стр. 6)"
+            "quote": "госпитализация"
           }
         },
         {
-          "text": "и включает лечебно-профилактические мероприятия, направленные на:",
+          "text": "Переливание ЭКК показано для детей 8–14 дней (капиллярная проба): при респираторной поддержке Hb < 100 г/л или Ht < 30%; без респираторной поддержки Hb < 85 г/л или Ht < 25%.",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -587,11 +756,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "и включает лечебно-профилактические мероприятия, направленные на:"
+            "quote": "Переливание ЭКК показано для детей 8–14 дней (капиллярная проба): при респираторной поддержке Hb < 100 г/л или Ht < 30%; без респираторной поддержки Hb < 85 г/л или Ht < 25%."
           }
         },
         {
-          "text": "[prevention] 29. Медицинская профилактика анемии недоношенных направлена на предупреждение (стр. 6)",
+          "text": "Переливание ЭКК показано для детей 8–14 дней (венозная проба): при респираторной поддержке Hb < 90 г/л или Ht < 30%; без респираторной поддержки Hb < 77 г/л или Ht < 25%.",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -604,11 +773,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "[prevention] 29. Медицинская профилактика анемии недоношенных направлена на предупреждение (стр. 6)"
+            "quote": "Переливание ЭКК показано для детей 8–14 дней (венозная проба): при респираторной поддержке Hb < 90 г/л или Ht < 30%; без респираторной поддержки Hb < 77 г/л или Ht < 25%."
           }
         },
         {
-          "text": "и включает лечебно-профилактические мероприятия, направленные на:",
+          "text": "Переливание ЭКК показано для детей >15 дней (капиллярная проба): при респираторной поддержке Hb < 85 г/л или Ht < 25%; без респираторной поддержки Hb < 75 г/л или Ht < 23%.",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -621,46 +790,92 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "и включает лечебно-профилактические мероприятия, направленные на:"
+            "quote": "Переливание ЭКК показано для детей >15 дней (капиллярная проба): при респираторной поддержке Hb < 85 г/л или Ht < 25%; без респираторной поддержки Hb < 75 г/л или Ht < 23%."
+          }
+        },
+        {
+          "text": "Переливание ЭКК показано для детей >15 дней (венозная проба): при респираторной поддержке Hb < 77 г/л или Ht < 25%; без респираторной поддержки Hb < 68 г/л или Ht < 23%.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Переливание ЭКК показано для детей >15 дней (венозная проба): при респираторной поддержке Hb < 77 г/л или Ht < 25%; без респираторной поддержки Hb < 68 г/л или Ht < 23%."
           }
         }
       ],
-      "red_flags": [],
+      "red_flags": [
+        {
+          "text": "Токоферол нельзя принимать внутрь совместно с лекарственными препаратами железа.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "токоферол, капли для внутреннего применения масляные (раствор масляный) 50 мг/мл; ... (нельзя принимать внутрь совместно с лекарственными препаратами железа): 10 мг (2–5 капель..."
+          }
+        },
+        {
+          "text": "Негативным последствием облучения ЭКК является высвобождение интерлейкинов и калия, что требует последующего отмывания компонента.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
+            "page_start": 12,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Негативным последствием облучения является высвобождение интерлейкинов и калия. ЭКК для новорожденных детей после облучения отмывают. Срок использования компонента составляет 24 часа."
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "gematologiya_кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика лечение анемии недоношенных"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:30.088778+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T16:03:06.150590+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:30.095376+00:00"
+    "validated_at": "2026-07-20T16:03:06.157497+00:00"
   }
 }

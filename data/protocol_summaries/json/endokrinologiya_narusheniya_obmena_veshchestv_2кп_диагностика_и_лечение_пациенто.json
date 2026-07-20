@@ -1,26 +1,24 @@
 {
   "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-  "summary_version": "1.0",
-  "extraction_status": "auto_extracted",
-  "review_status": "not_reviewed",
+  "summary_version": "2.0",
+  "extraction_status": "llm_extracted",
+  "review_status": "needs_review",
   "source": {
-    "title": "2КП Диагностика и лечение пациентов с заболеваниями щитовидной железы взр нас пост МЗ 21062021 85",
-    "url": "https://minzdrav.gov.by/upload/dadvfiles/CProtokol/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+    "title": "Диагностика и лечение пациентов с заболеваниями щитовидной железы",
+    "url": null,
     "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-    "document_sha256": "a91c9adb1cbfde7b14f397cffcc6fe1751a6048a4471069b5e0f0ddb44fb47ac",
-    "approval_date": "2021-01-01",
-    "approval_number": "85",
+    "document_sha256": null,
+    "approval_date": null,
+    "approval_number": null,
     "valid_from": null,
     "valid_to": null,
-    "document_year": 2021,
+    "document_year": null,
     "pages_total": null
   },
   "rubric": {
-    "name": "Эндокринология",
+    "name": "Endokrinologiya-Narusheniya-Obmena-Veshchestv",
     "slug": "endokrinologiya-narusheniya-obmena-veshchestv",
-    "specialty_slugs": [
-      "endokrinologiya-narusheniya-obmena-veshchestv"
-    ]
+    "specialty_slugs": []
   },
   "applicability": {
     "population": [
@@ -34,97 +32,598 @@
   },
   "conditions": [
     {
-      "condition_id": "d34_клинический_протокол_устанавливает_общие_требования_",
-      "name": "клинический протокол устанавливает общие требования к объему",
+      "condition_id": "nodular_goiter",
+      "name": "Узловой зоб",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
+        "E04.1",
+        "E04.2",
+        "D44.0",
         "D34"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
-      "clinical_criteria": {
+      "clinical_criteria": null,
+      "diagnostic_criteria": {
         "required": [
           {
-            "text": "отражение нозологии клинический протокол устанавливает общие требования к объему (МКБ D34)",
+            "text": "Обнаружение пальпируемого объемного образования и/или верификация объемного процесса в ЩЖ с помощью визуализирующих методов исследования.",
             "logic_group": null,
-            "operator": "present",
+            "operator": "unknown",
             "values": [],
             "numeric_value": null,
             "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
+            "evidence_targets": [],
             "source_ref": {
               "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
               "document_url": null,
               "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 5,
-              "page_end": 5,
-              "section_title": "8. Классификация по МКБ-10:",
-              "section_type": "classification",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "клинический протокол устанавливает общие требования к объему"
+              "quote": "Обнаружение пальпируемого объемного образования и/или верификация объемного процесса в ЩЖ с помощью визуализирующих методов исследования."
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "немедикаментозные рекомендации (диета, режим)",
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 5,
-              "page_end": 5,
-              "section_title": "8. Классификация по МКБ-10:",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "диета, режим"
-            }
-          }
-        ],
-        "drug_groups": [],
-        "drugs": [],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [
+      "required_exams": [
         {
-          "text": "опухолев",
+          "name": "Ультразвуковое исследование (УЗИ) ЩЖ и регионарных лимфатических узлов",
           "aliases": [],
-          "red_flag_type": "possible_malignancy",
-          "severity": "critical",
-          "expected_actions": [
-            "дообследование",
-            "маршрутизация"
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
           ],
-          "cap_if_unhandled": 45,
+          "required_if": [],
+          "timing": null,
+          "comment": null,
           "source_ref": {
             "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
             "document_url": null,
             "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-            "page_start": 7,
-            "page_end": 7,
-            "section_title": "Лечение злокачественных опухолей ЩЖ (как и с подозрением злокачественности)",
-            "section_type": "criteria_block",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "опухолев"
+            "quote": "Обязательная диагностика узлового или многоузлового зоба включает: ультразвуковое исследование (далее – УЗИ) ЩЖ и регионарных лимфатических узлов"
+          }
+        },
+        {
+          "name": "Определение содержания тиреотропного гормона (ТТГ) в сыворотке/плазме крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обязательная диагностика узлового или многоузлового зоба включает: определение содержания в сыворотке, плазме крови тиреотропного гормона (далее – ТТГ)."
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Тонкоигольная аспирационная биопсия (ТАБ) образований ЩЖ и измененных регионарных лимфатических узлов под контролем УЗИ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительная диагностика узлового или многоузлового зоба включает: тонкоигольную аспирационную биопсию образований ЩЖ и измененных регионарных лимфатических узлов под контролем УЗИ."
+          }
+        },
+        {
+          "name": "Исследование гормонов крови: свободный Т4 (св.Т4), свободный Т3 (св.Т3), антитела к тиреоидной пероксидазе (АТ-ТПО), антитела к рецептору ТТГ (АТ-рТТГ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительная диагностика узлового или многоузлового зоба включает: исследование гормонов крови: свободный Т4, свободный Т3, АТ-ТПО, АТ-рТТГ."
+          }
+        },
+        {
+          "name": "Паратиреоидный гормон (ПТГ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительная диагностика узлового или многоузлового зоба включает: исследование гормонов крови... паратиреоидный гормон при подозрении на гиперпаратиреоз."
+          }
+        },
+        {
+          "name": "Кальцитонин",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительная диагностика узлового или многоузлового зоба включает: исследование гормонов крови... кальцитонин (для лиц первой степени родства с пациентами с медуллярной карциномой ЩЖ)."
+          }
+        },
+        {
+          "name": "Сцинтиграфия ЩЖ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительная диагностика узлового или многоузлового зоба включает: сцинтиграфию ЩЖ (при подозрении на функциональную автономию)."
+          }
+        },
+        {
+          "name": "Электрокардиограмма (ЭКГ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительная диагностика узлового или многоузлового зоба включает: электрокардиограмму (далее – ЭКГ)."
+          }
+        },
+        {
+          "name": "Компьютерная томография (КТ) органов шеи и средостения",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительная диагностика узлового или многоузлового зоба включает: компьютерную томографию (далее – КТ) органов шеи и средостения."
+          }
+        },
+        {
+          "name": "КТ-ангиография",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительная диагностика узлового или многоузлового зоба включает: КТ-ангиографию – при подозрении на инвазивный рост и вовлечение в патологический процесс сосудов."
+          }
+        },
+        {
+          "name": "Прием (осмотр, консультация) кардиолога",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительная диагностика узлового или многоузлового зоба включает: прием (осмотр, консультация) врачами специалистами: кардиологом."
+          }
+        },
+        {
+          "name": "Прием (осмотр, консультация) хирурга",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительная диагностика узлового или многоузлового зоба включает: прием (осмотр, консультация) врачами специалистами: хирургом."
+          }
+        },
+        {
+          "name": "Прием (осмотр, консультация) онколога",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительная диагностика узлового или многоузлового зоба включает: прием (осмотр, консультация) врачами специалистами: онкологом."
+          }
+        }
+      ],
+      "treatment": null,
+      "follow_up": [
+        {
+          "text": "Медицинские показания к повторной ТАБ объемных образований ЩЖ определяются лечащим врачом с учетом анамнестических, клинических и ультразвуковых данных и их динамики.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинские показания к повторной ТАБ объемных образований ЩЖ определяются лечащим врачом с учетом анамнестических, клинических и ультразвуковых данных и их динамики."
+          }
+        },
+        {
+          "text": "Биопсия не является методом динамического наблюдения доброкачественных образований ЩЖ.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Биопсия не является методом динамического наблюдения доброкачественных образований ЩЖ."
+          }
+        }
+      ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "Консультация врача-онколога показана при верифицированном раке ЩЖ.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Консультация врача-онколога показана при верифицированном раке ЩЖ."
+          }
+        },
+        {
+          "text": "Консультация врача-онколога показана при обоснованном подозрении на опухолевый процесс (D44, D34).",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Консультация врача-онколога показана при обоснованном подозрении на опухолевый процесс (D44, D34)."
+          }
+        },
+        {
+          "text": "Консультация врача-онколога показана при наличии двух и более опухолей эндокринной системы (для исключения синдрома множественной эндокринной неоплазии).",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Консультация врача-онколога показана при наличии двух и более опухолей эндокринной системы (для исключения синдрома множественной эндокринной неоплазии)."
+          }
+        },
+        {
+          "text": "Медицинские показания к госпитализации: присоединение гнойных процессов.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинские показания к госпитализации: присоединение гнойных процессов."
+          }
+        },
+        {
+          "text": "Медицинские показания к госпитализации: декомпенсация хронической соматической патологии.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинские показания к госпитализации: декомпенсация хронической соматической патологии."
+          }
+        },
+        {
+          "text": "Медицинские показания к госпитализации: диагностирование неопластического процесса в ЩЖ.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинские показания к госпитализации: диагностирование неопластического процесса в ЩЖ."
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Атипия неопределенного значения (сложная для интерпретации пункция с подозрением на опухолевое поражение) - III категория по Bethesda Thyroid Classification.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "III категория – атипия неопределенного значения (сложная для интерпретации пункция с подозрением на опухолевое поражение);"
+          }
+        },
+        {
+          "text": "Фолликулярная неоплазия - IV категория по Bethesda Thyroid Classification.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "IV категория – фолликулярная неоплазия;"
+          }
+        },
+        {
+          "text": "Подозрение на злокачественную опухоль (папиллярный, медуллярный рак, метастатическая карцинома, лимфома) - V категория по Bethesda Thyroid Classification.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "V категория – подозрение на злокачественную опухоль (подозрение на папиллярный, медуллярный рак, метастатическую карциному, лимфому);"
+          }
+        },
+        {
+          "text": "Злокачественная опухоль (папиллярный рак, низкодифференцированный рак, медуллярный рак, анапластический рак, метастатическая карцинома, лимфома) - VI категория по Bethesda Thyroid Classification.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "VI категория – злокачественная опухоль (папиллярный рак, низкодифференцированный рак, медуллярный рак, анапластический рак метастатическая карцинома, лимфома)."
           }
         }
       ],
@@ -134,175 +633,460 @@
       "source_refs": []
     },
     {
-      "condition_id": "d44_клинический_протокол_устанавливает_общие_требования_",
-      "name": "клинический протокол устанавливает общие требования к объему",
+      "condition_id": "hypothyroidism",
+      "name": "Гипотиреоз",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "D44"
+        "E00",
+        "E01",
+        "E03",
+        "E03.0",
+        "E03.1",
+        "E03.2",
+        "E03.3",
+        "E03.4",
+        "E03.8",
+        "E03.9",
+        "E89.0"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
-      "clinical_criteria": {
+      "clinical_criteria": null,
+      "diagnostic_criteria": {
         "required": [
           {
-            "text": "отражение нозологии клинический протокол устанавливает общие требования к объему (МКБ D44)",
+            "text": "Избыточная масса тела",
             "logic_group": null,
-            "operator": "present",
+            "operator": "unknown",
             "values": [],
             "numeric_value": null,
             "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
+            "evidence_targets": [],
             "source_ref": {
               "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
               "document_url": null,
               "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 5,
-              "page_end": 5,
-              "section_title": "8. Классификация по МКБ-10:",
-              "section_type": "classification",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "клинический протокол устанавливает общие требования к объему"
+              "quote": "Избыточная масса тела"
+            }
+          },
+          {
+            "text": "Усталость, быстрая утомляемость",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Усталость, быстрая утомляемость"
+            }
+          },
+          {
+            "text": "Снижение аппетита",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Снижение аппетита"
+            }
+          },
+          {
+            "text": "Плохая переносимость холода",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Плохая переносимость холода"
+            }
+          },
+          {
+            "text": "Сухость кожных покровов",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Сухость кожных покровов"
+            }
+          },
+          {
+            "text": "Потеря и ухудшение структуры волос",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Потеря и ухудшение структуры волос"
+            }
+          },
+          {
+            "text": "Отечность лица, плотные отеки локальные или общие",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Отечность лица, плотные отеки локальные или общие"
+            }
+          },
+          {
+            "text": "Макроглоссия",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Макроглоссия"
+            }
+          },
+          {
+            "text": "Снижение тембра и (или) осиплость голоса",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Снижение тембра и (или) осиплость голоса"
+            }
+          },
+          {
+            "text": "Забывчивость, сложность концентрации внимания",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Забывчивость, сложность концентрации внимания"
+            }
+          },
+          {
+            "text": "Сонливость, подавленность настроения, эмоциональная лабильность",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Сонливость, подавленность настроения, эмоциональная лабильность"
+            }
+          },
+          {
+            "text": "Замедленная речь и движения, дизартрия, когнитивные нарушения, амимия",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Замедленная речь и движения, дизартрия, когнитивные нарушения, амимия"
+            }
+          },
+          {
+            "text": "Парестезии, мышечная слабость, снижение рефлексов",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Парестезии, мышечная слабость, снижение рефлексов"
+            }
+          },
+          {
+            "text": "Запястный туннельный синдром, боли в суставах и (или) мышцах",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Запястный туннельный синдром, боли в суставах и (или) мышцах"
+            }
+          },
+          {
+            "text": "Диффузное увеличение ЩЖ или узловой зоб",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Диффузное увеличение ЩЖ или узловой зоб"
+            }
+          },
+          {
+            "text": "Снижение систолического и повышение диастолического артериального давления",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Снижение систолического и повышение диастолического артериального давления"
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "diagnostic_criteria": null,
       "required_exams": [],
       "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "немедикаментозные рекомендации (диета, режим)",
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 5,
-              "page_end": 5,
-              "section_title": "8. Классификация по МКБ-10:",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "диета, режим"
-            }
-          }
-        ],
-        "drug_groups": [],
-        "drugs": [],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
+      "treatment": null,
       "follow_up": [],
       "hospitalization": [],
-      "routing": [],
-      "red_flags": [
+      "routing": [
         {
-          "text": "опухолев",
-          "aliases": [],
-          "red_flag_type": "possible_malignancy",
-          "severity": "critical",
-          "expected_actions": [
-            "дообследование",
-            "маршрутизация"
-          ],
-          "cap_if_unhandled": 45,
+          "text": "Консультация онколога при верифицированном раке ЩЖ, обоснованном подозрении на опухолевый процесс или наличии двух и более опухолей эндокринной системы.",
+          "timing": null,
+          "required_if": [],
           "source_ref": {
             "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
             "document_url": null,
             "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-            "page_start": 7,
-            "page_end": 7,
-            "section_title": "Лечение злокачественных опухолей ЩЖ (как и с подозрением злокачественности)",
-            "section_type": "criteria_block",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "опухолев"
+            "quote": "Консультация онколога при верифицированном раке ЩЖ, обоснованном подозрении на опухолевый процесс или наличии двух и более опухолей эндокринной системы."
+          }
+        },
+        {
+          "text": "Госпитализация при присоединении гнойных процессов, декомпенсации хронической соматической патологии, диагностировании неопластического процесса в ЩЖ.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация при присоединении гнойных процессов, декомпенсации хронической соматической патологии, диагностировании неопластического процесса в ЩЖ."
+          }
+        },
+        {
+          "text": "Госпитализация может потребоваться пациентам, у которых аутоиммунный тиреоидит является компонентом аутоиммунных полигландулярных синдромов при декомпенсации сопутствующих эндокринопатий.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация может потребоваться пациентам, у которых аутоиммунный тиреоидит является компонентом аутоиммунных полигландулярных синдромов при декомпенсации сопутствующих эндокринопатий."
+          }
+        },
+        {
+          "text": "Госпитализация при амиодарон-индуцированном тиреотоксикозе, сочетанной патологии (аутоиммунный полигландулярный синдром), декомпенсации сопутствующих заболеваний (нарушения ритма сердца, сердечная недостаточность или дилатационная кардиомиопатия).",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация при амиодарон-индуцированном тиреотоксикозе, сочетанной патологии (аутоиммунный полигландулярный синдром), декомпенсации сопутствующих заболеваний (нарушения ритма сердца, сердечная нед"
+          }
+        },
+        {
+          "text": "Госпитализация при синдроме сдавления, абсцессе, флегмоне шеи, медиастините, свищах, тромбозе близрасположенных вен.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация при синдроме сдавления, абсцессе, флегмоне шеи, медиастините, свищах, тромбозе близрасположенных вен."
           }
         }
       ],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "d44_0_клинический_протокол_устанавливает_общие_требовани",
-      "name": "клинический протокол устанавливает общие требования к объему",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "D44.0"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии клинический протокол устанавливает общие требования к объему (МКБ D44.0)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 5,
-              "page_end": 5,
-              "section_title": "8. Классификация по МКБ-10:",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "клинический протокол устанавливает общие требования к объему"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "немедикаментозные рекомендации (диета, режим)",
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 5,
-              "page_end": 5,
-              "section_title": "8. Классификация по МКБ-10:",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "диета, режим"
-            }
-          }
-        ],
-        "drug_groups": [],
-        "drugs": [],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
@@ -310,823 +1094,374 @@
       "source_refs": []
     },
     {
-      "condition_id": "e04_0_2кп_диагностика_и_лечение_пациентов_с_заболеваниям",
-      "name": "2КП Диагностика и лечение пациентов с заболеваниями щитовидной железы взр нас пост МЗ 21062021 85",
+      "condition_id": "thyrotoxicosis",
+      "name": "Тиреотоксикоз",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "E04.0"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии 2КП Диагностика и лечение пациентов с заболеваниями щитовидной железы взр нас пост МЗ 21062021 85 (МКБ E04.0)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 17,
-              "page_end": 17,
-              "section_title": "62. Классификация по МКБ-10.",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "2КП Диагностика и лечение пациентов с заболеваниями щитовидной железы взр нас пост МЗ 21062021 85"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "немедикаментозные рекомендации (диета, режим)",
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 17,
-              "page_end": 17,
-              "section_title": "62. Классификация по МКБ-10.",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "диета, режим"
-            }
-          }
-        ],
-        "drug_groups": [],
-        "drugs": [],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "e04_1_клинический_протокол_устанавливает_общие_требовани",
-      "name": "клинический протокол устанавливает общие требования к объему",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "E04.1"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии клинический протокол устанавливает общие требования к объему (МКБ E04.1)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 5,
-              "page_end": 5,
-              "section_title": "8. Классификация по МКБ-10:",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "клинический протокол устанавливает общие требования к объему"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "немедикаментозные рекомендации (диета, режим)",
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 5,
-              "page_end": 5,
-              "section_title": "8. Классификация по МКБ-10:",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "диета, режим"
-            }
-          }
-        ],
-        "drug_groups": [],
-        "drugs": [],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "e04_2_клинический_протокол_устанавливает_общие_требовани",
-      "name": "клинический протокол устанавливает общие требования к объему",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "E04.2"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии клинический протокол устанавливает общие требования к объему (МКБ E04.2)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 5,
-              "page_end": 5,
-              "section_title": "8. Классификация по МКБ-10:",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "клинический протокол устанавливает общие требования к объему"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "немедикаментозные рекомендации (диета, режим)",
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 5,
-              "page_end": 5,
-              "section_title": "8. Классификация по МКБ-10:",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "диета, режим"
-            }
-          }
-        ],
-        "drug_groups": [],
-        "drugs": [],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "e05_0_клинический_протокол_устанавливает_общие_требовани",
-      "name": "клинический протокол устанавливает общие требования к объему",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "E05.0"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии клинический протокол устанавливает общие требования к объему (МКБ E05.0)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 12,
-              "page_end": 12,
-              "section_title": "40. Классификация по МКБ-10:",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "клинический протокол устанавливает общие требования к объему"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "немедикаментозные рекомендации (диета, режим)",
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 12,
-              "page_end": 12,
-              "section_title": "40. Классификация по МКБ-10:",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "диета, режим"
-            }
-          }
-        ],
-        "drug_groups": [],
-        "drugs": [],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "e05_1_клинический_протокол_устанавливает_общие_требовани",
-      "name": "клинический протокол устанавливает общие требования к объему",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "E05.1"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии клинический протокол устанавливает общие требования к объему (МКБ E05.1)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 5,
-              "page_end": 5,
-              "section_title": "8. Классификация по МКБ-10:",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "клинический протокол устанавливает общие требования к объему"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "немедикаментозные рекомендации (диета, режим)",
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 5,
-              "page_end": 5,
-              "section_title": "8. Классификация по МКБ-10:",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "диета, режим"
-            }
-          }
-        ],
-        "drug_groups": [],
-        "drugs": [],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "e05_2_клинический_протокол_устанавливает_общие_требовани",
-      "name": "клинический протокол устанавливает общие требования к объему",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "E05.2"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии клинический протокол устанавливает общие требования к объему (МКБ E05.2)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 5,
-              "page_end": 5,
-              "section_title": "8. Классификация по МКБ-10:",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "клинический протокол устанавливает общие требования к объему"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "немедикаментозные рекомендации (диета, режим)",
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 5,
-              "page_end": 5,
-              "section_title": "8. Классификация по МКБ-10:",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "диета, режим"
-            }
-          }
-        ],
-        "drug_groups": [],
-        "drugs": [],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "e05_3_клинический_протокол_устанавливает_общие_требовани",
-      "name": "клинический протокол устанавливает общие требования к объему",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "E05.3"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии клинический протокол устанавливает общие требования к объему (МКБ E05.3)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 12,
-              "page_end": 12,
-              "section_title": "40. Классификация по МКБ-10:",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "клинический протокол устанавливает общие требования к объему"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "немедикаментозные рекомендации (диета, режим)",
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 12,
-              "page_end": 12,
-              "section_title": "40. Классификация по МКБ-10:",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "диета, режим"
-            }
-          }
-        ],
-        "drug_groups": [],
-        "drugs": [],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "e05_4_клинический_протокол_устанавливает_общие_требовани",
-      "name": "клинический протокол устанавливает общие требования к объему",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "E05.4"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии клинический протокол устанавливает общие требования к объему (МКБ E05.4)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 12,
-              "page_end": 12,
-              "section_title": "40. Классификация по МКБ-10:",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "клинический протокол устанавливает общие требования к объему"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "немедикаментозные рекомендации (диета, режим)",
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 12,
-              "page_end": 12,
-              "section_title": "40. Классификация по МКБ-10:",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "диета, режим"
-            }
-          }
-        ],
-        "drug_groups": [],
-        "drugs": [],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "e05_5_клинический_протокол_устанавливает_общие_требовани",
-      "name": "клинический протокол устанавливает общие требования к объему",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "E05.5"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии клинический протокол устанавливает общие требования к объему (МКБ E05.5)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 12,
-              "page_end": 12,
-              "section_title": "40. Классификация по МКБ-10:",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "клинический протокол устанавливает общие требования к объему"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "немедикаментозные рекомендации (диета, режим)",
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 12,
-              "page_end": 12,
-              "section_title": "40. Классификация по МКБ-10:",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "диета, режим"
-            }
-          }
-        ],
-        "drug_groups": [],
-        "drugs": [],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "e05_8_клинический_протокол_устанавливает_общие_требовани",
-      "name": "клинический протокол устанавливает общие требования к объему",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "E05.8"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии клинический протокол устанавливает общие требования к объему (МКБ E05.8)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 12,
-              "page_end": 12,
-              "section_title": "40. Классификация по МКБ-10:",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "клинический протокол устанавливает общие требования к объему"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "немедикаментозные рекомендации (диета, режим)",
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 12,
-              "page_end": 12,
-              "section_title": "40. Классификация по МКБ-10:",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "диета, режим"
-            }
-          }
-        ],
-        "drug_groups": [],
-        "drugs": [],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "e05_9_2кп_диагностика_и_лечение_пациентов_с_заболеваниям",
-      "name": "2КП Диагностика и лечение пациентов с заболеваниями щитовидной железы взр нас пост МЗ 21062021 85",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
+        "E05.0",
+        "E05.1",
+        "E05.2",
+        "E05.3",
+        "E05.4",
+        "E05.5",
+        "E05.8",
         "E05.9"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
-      "clinical_criteria": {
+      "clinical_criteria": null,
+      "diagnostic_criteria": {
         "required": [
           {
-            "text": "отражение нозологии 2КП Диагностика и лечение пациентов с заболеваниями щитовидной железы взр нас пост МЗ 21062021 85 (МКБ E05.9)",
+            "text": "Обнаружение пальпируемого объемного образования и (или) верификация объемного процесса в ЩЖ с помощью визуализирующих методов исследования при узловом или многоузловом зобе.",
             "logic_group": null,
-            "operator": "present",
+            "operator": "unknown",
             "values": [],
             "numeric_value": null,
             "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
+            "evidence_targets": [],
             "source_ref": {
               "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
               "document_url": null,
               "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 12,
-              "page_end": 12,
-              "section_title": "40. Классификация по МКБ-10:",
-              "section_type": "classification",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "2КП Диагностика и лечение пациентов с заболеваниями щитовидной железы взр нас пост МЗ 21062021 85"
+              "quote": "Обнаружение пальпируемого объемного образования и (или) верификация объемного процесса в ЩЖ с помощью визуализирующих методов исследования при узловом или многоузловом зобе."
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
+      "required_exams": [
+        {
+          "name": "Ультразвуковое исследование (УЗИ) ЩЖ и регионарных лимфатических узлов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обязательная диагностика узлового или многоузлового зоба включает: ультразвуковое исследование (далее – УЗИ) ЩЖ и регионарных лимфатических узлов;"
+          }
+        },
+        {
+          "name": "Определение содержания тиреотропного гормона (ТТГ) в сыворотке, плазме крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обязательная диагностика узлового или многоузлового зоба включает: определение содержания в сыворотке, плазме крови тиреотропного гормона (далее – ТТГ)."
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Тонкоигольная аспирационная биопсия (ТАБ) образований ЩЖ и измененных регионарных лимфатических узлов под контролем УЗИ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительная диагностика узлового или многоузлового зоба включает: тонкоигольную аспирационную биопсию образований (далее – ТАБ) ЩЖ и измененных регионарных лимфатических узлов под контролем УЗИ;"
+          }
+        },
+        {
+          "name": "Исследование гормонов крови: свободный Т4 (св.Т4), свободный Т3 (св.Т3), антитела к тиреоидной пероксидазе (АТ-ТПО), антитела к рецептору ТТГ (АТ-рТТГ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительная диагностика узлового или многоузлового зоба включает: исследование гормонов крови: свободный Т4 (далее – св.Т4), свободный Т3 (далее – св.Т3), антитела к тиреоидной пероксидазе (далее – АТ-ТПО), антитела к рецептору ТТГ (далее – АТ-рТТГ)..."
+          }
+        },
+        {
+          "name": "Паратиреоидный гормон (ПТГ) при подозрении на гиперпаратиреоз",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "...паратиреоидный гормон при подозрении на гиперпаратиреоз (далее – ПТГ)..."
+          }
+        },
+        {
+          "name": "Кальцитонин (для лиц первой степени родства с пациентами с медуллярной карциномой ЩЖ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "...кальцитонин (для лиц первой степени родства с пациентами с медуллярной карциномой ЩЖ);"
+          }
+        },
+        {
+          "name": "Сцинтиграфия ЩЖ (при подозрении на функциональную автономию)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "сцинтиграфию ЩЖ (при подозрении на функциональную автономию);"
+          }
+        },
+        {
+          "name": "Электрокардиограмма (ЭКГ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "электрокардиограмму (далее – ЭКГ);"
+          }
+        },
+        {
+          "name": "Компьютерная томография (КТ) органов шеи и средостения",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "компьютерную томографию (далее – КТ) органов шеи и средостения (КТ-ангиографию – при подозрении на инвазивный рост и вовлечение в патологический процесс сосудов);"
+          }
+        },
+        {
+          "name": "Прием (осмотр, консультация) врачами специалистами: кардиологом, хирургом, онкологом",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "прием (осмотр, консультация) врачами специалистами: кардиологом, хирургом, онкологом."
+          }
+        },
+        {
+          "name": "Консультация врача-радиолога",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Консультация врача-радиолога показана пациентам с функциональной тиреоидной автономией и при наличии медицинских противопоказаний для хирургического лечения."
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "немедикаментозные рекомендации (диета, режим)",
+            "text": "Лечение не требуется при верифицированном отсутствии признаков злокачественности, клинико-метаболических изменений тиреоидного статуса (тиреотоксикоза или гипотиреоза), признаков сдавления смежных органов шеи и косметических дефектов.",
             "source_ref": {
               "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
               "document_url": null,
               "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": 12,
-              "page_end": 12,
-              "section_title": "40. Классификация по МКБ-10:",
-              "section_type": "classification",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "диета, режим"
+              "quote": "Лечение не требуется при верифицированном отсутствии признаков злокачественности, клинико-метаболических изменений тиреоидного статуса (тиреотоксикоза или гипотиреоза), признаков сдавления смежных орг"
+            }
+          },
+          {
+            "text": "Малоинвазивная термальная абляция или деструкция узлового образования (при подтвержденной динамике роста более 30% в год и доказанном доброкачественном характере роста) или эндоскопическое хирургическое вмешательство.",
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Малоинвазивная термальная абляция или деструкция узлового образования (при подтвержденной динамике роста более 30% в год и доказанном доброкачественном характере роста) или эндоскопическое хирургическ"
+            }
+          },
+          {
+            "text": "Хирургическое лечение узлового (многоузлового) зоба с формированием функциональной автономии ЩЖ и с синдромом тиреотоксикоза.",
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Хирургическое лечение узлового (многоузлового) зоба с формированием функциональной автономии ЩЖ и с синдромом тиреотоксикоза."
             }
           }
         ],
@@ -1136,10 +1471,231 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
+      "follow_up": [
+        {
+          "text": "Биопсия не является методом динамического наблюдения доброкачественных образований ЩЖ.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Биопсия не является методом динамического наблюдения доброкачественных образований ЩЖ."
+          }
+        },
+        {
+          "text": "Медицинские показания к повторной ТАБ объемных образований ЩЖ не регламентируются временным промежутком, а определяются лечащим врачом с учетом анамнестических, клинических и ультразвуковых данных и их динамики.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинские показания к повторной ТАБ объемных образований ЩЖ не регламентируются временным промежутком, а определяются лечащим врачом с учетом анамнестических, клинических и ультразвуковых данных и и"
+          }
+        }
+      ],
       "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
+      "routing": [
+        {
+          "text": "Лечение злокачественных опухолей ЩЖ (как и с подозрением злокачественности) выполняется врачами – хирургами-онкологами.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Лечение злокачественных опухолей ЩЖ (как и с подозрением злокачественности) выполняется врачами – хирургами-онкологами."
+          }
+        },
+        {
+          "text": "Консультация врача-онколога показана пациентам с верифицированным раком ЩЖ, обоснованным подозрением на опухолевый процесс или при наличии двух и более опухолей эндокринной системы.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Консультация врача-онколога показана пациентам с верифицированным раком ЩЖ, обоснованным подозрением на опухолевый процесс или при наличии двух и более опухолей эндокринной системы."
+          }
+        },
+        {
+          "text": "Медицинские показания к госпитализации: присоединение гнойных процессов, декомпенсация хронической соматической патологии, диагностирование неопластического процесса в ЩЖ.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинские показания к госпитализации: присоединение гнойных процессов, декомпенсация хронической соматической патологии, диагностирование неопластического процесса в ЩЖ."
+          }
+        },
+        {
+          "text": "Госпитализация может потребоваться пациентам, у которых аутоиммунный тиреоидит является компонентом аутоиммунных полигландулярных синдромов при декомпенсации сопутствующих эндокринопатий.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация может потребоваться пациентам, у которых аутоиммунный тиреоидит является компонентом аутоиммунных полигландулярных синдромов при декомпенсации сопутствующих эндокринопатий."
+          }
+        },
+        {
+          "text": "Медицинские показания к госпитализации: амиодарон-индуцированный тиреотоксикоз; сочетанная патология (аутоиммунный полигландулярный синдром); декомпенсация сопутствующих заболеваний.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинские показания к госпитализации: амиодарон-индуцированный тиреотоксикоз; сочетанная патология (аутоиммунный полигландулярный синдром); декомпенсация сопутствующих заболеваний."
+          }
+        },
+        {
+          "text": "Медицинские показания к госпитализации: синдром сдавления; абсцесс; флегмона шеи; медиастинит; свищи; тромбоз близрасположенных вен.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинские показания к госпитализации: синдром сдавления; абсцесс; флегмона шеи; медиастинит; свищи; тромбоз близрасположенных вен."
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Атипия неопределенного значения (сложная для интерпретации пункция с подозрением на опухолевое поражение) - III категория по Bethesda.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "III категория – атипия неопределенного значения (сложная для интерпретации пункция с подозрением на опухолевое поражение);"
+          }
+        },
+        {
+          "text": "Фолликулярная неоплазия - IV категория по Bethesda.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "IV категория – фолликулярная неоплазия;"
+          }
+        },
+        {
+          "text": "Подозрение на злокачественную опухоль (папиллярный, медуллярный рак, метастатическая карцинома, лимфома) - V категория по Bethesda.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "V категория – подозрение на злокачественную опухоль (подозрение на папиллярный, медуллярный рак, метастатическую карциному, лимфому);"
+          }
+        },
+        {
+          "text": "Злокачественная опухоль (папиллярный рак, низкодифференцированный рак, медуллярный рак, анапластический рак, метастатическая карцинома, лимфома) - VI категория по Bethesda.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_2кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "VI категория – злокачественная опухоль (папиллярный рак, низкодифференцированный рак, медуллярный рак, анапластический рак метастатическая карцинома, лимфома)."
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
@@ -1150,18 +1706,26 @@
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-05-31T18:30:03.265996+00:00",
-    "extractor": "builder.heuristic_v2",
-    "extractor_version": "2.0",
-    "source_document_sha256": "a91c9adb1cbfde7b14f397cffcc6fe1751a6048a4471069b5e0f0ddb44fb47ac",
+    "extracted_at": "2026-07-20T15:25:02.188085+00:00",
+    "extractor": "llm_extractor",
+    "extractor_version": "1.0",
+    "source_document_sha256": null,
     "notes": [
-      "aggregated from 11 protocol_cards, 304 chunks"
+      "llm_pipeline_v1",
+      "conditions=3"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-05-31T18:30:03.266060+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[thyrotoxicosis].required_exams[0]"
+      }
+    ],
+    "validated_at": "2026-07-20T15:25:02.196479+00:00"
   }
 }

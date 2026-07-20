@@ -1,9 +1,10 @@
 protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов с туберкулезом взр и детс население
+  title: Диагностика и лечение пациентов с туберкулезом и латентной туберкулезной
+    инфекцией
   url: null
   local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
   document_sha256: null
@@ -19,413 +20,42 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - adult_and_child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов_с_туберкулезом_в
-  name: Диагностика и лечение пациентов с туберкулезом взр и детс население
+- condition_id: tuberculosis_and_latent_tb_infection
+  name: Туберкулез и латентная туберкулезная инфекция
   synonyms: []
   abbreviations: []
   icd10_codes:
   - A15
   - A16
+  - A17
+  - A18
+  - A19
   - B90
-  - J65
-  - R76.1
-  - N74.0
-  - N74.1
-  - N51
-  - N29.1
   - I32.0
   - I39.8
+  - J65
+  - N29.1
+  - N51
+  - N74.0
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria:
-    required:
-    - text: '[classification] 21. Диагноз ВТБ основывается на положительных результатах
-        микробиологического (стр. 6)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 21. Диагноз ВТБ основывается на положительных результатах
-          микробиологического (стр. 6)'
-    - text: подтверждающих заболевание ВТБ. В сложных клинических случаях диагноз
-        ВТБ,
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: подтверждающих заболевание ВТБ. В сложных клинических случаях диагноз
-          ВТБ,
-    - text: '[classification] 68. Диагноз ТБ легких без бактериовыделения и тактика
-        ведения пациента (стр. 19)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 68. Диагноз ТБ легких без бактериовыделения и тактика
-          ведения пациента (стр. 19)'
-    - text: '[classification] 69. Диагноз ВТБ без молекулярно-генетического, бактериологического
-        либо (стр. 19)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 69. Диагноз ВТБ без молекулярно-генетического, бактериологического
-          либо (стр. 19)'
-    - text: '[classification] 21. Диагноз ВТБ основывается на положительных результатах
-        микробиологического (стр. 6)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 21. Диагноз ВТБ основывается на положительных результатах
-          микробиологического (стр. 6)'
-    - text: подтверждающих заболевание ВТБ. В сложных клинических случаях диагноз
-        ВТБ,
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: подтверждающих заболевание ВТБ. В сложных клинических случаях диагноз
-          ВТБ,
-    - text: '[classification] 68. Диагноз ТБ легких без бактериовыделения и тактика
-        ведения пациента (стр. 19)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 68. Диагноз ТБ легких без бактериовыделения и тактика
-          ведения пациента (стр. 19)'
-    - text: '[classification] 69. Диагноз ВТБ без молекулярно-генетического, бактериологического
-        либо (стр. 19)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 69. Диагноз ВТБ без молекулярно-генетического, бактериологического
-          либо (стр. 19)'
-    optional: []
-    exclusion: []
+  diagnostic_criteria: null
   required_exams: []
   conditional_exams: []
-  treatment:
-    non_drug:
-    - text: '[treatment] 1. Настоящий клинический протокол устанавливает общие требования
-        к объему (стр. 2)'
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 1. Настоящий клинический протокол устанавливает общие
-          требования к объему (стр. 2)'
-    - text: оказания медицинской помощи пациентам (взрослое и детское население) с
-        лекарственно-
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: оказания медицинской помощи пациентам (взрослое и детское население)
-          с лекарственно-
-    - text: Z29.2 Другой вид профилактической химиотерапии
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Z29.2 Другой вид профилактической химиотерапии
-    - text: уточненные профилактические меры
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: уточненные профилактические меры
-    - text: Z29.9 Неуточненная профилактическая мера).
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Z29.9 Неуточненная профилактическая мера).
-    - text: '[treatment] 3. Для целей настоящего клинического протокола используются
-        основные термины (стр. 2)'
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 3. Для целей настоящего клинического протокола используются
-          основные термины (стр. 2)'
-    drug_groups: []
-    drugs:
-    - drug_name: июля
-      active_substance: null
-      drug_group: null
-      dose_text: 2006 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июля 2006 г
-    - drug_name: декабря
-      active_substance: null
-      drug_group: null
-      dose_text: 2022 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: декабря 2022 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: апреля
-      active_substance: null
-      drug_group: null
-      dose_text: 2019 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "апреля \n2019 г"
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up:
-  - text: через 30 дн
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: через 30 дн
+  treatment: null
+  follow_up: []
   hospitalization: []
   routing:
-  - text: '[routing] 37. При направлении ребенка на консультацию к врачу-фтизиатру
-      необходимо (стр. 9)'
+  - text: Направление ребенка на консультацию к врачу-фтизиатру требует подготовки
+      ряда документов и сведений.
     timing: null
     required_if: []
     source_ref:
@@ -438,10 +68,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 37. При направлении ребенка на консультацию к врачу-фтизиатру
-        необходимо (стр. 9)'
-  - text: '[routing] 50. Госпитализация пациентов с ТБ осуществляется в случае, если
-      пациент (стр. 16)'
+      quote: Направление ребенка на консультацию к врачу-фтизиатру требует подготовки
+        ряда документов и сведений.
+  - text: Госпитализация пациентов с ТБ осуществляется при необходимости интенсивной
+      медицинской помощи, круглосуточного наблюдения или эпидемической опасности.
     timing: null
     required_if: []
     source_ref:
@@ -454,63 +84,26 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 50. Госпитализация пациентов с ТБ осуществляется в случае,
-        если пациент (стр. 16)'
-  - text: 'Основаниями для госпитализации являются:'
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Основаниями для госпитализации являются:'
-  - text: госпитализация пациента с ТБ, представляющего эпидемическую опасность
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: госпитализация пациента с ТБ, представляющего эпидемическую опасность
+      quote: Госпитализация пациентов с ТБ осуществляется при необходимости интенсивной
+        медицинской помощи, круглосуточного наблюдения или эпидемической опасности.
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр
-    document_url: null
-    local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов с туберкулезом взр и детс население
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:30.710512+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T16:07:41.528718+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:30.713600+00:00'
+  validated_at: '2026-07-20T16:07:41.529115+00:00'

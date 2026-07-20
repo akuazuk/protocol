@@ -1,10 +1,10 @@
 {
   "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика и лечение пациентов детс население с рецессией десны",
+    "title": "Диагностика и лечение пациентов детского населения с рецессией десны",
     "url": null,
     "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,12 +32,14 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_и_лечение_пациентов_детс_население_с",
-      "name": "Диагностика и лечение пациентов детс население с рецессией десны",
+      "condition_id": "gum_recession",
+      "name": "Рецессия десны",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "B24"
+        "K06.0",
+        "K06.00",
+        "K06.01"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -45,7 +47,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "КЛАССИФИКАЦИЯ, ПРИЗНАКИ И КРИТЕРИИ РЕЦЕССИИ ДЕСНЫ",
+            "text": "сохранение целостности зубодесневого прикрепления",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -62,11 +64,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "КЛАССИФИКАЦИЯ, ПРИЗНАКИ И КРИТЕРИИ РЕЦЕССИИ ДЕСНЫ"
+              "quote": "сохранение целостности зубодесневого прикрепления"
             }
           },
           {
-            "text": "[diagnostics] 6. Критерии рецессии десны: (стр. 4)",
+            "text": "глубина десневого зондирования 3 мм и менее",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -83,11 +85,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 6. Критерии рецессии десны: (стр. 4)"
+              "quote": "глубина десневого зондирования 3 мм и менее"
             }
           },
           {
-            "text": "а также определение медицинских показаний к лечению, выбор метода лечения и тактики",
+            "text": "отсутствие рентгенологических изменений в периодонте и межальвеолярной кости в области зуба с рецессией десны",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -104,19 +106,141 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "а также определение медицинских показаний к лечению, выбор метода лечения и тактики"
+              "quote": "отсутствие рентгенологических изменений в периодонте и межальвеолярной кости в области зуба с рецессией десны"
+            }
+          },
+          {
+            "text": "индексная оценка (IR > 3 %)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "индексная оценка (IR > 3 %)"
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
+      "required_exams": [
+        {
+          "name": "Рентгенография",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "отсутствие рентгенологических изменений в периодонте и межальвеолярной кости в области зуба с рецессией десны"
+          }
+        },
+        {
+          "name": "Десневое зондирование",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "глубина десневого зондирования 3 мм и менее"
+          }
+        },
+        {
+          "name": "Индексная оценка",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "индексная оценка (IR > 3 %)"
+          }
+        },
+        {
+          "name": "Клинический осмотр и сбор анамнеза",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "выявление факторов, влияющих на возникновение и развитие рецессии десны, а также определение медицинских показаний к лечению, выбор метода лечения"
+          }
+        }
+      ],
       "conditional_exams": [],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 11. Планирование комплексного лечения пациентов с рецессией десны включает (стр. 5)",
+            "text": "своевременная диагностика и лечение зубочелюстных аномалий",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
               "document_url": null,
@@ -127,11 +251,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 11. Планирование комплексного лечения пациентов с рецессией десны включает (стр. 5)"
+              "quote": "своевременная диагностика и лечение зубочелюстных аномалий"
             }
           },
           {
-            "text": "подготовительные мероприятия у врача-стоматолога детского включают устранение",
+            "text": "своевременная диагностика и лечение нарушений архитектоники мягких тканей полости рта",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
               "document_url": null,
@@ -142,11 +266,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "подготовительные мероприятия у врача-стоматолога детского включают устранение"
+              "quote": "своевременная диагностика и лечение нарушений архитектоники мягких тканей полости рта"
             }
           },
           {
-            "text": "местных неблагоприятных факторов развития рецессии десны, повторную оценку",
+            "text": "своевременная диагностика и лечение болезней периодонта",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
               "document_url": null,
@@ -157,11 +281,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "местных неблагоприятных факторов развития рецессии десны, повторную оценку"
+              "quote": "своевременная диагностика и лечение болезней периодонта"
             }
           },
           {
-            "text": "ортодонтическое лечение при зубочелюстных аномалиях и окклюзионной травме",
+            "text": "своевременная диагностика и лечение кариеса",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
               "document_url": null,
@@ -172,11 +296,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ортодонтическое лечение при зубочелюстных аномалиях и окклюзионной травме"
+              "quote": "своевременная диагностика и лечение кариеса"
             }
           },
           {
-            "text": "хирургическое лечение при нарушениях архитектоники мягких тканей полости рта",
+            "text": "медицинская профилактика травмы тканей десны при проведении стоматологических манипуляций",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
               "document_url": null,
@@ -187,11 +311,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "хирургическое лечение при нарушениях архитектоники мягких тканей полости рта"
+              "quote": "медицинская профилактика травмы тканей десны при проведении стоматологических манипуляций"
             }
           },
           {
-            "text": "у врача-стоматолога-хирурга или врача-челюстно-лицевого хирурга",
+            "text": "медицинская профилактика парафункций",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
               "document_url": null,
@@ -202,17 +326,122 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "у врача-стоматолога-хирурга или врача-челюстно-лицевого хирурга"
+              "quote": "медицинская профилактика парафункций"
+            }
+          },
+          {
+            "text": "регулярное механическое удаление зубного налета с помощью гигиенических средств, а также профессиональное удаление зубных отложений",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "регулярное механическое удаление зубного налета с помощью гигиенических средств, а также профессиональное удаление зубных отложений"
+            }
+          },
+          {
+            "text": "Планирование комплексного лечения... включает: подготовительные мероприятия у врача-стоматолога детского включают устранение местных неблагоприятных факторов развития рецессии десны, повторную оценку состояния тканей периодонта;",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Планирование комплексного лечения... включает: подготовительные мероприятия у врача-стоматолога детского включают устранение местных неблагоприятных факторов развития рецессии десны, повторную оценку "
+            }
+          },
+          {
+            "text": "ортодонтическое лечение при зубочелюстных аномалиях и окклюзионной травме у врача-стоматолога-ортодонта;",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ортодонтическое лечение при зубочелюстных аномалиях и окклюзионной травме у врача-стоматолога-ортодонта;"
+            }
+          },
+          {
+            "text": "хирургическое лечение при нарушениях архитектоники мягких тканей полости рта у врача-стоматолога-хирурга или врача-челюстно-лицевого хирурга;",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "хирургическое лечение при нарушениях архитектоники мягких тканей полости рта у врача-стоматолога-хирурга или врача-челюстно-лицевого хирурга;"
+            }
+          },
+          {
+            "text": "поддерживающее лечение.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "поддерживающее лечение."
+            }
+          },
+          {
+            "text": "Основа поддерживающей терапии – дифференцированный подход к пациентам с рецессией десны с определением их в диспансерную группу.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Основа поддерживающей терапии – дифференцированный подход к пациентам с рецессией десны с определением их в диспансерную группу."
+            }
+          },
+          {
+            "text": "Медицинское наблюдение требуется у пациентов с симптоматической рецессией десны.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Медицинское наблюдение требуется у пациентов с симптоматической рецессией десны."
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "применения",
+            "drug_name": "Лидокаин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "100 мг",
+            "dose_text": "Спрей для местного применения 100 мг/мл. Одну порцию (1–3 нажатия) аэрозоля наносят на слизистую оболочку полости рта или десну. Можно наносить путем смазывания смоченным тампоном.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -224,20 +453,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "применения 100 мг/мл \nво флаконах 50 мл \nОдну порцию (1–3"
+              "quote": "Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну. Лекарственное средство можно наносить путем смазывания смоченным в лекарственном средстве ватным тампоном"
             }
           },
           {
-            "drug_name": "шприцах",
+            "drug_name": "Лидокаин/Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "12,5 г",
+            "dose_text": "Анестезирующий гель. Для аппликационной анестезии. Для детей 2-11 лет: доза лидокаина гидрохлорида не должна превышать 2,9 мг/кг. Разовая доза индивидуальна.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -249,20 +478,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "шприцах 12,5 г"
+              "quote": "Для аппликационной анестезии слизистой оболочки полости рта... Для детей в возрасте от 2 до 11 лет максимально допустимая доза лидокаина гидрохлорида не должна превышать 2,9 мг/кг. Разовую дозу врач-специалист назначает индивидуально..."
             }
           },
           {
-            "drug_name": "превышать",
+            "drug_name": "Артикаин/Эпинефрин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2,9 мг",
+            "dose_text": "Раствор для инъекций. Инъекционная анестезия. Разовая доза индивидуальна. Доза не должна превышать 7 мг артикаина на 1 кг массы тела.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -274,20 +503,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "превышать 2,9 мг/кг"
+              "quote": "Инъекционная анестезия тканей полости рта. Разовую дозу врач-специалист назначает индивидуально... доза средства не должна превышать 7 мг артикаина на 1 кг массы тела."
             }
           },
           {
-            "drug_name": "ампулах",
+            "drug_name": "Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2 мл",
+            "dose_text": "Раствор для местного и наружного применения 0,5 мг/мл. 5–10 мл раствора наносят на пораженную поверхность, экспозиция 1–3 мин, 2–3 раза в сутки, в течение 3–5 дней.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -299,20 +528,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ампулах 2 мл \n(картриджах 1,7 мл)"
+              "quote": "Неразведенный раствор применяется в виде орошений, полосканий и аппликаций – 5–10 мл раствора наносят на пораженную поверхность... с экспозицией 1–3 мин 2–3 раза в сутки... в течение 3–5 дней"
             }
           },
           {
-            "drug_name": "картриджах",
+            "drug_name": "Бензилдиметил-аммония хлорид",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1,7 мл",
+            "dose_text": "Раствор для наружного (местного) применения 0,01 % водного раствора. Полоскание 10–15 мл, 3–4 раза в сутки, в течение 3–5 дней. Допускается местное применение тампонов.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -324,113 +553,13 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "картриджах 1,7 мл"
-            }
-          },
-          {
-            "drug_name": "ноября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2022 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "ноября 2022 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          },
-          {
-            "drug_name": "марта",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2023 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "марта 2023 г"
+              "quote": "Рекомендуется полоскание полости рта 10–15 мл лекарственного средства, 3–4 раза в сутки в течение 3–5 дней. В случае невозможности полоскания допускается местное применение марлевых или ватных тампонов, смоченных раствором лекарственного средства."
             }
           }
         ],
@@ -438,45 +567,149 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
+      "follow_up": [
+        {
+          "text": "Основа поддерживающей терапии – дифференцированный подход к пациентам с рецессией десны с определением их в диспансерную группу.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Основа поддерживающей терапии – дифференцированный подход к пациентам с рецессией десны с определением их в диспансерную группу."
+          }
+        },
+        {
+          "text": "Медицинское наблюдение требуется у пациентов с симптоматической рецессией десны.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинское наблюдение требуется у пациентов с симптоматической рецессией десны."
+          }
+        },
+        {
+          "text": "Стабилизация процесса – состояние периодонта без признаков активности патологического процесса в течение 2 лет;",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Стабилизация процесса – состояние периодонта без признаков активности патологического процесса в течение 2 лет;"
+          }
+        }
+      ],
       "hospitalization": [],
       "routing": [],
-      "red_flags": [],
+      "red_flags": [
+        {
+          "text": "Применение лидокаина/хлоргексидина противопоказано у детей до 2 лет.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "У детей до 2 лет применение противопоказано."
+          }
+        },
+        {
+          "text": "Использование артикаина/эпинефрина у детей до года не изучалось.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Использование у детей до года не изучалось"
+          }
+        },
+        {
+          "text": "Опыт клинического применения бензилдиметил-аммония хлорида у детей до 18 лет ограничен.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Опыт клинического применения у детей до 18 лет ограничен"
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_рецессией_десн",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_рецессией_десны_пост_МЗ_30.11.2022_112.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика и лечение пациентов детс население с рецессией десны"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:51.770945+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T18:10:32.269651+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:51.774986+00:00"
+    "validated_at": "2026-07-20T18:10:32.275640+00:00"
   }
 }

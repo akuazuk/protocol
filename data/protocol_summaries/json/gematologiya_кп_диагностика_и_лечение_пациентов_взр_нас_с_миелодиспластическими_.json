@@ -1,10 +1,10 @@
 {
   "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика и лечение пациентов взрослое население с миелодиспластическими синдромами",
+    "title": "Диагностика и лечение пациентов с миелодиспластическими синдромами",
     "url": null,
     "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
     "document_sha256": null,
@@ -32,16 +32,12 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_и_лечение_пациентов_взрослое_населен",
-      "name": "Диагностика и лечение пациентов взрослое население с миелодиспластическими синдромами",
+      "condition_id": "myelodysplastic_syndromes",
+      "name": "Миелодиспластические синдромы",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "D46",
-        "Q13",
-        "B24",
-        "D66",
-        "K75.9"
+        "D46"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -49,7 +45,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[diagnostics] 10. Диагностические критерии МДС: (стр. 3)",
+            "text": "Стабильная цитопения (Hb <110 г/л)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -66,11 +62,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 10. Диагностические критерии МДС: (стр. 3)"
+              "quote": "Стабильная цитопения (Hb <110 г/л)"
             }
           },
           {
-            "text": "10.1. предварительные критерии группы А:",
+            "text": "Стабильная цитопения (нейтрофилы <1,8 х 10^9/л)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -87,11 +83,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "10.1. предварительные критерии группы А:"
+              "quote": "Стабильная цитопения (нейтрофилы <1,8 х 10^9/л)"
             }
           },
           {
-            "text": "[diagnostics] 10.2. МДС-ассоциированные критерии группы В: (стр. 3)",
+            "text": "Стабильная цитопения (тромбоциты <100 х 10^9/л)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -108,11 +104,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 10.2. МДС-ассоциированные критерии группы В: (стр. 3)"
+              "quote": "Стабильная цитопения (тромбоциты <100 х 10^9/л)"
             }
           },
           {
-            "text": "10.3. вспомогательные критерии группы С (для пациентов, имеющих критерии",
+            "text": "Исключение других гематологических и негематологических причин цитопении/дисплазии",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -129,11 +125,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "10.3. вспомогательные критерии группы С (для пациентов, имеющих критерии"
+              "quote": "Исключение других гематологических и негематологических причин цитопении/дисплазии"
             }
           },
           {
-            "text": "группы А, но не имеющих критерии группы В):",
+            "text": "Дисплазия >10% клеток в эритроидной, нейтрофильной или мегакариоцитарной линиях костного мозга",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -150,11 +146,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "группы А, но не имеющих критерии группы В):"
+              "quote": "Дисплазия >10% клеток в эритроидной, нейтрофильной или мегакариоцитарной линиях костного мозга"
             }
           },
           {
-            "text": "[diagnostics] 11. Диагноз устанавливается при наличии двух предварительных критериев (стр. 3)",
+            "text": "Наличие >15% кольцевых сидеробластов",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -171,11 +167,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 11. Диагноз устанавливается при наличии двух предварительных критериев (стр. 3)"
+              "quote": "Наличие >15% кольцевых сидеробластов"
             }
           },
           {
-            "text": "группы А и не менее чем одного МДС-ассоциированных критериев группы В.",
+            "text": "5-19% бластов в костном мозге",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -192,11 +188,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "группы А и не менее чем одного МДС-ассоциированных критериев группы В."
+              "quote": "5-19% бластов в костном мозге"
             }
           },
           {
-            "text": "Вспомогательные критерии группы С используются при отсутствии критериев группы В",
+            "text": "Типичные хромосомные аберрации (+8, -7, 5q-, 20q-)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -213,7 +209,112 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Вспомогательные критерии группы С используются при отсутствии критериев группы В"
+              "quote": "Типичные хромосомные аберрации (+8, -7, 5q-, 20q-)"
+            }
+          },
+          {
+            "text": "Аномальный иммунный фенотип эритроидных или миелоидных клеток костного мозга (CD38, CD13, CD71, CD33)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Аномальный иммунный фенотип эритроидных или миелоидных клеток костного мозга (CD38, CD13, CD71, CD33)"
+            }
+          },
+          {
+            "text": "Молекулярно-генетические признаки клональной клеточной популяции в костном мозге",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Молекулярно-генетические признаки клональной клеточной популяции в костном мозге"
+            }
+          },
+          {
+            "text": "Значительное и стабильное снижение колониеобразующей активности костного мозга или периферической крови",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Значительное и стабильное снижение колониеобразующей активности костного мозга или периферической крови"
+            }
+          },
+          {
+            "text": "Диагноз устанавливается при наличии двух предварительных критериев группы А и не менее чем одного МДС-ассоциированного критерия группы В",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Диагноз устанавливается при наличии двух предварительных критериев группы А и не менее чем одного МДС-ассоциированного критерия группы В"
+            }
+          },
+          {
+            "text": "Вспомогательные критерии группы С используются при отсутствии критериев группы В и наличии признаков клональной миелоидной пролиферации",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Вспомогательные критерии группы С используются при отсутствии критериев группы В и наличии признаков клональной миелоидной пролиферации"
             }
           }
         ],
@@ -222,7 +323,7 @@
       },
       "required_exams": [
         {
-          "name": "ОАК",
+          "name": "Сбор анамнеза (химиотерапия/лучевая терапия, МДС/ОМЛ в семье, инфекции, геморрагии)",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -237,395 +338,572 @@
             "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
             "document_url": null,
             "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
-            "page_start": null,
+            "page_start": 9,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "кий синдром). Физикальное обследование. ОАК с подсчетом количества тромбоцитов, лейкоцитарной формулы.\n\n[diagnostics] КМ <5"
+            "quote": "Сбор анамнеза (химиотерапия или лучевая терапия в прошлом, случаи МДС/ОМЛ в семье, рецидивирующие инфекционные заболевания или геморрагический синдром)."
+          }
+        },
+        {
+          "name": "Физикальное обследование",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Физикальное обследование."
+          }
+        },
+        {
+          "name": "ОАК с подсчетом тромбоцитов и лейкоформулой",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ОАК с подсчетом количества тромбоцитов, лейкоцитарной формулы."
+          }
+        },
+        {
+          "name": "БАК: общий белок, мочевина, креатинин, билирубин, ЩФ, АСТ, АЛТ, ЛДГ, железо",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "БАК: общий белок, мочевина, креатинин, билирубин, щелочная фосфатаза, АСТ, АЛТ, ЛДГ, железо"
+          }
+        },
+        {
+          "name": "ОАК с подсчетом ретикулоцитов и морфологической оценкой",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ОАК с подсчетом количества тромбоцитов, ретикулоцитов, лейкоцитарной формулы, морфологической оценкой."
+          }
+        },
+        {
+          "name": "БАК: ферритин, альбумин, глобулины",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "БАК: исследование уровня ферритина, альбумина, глобулинов;"
+          }
+        },
+        {
+          "name": "Уровень витамина В12",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "исследование уровня витамина В12;"
+          }
+        },
+        {
+          "name": "Уровень фолиевой кислоты",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "исследование уровня фолиевой кислоты;"
+          }
+        },
+        {
+          "name": "HBsAg в крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "определение антигена вируса гепатита B (HBsAg) в крови;"
+          }
+        },
+        {
+          "name": "Антитела к ВГС (IgM, IgG)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "определение антител классов M и G к вирусному гепатиту C в крови;"
+          }
+        },
+        {
+          "name": "Антитела к Treponema pallidum",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "определение антител к бледной трепонеме (Treponema pallidum) в сыворотке крови;"
+          }
+        },
+        {
+          "name": "Антитела к ВИЧ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "определение антител к вирусу иммунодефицита человека в крови;"
+          }
+        },
+        {
+          "name": "Фиброгастродуоденоскопия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "фиброгастродуоденоскопия;"
+          }
+        },
+        {
+          "name": "Колоноскопия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "колоноскопия;"
+          }
+        },
+        {
+          "name": "Медицинский осмотр врача общей практики (врача-терапевта)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "медицинский осмотр врача общей практики (врача-терапевта) – 2–4 раза в год"
+          }
+        },
+        {
+          "name": "Консультация врача-гематолога",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "консультация врача-гематолога (периодичность определяется индивидуально)"
           }
         }
       ],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "[treatment] 6. Настоящий клинический протокол в части лечения МДС включает основные (стр. 2)",
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 6. Настоящий клинический протокол в части лечения МДС включает основные (стр. 2)"
-            }
-          },
-          {
-            "text": "по химическим наименованиям по систематической или заместительной номенклатуре,",
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "по химическим наименованиям по систематической или заместительной номенклатуре,"
-            }
-          },
-          {
-            "text": "с указанием лекарственной формы и дозировки.",
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "с указанием лекарственной формы и дозировки."
-            }
-          },
-          {
-            "text": "показаниям возможно применение ЛП «off-label», назначаемых по решению врачебного",
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "показаниям возможно применение ЛП «off-label», назначаемых по решению врачебного"
-            }
-          },
-          {
-            "text": "[treatment] 13. Для оценки прогноза и определения тактики лечения пациентов с МДС (стр. 3)",
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 13. Для оценки прогноза и определения тактики лечения пациентов с МДС (стр. 3)"
-            }
-          },
-          {
-            "text": "[treatment] 15. Выбор терапии основан на диагнозе и группе риска, указанным в приложении 4, (стр. 4)",
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 15. Выбор терапии основан на диагнозе и группе риска, указанным в приложении 4, (стр. 4)"
-            }
+      "conditional_exams": [
+        {
+          "name": "Исследование уровня ферритина в сыворотке крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "исследование уровня ферритина в сыворотке крови (на фоне терапии деферазироксом) – ежемесячно, с коррекцией дозы деферазирокса каждые 3–6 месяцев при необходимости"
           }
-        ],
-        "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "IPSS-R",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2012 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "IPSS-R 2012 г"
-            }
-          },
-          {
-            "drug_name": "более",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1000 мкг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "более 1000 мкг/л"
-            }
-          },
-          {
-            "drug_name": "диспергируемые",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "250 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "диспергируемые \n250 мг, 500 мг"
-            }
-          },
-          {
-            "drug_name": "составляет",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "30 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "составляет 30 мг/кг"
-            }
-          },
-          {
-            "drug_name": "инфузий",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "50 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "инфузий 50 мг, используется в дозе 20 мг/м2 внутривен"
-            }
-          },
-          {
-            "drug_name": "введения",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "100 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "введения 100 мг, лиофилизат для приготовления раствора "
-            }
-          },
-          {
-            "drug_name": "инъекций",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "100 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "инъекций \n100 мг – подкожно в дозе 75 мг/м2 1–7 дней с пе"
-            }
-          },
-          {
-            "drug_name": "марта",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2024 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "марта 2024 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          },
-          {
-            "drug_name": "ноября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2010 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "ноября 2010 г"
-            }
+        },
+        {
+          "name": "Исследование крови методом проточной цитофлуориметрии",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Исследование крови методом проточной цитофлуориметрии для выявления клона клеток пароксизмальной ночной гемоглобинурии (показано при бластах КМ <5% или признаках внутрисосудистого гемолиза при верификации МДС). Кратность индивидуальна."
           }
-        ],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
+        },
+        {
+          "name": "Ультразвуковое исследование (УЗИ) органов брюшной полости (ОБП)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "УЗИ ОБП – медицинские показания и кратность определяются индивидуально в процессе лечения для выявления гепатоспленомегалии, лимфаденопатии и патологии других жизненно важных органов."
+          }
+        },
+        {
+          "name": "Ультразвуковое исследование (УЗИ) органов малого таза (ОМТ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "УЗИ ОМТ – медицинские показания и кратность определяются индивидуально в процессе лечения для выявления гепатоспленомегалии, лимфаденопатии и патологии других жизненно важных органов."
+          }
+        },
+        {
+          "name": "Рентгенография (Rh-графия) органов грудной клетки (ОГК)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Rh-графия ОГК – медицинские показания и кратность определяются индивидуально для исключения поражения легочной ткани и органов средостения (воспалительного, невоспалительного характера)."
+          }
+        },
+        {
+          "name": "Компьютерная томография ОГК",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Компьютерная томография ОГК – медицинские показания и кратность определяются индивидуально для исключения поражения легочной ткани и органов средостения (воспалительного, невоспалительного характера)."
+          }
+        },
+        {
+          "name": "Аспирационная биопсия костного мозга",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Аспирационная биопсия костного мозга (миелограмма, иммунофенотипирование, цитогенетический, молекулярно-генетический анализ) – показания, параметры и кратность исследования определяются индивидуально."
+          }
+        }
+      ],
+      "treatment": null,
       "follow_up": [
         {
-          "text": "контроль",
+          "text": "Медицинское наблюдение направлено на определение гематологического статуса пациента, исключение реактивных цитопений или других клональных заболеваний кроветворной системы.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -639,14 +917,32 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
+            "quote": "Медицинское наблюдение направлено на определение гематологического статуса пациента, исключение реактивных цитопений или других клональных заболеваний кроветворной системы."
+          }
+        },
+        {
+          "text": "Медицинское наблюдение пациентов с МДС в амбулаторно-поликлинических организациях здравоохранения осуществляет врач общей практики (врач-терапевт).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинское наблюдение пациентов с МДС в амбулаторно-поликлинических организациях здравоохранения осуществляет врач общей практики (врач-терапевт)."
           }
         }
       ],
       "hospitalization": [],
       "routing": [
         {
-          "text": "[routing] 5. Направление (стр. 2)",
+          "text": "Первичный скрининг: Районный, городской (врачи любой специальности амбулаторно-поликлинических и стационарных организаций здравоохранения)",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -659,11 +955,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "[routing] 5. Направление (стр. 2)"
+            "quote": "Первичный скрининг: Районный, городской (врачи любой специальности амбулаторно-поликлинических и стационарных организаций здравоохранения)"
           }
         },
         {
-          "text": "[routing] 5. Направление (стр. 2)",
+          "text": "Углубленное обследование: Областные, городские (гематологические отделения, кабинеты)",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -676,11 +972,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "[routing] 5. Направление (стр. 2)"
+            "quote": "Углубленное обследование: Областные, городские (гематологические отделения, кабинеты)"
           }
         },
         {
-          "text": "[prevention] 24. Медицинское наблюдение направлено на определение гематологического статуса (стр. 6)",
+          "text": "госпитализация",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -693,11 +989,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "[prevention] 24. Медицинское наблюдение направлено на определение гематологического статуса (стр. 6)"
+            "quote": "госпитализация"
           }
         },
         {
-          "text": "[prevention] 25. Медицинское наблюдение пациентов с МДС в амбулаторно-поликлинических (стр. 6)",
+          "text": "амбулаторно",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -710,7 +1006,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "[prevention] 25. Медицинское наблюдение пациентов с МДС в амбулаторно-поликлинических (стр. 6)"
+            "quote": "амбулаторно"
           }
         }
       ],
@@ -718,38 +1014,26 @@
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_миелодиспластическими_синдромами_пост_МЗ_05.032024_45.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика и лечение пациентов взрослое население с миелодиспластическими синдромами"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:29.950569+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T16:16:38.791788+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:29.959939+00:00"
+    "validated_at": "2026-07-20T16:16:38.811582+00:00"
   }
 }

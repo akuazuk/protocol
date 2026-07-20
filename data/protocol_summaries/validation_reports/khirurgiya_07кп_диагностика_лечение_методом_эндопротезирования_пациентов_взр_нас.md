@@ -1,6 +1,91 @@
 # Validation: khirurgiya_07кп_диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас
 
-- **status:** valid
-- **validated_at:** 2026-06-23T19:16:26.627413+00:00
+- **status:** needs_human_review
+- **validated_at:** 2026-07-20T16:25:25.024184+00:00
 - **review_status:** needs_review
-- **extraction_status:** auto_extracted
+- **extraction_status:** llm_extracted
+
+## Warnings
+- `duplicate_exam` conditions[drugie_revmatoidnye_artrity].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[drugie_revmatoidnye_artrity].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[drugie_revmatoidnye_artrity].required_exams[2]: Дублирующееся обследование
+- `duplicate_drug` conditions[drugie_revmatoidnye_artrity].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[drugie_revmatoidnye_artrity].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[drugie_revmatoidnye_artrity].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_exam` conditions[psoriaticheskie_i_enteropaticheskie_artropatii].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[psoriaticheskie_i_enteropaticheskie_artropatii].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[psoriaticheskie_i_enteropaticheskie_artropatii].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[psoriaticheskie_i_enteropaticheskie_artropatii].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[psoriaticheskie_i_enteropaticheskie_artropatii].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_exam` conditions[poliartroz].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[poliartroz].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[poliartroz].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[poliartroz].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[poliartroz].required_exams[6]: Дублирующееся обследование
+- `duplicate_drug` conditions[poliartroz].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[poliartroz].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[poliartroz].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_exam` conditions[koksartroz].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[koksartroz].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[koksartroz].required_exams[5]: Дублирующееся обследование
+- `duplicate_exam` conditions[koksartroz].required_exams[6]: Дублирующееся обследование
+- `duplicate_drug` conditions[koksartroz].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[koksartroz].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[koksartroz].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_exam` conditions[ankiloziruyushchiy_spondilit].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[ankiloziruyushchiy_spondilit].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[ankiloziruyushchiy_spondilit].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[ankiloziruyushchiy_spondilit].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[ankiloziruyushchiy_spondilit].required_exams[4]: Дублирующееся обследование
+- `duplicate_drug` conditions[ankiloziruyushchiy_spondilit].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[ankiloziruyushchiy_spondilit].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[ankiloziruyushchiy_spondilit].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_exam` conditions[osteonekroz].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[osteonekroz].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[osteonekroz].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[osteonekroz].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[osteonekroz].required_exams[5]: Дублирующееся обследование
+- `duplicate_exam` conditions[osteonekroz].required_exams[6]: Дублирующееся обследование
+- `duplicate_drug` conditions[osteonekroz].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[osteonekroz].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[osteonekroz].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_exam` conditions[psevdartroz_posle_srashcheniya_ili_artrodeza].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[psevdartroz_posle_srashcheniya_ili_artrodeza].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[psevdartroz_posle_srashcheniya_ili_artrodeza].required_exams[5]: Дублирующееся обследование
+- `duplicate_exam` conditions[psevdartroz_posle_srashcheniya_ili_artrodeza].required_exams[6]: Дублирующееся обследование
+- `duplicate_drug` conditions[psevdartroz_posle_srashcheniya_ili_artrodeza].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[psevdartroz_posle_srashcheniya_ili_artrodeza].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[psevdartroz_posle_srashcheniya_ili_artrodeza].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[psevdartroz_posle_srashcheniya_ili_artrodeza].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_exam` conditions[perelom_posle_ustanovki_ortoimplanta].required_exams[2]: Дублирующееся обследование
+- `duplicate_drug` conditions[perelom_posle_ustanovki_ortoimplanta].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[perelom_posle_ustanovki_ortoimplanta].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[perelom_posle_ustanovki_ortoimplanta].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_exam` conditions[perelom_sheyki_bedra].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[perelom_sheyki_bedra].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[perelom_sheyki_bedra].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[perelom_sheyki_bedra].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[perelom_sheyki_bedra].required_exams[5]: Дублирующееся обследование
+- `duplicate_exam` conditions[perelom_sheyki_bedra].required_exams[6]: Дублирующееся обследование
+- `duplicate_drug` conditions[perelom_sheyki_bedra].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[perelom_sheyki_bedra].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[perelom_sheyki_bedra].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_exam` conditions[chrezvertelnyy_perelom].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[chrezvertelnyy_perelom].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[chrezvertelnyy_perelom].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[chrezvertelnyy_perelom].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[chrezvertelnyy_perelom].required_exams[4]: Дублирующееся обследование
+- `duplicate_drug` conditions[chrezvertelnyy_perelom].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[chrezvertelnyy_perelom].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[chrezvertelnyy_perelom].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[chrezvertelnyy_perelom].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_exam` conditions[perelomy_drugikh_chastey_bedrennoy_kosti].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[perelomy_drugikh_chastey_bedrennoy_kosti].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[perelomy_drugikh_chastey_bedrennoy_kosti].required_exams[4]: Дублирующееся обследование
+- `duplicate_exam` conditions[perelomy_drugikh_chastey_bedrennoy_kosti].required_exams[5]: Дублирующееся обследование
+- `duplicate_exam` conditions[perelomy_drugikh_chastey_bedrennoy_kosti].required_exams[6]: Дублирующееся обследование
+- `duplicate_drug` conditions[perelomy_drugikh_chastey_bedrennoy_kosti].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[perelomy_drugikh_chastey_bedrennoy_kosti].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[perelomy_drugikh_chastey_bedrennoy_kosti].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[perelomy_drugikh_chastey_bedrennoy_kosti].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[perelomy_drugikh_chastey_bedrennoy_kosti].treatment.drugs[4]: Дублирующийся препарат

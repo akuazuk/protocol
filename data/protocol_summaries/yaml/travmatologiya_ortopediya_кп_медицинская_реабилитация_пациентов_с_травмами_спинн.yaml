@@ -1,9 +1,9 @@
 protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Медицинская реабилитация пациентов с травмами спинного мозга взрослое население
+  title: Медицинская реабилитация пациентов с травмами спинного мозга (взрослое население)
   url: null
   local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
   document_sha256: null
@@ -26,12 +26,11 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: медицинская_реабилитация_пациентов_с_травмами_сп
-  name: Медицинская реабилитация пациентов с травмами спинного мозга взрослое население
+- condition_id: spinal_cord_trauma
+  name: Травмы спинного мозга
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - F52.3
   - S14
   - S14.0
   - S14.1
@@ -42,13 +41,13 @@ conditions:
   - S34.0
   - S34.1
   - S34.3
-  - F52.4
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Критерии оценки эффективности медицинской реабилитации (стр. 14)
+    - text: 'Значительное улучшение: ФК ограничения к самообслуживанию/передвижению
+        уменьшились на 2 и более значения.'
       logic_group: null
       operator: unknown
       values: []
@@ -65,8 +64,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Критерии оценки эффективности медицинской реабилитации (стр. 14)
-    - text: Качественная оценка | Критерии оценки эффективности медицинской реабилитации
+        quote: 'Значительное улучшение: ФК ограничения к самообслуживанию/передвижению
+          уменьшились на 2 и более значения.'
+    - text: 'Улучшение: ФК ограничения к самообслуживанию/передвижению уменьшились
+        на 1 значение.'
       logic_group: null
       operator: unknown
       values: []
@@ -83,8 +84,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Качественная оценка | Критерии оценки эффективности медицинской реабилитации
-    - text: Критерии оценки эффективности медицинской реабилитации (стр. 14)
+        quote: 'Улучшение: ФК ограничения к самообслуживанию/передвижению уменьшились
+          на 1 значение.'
+    - text: 'Незначительное улучшение: ФК нарушения функций уменьшились на 1 и более
+        значение без динамики ограничений.'
       logic_group: null
       operator: unknown
       values: []
@@ -101,8 +104,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Критерии оценки эффективности медицинской реабилитации (стр. 14)
-    - text: Качественная оценка | Критерии оценки эффективности медицинской реабилитации
+        quote: 'Незначительное улучшение: ФК нарушения функций уменьшились на 1 и
+          более значение без динамики ограничений.'
+    - text: 'Без динамики: Отсутствие изменений ФК нарушений функций и ограничений
+        способности к самообслуживанию или передвижению.'
       logic_group: null
       operator: unknown
       values: []
@@ -119,8 +124,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Качественная оценка | Критерии оценки эффективности медицинской реабилитации
-    - text: Критерии оценки эффективности медицинской реабилитации пациентов с травмой
+        quote: 'Без динамики: Отсутствие изменений ФК нарушений функций и ограничений
+          способности к самообслуживанию или передвижению.'
+    - text: 'Незначительное ухудшение: ФК нарушения функций увеличились без динамики
+        ФК ограничений.'
       logic_group: null
       operator: unknown
       values: []
@@ -137,9 +144,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Критерии оценки эффективности медицинской реабилитации пациентов с
-          травмой
-    - text: Критерии оценки эффективности медицинской реабилитации
+        quote: 'Незначительное ухудшение: ФК нарушения функций увеличились без динамики
+          ФК ограничений.'
+    - text: 'Ухудшение: ФК нарушения функций увеличились с ростом ФК ограничений к
+        самообслуживанию/передвижению.'
       logic_group: null
       operator: unknown
       values: []
@@ -156,8 +164,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Критерии оценки эффективности медицинской реабилитации
-    - text: Критерии оценки эффективности медицинской реабилитации пациентов с травмой
+        quote: 'Ухудшение: ФК нарушения функций увеличились с ростом ФК ограничений
+          к самообслуживанию/передвижению.'
+    - text: Сохраняющиеся умеренные (ФК2), выраженные (ФК3) или резко выраженные (ФК4)
+        двигательные нарушения
       logic_group: null
       operator: unknown
       values: []
@@ -174,9 +184,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Критерии оценки эффективности медицинской реабилитации пациентов с
-          травмой
-    - text: Критерии оценки эффективности медицинской реабилитации
+        quote: Сохраняющиеся умеренные (ФК2), выраженные (ФК3) или резко выраженные
+          (ФК4) двигательные нарушения
+    - text: Нарушения функции тазовых органов (ФК2, ФК3, ФК4)
       logic_group: null
       operator: unknown
       values: []
@@ -193,15 +203,207 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Критерии оценки эффективности медицинской реабилитации
+        quote: Нарушения функции тазовых органов (ФК2, ФК3, ФК4)
     optional: []
     exclusion: []
   required_exams: []
-  conditional_exams: []
+  conditional_exams:
+  - name: Осмотр врачом-нейрохирургом
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'осмотр врачами-специалистами: врачом-нейрохирургом'
+  - name: Осмотр врачом-психотерапевтом
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'осмотр врачами-специалистами: врачом-психотерапевтом'
+  - name: Осмотр врачом-терапевтом
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'осмотр врачами-специалистами: врачом-терапевтом'
+  - name: Осмотр врачом-урологом
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'осмотр врачами-специалистами: врачом-урологом'
+  - name: Компьютерная томография позвоночника (поврежденный отдел)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: компьютерная томография позвоночника (поврежденный отдел)
+  - name: Магнитно-резонансная томография спинного мозга и позвоночника (поврежденный
+      отдел)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: магнитно-резонансная томография спинного мозга и позвоночника (поврежденный
+        отдел)
+  - name: Электронейромиография стимуляционная (с исследованием соматосенсорных вызванных
+      потенциалов)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: электронейромиография стимуляционная (с исследованием соматосенсорных
+        вызванных потенциалов)
+  - name: Транскраниальная магнитная стимуляция (с исследованием моторных ответов)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: транскраниальная магнитная стимуляция (с исследованием моторных ответов)
+  - name: Ультразвуковое исследование органов брюшной полости
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ультразвуковое исследование органов брюшной полости (комплексное).
   treatment:
     non_drug:
-    - text: '[treatment] 9. Противопоказания к оказанию медицинской реабилитации при
-        травмах спинного (стр. 3)'
+    - text: Периодическая асептическая самокатетеризация мочевого пузыря
       source_ref:
         protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
         document_url: null
@@ -212,9 +414,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 9. Противопоказания к оказанию медицинской реабилитации
-          при травмах спинного (стр. 3)'
-    - text: '9.2. необходимость хирургических вмешательств (в том числе повторных):'
+        quote: Периодическая асептическая самокатетеризация мочевого пузыря
+    - text: Поведенческая терапия с применением принципов обратной биологической связи
       source_ref:
         protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
         document_url: null
@@ -225,8 +426,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '9.2. необходимость хирургических вмешательств (в том числе повторных):'
-    - text: при недостигнутой стабильности поврежденных сегментов позвоночника
+        quote: Поведенческая терапия с применением принципов обратной биологической
+          связи
+    - text: Физиотерапевтическое лечение
       source_ref:
         protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
         document_url: null
@@ -237,8 +439,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: при недостигнутой стабильности поврежденных сегментов позвоночника
-    - text: при развившейся нестабильности элементов конструкций, создающей угрозу
+        quote: Физиотерапевтическое лечение
+    - text: Трансуретральная резекция шейки мочевого пузыря
       source_ref:
         protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
         document_url: null
@@ -249,8 +451,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: при развившейся нестабильности элементов конструкций, создающей угрозу
-    - text: увеличения стенозирования позвоночного канала с прогрессированием неврологической
+        quote: Трансуретральная резекция шейки мочевого пузыря
+    - text: Илеоцистоаугментация
       source_ref:
         protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
         document_url: null
@@ -261,9 +463,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: увеличения стенозирования позвоночного канала с прогрессированием неврологической
-    - text: '[treatment] 9. Противопоказания к оказанию медицинской реабилитации при
-        травмах спинного (стр. 3)'
+        quote: Илеоцистоаугментация
+    - text: Аутоцистодубликатура
       source_ref:
         protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
         document_url: null
@@ -274,14 +475,52 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 9. Противопоказания к оказанию медицинской реабилитации
-          при травмах спинного (стр. 3)'
+        quote: Аутоцистодубликатура
+    - text: Ремускуляризация мочевого пузыря
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ремускуляризация мочевого пузыря
+    - text: Имплантация систем для хронической нейромодуляции
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Имплантация систем для хронической нейромодуляции
+    - text: Иные хирургические вмешательства, направленные на сохранение функции мочевого
+        пузыря и предотвращение обструктивной уропатии верхних мочевых путей
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Иные хирургические вмешательства, направленные на сохранение функции
+          мочевого пузыря и предотвращение обструктивной уропатии верхних мочевых
+          путей
     drug_groups: []
     drugs:
-    - drug_name: таблетки
+    - drug_name: Оксибутинин
       active_substance: null
       drug_group: null
-      dose_text: 2 мг
+      dose_text: таблетки по 5 мг, внутрь по 5 мг 2–4 раза в день
       frequency_text: null
       duration_text: null
       route: null
@@ -293,17 +532,18 @@ conditions:
         protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
         document_url: null
         local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "таблетки 2 мг и 4 мг, от 1 мг до 8 мг 1 раз в сутки, \n"
-    - drug_name: действия
+        quote: 'M-холиноблокаторы: оксибутинин – таблетки по 5 мг, внутрь по 5 мг
+          2–4 раза в день'
+    - drug_name: Троспия хлорид
       active_substance: null
       drug_group: null
-      dose_text: 0,4 мг
+      dose_text: таблетки по 15 мг и 30 мг, внутрь 30–45 мг в сутки в 2–3 приема
       frequency_text: null
       duration_text: null
       route: null
@@ -315,17 +555,18 @@ conditions:
         protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
         document_url: null
         local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: 'действия 0,4 мг, 0,4 мг 1 раз в сутки, или силодозин – '
-    - drug_name: капсулы
+        quote: троспия хлорид – таблетки по 15 мг и 30 мг, внутрь 30–45 мг в сутки
+          в 2–3 приема
+    - drug_name: Солифенацина сукцинат
       active_substance: null
       drug_group: null
-      dose_text: 4 мг
+      dose_text: таблетки по 5 мг, внутрь по 5–10 мг 1 раз в сутки
       frequency_text: null
       duration_text: null
       route: null
@@ -337,17 +578,18 @@ conditions:
         protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
         document_url: null
         local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: капсулы 4 мг и 8 мг, 8 мг 1 раз в сутки
-    - drug_name: октября
+        quote: солифенацина сукцинат – таблетки по 5 мг, внутрь по 5–10 мг 1 раз в
+          сутки
+    - drug_name: Доксазозин
       active_substance: null
       drug_group: null
-      dose_text: 2020 г
+      dose_text: таблетки 2 мг и 4 мг, от 1 мг до 8 мг 1 раз в сутки
       frequency_text: null
       duration_text: null
       route: null
@@ -359,17 +601,19 @@ conditions:
         protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
         document_url: null
         local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: октября 2020 г
-    - drug_name: августа
+        quote: 'α-адреноблокаторы: доксазозин – таблетки 2 мг и 4 мг, от 1 мг до 8
+          мг 1 раз в сутки'
+    - drug_name: Тамсулозин
       active_substance: null
       drug_group: null
-      dose_text: 2025 г
+      dose_text: таблетки/капсулы с модифицированным высвобождением/пролонгированного
+        действия 0,4 мг, 0,4 мг 1 раз в сутки
       frequency_text: null
       duration_text: null
       route: null
@@ -381,17 +625,18 @@ conditions:
         protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
         document_url: null
         local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: августа 2025 г
-    - drug_name: июня
+        quote: тамсулозин – таблетки/капсулы с модифицированным высвобождением/пролонгированного
+          действия 0,4 мг, 0,4 мг 1 раз в сутки
+    - drug_name: Силодозин
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: капсулы 4 мг и 8 мг, 8 мг 1 раз в сутки
       frequency_text: null
       duration_text: null
       route: null
@@ -403,20 +648,934 @@ conditions:
         protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
         document_url: null
         local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "июня \n1993 г"
+        quote: силодозин – капсулы 4 мг и 8 мг, 8 мг 1 раз в сутки
+    - drug_name: Ботулотоксин А
+      active_substance: null
+      drug_group: null
+      dose_text: порошок для приготовления раствора для инъекций 500 ЕД в соответствующей
+        дозировке
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: эндоскопическое инъекционное введение в стенку мочевого пузыря или
+          зону сфинктера ботулотоксина А (порошок для приготовления раствора для инъекций
+          500 ЕД) в соответствующей дозировке
     procedures: []
     surgery: []
     source_refs: []
+  follow_up:
+  - text: Направление на этап ранней стационарной медицинской реабилитации после завершения
+      лечебно-реабилитационного этапа при сохраняющихся умеренных (ФК2), выраженных
+      (ФК3) или резко выраженных (ФК4) двигательных нарушениях и (или) нарушениях
+      функции тазовых органов (ФК2, ФК3, ФК4).
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Направление на этап ранней стационарной медицинской реабилитации после
+        завершения лечебно-реабилитационного этапа при сохраняющихся умеренных (ФК2),
+        выраженных (ФК3) или резко выраженных (ФК4) двигате
+  - text: Направление (перевод) пациентов на этап ранней стационарной медицинской
+      реабилитации осуществляется заведующим нейрохирургического (травматологического)
+      отделения по согласованию с заведующим специализированного отделения реабилитации.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Направление (перевод) пациентов на этап ранней стационарной медицинской
+        реабилитации осуществляется заведующим нейрохирургического (травматологического)
+        отделения по согласованию с заведующим специали
+  - text: Направление (перевод) пациентов на этап ранней стационарной медицинской
+      реабилитации после хирургического лечения, выполненного с применением гало-аппарата
+      на шейном отделе позвоночника, осуществляется не ранее 7 дня после операции.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Направление (перевод) пациентов на этап ранней стационарной медицинской
+        реабилитации после хирургического лечения, выполненного с применением гало-аппарата
+        на шейном отделе позвоночника, осуществляетс
+  - text: Направление (перевод) пациентов на этап ранней стационарной медицинской
+      реабилитации после переднего спондилодеза (корпородеза) шейного отдела позвоночника,
+      дорзальной декомпрессии и транспедикулярной стабилизации грудного и поясничного
+      отделов позвоночника, вентрального корпородеза грудного и поясничного отделов
+      позвоночника – не ранее 12 дня при достигнутой стабильной фиксации позвоночника.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Направление (перевод) пациентов на этап ранней стационарной медицинской
+        реабилитации после переднего спондилодеза (корпородеза) шейного отдела позвоночника,
+        дорзальной декомпрессии и транспедикулярной
+  hospitalization: []
+  routing:
+  - text: Госпитализация в стационарные специализированные нейрохирургические, травматологические
+      отделения, в отделения реанимации и интенсивной терапии (в остром периоде)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация в стационарные специализированные нейрохирургические,
+        травматологические отделения, в отделения реанимации и интенсивной терапии
+        (в остром периоде)
+  - text: Госпитализация на этап ранней стационарной медицинской реабилитации в специализированное
+      отделение медицинской реабилитации пациентов с повреждением позвоночника, спинного
+      мозга и нарушением функции тазовых органов или в профильные отделения (неврологическое,
+      ортопедотравматологическое) областных центров (больниц) медицинской реабилитации
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация на этап ранней стационарной медицинской реабилитации в
+        специализированное отделение медицинской реабилитации пациентов с повреждением
+        позвоночника, спинного мозга и нарушением функции т
+  red_flags:
+  - text: Необходимость хирургических вмешательств при недостигнутой стабильности
+      поврежденных сегментов позвоночника
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'необходимость хирургических вмешательств (в том числе повторных): при
+        недостигнутой стабильности поврежденных сегментов позвоночника'
+  - text: Необходимость хирургических вмешательств при развившейся нестабильности
+      элементов конструкций, создающей угрозу увеличения стенозирования позвоночного
+      канала с прогрессированием неврологической симптоматики
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при развившейся нестабильности элементов конструкций, создающей угрозу
+        увеличения стенозирования позвоночного канала с прогрессированием неврологической
+        симптоматики
+  - text: Нагноение в области проведенной операции, остеомиелит в стадии обострения,
+      функционирующая свищевая форма остеомиелита
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: нагноение в области проведенной операции, остеомиелит в стадии обострения,
+        функционирующая свищевая форма остеомиелита
+  - text: Пролежни с вовлечением глубоких слоев кожи с активным гнойным отделяемым,
+      с образованием затечников
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: пролежни с вовлечением в процесс глубоких слоев кожи с активным гнойным
+        отделяемым, с образованием затечников
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: erectile_dysfunction_organic
+  name: Эректильная дисфункция органического происхождения
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - F52.4
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams:
+  - name: Осмотр врачом-нейрохирургом
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'осмотр врачами-специалистами: врачом-нейрохирургом, врачом-психотерапевтом,
+        врачом-терапевтом, другими врачами-специалистами'
+  - name: Осмотр врачом-психотерапевтом
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'осмотр врачами-специалистами: врачом-нейрохирургом, врачом-психотерапевтом,
+        врачом-терапевтом, другими врачами-специалистами'
+  - name: Осмотр врачом-терапевтом
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'осмотр врачами-специалистами: врачом-нейрохирургом, врачом-психотерапевтом,
+        врачом-терапевтом, другими врачами-специалистами'
+  - name: Компьютерная томография позвоночника (поврежденный отдел)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: компьютерная томография позвоночника (поврежденный отдел)
+  - name: Магнитно-резонансная томография спинного мозга и позвоночника (поврежденный
+      отдел)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: магнитно-резонансная томография спинного мозга и позвоночника (поврежденный
+        отдел)
+  - name: Электронейромиография стимуляционная (с исследованием соматосенсорных вызванных
+      потенциалов)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: электронейромиография стимуляционная (с исследованием соматосенсорных
+        вызванных потенциалов)
+  - name: Транскраниальная магнитная стимуляция (с исследованием моторных ответов)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: транскраниальная магнитная стимуляция (с исследованием моторных ответов)
+  - name: Ультразвуковое исследование органов брюшной полости
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ультразвуковое исследование органов брюшной полости
+  - name: Осмотр врачом-урологом
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'осмотр врачами-специалистами: врачом-урологом, врачом-нейрохирургом,
+        врачом-психотерапевтом, врачом-терапевтом, другими специалистами'
+  treatment:
+    non_drug:
+    - text: Периодическая асептическая самокатетеризация мочевого пузыря.
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Периодическая асептическая самокатетеризация мочевого пузыря.
+    - text: Эндоскопическое инъекционное введение в стенку мочевого пузыря или зону
+        сфинктера ботулотоксина А.
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Эндоскопическое инъекционное введение в стенку мочевого пузыря или
+          зону сфинктера ботулотоксина А.
+    - text: Поведенческая терапия с применением принципов обратной биологической связи
+        и использование физиотерапевтического лечения.
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Поведенческая терапия с применением принципов обратной биологической
+          связи и использование физиотерапевтического лечения.
+    - text: Трансуретральная резекция шейки мочевого пузыря.
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Трансуретральная резекция шейки мочевого пузыря.
+    - text: Илеоцистоаугментация.
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Илеоцистоаугментация.
+    - text: Аутоцистодубликатура.
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Аутоцистодубликатура.
+    - text: Ремускуляризация мочевого пузыря.
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ремускуляризация мочевого пузыря.
+    - text: Имплантация систем для хронической нейромодуляции.
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Имплантация систем для хронической нейромодуляции.
+    - text: Иные хирургические вмешательства, направленные на сохранение функции мочевого
+        пузыря и предотвращение обструктивной уропатии верхних мочевых путей.
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Иные хирургические вмешательства, направленные на сохранение функции
+          мочевого пузыря и предотвращение обструктивной уропатии верхних мочевых
+          путей.
+    drug_groups: []
+    drugs:
+    - drug_name: Оксибутинин
+      active_substance: null
+      drug_group: null
+      dose_text: таблетки по 5 мг, внутрь по 5 мг 2–4 раза в день
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'M-холиноблокаторы: оксибутинин – таблетки по 5 мг, внутрь по 5 мг
+          2–4 раза в день'
+    - drug_name: Троспия хлорид
+      active_substance: null
+      drug_group: null
+      dose_text: таблетки по 15 мг и 30 мг, внутрь 30–45 мг в сутки в 2–3 приема
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: троспия хлорид – таблетки по 15 мг и 30 мг, внутрь 30–45 мг в сутки
+          в 2–3 приема
+    - drug_name: Солифенацина сукцинат
+      active_substance: null
+      drug_group: null
+      dose_text: таблетки по 5 мг, внутрь по 5–10 мг 1 раз в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: солифенацина сукцинат – таблетки по 5 мг, внутрь по 5–10 мг 1 раз в
+          сутки
+    - drug_name: Доксазозин
+      active_substance: null
+      drug_group: null
+      dose_text: таблетки 2 мг и 4 мг, от 1 мг до 8 мг 1 раз в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'α-адреноблокаторы: доксазозин – таблетки 2 мг и 4 мг, от 1 мг до 8
+          мг 1 раз в сутки'
+    - drug_name: Тамсулозин
+      active_substance: null
+      drug_group: null
+      dose_text: таблетки/капсулы с модифицированным высвобождением/пролонгированного
+        действия 0,4 мг, 0,4 мг 1 раз в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: тамсулозин – таблетки/капсулы с модифицированным высвобождением/пролонгированного
+          действия 0,4 мг, 0,4 мг 1 раз в сутки
+    - drug_name: Силодозин
+      active_substance: null
+      drug_group: null
+      dose_text: капсулы 4 мг и 8 мг, 8 мг 1 раз в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: силодозин – капсулы 4 мг и 8 мг, 8 мг 1 раз в сутки
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Пациенты после декомпрессивно-стабилизирующей операции, завершившие лечебно-реабилитационный
+      этап, при сохраняющихся умеренных (ФК2), выраженных (ФК3) или резко выраженных
+      (ФК4) двигательных нарушениях и (или) нарушениях функции тазовых органов (ФК2,
+      ФК3, ФК4) направляются на этап ранней стационарной медицинской реабилитации.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Пациенты после декомпрессивно-стабилизирующей операции, завершившие лечебно-реабилитационный
+        этап, при сохраняющихся умеренных (ФК2), выраженных (ФК3) или резко выраженных
+        (ФК4) двигательных нарушения
+  - text: Направление пациентов на этап ранней стационарной медицинской реабилитации
+      после хирургического лечения с гало-аппаратом на шейном отделе позвоночника
+      осуществляется не ранее 7 дня после операции, после других операций (передний
+      спондилодез, дорсальная декомпрессия и транспедикулярная стабилизация) – не
+      ранее 12 дня при достигнутой стабильной фиксации позвоночника.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Направление пациентов на этап ранней стационарной медицинской реабилитации
+        после хирургического лечения с гало-аппаратом на шейном отделе позвоночника
+        осуществляется не ранее 7 дня после операции, пос
+  hospitalization: []
+  routing:
+  - text: В остром периоде травматической болезни спинного мозга медицинская реабилитация
+      оказывается в стационарных специализированных нейрохирургических, травматологических
+      отделениях, в отделениях реанимации и интенсивной терапии после операций и стабилизации
+      жизненных функций.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: В остром периоде травматической болезни спинного мозга медицинская реабилитация
+        оказывается в стационарных специализированных нейрохирургических, травматологических
+        отделениях, в отделениях реанимации
+  - text: Пациенты с сохраняющимися двигательными нарушениями или нарушениями функции
+      тазовых органов направляются на этап ранней стационарной медицинской реабилитации
+      в специализированное отделение реабилитации или профильные отделения областных
+      центров (больниц) медицинской реабилитации.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Пациенты с сохраняющимися двигательными нарушениями или нарушениями функции
+        тазовых органов направляются на этап ранней стационарной медицинской реабилитации
+        в специализированное отделение реабилитаци
+  - text: Медицинская реабилитация противопоказана при наличии общих противопоказаний,
+      включающих острые инфекционные заболевания, декомпенсированные соматические
+      патологии, выраженные нарушения интеллекта, острые психотические состояния,
+      эпилепсию с частыми припадками, ХБП 4-5 ст., дыхательную недостаточность III
+      ст., неконтролируемую АГ, а также жизнеугрожающие нарушения ритма и проводимости
+      сердца.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинская реабилитация противопоказана при наличии общих противопоказаний,
+        включающих острые инфекционные заболевания, декомпенсированные соматические
+        патологии, выраженные нарушения интеллекта, ост
+  - text: Медицинская реабилитация противопоказана при высоком уровне травмы спинного
+      мозга (C1-C4) с нарушением функции дыхания.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинская реабилитация противопоказана при высоком уровне травмы спинного
+        мозга (C1-C4) с нарушением функции дыхания.
+  - text: Направление пациента на повторный этап стационарной медицинской реабилитации
+      осуществляется организацией здравоохранения, оказывающей медицинскую помощь
+      в амбулаторных условиях.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Направление пациента на повторный этап стационарной медицинской реабилитации
+        осуществляется организацией здравоохранения, оказывающей медицинскую помощь
+        в амбулаторных условиях.
+  red_flags:
+  - text: Необходимость хирургических вмешательств (в том числе повторных) при недостигнутой
+      стабильности поврежденных сегментов позвоночника или развившейся нестабильности
+      элементов конструкций, создающей угрозу увеличения стенозирования позвоночного
+      канала с прогрессированием неврологической симптоматики.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'необходимость хирургических вмешательств (в том числе повторных): при
+        недостигнутой стабильности поврежденных сегментов позвоночника; при развившейся
+        нестабильности элементов конструкций, создающей угрозу увеличения стенозирования
+        позвоночного канала с прогрессированием неврологической симптоматики'
+  - text: Нагноение в области проведенной операции, остеомиелит в стадии обострения,
+      функционирующая свищевая форма остеомиелита.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: нагноение в области проведенной операции, остеомиелит в стадии обострения,
+        функционирующая свищевая форма остеомиелита
+  - text: Пролежни с вовлечением в процесс глубоких слоев кожи с активным гнойным
+      отделяемым, с образованием затечников.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: пролежни с вовлечением в процесс глубоких слоев кожи с активным гнойным
+        отделяемым, с образованием затечников
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: delayed_ejaculation_orgasmic
+  name: Замедленная эякуляция и оргазмическая дисфункция
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - F52.3
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment: null
   follow_up: []
   hospitalization: []
   routing:
-  - text: '[routing] 35. Направление (стр. 8)'
+  - text: Госпитализация при наличии общих противопоказаний к медицинской реабилитации
+      (например, острые заболевания, декомпенсация соматических состояний, тяжелые
+      нарушения ритма сердца, дыхательная недостаточность III ст., высокий уровень
+      травмы спинного мозга с нарушением функции дыхания).
     timing: null
     required_if: []
     source_ref:
@@ -429,8 +1588,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 35. Направление (стр. 8)'
-  - text: помощь в амбулаторных условиях, в установленном порядке.
+      quote: Госпитализация при наличии общих противопоказаний к медицинской реабилитации
+        (например, острые заболевания, декомпенсация соматических состояний, тяжелые
+        нарушения ритма сердца, дыхательная недостаточ
+  - text: Направление на повторный этап стационарной медицинской реабилитации осуществляется
+      организацией, оказывающей медицинскую помощь в амбулаторных условиях.
     timing: null
     required_if: []
     source_ref:
@@ -443,62 +1605,50 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: помощь в амбулаторных условиях, в установленном порядке.
-  - text: '[routing] 35. Направление (стр. 8)'
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: '[routing] 35. Направление (стр. 8)'
-  - text: помощь в амбулаторных условиях, в установленном порядке.
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: помощь в амбулаторных условиях, в установленном порядке.
+      quote: Направление на повторный этап стационарной медицинской реабилитации осуществляется
+        организацией, оказывающей медицинскую помощь в амбулаторных условиях.
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_с_травмами_спинн
-    document_url: null
-    local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Медицинская реабилитация пациентов с травмами спинного мозга взрослое население
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:56.653216+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T18:21:19.713110+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=3
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:56.656437+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[erectile_dysfunction_organic].treatment.drugs[0]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[erectile_dysfunction_organic].treatment.drugs[1]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[erectile_dysfunction_organic].treatment.drugs[2]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[erectile_dysfunction_organic].treatment.drugs[3]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[erectile_dysfunction_organic].treatment.drugs[4]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[erectile_dysfunction_organic].treatment.drugs[5]
+  validated_at: '2026-07-20T18:21:19.723171+00:00'

@@ -1,9 +1,9 @@
 protocol_id: stomatologiya_кп12_альвеолит
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: альвеолит
+  title: Альвеолит
   url: null
   local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
   document_sha256: null
@@ -26,7 +26,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: альвеолит
+- condition_id: alveolit
   name: альвеолит
   synonyms: []
   abbreviations: []
@@ -37,59 +37,16 @@ conditions:
   - K06.2
   - K07.9
   - K12.2
+  - K10.3
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria:
-    required:
-    - text: '[classification] 9. Для постановки или подтверждения диагноза осуществляются:
-        (стр. 4)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: stomatologiya_кп12_альвеолит
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 9. Для постановки или подтверждения диагноза осуществляются:
-          (стр. 4)'
-    - text: '[diagnostics] 15. Критерии эффективности лечения пациентов с альвеолитом:
-        (стр. 5)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: stomatologiya_кп12_альвеолит
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[diagnostics] 15. Критерии эффективности лечения пациентов с альвеолитом:
-          (стр. 5)'
-    optional: []
-    exclusion: []
+  diagnostic_criteria: null
   required_exams: []
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] 1. Настоящий клинический протокол определяет общие требования
-        к объему (стр. 3)'
+    - text: Очищение лунки удаленного зуба от некротических масс
       source_ref:
         protocol_id: stomatologiya_кп12_альвеолит
         document_url: null
@@ -100,77 +57,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 1. Настоящий клинический протокол определяет общие требования
-          к объему (стр. 3)'
-    - text: оказания стоматологической хирургической медицинской помощи в амбулаторных
-      source_ref:
-        protocol_id: stomatologiya_кп12_альвеолит
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: оказания стоматологической хирургической медицинской помощи в амбулаторных
-    - text: и стационарных условиях пациентам (взрослое население) с альвеолитом (шифр
-      source_ref:
-        protocol_id: stomatologiya_кп12_альвеолит
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: и стационарных условиях пациентам (взрослое население) с альвеолитом
-          (шифр
-    - text: по Международной статистической классификации болезней и проблем, связанных
-      source_ref:
-        protocol_id: stomatologiya_кп12_альвеолит
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: по Международной статистической классификации болезней и проблем, связанных
-    - text: со здоровьем, десятого пересмотра – К10.3 Альвеолит).
-      source_ref:
-        protocol_id: stomatologiya_кп12_альвеолит
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: со здоровьем, десятого пересмотра – К10.3 Альвеолит).
-    - text: '[treatment] 5. Допускается включение в схему лечения ЛП по медицинским
-        показаниям, (стр. 3)'
-      source_ref:
-        protocol_id: stomatologiya_кп12_альвеолит
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 5. Допускается включение в схему лечения ЛП по медицинским
-          показаниям, (стр. 3)'
+        quote: Очищение лунки удаленного зуба от некротических масс
     drug_groups: []
     drugs:
-    - drug_name: инъекций
+    - drug_name: Артикаин/Эпинефрин
       active_substance: null
       drug_group: null
-      dose_text: 10 мг
+      dose_text: 'Раствор для инъекций (40 мг + 0,005 мг)/мл в картриджах 1,7 мл (1,8
+        мл), в ампулах 2 мл; раствор для инъекций (40 мг + 0,006 мг)/мл в картриджах
+        1,7 мл (в ампулах 2 мл); раствор для инъекций (40 мг + '
       frequency_text: null
       duration_text: null
       route: null
@@ -182,17 +77,22 @@ conditions:
         protocol_id: stomatologiya_кп12_альвеолит
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
-        page_start: null
+        page_start: 5
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "инъекций 10 мг/мл \nв ампулах 5 мл"
-    - drug_name: превышать
+        quote: ЛП для местной анестезии, применяемые при лечении пациентов с альвеолитом.
+          Местная анестезия (инфильтрационная, проводниковая). ЛП предназначен для
+          инъекционного применения в ротовой полости и может вводиться только в ткани,
+          где отсутствует воспаление.
+    - drug_name: Ибупрофен
       active_substance: null
       drug_group: null
-      dose_text: 300 мг
+      dose_text: 'Таблетки, покрытые пленочной оболочкой, 200 мг; капсулы 200 мг.
+        Взрослым внутрь по 200 мг 3–4 раза в сутки. Для достижения быстрого терапевтического
+        эффекта доза может быть увеличена до 400 мг 3 раза '
       frequency_text: null
       duration_text: null
       route: null
@@ -204,18 +104,20 @@ conditions:
         protocol_id: stomatologiya_кп12_альвеолит
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "превышать 300 мг \n  \n \n \n \n \nНациональный правовой Интернет-портал\
-          \ Ре"
-    - drug_name: Капсулы
+        quote: Ибупрофен назначают взрослым внутрь по 200 мг 3–4 раза в сутки. Для
+          достижения быстрого терапевтического эффекта доза может быть увеличена до
+          400 мг 3 раза в сутки.
+    - drug_name: Нимесулид
       active_substance: null
       drug_group: null
-      dose_text: 250 мг
+      dose_text: Таблетки 100 мг; гранулы для приготовления суспензии, 100 мг. Внутрь
+        после еды по 100 мг 2 раза в сутки.
       frequency_text: null
       duration_text: null
       route: null
@@ -227,229 +129,22 @@ conditions:
         protocol_id: stomatologiya_кп12_альвеолит
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: Капсулы 250 мг
-    - drug_name: картриджах
-      active_substance: null
-      drug_group: null
-      dose_text: 1,7 мл
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп12_альвеолит
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: картриджах 1,7 мл (1,8 мл), в ампулах 2 мл
-    - drug_name: выше
-      active_substance: null
-      drug_group: null
-      dose_text: 30 мл
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп12_альвеолит
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: выше 30 мл/мин коррекция дозы не требуется
-    - drug_name: составляет
-      active_substance: null
-      drug_group: null
-      dose_text: 1200 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп12_альвеолит
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: составляет 1200 мг
-    - drug_name: Таблетки
-      active_substance: null
-      drug_group: null
-      dose_text: 100 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп12_альвеолит
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Таблетки 100 мг
-    - drug_name: применения
-      active_substance: null
-      drug_group: null
-      dose_text: 0,5 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп12_альвеолит
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: применения 0,5 мг/мл | Применяется местно для инстилляции
-    - drug_name: раствор
-      active_substance: null
-      drug_group: null
-      dose_text: 2,5 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп12_альвеолит
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: раствор 2,5 мг/мл (раствор 30 мг/мл разводят водой в с
-    - drug_name: туба
-      active_substance: null
-      drug_group: null
-      dose_text: 20 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп12_альвеолит
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'туба 20 г для наружного применения | Используется '
-    - drug_name: марта
-      active_substance: null
-      drug_group: null
-      dose_text: 2026 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп12_альвеолит
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: марта 2026 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп12_альвеолит
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июня 1993 г
+        quote: Внутрь после еды по 100 мг 2 раза в сутки.
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags:
-  - text: 'аждые 12 часов, при тяжелом течении заболевания – до 750–1000 мг каждые
-      8 ч. 2 г однократно за 30–60 минут до хирургического вмешательства (профилактика
-      инфекционного эндокардита). Минимальный курс антибактериальной терапии составляет
-      5 дней |
-
-      | 2 | Амоксициллин/ Клавулановая к'
-    aliases: []
-    red_flag_type: severe_infection
-    severity: high
+  follow_up:
+  - text: В медицинском наблюдение после проведенного лечения пациенты с альвеолитом
+      не нуждаются.
+    timing: null
+    required_if: []
     expected_actions: []
-    cap_if_unhandled: null
     source_ref:
       protocol_id: stomatologiya_кп12_альвеолит
       document_url: null
@@ -460,35 +155,81 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: аждые 12 часов, при тяжелом течении заболевания – до 750–1000 мг каждые
-        8 ч. 2 г однократно за 30–60 минут до хирургического вмешательства (профилактика
-        инфекционного эндокардита). Минимальный курс ан
+      quote: В медицинском наблюдение после проведенного лечения пациенты с альвеолитом
+        не нуждаются.
+  hospitalization: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_кп12_альвеолит
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: Госпитализация показана при отягощенном аллергологическом анамнезе на ЛП
+      для местной анестезии или тяжелой декомпенсированной общесоматической патологии
+      (инфаркт, инсульт, сердечно-сосудистая, центральная нервная система, бронхиальная
+      астма, сахарный диабет, коагулопатии, психические пограничные состояния), при
+      которых возможно прогнозирование угрожающих жизни ситуаций.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_кп12_альвеолит
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация показана при отягощенном аллергологическом анамнезе на
+        ЛП для местной анестезии или тяжелой декомпенсированной общесоматической патологии
+        (инфаркт, инсульт, сердечно-сосудистая, централ
+  red_flags:
+  - text: Лечение не должно продолжаться более 14 суток без пересмотра клинической
+      ситуации.
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_кп12_альвеолит
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Лечение не должно продолжаться более 14 суток без пересмотра клинической
+        ситуации
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_кп12_альвеолит
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/КП12_альвеолит.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: альвеолит
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:48.779751+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T17:52:32.767994+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:48.788150+00:00'
+  validated_at: '2026-07-20T17:52:32.771362+00:00'

@@ -1,10 +1,10 @@
 {
   "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезыван",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика и лечение пациентов взрослое население с нарушением прорезывания зубов",
+    "title": "Диагностика и лечение пациентов с нарушением прорезывания зубов",
     "url": null,
     "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезывания_зубов_пост_МЗ_11.01.2023_4.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "adult"
+      "adult_and_child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,12 +32,20 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_и_лечение_пациентов_взрослое_населен",
-      "name": "Диагностика и лечение пациентов взрослое население с нарушением прорезывания зубов",
+      "condition_id": "tooth_eruption_disorder",
+      "name": "Нарушения прорезывания зубов",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "B24"
+        "K00.6",
+        "K00.60",
+        "K00.61",
+        "K00.62",
+        "K00.63",
+        "K00.64",
+        "K00.65",
+        "K00.68",
+        "K00.69"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -45,7 +53,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "ПРИЗНАКИ И КРИТЕРИИ НАРУШЕНИЯ ПРОРЕЗЫВАНИЯ ЗУБОВ",
+            "text": "Раннее (преждевременное) прорезывание зубов",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -62,11 +70,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ПРИЗНАКИ И КРИТЕРИИ НАРУШЕНИЯ ПРОРЕЗЫВАНИЯ ЗУБОВ"
+              "quote": "Раннее (преждевременное) прорезывание зубов"
             }
           },
           {
-            "text": "[diagnostics] 5. Критерии нарушения прорезывания зубов: (стр. 5)",
+            "text": "Позднее прорезывание зубов",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -83,7 +91,7 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 5. Критерии нарушения прорезывания зубов: (стр. 5)"
+              "quote": "Позднее прорезывание зубов"
             }
           }
         ],
@@ -94,21 +102,6 @@
       "conditional_exams": [],
       "treatment": {
         "non_drug": [
-          {
-            "text": "[treatment] 10. Принципами лечения нарушения прорезывания зубов являются: (стр. 6)",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезыван",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезывания_зубов_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 10. Принципами лечения нарушения прорезывания зубов являются: (стр. 6)"
-            }
-          },
           {
             "text": "восстановление анатомической и функциональной целостности зуба и зубных рядов",
             "source_ref": {
@@ -125,7 +118,7 @@
             }
           },
           {
-            "text": "предупреждение развития патологических процессов и осложнений.",
+            "text": "предупреждение развития патологических процессов и осложнений",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезыван",
               "document_url": null,
@@ -136,165 +129,19 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "предупреждение развития патологических процессов и осложнений."
-            }
-          },
-          {
-            "text": "[treatment] 12. Медицинское наблюдение за результатами лечения рекомендовано осуществлять (стр. 6)",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезыван",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезывания_зубов_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 12. Медицинское наблюдение за результатами лечения рекомендовано осуществлять (стр. 6)"
-            }
-          },
-          {
-            "text": "путем проведения медицинских осмотров пациентов с нарушением прорезывания зубов",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезыван",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезывания_зубов_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "путем проведения медицинских осмотров пациентов с нарушением прорезывания зубов"
-            }
-          },
-          {
-            "text": "врачом-стоматологом-терапевтом через 6 месяцев после завершения терапевтического",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезыван",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезывания_зубов_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "врачом-стоматологом-терапевтом через 6 месяцев после завершения терапевтического"
+              "quote": "предупреждение развития патологических процессов и осложнений"
             }
           }
         ],
         "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "января",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2023 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезыван",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезывания_зубов_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "января 2023 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезыван",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезывания_зубов_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезыван",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезывания_зубов_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          },
-          {
-            "drug_name": "марта",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2023 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезыван",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезывания_зубов_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "марта 2023 г"
-            }
-          }
-        ],
+        "drugs": [],
         "procedures": [],
         "surgery": [],
         "source_refs": []
       },
       "follow_up": [
         {
-          "text": "через 6 мес",
+          "text": "Медицинское наблюдение за результатами лечения рекомендовано осуществлять путем проведения медицинских осмотров врачом-стоматологом-терапевтом через 6 месяцев после завершения терапевтического лечения.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -308,7 +155,25 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "через 6 мес"
+            "quote": "Медицинское наблюдение за результатами лечения рекомендовано осуществлять путем проведения медицинских осмотров врачом-стоматологом-терапевтом через 6 месяцев после завершения терапевтического лечения"
+          }
+        },
+        {
+          "text": "Последующее медицинское наблюдение за состоянием зубов и зубных протезов (при их наличии) рекомендуется выполнять 2 раза в год (каждые 6 месяцев).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезыван",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезывания_зубов_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Последующее медицинское наблюдение за состоянием зубов и зубных протезов (при их наличии) рекомендуется выполнять 2 раза в год (каждые 6 месяцев)."
           }
         }
       ],
@@ -318,38 +183,26 @@
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезыван",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезывания_зубов_пост_МЗ_11.01.2023_4.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика и лечение пациентов взрослое население с нарушением прорезывания зубов"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:50.416014+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T18:04:05.032601+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:50.416958+00:00"
+    "validated_at": "2026-07-20T18:04:05.032810+00:00"
   }
 }

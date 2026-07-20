@@ -1,7 +1,7 @@
 {
   "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "Диагностика и лечение пациентов детс население с кариесом зубов с незаконченным формированием корня",
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,13 +32,16 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_и_лечение_пациентов_детс_население_с",
-      "name": "Диагностика и лечение пациентов детс население с кариесом зубов с незаконченным формированием корня",
+      "condition_id": "caries_with_incomplete_root_formation",
+      "name": "Кариес зубов с незаконченным формированием корня",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "K02.8",
-        "B24"
+        "K02",
+        "K02.0",
+        "K02.1",
+        "K02.3",
+        "K02.8"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -46,7 +49,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "ПРИЗНАКИ И КРИТЕРИИ КАРИЕСА ВРЕМЕННЫХ И ПОСТОЯННЫХ",
+            "text": "Кариес эмали: очаговая деминерализация эмали без образования полости, белые матовые пятна, гладкая или шероховатая поверхность зуба при зондировании.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -63,11 +66,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ПРИЗНАКИ И КРИТЕРИИ КАРИЕСА ВРЕМЕННЫХ И ПОСТОЯННЫХ"
+              "quote": "Кариес эмали: очаговая деминерализация эмали без образования полости, белые матовые пятна, гладкая или шероховатая поверхность зуба при зондировании."
             }
           },
           {
-            "text": "[diagnostics] 5. Признаки и критерии кариеса временных и постоянных зубов с незаконченным (стр. 4)",
+            "text": "Кариес дентина: наличие полости с переходом эмалево-дентинной границы, размягченный дентин, возможна кратковременная болезненность при зондировании/температурных раздражителях, отсутствие самопроизвольных болей.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -84,11 +87,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 5. Признаки и критерии кариеса временных и постоянных зубов с незаконченным (стр. 4)"
+              "quote": "Кариес дентина: наличие полости с переходом эмалево-дентинной границы, размягченный дентин, возможна кратковременная болезненность при зондировании/температурных раздражителях, отсутствие самопроизвол"
             }
           },
           {
-            "text": "[diagnostics] 5. Признаки и критерии кариеса временных и постоянных зубов с незаконченным (стр. 4)",
+            "text": "Приостановившийся кариес: наличие темного пигментированного пятна, очаговая деминерализация эмали, гладкая или шероховатая поверхность эмали при зондировании.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -105,11 +108,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 5. Признаки и критерии кариеса временных и постоянных зубов с незаконченным (стр. 4)"
+              "quote": "Приостановившийся кариес: наличие темного пигментированного пятна, очаговая деминерализация эмали, гладкая или шероховатая поверхность эмали при зондировании."
             }
           },
           {
-            "text": "определение медицинских показаний к лечению, выбор метода лечения и тактики врача-",
+            "text": "Другой кариес: наличие кариозной полости в депульпированном зубе (размягченный дентин/цемент, безболезненная перкуссия) или в ранее пломбированных зубах (вторичный/рецидивирующий кариес).",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -126,19 +129,87 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "определение медицинских показаний к лечению, выбор метода лечения и тактики врача-"
+              "quote": "Другой кариес: наличие кариозной полости в депульпированном зубе (размягченный дентин/цемент, безболезненная перкуссия) или в ранее пломбированных зубах (вторичный/рецидивирующий кариес)."
+            }
+          },
+          {
+            "text": "Острый кариес: быстрое разрушение эмали и дентина, пораженные ткани светлые/мягкие, быстро становятся влажными после высушивания, болевые ощущения значительно сильнее.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов_с_незаконченным_формированием_корня_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Острый кариес: быстрое разрушение эмали и дентина, пораженные ткани светлые/мягкие, быстро становятся влажными после высушивания, болевые ощущения значительно сильнее."
+            }
+          },
+          {
+            "text": "Хронический кариес: медленное течение, пораженные ткани пигментированные, удаляются пластами, интенсивности болевых ощущений препятствует твердый заместительный дентин.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов_с_незаконченным_формированием_корня_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Хронический кариес: медленное течение, пораженные ткани пигментированные, удаляются пластами, интенсивности болевых ощущений препятствует твердый заместительный дентин."
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
+      "required_exams": [
+        {
+          "name": "Рентгенограмма",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов_с_незаконченным_формированием_корня_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "На рентгенограмме выявляются очаги просветления на твердых тканях"
+          }
+        }
+      ],
       "conditional_exams": [],
       "treatment": {
         "non_drug": [
           {
-            "text": "ЛЕЧЕНИЕ КАРИЕСА ВРЕМЕННЫХ И ПОСТОЯННЫХ ЗУБОВ",
+            "text": "Препарирование кариозной полости с последующим пломбированием композиционными материалами, компомерами или гиомерами.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
               "document_url": null,
@@ -149,11 +220,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ЛЕЧЕНИЕ КАРИЕСА ВРЕМЕННЫХ И ПОСТОЯННЫХ ЗУБОВ"
+              "quote": "Препарирование кариозной полости с последующим пломбированием композиционными материалами, компомерами или гиомерами."
             }
           },
           {
-            "text": "[treatment] С НЕЗАКОНЧЕННЫМ ФОРМИРОВАНИЕМ КОРНЯ (стр. 5)",
+            "text": "Использование прокладочного материала с последующим пломбированием композиционными материалами, компомерами или гиомерами.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
               "document_url": null,
@@ -164,11 +235,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] С НЕЗАКОНЧЕННЫМ ФОРМИРОВАНИЕМ КОРНЯ (стр. 5)"
+              "quote": "Использование прокладочного материала с последующим пломбированием композиционными материалами, компомерами или гиомерами."
             }
           },
           {
-            "text": "9. Принципами лечения кариеса временных и постоянных зубов с незаконченным",
+            "text": "Оперативно-восстановительное лечение кариеса дентина при остром течении кариозного процесса проводится в два этапа. Окончательная реставрация зуба композитом проводится после завершения минерализации тканей зуба.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
               "document_url": null,
@@ -179,11 +250,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "9. Принципами лечения кариеса временных и постоянных зубов с незаконченным"
+              "quote": "Оперативно-восстановительное лечение кариеса дентина при остром течении кариозного процесса проводится в два этапа. Окончательная реставрация зуба композитом проводится после завершения минерализации "
             }
           },
           {
-            "text": "устранение факторов, обусловливающих процесс деминерализации",
+            "text": "Инвазивная герметизация с использованием композиционного герметика при дефекте в виде пятна поверхности эмали в области фиссур зубов.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
               "document_url": null,
@@ -194,11 +265,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "устранение факторов, обусловливающих процесс деминерализации"
+              "quote": "Инвазивная герметизация с использованием композиционного герметика при дефекте в виде пятна поверхности эмали в области фиссур зубов."
             }
           },
           {
-            "text": "предупреждение дальнейшего развития патологического кариозного процесса",
+            "text": "Препарирование с последующим пломбированием композиционными материалами, компомерами или гиомерами при эстетическом дефекте в виде пятна поверхности эмали.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
               "document_url": null,
@@ -209,11 +280,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "предупреждение дальнейшего развития патологического кариозного процесса"
+              "quote": "Препарирование с последующим пломбированием композиционными материалами, компомерами или гиомерами при эстетическом дефекте в виде пятна поверхности эмали."
             }
           },
           {
-            "text": "сохранение и восстановление анатомической формы пораженного кариесом зуба",
+            "text": "Инфильтрация деминерализованной эмали композиционным материалом.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
               "document_url": null,
@@ -224,17 +295,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "сохранение и восстановление анатомической формы пораженного кариесом зуба"
+              "quote": "Инфильтрация деминерализованной эмали композиционным материалом."
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "превышать",
+            "drug_name": "Лидокаин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2,9 мг",
+            "dose_text": "Спрей для местного применения 100 мг/мл во флаконах 50 мл",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -246,20 +317,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов_с_незаконченным_формированием_корня_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "превышать 2,9 мг/кг"
+              "quote": "Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну. У детей (в т. ч. в возрасте до 2 лет) лекарственное средство можно наносить путем смазывания смоченным в лекарственном средстве ватным тампоном."
             }
           },
           {
-            "drug_name": "ампулах",
+            "drug_name": "Лидокаин/Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2 мл",
+            "dose_text": "Анестезирующий гель в шприцах 12,5 г; анестезирующий гель в шприцах 8,5 г",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -271,20 +342,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов_с_незаконченным_формированием_корня_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ампулах 2 мл \n(картриджах 1,7 мл)"
+              "quote": "Для аппликационной анестезии слизистой оболочки полости рта, а также перед инъекционной анестезией."
             }
           },
           {
-            "drug_name": "картриджах",
+            "drug_name": "Лидокаин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1,7 мл",
+            "dose_text": "Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну. У детей (в т. ч. в возрасте до 2 лет) лекарственное средство можно наносить путем смазывани",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -296,20 +367,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов_с_незаконченным_формированием_корня_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "картриджах 1,7 мл"
+              "quote": "Лидокаин. Спрей для местного применения 100 мг/мл. Одну порцию (1–3 нажатия) наносят на слизистую или десну. У детей (в т. ч. до 2 лет) можно наносить ватным тампоном, смоченным в лекарстве."
             }
           },
           {
-            "drug_name": "применения",
+            "drug_name": "Лидокаин/Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "100 мг",
+            "dose_text": "Для аппликационной анестезии слизистой оболочки полости рта, а также перед инъекционной анестезией. Противопоказан детям до 2 лет. Предназначен для детей с 2 лет. Для детей в возрасте от 2 до 11 лет м",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -321,20 +392,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов_с_незаконченным_формированием_корня_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "применения 100 мг/мл во флаконах 50 мл | Одну порцию (1–3"
+              "quote": "Лидокаин/Хлоргексидин. Анестезирующий гель. Для аппликационной анестезии. Противопоказан детям до 2 лет. Для детей 2-11 лет макс. доза лидокаина не более 2,9 мг/кг. Назначается индивидуально."
             }
           },
           {
-            "drug_name": "шприцах",
+            "drug_name": "Артикаин/Эпинефрин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "12,5 г",
+            "dose_text": "Инъекционная анестезия тканей полости рта. Разовую дозу врач-специалист назначает индивидуально, учитывая состояние области нанесения лекарственного средства и общее состояние пациента. Необходимо исп",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -346,113 +417,13 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов_с_незаконченным_формированием_корня_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "шприцах 12,5 г"
-            }
-          },
-          {
-            "drug_name": "ноября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2022 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов_с_незаконченным_формированием_корня_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "ноября 2022 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов_с_незаконченным_формированием_корня_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов_с_незаконченным_формированием_корня_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          },
-          {
-            "drug_name": "марта",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2023 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов_с_незаконченным_формированием_корня_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "марта 2023 г"
+              "quote": "Артикаин/Эпинефрин. Раствор для инъекций. Инъекционная анестезия. Доза назначается индивидуально. Использовать меньший объем. Доза не должна превышать 7 мг артикаина на 1 кг массы тела."
             }
           }
         ],
@@ -460,45 +431,124 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
+      "follow_up": [
+        {
+          "text": "Медицинское наблюдение за результатами лечения при остром течении кариеса – 1 раз в 3 месяца.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов_с_незаконченным_формированием_корня_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинское наблюдение за результатами лечения при остром течении кариеса – 1 раз в 3 месяца."
+          }
+        },
+        {
+          "text": "Медицинское наблюдение за результатами лечения при хроническом течении кариеса – 1 раз в 6 месяцев.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов_с_незаконченным_формированием_корня_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинское наблюдение за результатами лечения при хроническом течении кариеса – 1 раз в 6 месяцев."
+          }
+        }
+      ],
       "hospitalization": [],
       "routing": [],
-      "red_flags": [],
+      "red_flags": [
+        {
+          "text": "Противопоказан детям до 2 лет.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов_с_незаконченным_формированием_корня_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Противопоказан детям до 2 лет. Предназначен для детей с 2 лет."
+          }
+        },
+        {
+          "text": "Не рекомендуется использовать композиционные материалы при невозможности тщательной изоляции их от слюны, у детей с высоким риском развития кариеса (множественный кариес, наличие очаговой деминерализации эмали, плохая гигиена полости рта, если пациент не поддерживает гигиену после обучения и мотивации).",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов_с_незаконченным_формированием_корня_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "не рекомендуется использовать композиционные материалы при невозможности тщательной изоляции их от слюны, у детей с высоким риском развития кариеса (множественный кариес, наличие очаговой деминерализации эмали, плохая гигиена полости рта, если пациент не поддерживает гигиену после обучения и мотивации)."
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_кариесом_зубов_с_незаконченным_формированием_корня_пост_МЗ_30.11.2022_112.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика и лечение пациентов детс население с кариесом зубов с незаконченным формированием корня"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:51.379414+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T17:58:54.506051+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-06-23T19:15:51.383455+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[caries_with_incomplete_root_formation].treatment.drugs[2]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[caries_with_incomplete_root_formation].treatment.drugs[3]"
+      }
+    ],
+    "validated_at": "2026-07-20T17:58:54.512000+00:00"
   }
 }

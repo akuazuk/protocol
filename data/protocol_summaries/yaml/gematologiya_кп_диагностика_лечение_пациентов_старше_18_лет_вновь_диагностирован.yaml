@@ -1,90 +1,690 @@
 protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-summary_version: '1.0'
-extraction_status: auto_extracted
-review_status: not_reviewed
+summary_version: '2.0'
+extraction_status: llm_extracted
+review_status: needs_review
 source:
-  title: КП Диагностика лечение пациентов старше 18 лет вновь диагностированным острым
-    миелоидным лейкозом пост МЗ 2025 123
-  url: https://minzdrav.gov.by/upload/dadvfiles/CProtokol/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+  title: Диагностика и лечение вновь диагностированного острого миелоидного лейкоза
+  url: null
   local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-  document_sha256: 66a1eec586507e5d66b164352c6dfc825823b84305ad049caa7b372dda22a7e9
-  approval_date: '2025-01-01'
-  approval_number: '123'
+  document_sha256: null
+  approval_date: null
+  approval_number: null
   valid_from: null
   valid_to: null
-  document_year: 2025
+  document_year: null
   pages_total: null
 rubric:
-  name: Гематология
+  name: Gematologiya
   slug: gematologiya
-  specialty_slugs:
-  - gematologiya
+  specialty_slugs: []
 applicability:
   population:
   - adult
-  - child
+  - pregnant
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: p11_2_клинический_протокол_устанавливает_общие_требовани
-  name: клинический протокол устанавливает общие требования к диагностике
+- condition_id: acute_myeloid_leukemia
+  name: Острый миелоидный лейкоз
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - P11.2
+  - C92.0
+  - C92.3
   condition_applicability: null
   diagnosis_structure: null
-  clinical_criteria:
+  clinical_criteria: null
+  diagnostic_criteria:
     required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к диагностике (МКБ P11.2)
+    - text: Выявление цитопенических синдромов и клинических проявлений острого миелоидного
+        лейкоза
       logic_group: null
-      operator: present
+      operator: unknown
       values: []
       numeric_value: null
       unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
+      evidence_targets: []
       source_ref:
         protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
         document_url: null
         local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
         table_index: null
         row_index: null
-        quote: клинический протокол устанавливает общие требования к диагностике
+        quote: Выявление цитопенических синдромов и клинических проявлений острого
+          миелоидного лейкоза
+    - text: 'Клинические проявления: рецидивирующие инфекции, лихорадка, общая слабость,
+        геморрагический синдром (петехии, кровоточивость десен, носовые кровотечения,
+        мено- и метроррагии), оссалгии, снижение массы тела, потливость, гиперплазия
+        десен'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Клинические проявления: рецидивирующие инфекции, лихорадка, общая
+          слабость, геморрагический синдром (петехии, кровоточивость десен, носовые
+          кровотечения, мено- и метроррагии), оссалгии, снижение массы'
+    - text: Наличие в анамнезе химиотерапии или лучевой терапии
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие в анамнезе химиотерапии или лучевой терапии
+    - text: Случаи миелодиспластического синдрома (МДС)/острого миелоидного лейкоза
+        (ОМЛ) в семье
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Случаи миелодиспластического синдрома (МДС)/острого миелоидного лейкоза
+          (ОМЛ) в семье
+    - text: 'Парциальная ремиссия: бласты > 5 %, но < 15 % в КМ; > 1,0 х 10^9/л гранулоцитов
+        и > 100 х 10^9/л тромбоцитов в гемограмме; отсутствие экстрамедуллярного поражения.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Парциальная ремиссия: бласты > 5 %, но < 15 % в КМ; > 1,0 х 10^9/л
+          гранулоцитов и > 100 х 10^9/л тромбоцитов в гемограмме; отсутствие экстрамедуллярного
+          поражения.'
+    - text: 'Рефрактерность: отсутствие полной ремиссии после проведения двойной индукции.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Рефрактерность: отсутствие полной ремиссии после проведения двойной
+          индукции.'
+    - text: 'Рецидив: > 5 % бластов в КМ или любое экстрамедуллярное поражение не
+        менее чем через 1 месяц после первой полной клинико-гематологической ремиссии.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Рецидив: > 5 % бластов в КМ или любое экстрамедуллярное поражение
+          не менее чем через 1 месяц после первой полной клинико-гематологической
+          ремиссии.'
     optional: []
     exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
+  required_exams:
+  - name: Сбор жалоб и анамнеза
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 17
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Сбор жалоб и анамнеза Рецидивирующие инфекционные заболевания, лихорадка,
+        общая слабость, геморрагический синдром в виде петехий, кровоточивости десен,
+        рецидивирующих носовых кровотечений, мено- и метроррагии, оссалгии, снижение
+        массы тела, выраженная потливость, гиперплазия десен, химиотерапия или лучевая
+        терапия в прошлом, случаи МДС/ОМЛ в семье
+  - name: Физикальное обследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 17
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Физикальное обследование Измерение роста и массы тела, термометрия, оценка
+        состояния кожных покровов и наличия лейкемид, оценка состояния костно-суставной
+        системы; выявление признаков геморрагического синдрома; лимфаденопатии; наличие
+        признаков дисфункции сердца, легких, печени, органов эндокринной, нервной
+        системы
+  - name: Общий анализ крови (ОАК) с подсчетом количества тромбоцитов, ретикулоцитов,
+      лейкоцитарной формулы
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 17
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Общий анализ крови (далее – ОАК) с подсчетом количества тромбоцитов,
+        ретикулоцитов, лейкоцитарной формулы.
+  - name: 'Аспирационная биопсия костного мозга (КМ): миелограмма'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 18
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Аспирационная биопсия КМ: миелограмма.'
+  - name: Иммунофенотипическое исследование (ИФТ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 18
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ИФТ-исследование.
+  - name: Цитогенетическое исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 18
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Цитогенетическое исследование.
+  - name: Молекулярно-генетическое исследование (NPM 1, FLT3, CEBR, TP53)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 18
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Молекулярно-генетическое исследование (NPM 1, FLT3, CEBR, TP53, дополнительно
+        в рамках клинических исследований – ASXL1, RUNX1, BCOR, EZH2, SF3B1, SRSF2,
+        STAG2, U2AF1,...)
+  - name: Биохимический анализ крови (БАК)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 19
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'БАК: общий белок, альбумин, мочевина, креатинин, общий билирубин, натрий,
+        калий, хлор, общий кальций, глюкоза, АЛТ, АСТ.'
+  - name: Коагулограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 19
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Коагулограмма: активированное частичное тромбопластиновое время, протромбин
+        по Квику, тромбиновое время, фибриноген, Д-димеры'
+  - name: Общий анализ мочи (ОАМ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 19
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ОАМ.
+  - name: Оценка соматического статуса по шкале ECOG
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: оценка соматического статуса пациента с ОМЛ по шкале ECOG согласно приложению
+        2;
+  - name: Определение цитогенетических и молекулярно-генетических факторов прогноза
+      риска рецидива ОМЛ
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение цитогенетических и молекулярно-генетических факторов прогноза
+        риска рецидива ОМЛ (генетический профиль пациента или категорию риска) согласно
+        приложению 3.
+  - name: Определение параметров лейкозассоциированного фенотипа (ЛАФ) и содержания
+      CD25+ клеток методом шестицветной проточной цитометрии
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: До начала терапии ОМЛ методом шестицветной проточной цитометрии определяют
+        параметры лейкозассоциированного фенотипа (далее – ЛАФ) миелоидных бластных
+        клеток КМ пациента и относительное содержание CD25+ клеток
+  conditional_exams:
+  - name: Рентгенография органов грудной клетки
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 18
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Рентгенография органов грудной клетки По медицинским показаниям
+  - name: Исследование с применением метода флуоресцентной гибридизации in situ (FISH)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 18
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Исследование с применением метода флуоресцентной гибридизации in situ
+        или FISH (если при выполнении цитогенетического исследования не было получено
+        митозов или получено менее 20 митозов)
+  - name: Дополнительное молекулярно-генетическое исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 19
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Дополнительно в рамках клинических исследований – ASXL1, RUNX1, BCOR,
+        EZH2, SF3B1, SRSF2, STAG2, U2AF1.
+  - name: ИФТ-исследование ликвора
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 19
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Дополнительно, при наличии медицинских показаний, – ИФТ-исследование
+        ликвора По медицинским показаниям в целях диагностики и лечения нейролейкемии
+        и нейропрофилактики
+  - name: Дополнительный биохимический анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 19
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Дополнительно, при наличии медицинских показаний, – щелочная фосфатаза,
+        панкреатическая амилаза, уровень иммуноглобулинов, тропонины I, T, прокальцитонин
+        в крови
   treatment:
     non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
+    - text: Инфузионная терапия под контролем диуреза и клинико-лабораторных данных
       source_ref:
         protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
         document_url: null
         local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
         table_index: null
         row_index: null
-        quote: диета, режим
+        quote: Инфузионная терапия под контролем диуреза и клинико-лабораторных данных
+    - text: Аллогенная ТГСК выполняется в соответствии с клиническим протоколом
+      source_ref:
+        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Аллогенная ТГСК выполняется в соответствии с клиническим протоколом
+    - text: Программная цитостатическая терапия является основным методом лечения
+        ОМЛ, интенсивность которой соответствует прогнозу заболевания и ответу на
+        терапию.
+      source_ref:
+        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Программная цитостатическая терапия является основным методом лечения
+          ОМЛ, интенсивность которой соответствует прогнозу заболевания и ответу на
+          терапию.
+    - text: Интенсификация лечения (увеличение доз цитостатических ЛП) достигается
+        в соответствии с индивидуальным прогностическим профилем (категорией риска)
+        пациента.
+      source_ref:
+        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Интенсификация лечения (увеличение доз цитостатических ЛП) достигается
+          в соответствии с индивидуальным прогностическим профилем (категорией риска)
+          пациента.
+    - text: При содержании CD25+ клеток до начала лечения менее 10% и отсутствии (0%)
+        клеток с ЛАФ после первого курса индукции, ограничиваются одним курсом индукции
+        ремиссии.
+      source_ref:
+        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При содержании CD25+ клеток до начала лечения менее 10% и отсутствии
+          (0%) клеток с ЛАФ после первого курса индукции, ограничиваются одним курсом
+          индукции ремиссии.
+    - text: При содержании CD25+ клеток до начала лечения менее 10% и клеток с ЛАФ
+        после курса индукции 0,01% и более, проводят два курса индукции ремиссии.
+      source_ref:
+        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При содержании CD25+ клеток до начала лечения менее 10% и клеток с
+          ЛАФ после курса индукции 0,01% и более, проводят два курса индукции ремиссии.
     drug_groups: []
     drugs:
-    - drug_name: пациентов старше
+    - drug_name: Глюкоза раствор для инфузий
       active_substance: null
       drug_group: null
-      dose_text: null
+      dose_text: 50 мг/мл
       frequency_text: null
       duration_text: null
       route: null
@@ -96,80 +696,17 @@ conditions:
         protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
         document_url: null
         local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 23
-        section_title: «Диагностика и лечение
-        section_type: diagnostics
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
         table_index: null
         row_index: null
-        quote: пациентов старше
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: p13_клинический_протокол_устанавливает_общие_требования_
-  name: клинический протокол устанавливает общие требования к диагностике
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - P13
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к диагностике (МКБ P13)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к диагностике
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs:
-    - drug_name: пациентов старше
+        quote: глюкоза раствор для инфузий 50 мг/мл
+    - drug_name: Натрия хлорид раствор для инфузий
       active_substance: null
       drug_group: null
-      dose_text: null
+      dose_text: 9 мг/мл
       frequency_text: null
       duration_text: null
       route: null
@@ -181,80 +718,17 @@ conditions:
         protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
         document_url: null
         local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 23
-        section_title: «Диагностика и лечение
-        section_type: diagnostics
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
         table_index: null
         row_index: null
-        quote: пациентов старше
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: p13_1_клинический_протокол_устанавливает_общие_требовани
-  name: клинический протокол устанавливает общие требования к диагностике
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - P13.1
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к диагностике (МКБ P13.1)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к диагностике
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs:
-    - drug_name: пациентов старше
+        quote: натрия хлорид раствор для инфузий 9 мг/мл
+    - drug_name: Натрия гидрокарбонат раствор для инфузий
       active_substance: null
       drug_group: null
-      dose_text: null
+      dose_text: 40 мг/мл или 84 мг/мл
       frequency_text: null
       duration_text: null
       route: null
@@ -266,82 +740,17 @@ conditions:
         protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
         document_url: null
         local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 23
-        section_title: «Диагностика и лечение
-        section_type: diagnostics
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
         table_index: null
         row_index: null
-        quote: пациентов старше
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: p13_3_кп_диагностика_лечение_пациентов_старше_18_лет_вно
-  name: КП Диагностика лечение пациентов старше 18 лет вновь диагностированным острым
-    миелоидным лейкозом пост МЗ 2025 123
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - P13.3
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии КП Диагностика лечение пациентов старше 18 лет вновь
-        диагностированным острым миелоидным лейкозом пост МЗ 2025 123 (МКБ P13.3)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: КП Диагностика лечение пациентов старше 18 лет вновь диагностированным
-          острым миелоидным лейкозом пост МЗ 2025 123
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs:
-    - drug_name: пациентов старше
+        quote: натрия гидрокарбонат раствор для инфузий 40 мг/мл или 84 мг/мл
+    - drug_name: Фуросемид раствор для инъекций
       active_substance: null
       drug_group: null
-      dose_text: null
+      dose_text: 10 мг/мл, 1 мг/кг внутривенно (разовая доза)
       frequency_text: null
       duration_text: null
       route: null
@@ -353,82 +762,17 @@ conditions:
         protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
         document_url: null
         local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 23
-        section_title: «Диагностика и лечение
-        section_type: diagnostics
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
         table_index: null
         row_index: null
-        quote: пациентов старше
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: p21_кп_диагностика_лечение_пациентов_старше_18_лет_вновь
-  name: КП Диагностика лечение пациентов старше 18 лет вновь диагностированным острым
-    миелоидным лейкозом пост МЗ 2025 123
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - P21
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии КП Диагностика лечение пациентов старше 18 лет вновь
-        диагностированным острым миелоидным лейкозом пост МЗ 2025 123 (МКБ P21)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: КП Диагностика лечение пациентов старше 18 лет вновь диагностированным
-          острым миелоидным лейкозом пост МЗ 2025 123
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs:
-    - drug_name: пациентов старше
+        quote: фуросемида раствора для инъекций 10 мг/мл, в разовой дозе 1 мг/кг внутривенно
+    - drug_name: Мидостаурин
       active_substance: null
       drug_group: null
-      dose_text: null
+      dose_text: Включение в схему терапии
       frequency_text: null
       duration_text: null
       route: null
@@ -440,80 +784,19 @@ conditions:
         protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
         document_url: null
         local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 23
-        section_title: «Диагностика и лечение
-        section_type: diagnostics
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
         table_index: null
         row_index: null
-        quote: пациентов старше
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: p21_3_клинический_протокол_устанавливает_общие_требовани
-  name: клинический протокол устанавливает общие требования к диагностике
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - P21.3
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к диагностике (МКБ P21.3)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к диагностике
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs:
-    - drug_name: пациентов старше
+        quote: При выявлении у пациента FLT3-мутации показано включение в схему терапии
+          ЛП-ингибитора FLT3 и КIТ киназы (мидостаурин).
+    - drug_name: Антрациклины
       active_substance: null
       drug_group: null
-      dose_text: null
+      dose_text: Эскалированные или стандартные дозы в курсах индукции ремиссии по
+        протоколу «7 + 3»
       frequency_text: null
       duration_text: null
       route: null
@@ -525,147 +808,19 @@ conditions:
         protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
         document_url: null
         local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 23
-        section_title: «Диагностика и лечение
-        section_type: diagnostics
+        page_start: 2
+        page_end: null
+        section_title: null
+        section_type: null
         table_index: null
         row_index: null
-        quote: пациентов старше
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: p22_кп_диагностика_лечение_пациентов_старше_18_лет_вновь
-  name: КП Диагностика лечение пациентов старше 18 лет вновь диагностированным острым
-    миелоидным лейкозом пост МЗ 2025 123
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - P22
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии КП Диагностика лечение пациентов старше 18 лет вновь
-        диагностированным острым миелоидным лейкозом пост МЗ 2025 123 (МКБ P22)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 4
-        page_end: 4
-        section_title: '8. Классификация ОМЛ и других опухолей с миелоидной дифференцировкой:'
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: КП Диагностика лечение пациентов старше 18 лет вновь диагностированным
-          острым миелоидным лейкозом пост МЗ 2025 123
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 4
-        page_end: 4
-        section_title: '8. Классификация ОМЛ и других опухолей с миелоидной дифференцировкой:'
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: p23_кп_диагностика_лечение_пациентов_старше_18_лет_вновь
-  name: КП Диагностика лечение пациентов старше 18 лет вновь диагностированным острым
-    миелоидным лейкозом пост МЗ 2025 123
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - P23
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии КП Диагностика лечение пациентов старше 18 лет вновь
-        диагностированным острым миелоидным лейкозом пост МЗ 2025 123 (МКБ P23)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: КП Диагностика лечение пациентов старше 18 лет вновь диагностированным
-          острым миелоидным лейкозом пост МЗ 2025 123
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs:
-    - drug_name: пациентов старше
+        quote: проводится после первого курса «7 + 3» с эскалированными дозами антрациклинов;
+          [...] проводятся два курса индукции ремиссии по протоколу «7 + 3», причем
+          первый курс с эскалированными а второй со стандартными дозами антрациклинов
+    - drug_name: Цитарабин
       active_substance: null
       drug_group: null
-      dose_text: null
+      dose_text: Высокие дозы по протоколу HiDAC
       frequency_text: null
       duration_text: null
       route: null
@@ -677,1091 +832,272 @@ conditions:
         protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
         document_url: null
         local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 23
-        section_title: «Диагностика и лечение
-        section_type: diagnostics
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
         table_index: null
         row_index: null
-        quote: пациентов старше
+        quote: пациента переводят на терапию консолидации ремиссии с высокими дозами
+          цитарабина по протоколу HiDAC;
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Контроль диуреза и клинико-лабораторных данных во время инфузионной терапии.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль диуреза и клинико-лабораторных данных во время инфузионной терапии.
+  - text: Контроль биохимического анализа крови не реже 3 раз в неделю в период аплазии,
+      при наличии медицинских показаний и осложнений терапии – ежедневно или чаще.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль биохимического анализа крови не реже 3 раз в неделю в период
+        аплазии, при наличии медицинских показаний и осложнений терапии – ежедневно
+        или чаще.
+  - text: Контроль коагулограммы от 1–2 раз в неделю до 1 раза в месяц; при ДВС-синдроме,
+      вторичной коагулопатии – ежедневно.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль коагулограммы от 1–2 раз в неделю до 1 раза в месяц; при ДВС-синдроме,
+        вторичной коагулопатии – ежедневно.
+  - text: Внеплановое исследование костного мозга (КМ) показано при выявлении любых
+      изменений.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Внеплановое исследование костного мозга (КМ) показано при выявлении любых
+        изменений.
   hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: p23_3_клинический_протокол_устанавливает_общие_требовани
-  name: клинический протокол устанавливает общие требования к диагностике
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - P23.3
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к диагностике (МКБ P23.3)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к диагностике
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs:
-    - drug_name: пациентов старше
-      active_substance: null
-      drug_group: null
-      dose_text: null
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 23
-        section_title: «Диагностика и лечение
-        section_type: diagnostics
-        table_index: null
-        row_index: null
-        quote: пациентов старше
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: q11_2_клинический_протокол_устанавливает_общие_требовани
-  name: клинический протокол устанавливает общие требования к диагностике
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - Q11.2
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к диагностике (МКБ Q11.2)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к диагностике
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs:
-    - drug_name: пациентов старше
-      active_substance: null
-      drug_group: null
-      dose_text: null
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 23
-        section_title: «Диагностика и лечение
-        section_type: diagnostics
-        table_index: null
-        row_index: null
-        quote: пациентов старше
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: q12_кп_диагностика_лечение_пациентов_старше_18_лет_вновь
-  name: КП Диагностика лечение пациентов старше 18 лет вновь диагностированным острым
-    миелоидным лейкозом пост МЗ 2025 123
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - Q12
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии КП Диагностика лечение пациентов старше 18 лет вновь
-        диагностированным острым миелоидным лейкозом пост МЗ 2025 123 (МКБ Q12)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 4
-        page_end: 4
-        section_title: '8. Классификация ОМЛ и других опухолей с миелоидной дифференцировкой:'
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: КП Диагностика лечение пациентов старше 18 лет вновь диагностированным
-          острым миелоидным лейкозом пост МЗ 2025 123
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 4
-        page_end: 4
-        section_title: '8. Классификация ОМЛ и других опухолей с миелоидной дифференцировкой:'
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: q13_кп_диагностика_лечение_пациентов_старше_18_лет_вновь
-  name: КП Диагностика лечение пациентов старше 18 лет вновь диагностированным острым
-    миелоидным лейкозом пост МЗ 2025 123
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - Q13
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии КП Диагностика лечение пациентов старше 18 лет вновь
-        диагностированным острым миелоидным лейкозом пост МЗ 2025 123 (МКБ Q13)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 4
-        page_end: 4
-        section_title: '8. Классификация ОМЛ и других опухолей с миелоидной дифференцировкой:'
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: КП Диагностика лечение пациентов старше 18 лет вновь диагностированным
-          острым миелоидным лейкозом пост МЗ 2025 123
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 4
-        page_end: 4
-        section_title: '8. Классификация ОМЛ и других опухолей с миелоидной дифференцировкой:'
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: q21_клинический_протокол_устанавливает_общие_требования_
-  name: клинический протокол устанавливает общие требования к диагностике
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - Q21
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к диагностике (МКБ Q21)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к диагностике
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs:
-    - drug_name: пациентов старше
-      active_substance: null
-      drug_group: null
-      dose_text: null
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 23
-        section_title: «Диагностика и лечение
-        section_type: diagnostics
-        table_index: null
-        row_index: null
-        quote: пациентов старше
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: q21_3_кп_диагностика_лечение_пациентов_старше_18_лет_вно
-  name: КП Диагностика лечение пациентов старше 18 лет вновь диагностированным острым
-    миелоидным лейкозом пост МЗ 2025 123
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - Q21.3
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии КП Диагностика лечение пациентов старше 18 лет вновь
-        диагностированным острым миелоидным лейкозом пост МЗ 2025 123 (МКБ Q21.3)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: КП Диагностика лечение пациентов старше 18 лет вновь диагностированным
-          острым миелоидным лейкозом пост МЗ 2025 123
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs:
-    - drug_name: пациентов старше
-      active_substance: null
-      drug_group: null
-      dose_text: null
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 23
-        section_title: «Диагностика и лечение
-        section_type: diagnostics
-        table_index: null
-        row_index: null
-        quote: пациентов старше
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: q22_клинический_протокол_устанавливает_общие_требования_
-  name: клинический протокол устанавливает общие требования к диагностике
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - Q22
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к диагностике (МКБ Q22)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к диагностике
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs:
-    - drug_name: пациентов старше
-      active_substance: null
-      drug_group: null
-      dose_text: null
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 23
-        section_title: «Диагностика и лечение
-        section_type: diagnostics
-        table_index: null
-        row_index: null
-        quote: пациентов старше
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: q22_1_клинический_протокол_устанавливает_общие_требовани
-  name: клинический протокол устанавливает общие требования к диагностике
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - Q22.1
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к диагностике (МКБ Q22.1)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к диагностике
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs:
-    - drug_name: пациентов старше
-      active_substance: null
-      drug_group: null
-      dose_text: null
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 23
-        section_title: «Диагностика и лечение
-        section_type: diagnostics
-        table_index: null
-        row_index: null
-        quote: пациентов старше
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: q23_кп_диагностика_лечение_пациентов_старше_18_лет_вновь
-  name: КП Диагностика лечение пациентов старше 18 лет вновь диагностированным острым
-    миелоидным лейкозом пост МЗ 2025 123
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - Q23
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии КП Диагностика лечение пациентов старше 18 лет вновь
-        диагностированным острым миелоидным лейкозом пост МЗ 2025 123 (МКБ Q23)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: КП Диагностика лечение пациентов старше 18 лет вновь диагностированным
-          острым миелоидным лейкозом пост МЗ 2025 123
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs:
-    - drug_name: пациентов старше
-      active_substance: null
-      drug_group: null
-      dose_text: null
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 23
-        section_title: «Диагностика и лечение
-        section_type: diagnostics
-        table_index: null
-        row_index: null
-        quote: пациентов старше
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: q23_3_клинический_протокол_устанавливает_общие_требовани
-  name: клинический протокол устанавливает общие требования к диагностике
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - Q23.3
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к диагностике (МКБ Q23.3)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к диагностике
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs:
-    - drug_name: пациентов старше
-      active_substance: null
-      drug_group: null
-      dose_text: null
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 23
-        section_title: «Диагностика и лечение
-        section_type: diagnostics
-        table_index: null
-        row_index: null
-        quote: пациентов старше
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: q26_2_клинический_протокол_устанавливает_общие_требовани
-  name: клинический протокол устанавливает общие требования к диагностике
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - Q26.2
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к диагностике (МКБ Q26.2)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к диагностике
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs:
-    - drug_name: пациентов старше
-      active_substance: null
-      drug_group: null
-      dose_text: null
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 23
-        section_title: «Диагностика и лечение
-        section_type: diagnostics
-        table_index: null
-        row_index: null
-        quote: пациентов старше
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: q34_кп_диагностика_лечение_пациентов_старше_18_лет_вновь
-  name: КП Диагностика лечение пациентов старше 18 лет вновь диагностированным острым
-    миелоидным лейкозом пост МЗ 2025 123
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - Q34
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии КП Диагностика лечение пациентов старше 18 лет вновь
-        диагностированным острым миелоидным лейкозом пост МЗ 2025 123 (МКБ Q34)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: КП Диагностика лечение пациентов старше 18 лет вновь диагностированным
-          острым миелоидным лейкозом пост МЗ 2025 123
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs:
-    - drug_name: пациентов старше
-      active_substance: null
-      drug_group: null
-      dose_text: null
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 23
-        section_title: «Диагностика и лечение
-        section_type: diagnostics
-        table_index: null
-        row_index: null
-        quote: пациентов старше
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: q34_1_клинический_протокол_устанавливает_общие_требовани
-  name: клинический протокол устанавливает общие требования к диагностике
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - Q34.1
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к диагностике (МКБ Q34.1)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к диагностике
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 22
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs:
-    - drug_name: пациентов старше
-      active_substance: null
-      drug_group: null
-      dose_text: null
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 22
-        page_end: 23
-        section_title: «Диагностика и лечение
-        section_type: diagnostics
-        table_index: null
-        row_index: null
-        quote: пациентов старше
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: направление пациентов на следующий этап
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: направление пациентов на следующий этап
+  - text: Областные, городские (гематологические отделения, кабинеты)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Областные, городские (гематологические отделения, кабинеты)
+  red_flags:
+  - text: Задержка мочи более 200 мл/м2 поверхности тела в течение 6 часов
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При задержке мочи более 200 мл/м2 поверхности тела в течение 6 часов
+        показано введение фуросемида раствора для инъекций 10 мг/мл, в разовой дозе
+        1 мг/кг внутривенно;
+  - text: Выявление любых изменений, требующих внепланового исследования костного
+      мозга
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 17
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Внеплановое исследование КМ показано при выявлении любых изменений
+  - text: Соматический статус пациента по шкале ECOG более 2 баллов
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинским показанием для применения программной цитостатической терапии
+        у пациентов с ОМЛ является соматический статус пациента по шкале ECOG не более
+        1–2 балла
+  - text: Ранее получавшие химиотерапию по поводу острого миелоидного лейкоза
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'кроме пациентов: получавших ранее химиотерапию по поводу указанного
+        заболевания;'
+  - text: Ранее получавшие лучевую или цитостатическую терапию по поводу других онкологических
+      заболеваний
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'кроме пациентов: получавших ранее лучевую или цитостатическую терапию
+        по поводу других онкологических заболеваний (лимфомы, рак молочной железы
+        и иные);'
+  - text: Наличие предшествующего миелодиспластического синдрома
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'кроме пациентов: имеющих предшествующий миелодиспластический синдром;'
+  - text: Страдающие бластным кризом хронического миелолейкоза
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'кроме пациентов: страдающих бластным кризом хронического миелолейкоза.'
   contraindications: []
   complications: []
   kz_checklist: null
@@ -1770,82 +1106,15 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-05-31T18:30:04.898095+00:00'
-  extractor: builder.heuristic_v2
-  extractor_version: '2.0'
-  source_document_sha256: 66a1eec586507e5d66b164352c6dfc825823b84305ad049caa7b372dda22a7e9
+  extracted_at: '2026-07-20T16:19:12.108380+00:00'
+  extractor: llm_extractor
+  extractor_version: '1.0'
+  source_document_sha256: null
   notes:
-  - aggregated from 6 protocol_cards, 219 chunks
+  - llm_pipeline_v1
+  - conditions=1
 validation:
-  status: needs_human_review
+  status: valid
   errors: []
-  warnings:
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[p13_клинический_протокол_устанавливает_общие_требования_].treatment.drugs[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[p13_1_клинический_протокол_устанавливает_общие_требовани].treatment.drugs[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[p13_3_кп_диагностика_лечение_пациентов_старше_18_лет_вно].treatment.drugs[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[p21_кп_диагностика_лечение_пациентов_старше_18_лет_вновь].treatment.drugs[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[p21_3_клинический_протокол_устанавливает_общие_требовани].treatment.drugs[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[p23_кп_диагностика_лечение_пациентов_старше_18_лет_вновь].treatment.drugs[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[p23_3_клинический_протокол_устанавливает_общие_требовани].treatment.drugs[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[q11_2_клинический_протокол_устанавливает_общие_требовани].treatment.drugs[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[q21_клинический_протокол_устанавливает_общие_требования_].treatment.drugs[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[q21_3_кп_диагностика_лечение_пациентов_старше_18_лет_вно].treatment.drugs[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[q22_клинический_протокол_устанавливает_общие_требования_].treatment.drugs[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[q22_1_клинический_протокол_устанавливает_общие_требовани].treatment.drugs[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[q23_кп_диагностика_лечение_пациентов_старше_18_лет_вновь].treatment.drugs[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[q23_3_клинический_протокол_устанавливает_общие_требовани].treatment.drugs[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[q26_2_клинический_протокол_устанавливает_общие_требовани].treatment.drugs[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[q34_кп_диагностика_лечение_пациентов_старше_18_лет_вновь].treatment.drugs[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[q34_1_клинический_протокол_устанавливает_общие_требовани].treatment.drugs[0]
-  validated_at: '2026-05-31T18:30:04.898219+00:00'
+  warnings: []
+  validated_at: '2026-07-20T16:19:12.127843+00:00'

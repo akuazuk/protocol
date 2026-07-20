@@ -1,10 +1,10 @@
 {
   "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Оказание медпомощи пациентам с аффективными расстройствами настроения взр и детс население",
+    "title": "Оказание медпомощи пациентам с аффективными расстройствами настроения",
     "url": null,
     "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "adult_and_child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,15 +32,56 @@
   },
   "conditions": [
     {
-      "condition_id": "оказание_медпомощи_пациентам_с_аффективными_расс",
-      "name": "Оказание медпомощи пациентам с аффективными расстройствами настроения взр и детс население",
+      "condition_id": "maniacal_episode",
+      "name": "Маниакальный эпизод",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
         "F30",
         "F30.0",
         "F30.1",
-        "F30.2",
+        "F30.2"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": null,
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "Госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация"
+          }
+        }
+      ],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "bipolar_affective_disorder",
+      "name": "Биполярное аффективное расстройство",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
         "F31",
         "F31.0",
         "F31.1",
@@ -48,7 +89,709 @@
         "F31.3",
         "F31.4",
         "F31.5",
-        "F31.6"
+        "F31.6",
+        "F31.7"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": null,
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        }
+      ],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "depressive_episode",
+      "name": "Депрессивный эпизод",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "F32",
+        "F32.0",
+        "F32.1",
+        "F32.2",
+        "F32.3"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": {
+        "non_drug": [
+          {
+            "text": "Когнитивно-поведенческая психотерапия",
+            "source_ref": {
+              "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Когнитивно-поведенческая психотерапия"
+            }
+          },
+          {
+            "text": "Семейная психотерапия",
+            "source_ref": {
+              "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Семейная психотерапия"
+            }
+          },
+          {
+            "text": "Психообразовательная работа с пациентами (в состоянии ремиссии)",
+            "source_ref": {
+              "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Психообразовательная работа с пациентами (в состоянии ремиссии)"
+            }
+          },
+          {
+            "text": "Курс ЭСТ (5–7 сеансов) при неэффективности фармакотерапии или быстрой цикличности",
+            "source_ref": {
+              "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Курс ЭСТ (5–7 сеансов) при неэффективности фармакотерапии или быстрой цикличности"
+            }
+          }
+        ],
+        "drug_groups": [],
+        "drugs": [
+          {
+            "drug_name": "Ламотриджин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": null,
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ламотриджин более эффективен для медицинской профилактики эпизодов депрессии"
+            }
+          }
+        ],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [
+        {
+          "text": "Ориентировочная продолжительность лечения составляет 4–6 месяцев.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Ориентировочная продолжительность лечения составляет 4–6 месяцев."
+          }
+        },
+        {
+          "text": "Профилактическое лечение после впервые перенесенного эпизода с полной ремиссией: от 6 месяцев до 1 года.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Профилактическое лечение после впервые перенесенного эпизода с полной ремиссией: от 6 месяцев до 1 года."
+          }
+        },
+        {
+          "text": "Профилактическое лечение при частых, тяжелых, резистентных или угрожающих жизни эпизодах: от 3–4 лет до неопределенно долгого срока.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Профилактическое лечение при частых, тяжелых, резистентных или угрожающих жизни эпизодах: от 3–4 лет до неопределенно долгого срока."
+          }
+        },
+        {
+          "text": "Отмена лекарственных средств должна быть постепенной и осторожной для предотвращения обострений аффективного расстройства настроения.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Отмена лекарственных средств должна быть постепенной и осторожной для предотвращения обострений аффективного расстройства настроения."
+          }
+        }
+      ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "Амбулаторно: непсихотические аффективные расстройства настроения, психотические состояния с незначительно выраженной симптоматикой или в состоянии ремиссии.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Амбулаторно: непсихотические аффективные расстройства настроения, психотические состояния с незначительно выраженной симптоматикой или в состоянии ремиссии."
+          }
+        },
+        {
+          "text": "Госпитализация (отделение дневного пребывания): затяжные непсихотические аффективные расстройства настроения и психотические расстройства после лечения в стационаре.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация (отделение дневного пребывания): затяжные непсихотические аффективные расстройства настроения и психотические расстройства после лечения в стационаре."
+          }
+        },
+        {
+          "text": "Госпитализация (стационарные условия): психотические нарушения аффективных расстройств настроения.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация (стационарные условия): психотические нарушения аффективных расстройств настроения."
+          }
+        },
+        {
+          "text": "Госпитализация пациентов с аффективными расстройствами настроения в больничные организации здравоохранения",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация пациентов с аффективными расстройствами настроения в больничные организации здравоохранения"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Легкость инверсии аффекта с переходом из депрессии в манию (гипоманию) после начала терапии антидепрессантами у несовершеннолетних.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Для несовершеннолетних пациентов характерна также легкость инверсии аффекта с переходом из депрессии в манию (гипоманию) после начала терапии антидепрессантами."
+          }
+        },
+        {
+          "text": "Тяжелый, затяжной, плохо поддающийся купированию, терапевтически резистентный или угрожавший жизни эпизод аффективного расстройства настроения.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "если пациент перенес тяжелый, затяжной либо плохо поддающийся купированию, либо терапевтически резистентный, либо угрожавший жизни пациента и окружающим эпизод аффективного расстройства настроения"
+          }
+        },
+        {
+          "text": "Серьезные суицидальные тенденции, отказ от еды, истощение и другие симптомы, угрожающие жизни пациента.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "(с серьезными суицидальными тенденциями, отказом от еды, истощением и другими симптомами) – профилактическое лечение продолжается от 3–4 лет до неопределенно долгого срока"
+          }
+        }
+      ],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "recurrent_depressive_disorder",
+      "name": "Рекуррентное депрессивное расстройство",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "F33",
+        "F33.0",
+        "F33.1",
+        "F33.2",
+        "F33.3",
+        "F33.4",
+        "F33.8",
+        "F33.9"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": {
+        "non_drug": [
+          {
+            "text": "Когнитивно-поведенческая и семейная психотерапия проводятся на этапах стабилизирующей, долечивающей и профилактической терапии.",
+            "source_ref": {
+              "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Когнитивно-поведенческая и семейная психотерапия проводятся на этапах стабилизирующей, долечивающей и профилактической терапии."
+            }
+          },
+          {
+            "text": "Психообразовательная работа с пациентами наиболее показана в состоянии ремиссии.",
+            "source_ref": {
+              "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Психообразовательная работа с пациентами наиболее показана в состоянии ремиссии."
+            }
+          }
+        ],
+        "drug_groups": [],
+        "drugs": [
+          {
+            "drug_name": "Ламотриджин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Не указано, для медицинской профилактики эпизодов депрессии.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ламотриджин более эффективен для медицинской профилактики эпизодов депрессии"
+            }
+          }
+        ],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [
+        {
+          "text": "Продолжительность лечения в стационарных условиях определяется клинической целесообразностью (продолжительностью и тяжестью симптоматики).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Продолжительность лечения в стационарных условиях определяется клинической целесообразностью (продолжительностью и тяжестью симптоматики)."
+          }
+        },
+        {
+          "text": "В амбулаторных условиях лечение продолжается на период, пока сохраняется необходимость в поддерживающем лечении или медицинском наблюдении.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "В амбулаторных условиях лечение продолжается на период, пока сохраняется необходимость в поддерживающем лечении или медицинском наблюдении."
+          }
+        },
+        {
+          "text": "Ориентировочная продолжительность лечения составляет 4–6 месяцев.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Ориентировочная продолжительность лечения составляет 4–6 месяцев."
+          }
+        },
+        {
+          "text": "3-й этап лечения – профилактическое (поддерживающее, противорецидивное), его цель – профилактика обострений.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "3-й этап лечения – профилактическое (поддерживающее, противорецидивное), его цель – профилактика обострений."
+          }
+        },
+        {
+          "text": "При впервые перенесенном эпизоде аффективного расстройства с хорошим откликом и полной ремиссией, профилактическое лечение длится от 6 месяцев до 1 года.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При впервые перенесенном эпизоде аффективного расстройства с хорошим откликом и полной ремиссией, профилактическое лечение длится от 6 месяцев до 1 года."
+          }
+        },
+        {
+          "text": "При частых, тяжелых, затяжных, терапевтически резистентных эпизодах или эпизодах с суицидальными тенденциями, профилактическое лечение продолжается от 3–4 лет до неопределенно долгого срока.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При частых, тяжелых, затяжных, терапевтически резистентных эпизодах или эпизодах с суицидальными тенденциями, профилактическое лечение продолжается от 3–4 лет до неопределенно долгого срока."
+          }
+        },
+        {
+          "text": "Профилактическое лечение может быть прекращено путем постепенного снижения дозы ЛС при сохранении полной ремиссии без остаточных симптомов в течение 3–4 лет.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Профилактическое лечение может быть прекращено путем постепенного снижения дозы ЛС при сохранении полной ремиссии без остаточных симптомов в течение 3–4 лет."
+          }
+        }
+      ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "Амбулаторное лечение показано при непсихотических аффективных расстройствах настроения, психотических состояниях с незначительно выраженной симптоматикой или в состоянии ремиссии.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Амбулаторное лечение показано при непсихотических аффективных расстройствах настроения, психотических состояниях с незначительно выраженной симптоматикой или в состоянии ремиссии."
+          }
+        },
+        {
+          "text": "Лечение в условиях отделения дневного пребывания показано при затяжных непсихотических и психотических аффективных расстройствах настроения после стационарного лечения.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Лечение в условиях отделения дневного пребывания показано при затяжных непсихотических и психотических аффективных расстройствах настроения после стационарного лечения."
+          }
+        },
+        {
+          "text": "Стационарное лечение показано при психотических нарушениях аффективных расстройств настроения.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Стационарное лечение показано при психотических нарушениях аффективных расстройств настроения."
+          }
+        },
+        {
+          "text": "Госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "У несовершеннолетних пациентов возможна инверсия аффекта (переход из депрессии в манию/гипоманию) после начала терапии антидепрессантами.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Для несовершеннолетних пациентов характерна также легкость инверсии аффекта с переходом из депрессии в манию (гипоманию) после начала терапии антидепрессантами."
+          }
+        },
+        {
+          "text": "Постепенное и осторожное прекращение приема лекарственных средств необходимо, так как резкая отмена может привести к обострению аффективного расстройства настроения.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Постепенность и осторожность отмены ЛС необходимы, поскольку в ряде случаев прекращение лечения может привести к обострению аффективного расстройства настроения."
+          }
+        }
+      ],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "persistent_mood_disorders",
+      "name": "Устойчивые расстройства настроения (аффективные расстройства)",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "F34",
+        "F34.0",
+        "F34.1"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -56,7 +799,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "один из эпизодов повышенного или сниженного настроения не достигает критериев",
+            "text": "Не указаны в данном блоке текста, лечение назначается по МКБ-10",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -73,70 +816,7 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "один из эпизодов повышенного или сниженного настроения не достигает критериев"
-            }
-          },
-          {
-            "text": "и длительности не достигает критериев легкого депрессивного эпизода и рекуррентного",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "и длительности не достигает критериев легкого депрессивного эпизода и рекуррентного"
-            }
-          },
-          {
-            "text": "депрессивного расстройства. Продолжается в течение нескольких лет или неопределенно",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "депрессивного расстройства. Продолжается в течение нескольких лет или неопределенно"
-            }
-          },
-          {
-            "text": "Первое определение проводится через",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Первое определение проводится через"
+              "quote": "Не указаны в данном блоке текста, лечение назначается по МКБ-10"
             }
           }
         ],
@@ -145,7 +825,7 @@
       },
       "required_exams": [
         {
-          "name": "ОАК",
+          "name": "Определение концентрации лития в плазме крови",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -160,21 +840,97 @@
             "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
             "document_url": null,
             "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
-            "page_start": null,
+            "page_start": 8,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "риложению; \nобщий анализ крови (далее – ОАК) – однократно при поступлении, далее при \nотсутствии \nпатологичес"
+            "quote": "Первое определение содержания лития в плазме крови следует сделать при приеме 600 или 900 мг соли лития в 2 приема. Кровь берется натощак через 10–12 часов после последнего приема."
+          }
+        },
+        {
+          "name": "Определение концентрации лития в плазме крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Содержание лития в плазме определяют каждые 7 дней с момента назначения и через 7 дней после каждого изменения дозы до достижения эффективной терапевтической дозы лития (уровень лития в плазме крови для взрослых от 0,5 до 1,2 ммоль/л, для несовершеннолетних пациентов, пациентов пожилого возраста – 0,4–0,6 ммоль/л)."
+          }
+        },
+        {
+          "name": "Определение концентрации лития в плазме крови для профилактики",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Содержание лития в плазме нужно вначале определять 1 раз в неделю, при этом необходимо, чтобы оно составляло 0,5–1,2 ммоль/л. После того, как правильная доза подобрана, содержание лития в плазме нужно определять не реже, чем 1 раз в 3 месяца."
           }
         }
       ],
-      "conditional_exams": [],
+      "conditional_exams": [
+        {
+          "name": "Повторное определение концентрации лития в плазме крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При подозрении на интоксикацию литием анализ повторяется немедленно."
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 6. Лечение назначают в соответствии с настоящим клиническим протоколом (стр. 3)",
+            "text": "При гипомании (F30.0, F31.0) ЭСТ не используется.",
             "source_ref": {
               "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
               "document_url": null,
@@ -185,11 +941,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 6. Лечение назначают в соответствии с настоящим клиническим протоколом (стр. 3)"
+              "quote": "При гипомании (F30.0, F31.0) ЭСТ не используется."
             }
           },
           {
-            "text": "с учетом индивидуальных особенностей пациента (возраст, степень тяжести заболевания,",
+            "text": "При гипомании (F30.0) проводится когнитивно-поведенческая психотерапия и работа с семьей.",
             "source_ref": {
               "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
               "document_url": null,
@@ -200,11 +956,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "с учетом индивидуальных особенностей пациента (возраст, степень тяжести заболевания,"
+              "quote": "При гипомании (F30.0) проводится когнитивно-поведенческая психотерапия и работа с семьей."
             }
           },
           {
-            "text": "характеристики лекарственного средства (далее – ЛС) и характеристик медицинского",
+            "text": "При мании с психотическими симптомами (F30.2) при неэффективности фармакотерапии и отсутствии противопоказаний проводится курс ЭСТ (5–7 сеансов).",
             "source_ref": {
               "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
               "document_url": null,
@@ -215,11 +971,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "характеристики лекарственного средства (далее – ЛС) и характеристик медицинского"
+              "quote": "При мании с психотическими симптомами (F30.2) при неэффективности фармакотерапии и отсутствии противопоказаний проводится курс ЭСТ (5–7 сеансов)."
             }
           },
           {
-            "text": "[treatment] 14. Другие расстройства настроения (аффективные) (F38 по МКБ-10): (стр. 6)",
+            "text": "При мании с психотическими симптомами (F30.2) психотерапия пациента не проводится.",
             "source_ref": {
               "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
               "document_url": null,
@@ -230,11 +986,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 14. Другие расстройства настроения (аффективные) (F38 по МКБ-10): (стр. 6)"
+              "quote": "При мании с психотическими симптомами (F30.2) психотерапия пациента не проводится."
             }
           },
           {
-            "text": "Для несовершеннолетних пациентов характерна также легкость инверсии аффекта",
+            "text": "При быстрой цикличности и частой инверсии фаз биполярного аффективного расстройства (F31) без профилактического эффекта от нормотимиков показано проведение курса ЭСТ.",
             "source_ref": {
               "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
               "document_url": null,
@@ -245,11 +1001,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Для несовершеннолетних пациентов характерна также легкость инверсии аффекта"
+              "quote": "При быстрой цикличности и частой инверсии фаз биполярного аффективного расстройства (F31) без профилактического эффекта от нормотимиков показано проведение курса ЭСТ."
             }
           },
           {
-            "text": "[treatment] РАССТРОЙСТВАМИ НАСТРОЕНИЯ (стр. 7)",
+            "text": "При биполярном аффективном расстройстве (F31) проводится когнитивно-поведенческая и семейная психотерапия.",
             "source_ref": {
               "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
               "document_url": null,
@@ -260,17 +1016,62 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] РАССТРОЙСТВАМИ НАСТРОЕНИЯ (стр. 7)"
+              "quote": "При биполярном аффективном расстройстве (F31) проводится когнитивно-поведенческая и семейная психотерапия."
+            }
+          },
+          {
+            "text": "Психообразовательная работа с пациентами наиболее показана в состоянии ремиссии при биполярном аффективном расстройстве (F31).",
+            "source_ref": {
+              "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Психообразовательная работа с пациентами наиболее показана в состоянии ремиссии при биполярном аффективном расстройстве (F31)."
+            }
+          },
+          {
+            "text": "Психотерапия (когнитивно-поведенческая, семейная) при гипомании (F31.0) начинается на этапе стабилизирующей и долечивающей терапии и продолжается на этапе профилактического лечения.",
+            "source_ref": {
+              "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Психотерапия (когнитивно-поведенческая, семейная) при гипомании (F31.0) начинается на этапе стабилизирующей и долечивающей терапии и продолжается на этапе профилактического лечения."
+            }
+          },
+          {
+            "text": "В некоторых случаях при мании без психотических симптомов (F31.1) возникает необходимость использования ЭСТ.",
+            "source_ref": {
+              "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "В некоторых случаях при мании без психотических симптомов (F31.1) возникает необходимость использования ЭСТ."
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "доза",
+            "drug_name": "Карбонат лития",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "600 мг",
+            "dose_text": "Таблетки по 300 мг, начальная доза 600 мг/сутки (пожилым – 300 мг) внутрь, в 1–2 приема, с последующим увеличением до 900–1200 мг/сутки. Эффективный уровень в плазме для взрослых 0,5–1,2 ммоль/л, для ",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -282,20 +1083,20 @@
               "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
               "document_url": null,
               "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
-              "page_start": null,
+              "page_start": 8,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "доза 600 мг/сутки (у пациентов \nпожилого возраста –"
+              "quote": "карбонат лития, таблетки по 300 мг, начальная доза 600 мг/сутки (у пациентов пожилого возраста – 300 мг) внутрь, в 1–2 приема, с последующим увеличением суточной дозы до 900–1200 мг/сутки под контролем концентрации лития в плазме крови."
             }
           },
           {
-            "drug_name": "ноября",
+            "drug_name": "ЛС нормотимического действия",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2022 г",
+            "dose_text": "Не указана.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -307,20 +1108,20 @@
               "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
               "document_url": null,
               "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
-              "page_start": null,
+              "page_start": 10,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ноября 2022 г"
+              "quote": "в лечении используются ЛС нормотимического действия."
             }
           },
           {
-            "drug_name": "июня",
+            "drug_name": "Антипсихотики",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1993 г",
+            "dose_text": "Редко и в небольших дозах.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -332,20 +1133,20 @@
               "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
               "document_url": null,
               "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
-              "page_start": null,
+              "page_start": 10,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июня \n1993 г"
+              "quote": "Антипсихотики применяются редко и в небольших дозах."
             }
           },
           {
-            "drug_name": "октября",
+            "drug_name": "ЛС нормотимического действия в сочетании с антипсихотиком",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2011 г",
+            "dose_text": "Не указана.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -357,20 +1158,20 @@
               "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
               "document_url": null,
               "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
-              "page_start": null,
+              "page_start": 10,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "октября 2011 г"
+              "quote": "после завершения ЭСТ продолжают лечение ЛС нормотимического действия в сочетании с антипсихотиком;"
             }
           },
           {
-            "drug_name": "декабря",
+            "drug_name": "Карбонат лития (профилактическое лечение)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2010 г",
+            "dose_text": "От 600 до 1200 мг/сутки. Содержание лития в плазме 0,5–1,2 ммоль/л.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -382,13 +1183,163 @@
               "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
               "document_url": null,
               "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
-              "page_start": null,
+              "page_start": 10,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "декабря 2010 г"
+              "quote": "При проведении профилактического (противорецидивного) лечения карбонатом лития доза его составляет от 600 до 1200 мг/сутки. Содержание лития в плазме нужно вначале определять 1 раз в неделю, при этом необходимо, чтобы оно составляло 0,5–1,2 ммоль/л."
+            }
+          },
+          {
+            "drug_name": "Противоэпилептические ЛС нормотимического действия (карбамазепин, соли вальпроевой кислоты, ламотриджин)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Не указана.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Рекомендовано использование противоэпилептических ЛС нормотимического действия – карбамазепин, соли вальпроевой кислоты, ламотриджин..."
+            }
+          },
+          {
+            "drug_name": "Атипичные антипсихотики (оланзапин, кветиапин, рисперидон, арипипразол, карипразин)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Не указана.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "...а также некоторые атипичные антипсихотики – оланзапин, кветиапин, рисперидон, арипипразол, карипразин."
+            }
+          },
+          {
+            "drug_name": "Ламотриджин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Не указана.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ламотриджин более эффективен для медицинской профилактики эпизодов депрессии..."
+            }
+          },
+          {
+            "drug_name": "Окскарбазепин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Не указана.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "...окскарбазепин – для медицинской профилактики мании."
+            }
+          },
+          {
+            "drug_name": "Литий или противоэпилептические ЛС нормотимического действия",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Не указана.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "в лечении, как правило, используются литий или противоэпилептические ЛС нормотимического действия."
+            }
+          },
+          {
+            "drug_name": "Противоэпилептические ЛС нормотимического действия, соли лития и антипсихотики",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Не указана.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "в лечении используются противоэпилептические ЛС нормотимического действия соли лития и антипсихотики."
             }
           }
         ],
@@ -398,7 +1349,7 @@
       },
       "follow_up": [
         {
-          "text": "через \n2 нед",
+          "text": "3-й этап лечения – профилактическое (поддерживающее, противорецидивное), направленное на профилактику обострений в будущем.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -412,11 +1363,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "через \n2 нед"
+            "quote": "3-й этап лечения – профилактическое (поддерживающее, противорецидивное), направленное на профилактику обострений в будущем."
           }
         },
         {
-          "text": "контроль",
+          "text": "Продолжительность профилактического лечения при впервые перенесенном эпизоде аффективного расстройства с хорошим откликом и полной ремиссией составляет от 6 месяцев до 1 года.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -430,11 +1381,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
+            "quote": "Продолжительность профилактического лечения при впервые перенесенном эпизоде аффективного расстройства с хорошим откликом и полной ремиссией составляет от 6 месяцев до 1 года."
           }
         },
         {
-          "text": "через \n7 \nдн",
+          "text": "При частых эпизодах (один приступ в год и более), а также при тяжелом, затяжном, резистентном или угрожавшем жизни эпизоде, профилактическое лечение продолжается от 3–4 лет до неопределенно долгого срока.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -448,14 +1399,32 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "через \n7 \nдн"
+            "quote": "При частых эпизодах (один приступ в год и более), а также при тяжелом, затяжном, резистентном или угрожавшем жизни эпизоде, профилактическое лечение продолжается от 3–4 лет до неопределенно долгого ср"
+          }
+        },
+        {
+          "text": "Прекращение профилактического лечения возможно путем постепенного снижения дозы ЛС, если на протяжении 3–4 лет сохраняется состояние полной ремиссии без остаточных симптомов.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Прекращение профилактического лечения возможно путем постепенного снижения дозы ЛС, если на протяжении 3–4 лет сохраняется состояние полной ремиссии без остаточных симптомов."
           }
         }
       ],
       "hospitalization": [],
       "routing": [
         {
-          "text": "[routing] 4. Госпитализация (стр. 3)",
+          "text": "Стационарные условия: при психотических нарушениях аффективных расстройств настроения.",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -468,7 +1437,181 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "[routing] 4. Госпитализация (стр. 3)"
+            "quote": "Стационарные условия: при психотических нарушениях аффективных расстройств настроения."
+          }
+        },
+        {
+          "text": "Отделение дневного пребывания: при затяжных непсихотических аффективных расстройствах настроения и психотических аффективных расстройствах настроения после лечения в стационаре.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Отделение дневного пребывания: при затяжных непсихотических аффективных расстройствах настроения и психотических аффективных расстройствах настроения после лечения в стационаре."
+          }
+        },
+        {
+          "text": "Амбулаторные условия: при непсихотических аффективных расстройствах настроения, психотических состояниях с незначительно выраженной симптоматикой или в состоянии фармакологической/спонтанной ремиссии.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Амбулаторные условия: при непсихотических аффективных расстройствах настроения, психотических состояниях с незначительно выраженной симптоматикой или в состоянии фармакологической/спонтанной ремиссии."
+          }
+        },
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Легкость инверсии аффекта с переходом из депрессии в манию (гипоманию) у несовершеннолетних пациентов после начала терапии антидепрессантами.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Для несовершеннолетних пациентов характерна также легкость инверсии аффекта с переходом из депрессии в манию (гипоманию) после начала терапии антидепрессантами."
+          }
+        },
+        {
+          "text": "Тяжелый, затяжной, плохо поддающийся купированию, терапевтически резистентный или угрожавший жизни пациента и окружающим эпизод аффективного расстройства (с серьезными суицидальными тенденциями, отказом от еды, истощением).",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "если пациент перенес тяжелый, затяжной либо плохо поддающийся купированию, либо терапевтически резистентный, либо угрожавший жизни пациента и окружающим эпизод аффективного расстройства настроения (с серьезными суицидальными тенденциями, отказом от еды, истощением и другими симптомами)"
+          }
+        },
+        {
+          "text": "Риск обострения аффективного расстройства настроения при прекращении лечения ЛС, требует постепенной и осторожной отмены.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Постепенность и осторожность отмены ЛС необходимы, поскольку в ряде случаев прекращение лечения может привести к обострению аффективного расстройства настроения."
+          }
+        },
+        {
+          "text": "Состояния гипомании могут быть спровоцированы приемом антидепрессантов, особенно трициклических, нередко возникают сразу вслед за депрессивными эпизодами.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Состояния гипомании нередко возникают сразу вслед за депрессивными эпизодами и могут быть спровоцированы приемом антидепрессантов, особенно трициклических."
+          }
+        }
+      ],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "other_mood_disorders",
+      "name": "Другие расстройства настроения (аффективные)",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "F38"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": null,
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "Госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация"
           }
         }
       ],
@@ -476,38 +1619,45 @@
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_аффективными_расстрой",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/psikhiatriya-narkologiya/КП_Оказание_медпомощи_пациентам_с_аффективными_расстройствами_настроения_взр_и_детс_население_пост_МЗ_2022_108.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Оказание медпомощи пациентам с аффективными расстройствами настроения взр и детс население"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:45.721484+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T17:06:55.807251+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=6"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-06-23T19:15:45.726252+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[recurrent_depressive_disorder].treatment.drugs[0]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[persistent_mood_disorders].required_exams[1]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[persistent_mood_disorders].treatment.drugs[7]"
+      }
+    ],
+    "validated_at": "2026-07-20T17:06:55.827415+00:00"
   }
 }

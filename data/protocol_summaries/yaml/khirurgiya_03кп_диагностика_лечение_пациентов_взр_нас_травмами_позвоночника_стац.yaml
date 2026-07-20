@@ -1,10 +1,9 @@
 protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: 03КП Диагностика лечение пациентов взрослое население травмами позвоночника
-    стационарных условияхиях
+  title: Диагностика и лечение пациентов с травмами позвоночника в стационарных условиях
   url: null
   local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
   document_sha256: null
@@ -27,9 +26,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: 03кп_диагностика_лечение_пациентов_взрослое_насе
-  name: 03КП Диагностика лечение пациентов взрослое население травмами позвоночника
-    стационарных условияхиях
+- condition_id: spinal_injuries
+  name: Травмы позвоночника
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -52,91 +50,15 @@ conditions:
   required_exams: []
   conditional_exams: []
   treatment:
-    non_drug:
-    - text: '[treatment] 4. Фармакотерапия (стр. 3)'
-      source_ref:
-        protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 4. Фармакотерапия (стр. 3)'
-    - text: фармакологической характеристики лекарственного препарата (далее – ЛП).
-        При этом
-      source_ref:
-        protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: фармакологической характеристики лекарственного препарата (далее –
-          ЛП). При этом
-    - text: аллергологический и фармакологический анамнез.
-      source_ref:
-        protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: аллергологический и фармакологический анамнез.
-    - text: '[treatment] 5. Режим дозирования, путь введения и кратность применения
-        ЛП определяются (стр. 3)'
-      source_ref:
-        protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 5. Режим дозирования, путь введения и кратность применения
-          ЛП определяются (стр. 3)'
-    - text: инструкцией по медицинскому применению (листком-вкладышем).
-      source_ref:
-        protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: инструкцией по медицинскому применению (листком-вкладышем).
-    - text: '[treatment] 6. До проведения хирургического вмешательства пациентам рассчитывается
-        риск (стр. 3)'
-      source_ref:
-        protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 6. До проведения хирургического вмешательства пациентам
-          рассчитывается риск (стр. 3)'
+    non_drug: []
     drug_groups: []
     drugs:
-    - drug_name: июня
+    - drug_name: Гепарин
       active_substance: null
       drug_group: null
-      dose_text: 2024 г
+      dose_text: За 2 часа до хирургического вмешательства по 5000 МЕ подкожно с последующим
+        подкожным введением в послеоперационном периоде (после оценки состояния гемостаза)
+        каждые 8–12 часов по 5000 МЕ для пациенто
       frequency_text: null
       duration_text: null
       route: null
@@ -148,17 +70,20 @@ conditions:
         protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
         document_url: null
         local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-        page_start: null
+        page_start: 100
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: июня 2024 г
-    - drug_name: октября
+        quote: Гепарин Раствор для внутривенного и подкожного введения (для инъекций)
+          5000 МЕ/мл 5 мл За 2 часа до хирургического вмешательства по 5000 МЕ подкожно
+          с последующим подкожным введением... в течение 7–10 дней, при необходимости
+          более длительное время
+    - drug_name: Дальтепарин
       active_substance: null
       drug_group: null
-      dose_text: 2011 г
+      dose_text: ЛП вводится строго подкожно по одному из альтернативных режимов дозирования.
       frequency_text: null
       duration_text: null
       route: null
@@ -170,36 +95,21 @@ conditions:
         protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
         document_url: null
         local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-        page_start: null
+        page_start: 100
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: октября 2011 г
+        quote: Дальтепарин Раствор для инъекций 2500 МЕ анти-Ха/0,2 мл ЛП вводится
+          строго подкожно по одному из альтернативных режимов дозирования.
     procedures: []
     surgery: []
     source_refs: []
-  follow_up:
-  - text: через 2 нед
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: через 2 нед
+  follow_up: []
   hospitalization: []
   routing:
-  - text: '[routing] 46. Медицинским показанием к госпитализации пациента сроком на
-      3–5 дней (стр. 7)'
+  - text: госпитализация
     timing: null
     required_if: []
     source_ref:
@@ -212,9 +122,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 46. Медицинским показанием к госпитализации пациента сроком
-        на 3–5 дней (стр. 7)'
-  - text: Цель госпитализации – купирование болевого синдрома.
+      quote: госпитализация
+  - text: Госпитализация сроком на 3–5 дней в больничную организацию при выраженном
+      болевом синдроме при компрессионных переломах грудных позвонков с целью купирования
+      болевого синдрома.
     timing: null
     required_if: []
     source_ref:
@@ -227,9 +138,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Цель госпитализации – купирование болевого синдрома.
-  - text: '[routing] 57. Медицинским показанием к госпитализации пациента сроком на
-      3–5 дней (стр. 7)'
+      quote: Госпитализация сроком на 3–5 дней в больничную организацию при выраженном
+        болевом синдроме при компрессионных переломах грудных позвонков с целью купирования
+        болевого синдрома.
+  - text: Постельный режим сроком 4–6 недель с момента травмы показан пациенту в случае
+      компрессионного перелома грудного позвонка.
     timing: null
     required_if: []
     source_ref:
@@ -242,9 +155,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 57. Медицинским показанием к госпитализации пациента сроком
-        на 3–5 дней (стр. 7)'
-  - text: Цель госпитализации – купирование болевого синдрома.
+      quote: Постельный режим сроком 4–6 недель с момента травмы показан пациенту
+        в случае компрессионного перелома грудного позвонка.
+  - text: Госпитализация сроком на 3–5 дней в больничную организацию при выраженном
+      болевом синдроме при компрессионных переломах поясничных позвонков с целью купирования
+      болевого синдрома.
     timing: null
     required_if: []
     source_ref:
@@ -257,12 +172,151 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Цель госпитализации – купирование болевого синдрома.
+      quote: Госпитализация сроком на 3–5 дней в больничную организацию при выраженном
+        болевом синдроме при компрессионных переломах поясничных позвонков с целью
+        купирования болевого синдрома.
   red_flags:
-  - text: "(глубокий венозный тромбоз и (или) тромбоэмболия легочной артерии) в анамнезе;\
-      \ \nиспользование системных глюкокортикоидов (>10 дней); \nбеременность"
+  - text: возраст старше 60 лет
     aliases: []
-    red_flag_type: thrombosis
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 99
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Малые ФР: возраст старше 60 лет'
+  - text: ВТЭО (глубокий венозный тромбоз и (или) тромбоэмболия легочной артерии)
+      в анамнезе
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 99
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Малые ФР: ...ВТЭО (глубокий венозный тромбоз и (или) тромбоэмболия легочной
+        артерии) в анамнезе'
+  - text: использование системных глюкокортикоидов (>10 дней)
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 99
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Малые ФР: ...использование системных глюкокортикоидов (>10 дней)'
+  - text: беременность
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 99
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Малые ФР: ...беременность'
+  - text: послеродовый период (первые 6 недель после родов)
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 99
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Малые ФР: ...послеродовый период (первые 6 недель после родов)'
+  - text: индекс массы тела >30
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 99
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Малые ФР: ...индекс массы тела >30'
+  - text: активный инфекционный процесс
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 99
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Малые ФР: ...активный инфекционный процесс'
+  - text: состояния, сопровождающиеся гиперкоагуляцией
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 99
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Малые ФР: ...состояния, сопровождающиеся гиперкоагуляцией'
+  - text: иммобилизация пациента до и (или) после хирургического вмешательства
+    aliases: []
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -270,18 +324,17 @@ conditions:
       protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
       document_url: null
       local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: null
+      page_start: 99
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "(глубокий венозный тромбоз и (или) тромбоэмболия легочной артерии) в\
-        \ анамнезе; \nиспользование системных глюкокортикоидов (>10 дней); \nбеременность"
-  - text: "омбоз и (или) тромбоэмболия легочной артерии) в анамнезе; \nиспользование\
-      \ системных глюкокортикоидов (>10 дней); \nбеременность; \nпослеродовый перио"
+      quote: 'Большие ФР: иммобилизация пациента до и (или) после хирургического вмешательства'
+  - text: длительность хирургического вмешательства >4 часов и (или) ожидаемый послеоперационный
+      постельный режим >72 часов
     aliases: []
-    red_flag_type: thrombosis
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -289,99 +342,31 @@ conditions:
       protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
       document_url: null
       local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: null
+      page_start: 99
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "омбоз и (или) тромбоэмболия легочной артерии) в анамнезе; \nиспользование\
-        \ системных глюкокортикоидов (>10 дней); \nбеременность; \nпослеродовый перио"
-  - text: "(глубокий венозный тромбоз и (или) тромбоэмболия легочной артерии) в анамнезе;\
-      \ \nиспользование системных глюкокортикоидов (>10 дней); \nбеременность"
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "(глубокий венозный тромбоз и (или) тромбоэмболия легочной артерии) в\
-        \ анамнезе; \nиспользование системных глюкокортикоидов (>10 дней); \nбеременность"
-  - text: "омбоз и (или) тромбоэмболия легочной артерии) в анамнезе; \nиспользование\
-      \ системных глюкокортикоидов (>10 дней); \nбеременность; \nпослеродовый перио"
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "омбоз и (или) тромбоэмболия легочной артерии) в анамнезе; \nиспользование\
-        \ системных глюкокортикоидов (>10 дней); \nбеременность; \nпослеродовый перио"
-  - text: "тия венозного тромбоэмболического осложнения (далее – ВТЭО) с учетом \n\
-      предполагаемого метода хирургического вмешательства и количества баллов по ш"
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "тия венозного тромбоэмболического осложнения (далее – ВТЭО) с учетом\
-        \ \nпредполагаемого метода хирургического вмешательства и количества баллов\
-        \ по ш"
+      quote: 'Большие ФР: ...длительность хирургического вмешательства >4 часов и
+        (или) ожидаемый послеоперационный постельный режим >72 часов'
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: khirurgiya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац
-    document_url: null
-    local_path: minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: 03КП Диагностика лечение пациентов взрослое население травмами позвоночника
-      стационарных условияхиях
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:31.491135+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T16:16:19.068605+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:31.492406+00:00'
+  validated_at: '2026-07-20T16:16:19.072269+00:00'

@@ -1,6 +1,47 @@
 # Validation: gematologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс
 
-- **status:** valid
-- **validated_at:** 2026-06-23T19:16:26.622588+00:00
+- **status:** needs_human_review
+- **validated_at:** 2026-07-20T15:57:35.066177+00:00
 - **review_status:** needs_review
-- **extraction_status:** auto_extracted
+- **extraction_status:** llm_extracted
+
+## Warnings
+- `duplicate_exam` conditions[severe_protein_energy_malnutrition].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[severe_protein_energy_malnutrition].required_exams[3]: Дублирующееся обследование
+- `duplicate_drug` conditions[severe_protein_energy_malnutrition].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[severe_protein_energy_malnutrition].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_exam` conditions[developmental_delay_due_to_malnutrition].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[developmental_delay_due_to_malnutrition].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[developmental_delay_due_to_malnutrition].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[developmental_delay_due_to_malnutrition].required_exams[4]: Дублирующееся обследование
+- `duplicate_exam` conditions[developmental_delay_due_to_malnutrition].required_exams[5]: Дублирующееся обследование
+- `duplicate_exam` conditions[developmental_delay_due_to_malnutrition].required_exams[7]: Дублирующееся обследование
+- `duplicate_drug` conditions[developmental_delay_due_to_malnutrition].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[developmental_delay_due_to_malnutrition].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_exam` conditions[wiskott_aldrich_syndrome].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[wiskott_aldrich_syndrome].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[wiskott_aldrich_syndrome].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[wiskott_aldrich_syndrome].required_exams[6]: Дублирующееся обследование
+- `duplicate_exam` conditions[wiskott_aldrich_syndrome].required_exams[8]: Дублирующееся обследование
+- `duplicate_drug` conditions[wiskott_aldrich_syndrome].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[wiskott_aldrich_syndrome].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_exam` conditions[hemophagocytic_lymphohistiocytosis].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[hemophagocytic_lymphohistiocytosis].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[hemophagocytic_lymphohistiocytosis].required_exams[3]: Дублирующееся обследование
+- `duplicate_drug` conditions[hemophagocytic_lymphohistiocytosis].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[hemophagocytic_lymphohistiocytosis].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_exam` conditions[immunodeficiency_t_cell_defects].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[immunodeficiency_t_cell_defects].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[immunodeficiency_t_cell_defects].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[immunodeficiency_t_cell_defects].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[immunodeficiency_other_major_defects].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[immunodeficiency_other_major_defects].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[immunodeficiency_other_major_defects].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[immunodeficiency_other_major_defects].required_exams[4]: Дублирующееся обследование
+- `duplicate_exam` conditions[immunodeficiency_other_major_defects].required_exams[6]: Дублирующееся обследование
+- `duplicate_exam` conditions[immunodeficiency_other_major_defects].required_exams[10]: Дублирующееся обследование
+- `duplicate_exam` conditions[immunodeficiency_other_major_defects].required_exams[11]: Дублирующееся обследование
+- `duplicate_exam` conditions[immunodeficiency_other_major_defects].required_exams[12]: Дублирующееся обследование
+- `duplicate_exam` conditions[immunodeficiency_other_major_defects].required_exams[13]: Дублирующееся обследование
+- `duplicate_drug` conditions[immunodeficiency_other_major_defects].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[immunodeficiency_other_major_defects].treatment.drugs[1]: Дублирующийся препарат

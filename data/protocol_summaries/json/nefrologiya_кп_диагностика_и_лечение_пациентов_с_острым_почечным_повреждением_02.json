@@ -1,7 +1,7 @@
 {
   "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "Диагностика и лечение пациентов с острым почечным повреждением",
@@ -22,7 +22,8 @@
   },
   "applicability": {
     "population": [
-      "adult"
+      "adult",
+      "pregnant"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,158 +33,81 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_и_лечение_пациентов_с_острым_почечны",
-      "name": "Диагностика и лечение пациентов с острым почечным повреждением",
+      "condition_id": "acute_kidney_injury",
+      "name": "Острое почечное повреждение",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
         "N17.0",
+        "N17.1",
         "N17.2",
         "N17.8",
         "N17.9",
-        "D66"
+        "D66",
+        "D68.6",
+        "O72"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
-      "diagnostic_criteria": {
-        "required": [
-          {
-            "text": "[classification] 4. Диагноз или обоснованное предположение о наличии ОПП служат основанием (стр. 2)",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[classification] 4. Диагноз или обоснованное предположение о наличии ОПП служат основанием (стр. 2)"
-            }
-          },
-          {
-            "text": "общий анализ крови (определение уровня гемоглобина, количества эритроцитов",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "общий анализ крови (определение уровня гемоглобина, количества эритроцитов"
-            }
-          },
-          {
-            "text": "биохимический анализ крови (определение уровня креатинина, мочевины, калия,",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "биохимический анализ крови (определение уровня креатинина, мочевины, калия,"
-            }
-          },
-          {
-            "text": "коагулограмма (определение активированного частичного тромбопластинового",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "коагулограмма (определение активированного частичного тромбопластинового"
-            }
-          },
-          {
-            "text": "биохимический анализ крови (определение уровня кальция общего и/или",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "биохимический анализ крови (определение уровня кальция общего и/или"
-            }
-          },
-          {
-            "text": "Определение биохимических показателей у пациентов с острым почечным",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Определение биохимических показателей у пациентов с острым почечным"
-            }
+      "diagnostic_criteria": null,
+      "required_exams": [
+        {
+          "name": "Определение биохимических показателей в период развернутой симптоматики во время диализной терапии",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Определение биохимических показателей у пациентов с ОПП в период развернутой симптоматики во время диализной терапии проводится согласно приложению 8."
           }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "required_exams": [],
+        },
+        {
+          "name": "Забор крови для оценки эффективности сеанса гемодиализа",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Для оценки эффективности сеанса гемодиализа забор крови проводится через 10–15 минут после отключения аппаратуры."
+          }
+        }
+      ],
       "conditional_exams": [],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 5. Пациенты с изолированным ОПП, стабильной гемодинамикой при отсутствии (стр. 2)",
+            "text": "Режим постельный первые сутки, затем палатный, общий",
             "source_ref": {
               "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
               "document_url": null,
@@ -194,11 +118,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 5. Пациенты с изолированным ОПП, стабильной гемодинамикой при отсутствии (стр. 2)"
+              "quote": "Режим постельный первые сутки, затем палатный, общий"
             }
           },
           {
-            "text": "отделениях, отделениях интенсивной терапии и реанимации. Пациенты с ОПП в рамках",
+            "text": "Диетическое питание: диета М",
             "source_ref": {
               "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
               "document_url": null,
@@ -209,11 +133,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "отделениях, отделениях интенсивной терапии и реанимации. Пациенты с ОПП в рамках"
+              "quote": "Диетическое питание: диета М"
             }
           },
           {
-            "text": "Национальный правовой Интернет-портал Республики Беларусь, 11.09.2021, 8/37133",
+            "text": "Прерывистые, непрерывные и продленные методы диализной терапии",
             "source_ref": {
               "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
               "document_url": null,
@@ -224,11 +148,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Национальный правовой Интернет-портал Республики Беларусь, 11.09.2021, 8/37133"
+              "quote": "Прерывистые, непрерывные и продленные методы диализной терапии"
             }
           },
           {
-            "text": "полиорганной недостаточности и (или) нестабильной гемодинамикой получают лечение",
+            "text": "Продленные и непрерывные методы почечно-заместительной терапии",
             "source_ref": {
               "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
               "document_url": null,
@@ -239,11 +163,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "полиорганной недостаточности и (или) нестабильной гемодинамикой получают лечение"
+              "quote": "Продленные и непрерывные методы почечно-заместительной терапии"
             }
           },
           {
-            "text": "в отделениях интенсивной терапии и реанимации, оборудованных медицинской техникой",
+            "text": "Продленный гемодиализ с использованием стандартных аппаратов",
             "source_ref": {
               "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
               "document_url": null,
@@ -254,11 +178,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "в отделениях интенсивной терапии и реанимации, оборудованных медицинской техникой"
+              "quote": "Продленный гемодиализ с использованием стандартных аппаратов"
             }
           },
           {
-            "text": "для проведения сеансов диализотерапии.",
+            "text": "Гемофильтрация без диализирующего раствора",
             "source_ref": {
               "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
               "document_url": null,
@@ -269,17 +193,47 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "для проведения сеансов диализотерапии."
+              "quote": "Гемофильтрация без диализирующего раствора"
+            }
+          },
+          {
+            "text": "Применение стандартного диализирующего раствора при 37 °С для стабильных пациентов",
+            "source_ref": {
+              "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Применение стандартного диализирующего раствора при 37 °С для стабильных пациентов"
+            }
+          },
+          {
+            "text": "Снижение температуры диализирующего раствора до 35 °С при артериальной гипотензии или у септических/лихорадящих пациентов",
+            "source_ref": {
+              "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Снижение температуры диализирующего раствора до 35 °С при артериальной гипотензии или у септических/лихорадящих пациентов"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "августа",
+            "drug_name": "Натрия гидрокарбонат",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2021 г",
+            "dose_text": "Расчет дозы производится по формуле Х = ВЕ х масса тела (кг)/2 для 4 % раствора, Х = ВЕ х масса тела (кг)/3 для 8,4 % раствора, где Х – количество раствора гидрокарбоната натрия в мл, ВЕ – дефицит осн",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -291,113 +245,13 @@
               "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
               "document_url": null,
               "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "августа 2021 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          },
-          {
-            "drug_name": "июля",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2013 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июля 2013 г"
-            }
-          },
-          {
-            "drug_name": "сентября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2005 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "сентября 2005 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
+              "quote": "Коррекция метаболического ацидоза осуществляется с помощью раствора натрия гидрокарбоната (для инфузий, 40 мг/мл и 84 мг/мл) в/в кап. Расчет дозы производится по формуле."
             }
           }
         ],
@@ -407,43 +261,207 @@
       },
       "follow_up": [],
       "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
+      "routing": [
+        {
+          "text": "Госпитализация в терапевтические отделения, отделения интенсивной терапии и реанимации для пациентов с изолированным ОПП и стабильной гемодинамикой",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация в терапевтические отделения, отделения интенсивной терапии и реанимации для пациентов с изолированным ОПП и стабильной гемодинамикой"
+          }
+        },
+        {
+          "text": "Госпитализация в отделения интенсивной терапии и реанимации (с диализотерапией) для пациентов с ОПП при полиорганной недостаточности и/или нестабильной гемодинамике",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация в отделения интенсивной терапии и реанимации (с диализотерапией) для пациентов с ОПП при полиорганной недостаточности и/или нестабильной гемодинамике"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Полостные операции с оставлением дренажей (плевральная и брюшная полости)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Противопоказаниями для проведения перитонеального диализа у пациентов с ОПН являются: полостные операции с оставлением дренажей (плевральная и брюшная полости)"
+          }
+        },
+        {
+          "text": "Динамическая непроходимость или атония кишечника",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Противопоказаниями для проведения перитонеального диализа у пациентов с ОПН являются: динамическая непроходимость или атония кишечника"
+          }
+        },
+        {
+          "text": "Профузные кровотечения любого происхождения, требующие хирургического гемостаза",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Противопоказаниями для проведения перитонеального диализа у пациентов с ОПН являются: профузные кровотечения любого происхождения, требующие хирургического гемостаза"
+          }
+        },
+        {
+          "text": "Тяжелая дыхательная недостаточность",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Противопоказаниями для проведения перитонеального диализа у пациентов с ОПН являются: тяжелая дыхательная недостаточность"
+          }
+        },
+        {
+          "text": "Массивные спайки в брюшной полости",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Противопоказаниями для проведения перитонеального диализа у пациентов с ОПН являются: массивные спайки в брюшной полости"
+          }
+        },
+        {
+          "text": "Вторая половина беременности",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Противопоказаниями для проведения перитонеального диализа у пациентов с ОПН являются: вторая половина беременности"
+          }
+        },
+        {
+          "text": "Грыжи передней брюшной стенки или паховых каналов",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Противопоказаниями для проведения перитонеального диализа у пациентов с ОПН являются: грыжи передней брюшной стенки или паховых каналов"
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "nefrologiya_кп_диагностика_и_лечение_пациентов_с_острым_почечным_повреждением_02",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с острым почечным повреждением»_02.08.2021_№ 93.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика и лечение пациентов с острым почечным повреждением"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:38.846822+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T16:39:05.126129+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:38.848747+00:00"
+    "validated_at": "2026-07-20T16:39:05.129708+00:00"
   }
 }

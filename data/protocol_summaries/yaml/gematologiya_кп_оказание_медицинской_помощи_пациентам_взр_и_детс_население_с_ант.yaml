@@ -1,95 +1,698 @@
 protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
-summary_version: '1.0'
-extraction_status: auto_extracted
-review_status: not_reviewed
+summary_version: '2.0'
+extraction_status: llm_extracted
+review_status: needs_review
 source:
-  title: КП Оказание медицинской помощи пациентам взр и детс население с антифосфолипидным
-    синдромом пост МЗ 09.03.2023 40
-  url: https://minzdrav.gov.by/upload/dadvfiles/CProtokol/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+  title: Антифосфолипидный синдром
+  url: null
   local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
-  document_sha256: 2cc547425e17e88f392e1d3358aad820dcf7361fe406496e358c2380c73c32b5
-  approval_date: '2023-03-09'
-  approval_number: '40'
+  document_sha256: null
+  approval_date: null
+  approval_number: null
   valid_from: null
   valid_to: null
-  document_year: 2023
+  document_year: null
   pages_total: null
 rubric:
-  name: Гематология
+  name: Gematologiya
   slug: gematologiya
-  specialty_slugs:
-  - gematologiya
+  specialty_slugs: []
 applicability:
   population:
-  - adult
-  - child
+  - adult_and_child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: d68_6_клинический_протокол_устанавливает_общие_требовани
-  name: клинический протокол устанавливает общие требования к объему
+- condition_id: antiphospholipid_syndrome
+  name: Антифосфолипидный синдром
   synonyms: []
   abbreviations: []
   icd10_codes:
   - D68.6
   condition_applicability: null
   diagnosis_structure: null
-  clinical_criteria:
+  clinical_criteria: null
+  diagnostic_criteria:
     required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к объему (МКБ D68.6)
+    - text: 'Рефрактерный АФС: рецидивирующие тромбозы на фоне лечения непрямыми антикоагулянтами
+        с МНО 2,0–3,5'
       logic_group: null
-      operator: present
+      operator: unknown
       values: []
       numeric_value: null
       unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
+      evidence_targets: []
       source_ref:
         protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
         document_url: null
         local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
-        page_start: 2
-        page_end: 2
-        section_title: статистической классификации болезней и проблем, связанных
-          со здоровьем, десятого
-        section_type: classification
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
         table_index: null
         row_index: null
-        quote: клинический протокол устанавливает общие требования к объему
+        quote: 'Рефрактерный АФС: рецидивирующие тромбозы на фоне лечения непрямыми
+          антикоагулянтами с МНО 2,0–3,5'
     optional: []
     exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
+  required_exams:
+  - name: Инструментальные исследования при остром тромбозе
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При подозрении на острый тромбоз любой локализации инструментальные исследования
+        проводятся в соответствии с клиническими протоколами, утвержденными Министерством
+        здравоохранения.
+  conditional_exams:
+  - name: УЗИ ОБП
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗИ ОБП. При подозрении на острый тромбоз любой локализации инструментальные
+        обследования проводятся в соответствии с клиническими протоколами.
   treatment:
     non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
+    - text: 'Плазмаферез: удаление до 2–3 литров плазмы в течение 3–5 дней при катастрофическом
+        АФС'
       source_ref:
         protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
         document_url: null
         local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
-        page_start: 2
-        page_end: 2
-        section_title: статистической классификации болезней и проблем, связанных
-          со здоровьем, десятого
-        section_type: classification
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
         table_index: null
         row_index: null
-        quote: диета, режим
+        quote: 'Плазмаферез: удаление до 2–3 литров плазмы в течение 3–5 дней при
+          катастрофическом АФС'
     drug_groups: []
-    drugs: []
+    drugs:
+    - drug_name: Варфарин
+      active_substance: null
+      drug_group: null
+      dose_text: МНО 2,5–3,0
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ЛС выбора является варфарин, с целью поддержания МНО на уровне 2,5–3,0;
+          (для пациентов с достоверным АФС и первым венозным тромбозом)
+    - drug_name: АСК
+      active_substance: null
+      drug_group: null
+      dose_text: до 100 мг/сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: дополнительное назначение АСК до 100 мг/сутки (при рецидивирующем венозном
+          тромбозе, несмотря на варфарин с целевым МНО 2,0–3,0)
+    - drug_name: Варфарин (увеличение дозы)
+      active_substance: null
+      drug_group: null
+      dose_text: МНО до 3,0–4,0
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: увеличение дозы варфарина для достижения целевых значений МНО до 3,0–4,0
+          (при рецидивирующем венозном тромбозе, несмотря на варфарин с целевым МНО
+          2,0–3,0)
+    - drug_name: НМГ
+      active_substance: null
+      drug_group: null
+      dose_text: по показаниям
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: переход на лечение ЛС, применяемыми при лечении пациентов старше 18
+          лет с АФС, установленными согласно приложению 1 (при рецидивирующем венозном
+          тромбозе)
+    - drug_name: Варфарин
+      active_substance: null
+      drug_group: null
+      dose_text: МНО 2,0–3,0
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: рекомендован прием варфарина с поддержанием целевого МНО в диапазоне
+          2,0–3,0 (для пациентов с достоверным АФС и первым артериальным тромбозом)
+    - drug_name: Варфарин + АСК
+      active_substance: null
+      drug_group: null
+      dose_text: МНО 2,0–3,0 + АСК до 100 мг/сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: в качестве альтернативы назначают варфарин с поддержанием целевого
+          МНО в диапазоне 2,0–3,0 с одновременным приемом АСК до 100 мг/сутки (при
+          повышенном индивидуальном риске тромбообразования)
+    - drug_name: Варфарин (увеличение дозы)
+      active_substance: null
+      drug_group: null
+      dose_text: МНО до 3,0–4,0
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: увеличение дозы варфарина для достижения целевых значений МНО до 3,0–4,0
+          (при рецидивирующих артериальных тромбозах, несмотря на варфарин)
+    - drug_name: АСК
+      active_substance: null
+      drug_group: null
+      dose_text: 75–100 мг/сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: добавление к лечению низких доз АСК (75–100 мг/сутки) (при рецидивирующих
+          артериальных тромбозах, несмотря на варфарин)
+    - drug_name: НМГ
+      active_substance: null
+      drug_group: null
+      dose_text: по показаниям
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: перевод пациента на лечение НМГ (при рецидивирующих артериальных тромбозах,
+          несмотря на варфарин)
+    - drug_name: Ритуксимаб
+      active_substance: null
+      drug_group: null
+      dose_text: капельно 1 раз в неделю в соответствующей дозировке в течение 4 недель
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: решением врачебного консилиума применяют моноклональное антитело ритуксимаб,
+          концентрат для приготовления раствора капельно 1 раз в неделю в соответствующей
+          дозировке в течение 4 недель.
+    - drug_name: Нефракционированный гепарин (НФГ) или НМГ
+      active_substance: null
+      drug_group: null
+      dose_text: Далтепарин 100 МЕ/кг каждые 12 часов; Надропарин 86 МЕ/кг каждые
+        12 часов; Эноксапарин 1 мг/кг каждые 12 часов
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'сочетание антикоагулянтов (НФГ или НМГ) в лечебных дозах: далтепарин
+          100 МЕ/кг каждые 12 часов или надропарин 86 МЕ/кг каждые 12 часов, или эноксапарин
+          1 мг/кг каждые 12 часов'
+    - drug_name: Глюкокортикоидные гормоны (ГК)
+      active_substance: null
+      drug_group: null
+      dose_text: 0,5–1,0 мг/кг/сутки (пульс-терапия метилпреднизолоном 500–1000 мг
+        в/в 3–5 дней, затем метилпреднизолон 1–2 мг/кг/сутки внутрь)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: в сочетании с глюкокортикоидными гормонами (ГК) – 0,5–1,0 мг/кг/сутки
+          (пульс-терапия метилпреднизолоном – внутривенно 500–1000 мг в течение 3–5
+          дней до стабилизации состояния с последующим переходом на прием высоких
+          доз метилпреднизолона)
+    - drug_name: Внутривенный иммуноглобулин (ВВИГ)
+      active_substance: null
+      drug_group: null
+      dose_text: 0,4 г/кг/сутки в течение 5 дней или 1 г/кг/сутки в течение 2 дней
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: и (или) с внутривенным иммуноглобулином (ВВИГ) – 0,4 г/кг/сутки в течение
+          5 последовательных дней или 1 г/кг/сутки в течение 2 последовательных дней.
+    - drug_name: Циклофосфамид
+      active_substance: null
+      drug_group: null
+      dose_text: 0,5–1,0 г/м2 однократно внутривенно
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Пациентам старше 18 лет с СЗСТ дополнительно назначают циклофосфамид
+          в дозе 0,5–1,0 г/м2 однократно внутривенно.
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Длительное (пожизненное) лечение антикоагулянтами (варфарин) при достоверном
+      АФС и первом неспровоцированном венозном тромбозе.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Длительное (пожизненное) лечение антикоагулянтами (варфарин) при достоверном
+        АФС и первом неспровоцированном венозном тромбозе.
+  - text: Длительность лечения антикоагулянтами 3–6 месяцев при тромбозе, спровоцированном
+      другими факторами, с возможным увеличением при высоком риске рецидива.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Длительность лечения антикоагулянтами 3–6 месяцев при тромбозе, спровоцированном
+        другими факторами, с возможным увеличением при высоком риске рецидива.
+  - text: Оценка контроля качества терапии антикоагулянтами по шкале SAMe-TT2R2.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Оценка контроля качества терапии антикоагулянтами по шкале SAMe-TT2R2.
   hospitalization: []
-  routing: []
-  red_flags: []
+  routing:
+  - text: 'Амбулаторно: врач общей практики (врач-терапевт), врач-акушер-гинеколог,
+      врач-ревматолог совместно с врачом-специалистом по основному симптому.'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Амбулаторно: врач общей практики (врач-терапевт), врач-акушер-гинеколог,
+        врач-ревматолог совместно с врачом-специалистом по основному симптому.'
+  - text: 'Госпитализация: в период острого тромбоза (в больничной организации здравоохранения)
+      под наблюдением соответствующего врача-специалиста.'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Госпитализация: в период острого тромбоза (в больничной организации
+        здравоохранения) под наблюдением соответствующего врача-специалиста.'
+  - text: 'Госпитализация: лечение катастрофического АФС проводится в стационарных
+      условиях.'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Госпитализация: лечение катастрофического АФС проводится в стационарных
+        условиях.'
+  red_flags:
+  - text: Рефрактерный АФС (рецидивирующие тромбозы на фоне лечения АВК с МНО 2,0–3,5)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: рефрактерный – рецидивирующие тромбозы на фоне лечения непрямыми антикоагулянтами
+        (антагонистами витамина К (далее – АВК)) с поддержанием МНО в диапазоне 2,0–3,5;
+  - text: Повторные обследования профиля аФЛА высокого риска или иные факторы риска
+      рецидива тромбоза
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: В случае наличия у пациента старше 18 лет при повторных обследованиях
+        профиля аФЛА высокого риска или иных факторов риска рецидива тромбоза длительность
+        лечения увеличивается;
+  - text: Рецидивирующий венозный тромбоз, несмотря на лечение варфарином с целевым
+      МНО 2,0–3,0
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'пациентам старше 18 лет с достоверным АФС и рецидивирующим венозным
+        тромбозом, несмотря на проводимое лечение варфарином с поддержанием целевого
+        МНО в диапазоне 2,0–3,0 показано: ...'
+  - text: Повышенный индивидуальный риск тромбообразования (для первого артериального
+      тромбоза)
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: в случае повышенного индивидуального риска тромбообразования в качестве
+        альтернативы назначают варфарин с поддержанием целевого МНО в диапазоне 2,0–3,0
+        с одновременным приемом АСК до 100 мг/сутки.
+  - text: Рецидивирующие артериальные тромбозы, несмотря на лечение варфарином
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Пациентам старше 18 лет с рецидивирующими артериальными тромбозами, несмотря
+        на лечение варфарином показано увеличение дозы варфарина...
+  - text: Неэффективность ранее проводимого лечения или нарастание клинических симптомов
+      (при рецидивирующих артериальных тромбозах)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: В случае неэффективности ранее проводимого лечения или нарастания клинических
+        симптомов в качестве ЛС решением врачебного консилиума применяют моноклональное
+        антитело ритуксимаб...
+  - text: Катастрофический АФС
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gematologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_ант
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Лечение катастрофического АФС проводится в стационарных условиях: сочетание
+        антикоагулянтов...'
   contraindications: []
   complications: []
   kz_checklist: null
@@ -98,14 +701,31 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-05-31T18:30:04.935854+00:00'
-  extractor: builder.heuristic_v2
-  extractor_version: '2.0'
-  source_document_sha256: 2cc547425e17e88f392e1d3358aad820dcf7361fe406496e358c2380c73c32b5
+  extracted_at: '2026-07-20T15:59:20.014695+00:00'
+  extractor: llm_extractor
+  extractor_version: '1.0'
+  source_document_sha256: null
   notes:
-  - aggregated from 5 protocol_cards, 143 chunks
+  - llm_pipeline_v1
+  - conditions=1
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-05-31T18:30:04.935869+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[antiphospholipid_syndrome].treatment.drugs[4]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[antiphospholipid_syndrome].treatment.drugs[6]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[antiphospholipid_syndrome].treatment.drugs[7]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[antiphospholipid_syndrome].treatment.drugs[8]
+  validated_at: '2026-07-20T15:59:20.034434+00:00'

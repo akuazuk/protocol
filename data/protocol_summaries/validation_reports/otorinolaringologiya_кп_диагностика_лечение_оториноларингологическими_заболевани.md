@@ -1,118 +1,23 @@
 # Validation: otorinolaringologiya_кп_диагностика_лечение_оториноларингологическими_заболевани
 
 - **status:** needs_human_review
-- **validated_at:** 2026-06-23T19:16:26.643275+00:00
-- **review_status:** not_reviewed
-- **extraction_status:** auto_extracted
+- **validated_at:** 2026-07-20T17:12:52.862388+00:00
+- **review_status:** needs_review
+- **extraction_status:** llm_extracted
 
 ## Warnings
-- `required_exam_level` conditions[d10_6_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: required_exams содержит элемент не с level=required
-- `required_exam_level` conditions[d10_6_кп_диагностика_лечение_оториноларингологическими_з].required_exams[1]: required_exams содержит элемент не с level=required
-- `required_exam_level` conditions[d10_8_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[d10_8_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[d10_8_кп_диагностика_лечение_оториноларингологическими_з].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[d10_8_кп_диагностика_лечение_оториноларингологическими_з].required_exams[1]: Дублирующееся обследование
-- `duplicate_drug` conditions[d10_8_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[d10_8_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[1]: Дублирующийся препарат
-- `required_exam_level` conditions[d14_1_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[d14_1_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[d18_0_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[d18_0_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: Дублирующееся обследование
-- `duplicate_drug` conditions[d18_0_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[1]: Дублирующийся препарат
-- `required_exam_level` conditions[h60_кп_диагностика_лечение_оториноларингологическими_заб].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[h60_кп_диагностика_лечение_оториноларингологическими_заб].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[h60_кп_диагностика_лечение_оториноларингологическими_заб].required_exams[1]: required_exams содержит элемент не с level=required
-- `required_exam_level` conditions[h60_кп_диагностика_лечение_оториноларингологическими_заб].required_exams[2]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[h60_кп_диагностика_лечение_оториноларингологическими_заб].required_exams[2]: Дублирующееся обследование
-- `duplicate_drug` conditions[h60_кп_диагностика_лечение_оториноларингологическими_заб].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[h60_0_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[h60_0_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[1]: Дублирующийся препарат
-- `duplicate_drug` conditions[h60_0_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[2]: Дублирующийся препарат
-- `duplicate_drug` conditions[h60_0_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[3]: Дублирующийся препарат
-- `duplicate_drug` conditions[h60_2_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[h60_2_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[1]: Дублирующийся препарат
-- `duplicate_drug` conditions[h60_2_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[2]: Дублирующийся препарат
-- `duplicate_drug` conditions[h60_2_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[3]: Дублирующийся препарат
-- `duplicate_drug` conditions[h60_3_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[h60_3_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[1]: Дублирующийся препарат
-- `duplicate_drug` conditions[h60_3_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[2]: Дублирующийся препарат
-- `duplicate_drug` conditions[h60_3_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[3]: Дублирующийся препарат
-- `required_exam_level` conditions[h60_4_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[h60_4_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: Дублирующееся обследование
-- `duplicate_drug` conditions[h60_4_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[h60_4_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[1]: Дублирующийся препарат
-- `duplicate_drug` conditions[h60_4_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[2]: Дублирующийся препарат
-- `required_exam_level` conditions[h60_5_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[h60_5_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[h60_5_кп_диагностика_лечение_оториноларингологическими_з].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[h60_5_кп_диагностика_лечение_оториноларингологическими_з].required_exams[1]: Дублирующееся обследование
-- `duplicate_drug` conditions[h60_5_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[h60_5_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[1]: Дублирующийся препарат
-- `duplicate_drug` conditions[h60_5_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[2]: Дублирующийся препарат
-- `required_exam_level` conditions[h60_8_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[h60_8_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[h60_8_кп_диагностика_лечение_оториноларингологическими_з].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[h60_8_кп_диагностика_лечение_оториноларингологическими_з].required_exams[1]: Дублирующееся обследование
-- `duplicate_drug` conditions[h60_8_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[h60_8_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[1]: Дублирующийся препарат
-- `duplicate_drug` conditions[h60_8_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[2]: Дублирующийся препарат
-- `required_exam_level` conditions[h61_0_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[h61_0_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[h61_0_кп_диагностика_лечение_оториноларингологическими_з].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[h61_0_кп_диагностика_лечение_оториноларингологическими_з].required_exams[1]: Дублирующееся обследование
-- `duplicate_drug` conditions[h61_0_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[h61_0_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[1]: Дублирующийся препарат
-- `duplicate_drug` conditions[h61_0_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[2]: Дублирующийся препарат
-- `required_exam_level` conditions[h61_1_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[h61_1_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[h61_1_кп_диагностика_лечение_оториноларингологическими_з].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[h61_1_кп_диагностика_лечение_оториноларингологическими_з].required_exams[1]: Дублирующееся обследование
-- `required_exam_level` conditions[h61_3_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[h61_3_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[h61_3_кп_диагностика_лечение_оториноларингологическими_з].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[h61_3_кп_диагностика_лечение_оториноларингологическими_з].required_exams[1]: Дублирующееся обследование
-- `duplicate_drug` conditions[h61_3_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[h61_3_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[1]: Дублирующийся препарат
-- `required_exam_level` conditions[h61_8_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[h61_8_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[h61_8_кп_диагностика_лечение_оториноларингологическими_з].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[h61_8_кп_диагностика_лечение_оториноларингологическими_з].required_exams[1]: Дублирующееся обследование
-- `duplicate_drug` conditions[h61_8_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[h61_8_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[1]: Дублирующийся препарат
-- `required_exam_level` conditions[h62_2_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[h62_2_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[h62_2_кп_диагностика_лечение_оториноларингологическими_з].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[h62_2_кп_диагностика_лечение_оториноларингологическими_з].required_exams[1]: Дублирующееся обследование
-- `duplicate_drug` conditions[h62_2_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[h62_2_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[1]: Дублирующийся препарат
-- `required_exam_level` conditions[h65_1_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[h65_1_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: Дублирующееся обследование
-- `duplicate_drug` conditions[h65_1_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[0]: Дублирующийся препарат
-- `required_exam_level` conditions[h65_2_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[h65_2_кп_диагностика_лечение_оториноларингологическими_з].required_exams[0]: Дублирующееся обследование
-- `duplicate_drug` conditions[h65_2_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[h65_2_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[1]: Дублирующийся препарат
-- `duplicate_drug` conditions[h65_2_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[2]: Дублирующийся препарат
-- `required_exam_level` conditions[h80_клинический_протокол_диагностика_и_лечение_пациентов].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[h80_клинический_протокол_диагностика_и_лечение_пациентов].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[h80_клинический_протокол_диагностика_и_лечение_пациентов].required_exams[1]: required_exams содержит элемент не с level=required
-- `required_exam_level` conditions[h81_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[h81_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[h81_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[h81_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[1]: Дублирующееся обследование
-- `duplicate_drug` conditions[h81_0_клинический_протокол_диагностика_и_лечение_пациент].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[j04_0_об_утверждении_клинического_протокола].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[j05_0_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[j05_0_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[1]: Дублирующийся препарат
-- `duplicate_drug` conditions[j05_0_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[2]: Дублирующийся препарат
-- `duplicate_drug` conditions[j30_0_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[j30_0_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[1]: Дублирующийся препарат
-- `duplicate_drug` conditions[j30_0_кп_диагностика_лечение_оториноларингологическими_з].treatment.drugs[2]: Дублирующийся препарат
-- `required_exam_level` conditions[j30_1_об_утверждении_клинического_протокола].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[j30_1_об_утверждении_клинического_протокола].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[j30_1_об_утверждении_клинического_протокола].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[j30_1_об_утверждении_клинического_протокола].required_exams[1]: Дублирующееся обследование
-- `required_exam_level` conditions[j30_1_об_утверждении_клинического_протокола].required_exams[2]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[j30_1_об_утверждении_клинического_протокола].required_exams[2]: Дублирующееся обследование
-- `duplicate_drug` conditions[j30_1_об_утверждении_клинического_протокола].treatment.drugs[1]: Дублирующийся препарат
-- `duplicate_drug` conditions[j30_1_об_утверждении_клинического_протокола].treatment.drugs[4]: Дублирующийся препарат
+- `missing_icd10` conditions[hemangioma_any_localization]: Нет icd10_codes у condition
+- `duplicate_exam` conditions[external_ear_cholesteatoma_keratosis].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[external_ear_cholesteatoma_keratosis].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[external_ear_cholesteatoma_keratosis].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[external_ear_cholesteatoma_keratosis].required_exams[4]: Дублирующееся обследование
+- `duplicate_exam` conditions[external_ear_cholesteatoma_keratosis].required_exams[5]: Дублирующееся обследование
+- `duplicate_exam` conditions[external_ear_cholesteatoma_keratosis].required_exams[6]: Дублирующееся обследование
+- `missing_icd10` conditions[acute_noninfectious_external_otitis]: Нет icd10_codes у condition
+- `duplicate_exam` conditions[acute_noninfectious_external_otitis].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[acute_noninfectious_external_otitis].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[acute_noninfectious_external_otitis].required_exams[2]: Дублирующееся обследование
+- `duplicate_drug` conditions[acute_noninfectious_external_otitis].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[acute_noninfectious_external_otitis].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_exam` conditions[benign_larynx_neoplasm_papillomatosis].required_exams[0]: Дублирующееся обследование
+- `missing_icd10` conditions[acute_mastoiditis]: Нет icd10_codes у condition

@@ -1,7 +1,7 @@
 {
   "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "Диагностика лечение транспозиции магистральных сосудов детское население",
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,8 +32,8 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_лечение_транспозиции_магистральных_с",
-      "name": "Диагностика лечение транспозиции магистральных сосудов детское население",
+      "condition_id": "transpozitsiya_magistralnykh_sosudov",
+      "name": "Транспозиция магистральных сосудов",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
@@ -42,57 +42,10 @@
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
-      "diagnostic_criteria": {
-        "required": [
-          {
-            "text": "определение групп крови по системам АВ0 и резус-фактора – при поступлении",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "определение групп крови по системам АВ0 и резус-фактора – при поступлении"
-            }
-          },
-          {
-            "text": "определение групп крови по системам АВ0 и резус-фактора – при поступлении",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "определение групп крови по системам АВ0 и резус-фактора – при поступлении"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
+      "diagnostic_criteria": null,
       "required_exams": [
         {
-          "name": "ОАК",
+          "name": "Общий (клинический) анализ крови (ОАК)",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -107,17 +60,17 @@
             "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
             "document_url": null,
             "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
-            "page_start": null,
+            "page_start": 3,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "щий (клинический) анализ крови (далее – ОАК); \nобщий анализ мочи (далее – ОАМ); \nбиохимический анализ крови (далее – БАК):"
+            "quote": "общий (клинический) анализ крови (далее – ОАК)"
           }
         },
         {
-          "name": "ЭКГ",
+          "name": "Общий анализ мочи (ОАМ)",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -132,17 +85,17 @@
             "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
             "document_url": null,
             "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
-            "page_start": null,
+            "page_start": 3,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "; \n9.2. инструментальные исследования: \nЭКГ в 12 отведениях; \nрентгенография органов грудной клетки и брюшной полости; \nтра"
+            "quote": "общий анализ мочи (далее – ОАМ)"
           }
         },
         {
-          "name": "УЗИ",
+          "name": "Биохимический анализ крови (БАК)",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -157,21 +110,372 @@
             "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
             "document_url": null,
             "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
-            "page_start": null,
+            "page_start": 3,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "шной полости; \nтрансторакальная ЭхоКГ; \nУЗИ органов брюшной полости и забрюшинного пространства; \n9.3. бактериологическое и"
+            "quote": "биохимический анализ крови (далее – БАК): общий белок; альбумин; мочевина; креатинин; глюкоза; общий билирубин; С-реактивный белок; аспартатаминотрансфераза (АсАТ); аланинаминотрансфераза (АлАТ); калий; натрий; кальций; магний"
+          }
+        },
+        {
+          "name": "Коагулограмма",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "коагулограмма: активированное частичное тромбопластиновое время (АЧТВ); протромбированное время (ПВ); международное нормализованное отношение (МНО); тромбиновое время (ТВ); уровень фибриногена"
+          }
+        },
+        {
+          "name": "Определение групп крови по системам АВ0 и резус-фактора",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "определение групп крови по системам АВ0 и резус-фактора – при поступлении"
+          }
+        },
+        {
+          "name": "ЭКГ в 12 отведениях",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ЭКГ в 12 отведениях"
+          }
+        },
+        {
+          "name": "Рентгенография органов грудной клетки и брюшной полости",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "рентгенография органов грудной клетки и брюшной полости"
+          }
+        },
+        {
+          "name": "Трансторакальная ЭхоКГ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "трансторакальная ЭхоКГ"
+          }
+        },
+        {
+          "name": "УЗИ органов брюшной полости и забрюшинного пространства",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "УЗИ органов брюшной полости и забрюшинного пространства"
+          }
+        },
+        {
+          "name": "Бактериологическое исследование отделяемого",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "бактериологическое исследование отделяемого из носа, зева, эндотрахеальной трубки, ануса, с кожи на флору и чувствительность к антибактериальным ЛП"
+          }
+        },
+        {
+          "name": "Расширенная эхокардиография плода",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При подозрении на ВПС у плода беременной женщине проводится расширенная эхокардиография (далее – Эхо-КГ) плода."
+          }
+        },
+        {
+          "name": "Дополнительное кардиологическое обследование плода",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "проводится дополнительное кардиологическое обследование плода (количество и сроки дополнительных исследований плода определяются по медицинским показаниям с назначением обязательных диагностических исследований за 2–3 недели до ПДР)."
+          }
+        },
+        {
+          "name": "ЭКГ в I-III стандартных отведениях",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "медицинская помощь новорожденному оказывается в отделении анестезиологии и реанимации с мониторингом в предоперационном периоде, включающим: ЭКГ в I-III стандартных отведениях"
+          }
+        },
+        {
+          "name": "Пульсоксиметрия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "пульсоксиметрию (измерение предуктальной (на правой руке) и постдуктальной (на любой ноге) сатурации)"
+          }
+        },
+        {
+          "name": "Неинвазивное артериальное давление",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "неинвазивное артериальное давление"
+          }
+        },
+        {
+          "name": "Почасовой контроль диуреза",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "почасовой контроль диуреза"
           }
         }
       ],
-      "conditional_exams": [],
+      "conditional_exams": [
+        {
+          "name": "Инвазивное артериальное давление",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "инвазивное артериальное давление (осуществляется мониторинг при необходимости контроля газов артериальной крови либо при необходимости в инотропной поддержке)"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 3. Для целей настоящего клинического протокола используются термины и их (стр. 2)",
+            "text": "Родоразрешение через естественные родовые пути или кесаревым сечением с госпитализацией до родоразрешения.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
               "document_url": null,
@@ -182,11 +486,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 3. Для целей настоящего клинического протокола используются термины и их (стр. 2)"
+              "quote": "Родоразрешение через естественные родовые пути или кесаревым сечением с госпитализацией до родоразрешения."
             }
           },
           {
-            "text": "«Об обращении лекарственных средств», Законом Республики Беларусь от 19 ноября",
+            "text": "Постановка пупочного венозного катетера (либо иного центрального) и артериального катетера перед транспортировкой.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
               "document_url": null,
@@ -197,11 +501,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "«Об обращении лекарственных средств», Законом Республики Беларусь от 19 ноября"
+              "quote": "Постановка пупочного венозного катетера (либо иного центрального) и артериального катетера перед транспортировкой."
             }
           },
           {
-            "text": "1993 г. № 2570-XII «О правах ребенка», а также следующие термины и их определения:",
+            "text": "Поддержание функционирующих фетальных коммуникаций с сатурацией 75–85 %.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
               "document_url": null,
@@ -212,11 +516,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "1993 г. № 2570-XII «О правах ребенка», а также следующие термины и их определения:"
+              "quote": "Поддержание функционирующих фетальных коммуникаций с сатурацией 75–85 %."
             }
           },
           {
-            "text": "врожденный порок сердца (далее – ВПС) – это возникшие внутриутробно",
+            "text": "Перевод пациента на искусственную вентиляцию легких (ИВЛ) при рестриктивном межпредсердном сообщении.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
               "document_url": null,
@@ -227,11 +531,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "врожденный порок сердца (далее – ВПС) – это возникшие внутриутробно"
+              "quote": "Перевод пациента на искусственную вентиляцию легких (ИВЛ) при рестриктивном межпредсердном сообщении."
             }
           },
           {
-            "text": "(до рождения) анатомические дефекты сердца, его клапанного аппарата или его сосудов",
+            "text": "Седация (мидазолам) при необходимости ИВЛ.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
               "document_url": null,
@@ -242,11 +546,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "(до рождения) анатомические дефекты сердца, его клапанного аппарата или его сосудов"
+              "quote": "Седация (мидазолам) при необходимости ИВЛ."
             }
           },
           {
-            "text": "ТМС – группа ВПС, относящихся к аномалиям конотрункуса, общими признаками",
+            "text": "Миорелаксация (рокурония бромид) при необходимости.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
               "document_url": null,
@@ -257,17 +561,92 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ТМС – группа ВПС, относящихся к аномалиям конотрункуса, общими признаками"
+              "quote": "Миорелаксация (рокурония бромид) при необходимости."
+            }
+          },
+          {
+            "text": "Дополнительная инсуфляция кислорода во вдыхаемой смеси (до достижения сатурации 75–85 %).",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Дополнительная инсуфляция кислорода во вдыхаемой смеси (до достижения сатурации 75–85 %)."
+            }
+          },
+          {
+            "text": "Срочное проведение процедуры баллонной атриосептостомии по Рашкинду при рестриктивном межпредсердном сообщении.",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Срочное проведение процедуры баллонной атриосептостомии по Рашкинду при рестриктивном межпредсердном сообщении."
+            }
+          },
+          {
+            "text": "Экстракорпоральная мембранная оксигенация (ЭКМО) в случае персистирующего цианоза и ацидоза после БАС, прогрессирующей сердечной недостаточности.",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Экстракорпоральная мембранная оксигенация (ЭКМО) в случае персистирующего цианоза и ацидоза после БАС, прогрессирующей сердечной недостаточности."
+            }
+          },
+          {
+            "text": "Инфузионная терапия с умеренной рестрикцией (75 % от физиологической потребности в жидкости).",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Инфузионная терапия с умеренной рестрикцией (75 % от физиологической потребности в жидкости)."
+            }
+          },
+          {
+            "text": "Коррекция гиповолемии коллоидными или сбалансированными кристаллоидными растворами.",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Коррекция гиповолемии коллоидными или сбалансированными кристаллоидными растворами."
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "июля",
+            "drug_name": "Алпростадил / Динопростон (Простагландины Е1/Е2)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2006 г",
+            "dose_text": "Стартовая доза 10 нг/кг в минуту внутривенно непрерывным титрованием. Увеличивается до максимальной 100 нг/кг в минуту до достижения сатурации 75–85 %.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -279,20 +658,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июля 2006 г"
+              "quote": "всем пациентам с ТМС... проводится непрерывная внутривенная инфузия простагландинов Е1/Е2 (алпростадил / динопростон). Стартовая доза 10 нг/кг в минуту."
             }
           },
           {
-            "drug_name": "ноября",
+            "drug_name": "Мидазолам",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1993 г",
+            "dose_text": "Внутривенно у новорожденных более 32 недель гестационного возраста и пациентов до 6 месяцев в дозе 1–2 мкг/кг в минуту.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -304,20 +683,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ноября \n1993 г"
+              "quote": "осуществляется седация (мидазолам (раствор для внутривенного, внутримышечного и ректального введения, 5 мг/мл), внутривенно у новорожденных более 32 недель гестационного возраста и пациентов до 6 месяцев в дозе 1–2 мкг/кг в минуту)."
             }
           },
           {
-            "drug_name": "содержит",
+            "drug_name": "Рокурония бромид",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1 мг",
+            "dose_text": "В дозе 5–10 мкг/кг в минуту.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -329,20 +708,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "содержит 1 мг \nдинопростона в 1 мл растворителя)"
+              "quote": "При необходимости миорелаксации применяется рокурония бромид (раствор для внутривенного введения, 10 мг/мл) в дозе 5–10 мкг/кг в минуту."
             }
           },
           {
-            "drug_name": "инъекций",
+            "drug_name": "Эпинефрин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1,82 мг",
+            "dose_text": "В дозе 0,01–0,3 мкг/кг в минуту.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -354,20 +733,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "инъекций 1,82 мг эпинефрина \nгидротартрата в 1 мл) в дозе"
+              "quote": "при необходимости инотропной, вазопрессорной поддержки непрерывная внутривенная инфузия эпинефрина (раствор для инъекций 1,82 мг эпинефрина гидротартрата в 1 мл) в дозе 0,01–0,3 мкг/кг в минуту."
             }
           },
           {
-            "drug_name": "ампулах",
+            "drug_name": "Норэпинефрин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "4 мл",
+            "dose_text": "В дозе 0,01–0,3 мкг/кг в минуту.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -379,20 +758,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ампулах 4 мл) в дозе 0,01–0,3 мкг/кг в минуту, фенил"
+              "quote": "норэпинефрина (концентрат для приготовления раствора для внутривенного введения, 2 мг норадреналина тартрата в 1 мл, в ампулах 4 мл) в дозе 0,01–0,3 мкг/кг в минуту."
             }
           },
           {
-            "drug_name": "инфузий",
+            "drug_name": "Фенилэфрин**",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "5 мг",
+            "dose_text": "В дозе 0,1–3 мкг/кг в минуту.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -404,20 +783,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "инфузий 5 мг в 1 мл, концентрат \nдля приготовления ра"
+              "quote": "фенилэфрина** (раствор для инъекций, 10 мг фенилэфрина гидрохлорида в 1 мл) в дозе 0,1–3 мкг/кг в минуту."
             }
           },
           {
-            "drug_name": "введения",
+            "drug_name": "Дофамин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "10 мг",
+            "dose_text": "В дозе 5–15 мкг/кг в минуту.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -429,20 +808,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "введения 10 мг/мл, в дозе 0,5–1 мг/кг \n2–4 раза в сутк"
+              "quote": "дофамина (концентрат для приготовления раствора для инфузий 5 мг в 1 мл, концентрат для приготовления раствора для инфузий 40 мг в 1 мл) в дозе 5–15 мкг/кг в минуту."
             }
           },
           {
-            "drug_name": "марта",
+            "drug_name": "Фуросемид",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2025 г",
+            "dose_text": "0,5–1 мг/кг 2–4 раза в сутки внутривенно.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -454,63 +833,13 @@
               "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "марта 2025 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
+              "quote": "введение петлевых диуретиков (фуросемид, раствор для внутривенного введения 10 мг/мл, в дозе 0,5–1 мг/кг 2–4 раза в сутки внутривенно под контролем диуреза и электролитов крови)."
             }
           }
         ],
@@ -520,7 +849,7 @@
       },
       "follow_up": [
         {
-          "text": "контроль",
+          "text": "Сбор жалоб, анамнеза, клиническое обследование",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -534,14 +863,68 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
+            "quote": "Сбор жалоб, анамнеза, клиническое обследование"
+          }
+        },
+        {
+          "text": "ЭКГ в 12 отведениях",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ЭКГ в 12 отведениях"
+          }
+        },
+        {
+          "text": "Трансторакальная Эхо-КГ 1 раз в год (или чаще при наличии медицинских показаний)",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Трансторакальная Эхо-КГ 1 раз в год (или чаще при наличии медицинских показаний)"
+          }
+        },
+        {
+          "text": "Холтеровское мониторирование или проведение ЭКГ с физической нагрузкой (пациентам старше 8 лет) для выявления ишемии миокарда 1 раз в год",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Холтеровское мониторирование или проведение ЭКГ с физической нагрузкой (пациентам старше 8 лет) для выявления ишемии миокарда 1 раз в год"
           }
         }
       ],
       "hospitalization": [],
       "routing": [
         {
-          "text": "[routing] 16.6. ИВЛ: механическая вентиляция направлена на поддержание гомеостаза (стр. 7)",
+          "text": "Направление беременной женщины при установлении диагноза ТМС у плода в отделение ультразвуковой пренатальной диагностики областного медико-генетического центра.",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -554,11 +937,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "[routing] 16.6. ИВЛ: механическая вентиляция направлена на поддержание гомеостаза (стр. 7)"
+            "quote": "Направление беременной женщины при установлении диагноза ТМС у плода в отделение ультразвуковой пренатальной диагностики областного медико-генетического центра."
           }
         },
         {
-          "text": "[routing] 16.6. ИВЛ: механическая вентиляция направлена на поддержание гомеостаза (стр. 7)",
+          "text": "Беременные женщины из г. Минска или по медицинским показаниям направляются в отделение пренатальной диагностики РНПЦ «Мать и дитя» для подтверждения диагноза.",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -571,11 +954,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "[routing] 16.6. ИВЛ: механическая вентиляция направлена на поддержание гомеостаза (стр. 7)"
+            "quote": "Беременные женщины из г. Минска или по медицинским показаниям направляются в отделение пренатальной диагностики РНПЦ «Мать и дитя» для подтверждения диагноза."
           }
         },
         {
-          "text": "[routing] 16.6. ИВЛ: механическая вентиляция направлена на поддержание гомеостаза (стр. 8)",
+          "text": "Плановое родоразрешение беременных с диагнозом ТМС у плода проводится в РНПЦ «Мать и дитя».",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -588,11 +971,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "[routing] 16.6. ИВЛ: механическая вентиляция направлена на поддержание гомеостаза (стр. 8)"
+            "quote": "Плановое родоразрешение беременных с диагнозом ТМС у плода проводится в РНПЦ «Мать и дитя»."
           }
         },
         {
-          "text": "[routing] 16.6. ИВЛ: механическая вентиляция направлена на поддержание гомеостаза (стр. 7)",
+          "text": "После планового родоразрешения новорожденный переводится из РНПЦ «Мать и дитя» в РНПЦ детской хирургии.",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -605,46 +988,129 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "[routing] 16.6. ИВЛ: механическая вентиляция направлена на поддержание гомеостаза (стр. 7)"
+            "quote": "После планового родоразрешения новорожденный переводится из РНПЦ «Мать и дитя» в РНПЦ детской хирургии."
+          }
+        },
+        {
+          "text": "Срочное родоразрешение проводится в организациях здравоохранения, имеющих отделение реанимации новорожденных.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Срочное родоразрешение проводится в организациях здравоохранения, имеющих отделение реанимации новорожденных."
+          }
+        },
+        {
+          "text": "После срочного родоразрешения новорожденный переводится в РНПЦ детской хирургии.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "После срочного родоразрешения новорожденный переводится в РНПЦ детской хирургии."
           }
         }
       ],
-      "red_flags": [],
+      "red_flags": [
+        {
+          "text": "Отсутствие увеличения сатурации при инфузии простагландинов",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "В случае отсутствия увеличения сатурации доза ЛП увеличивается (до максимальной 100 нг/кг в минуту) до достижения сатурации 75–85 %"
+          }
+        },
+        {
+          "text": "Рестриктивное межпредсердное сообщение",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "при рестриктивном межпредсердном сообщении выполняется перевод пациента на искусственную вентиляцию легких (далее – ИВЛ), увеличивается доза простагландинов, осуществляется седация."
+          }
+        },
+        {
+          "text": "Персистирующий цианоз и ацидоз после баллонной атриосептостомии, прогрессирующая сердечная недостаточность, резистентная к фармакотерапии",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "в случае персистирующего цианоза и ацидоза после баллонной атриосептостомии по Рашкинду, прогрессирующей сердечной недостаточности, резистентной к фармакотерапии, может применяется экстракорпоральная мембранная оксигенация (далее – ЭКМО)"
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "khirurgiya_кп_диагностика_лечение_транспозиции_магистральных_сосудов_д_нас_пост_",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_транспозиции_магистральных_сосудов_д-нас_пост_МЗ_2025_29.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика лечение транспозиции магистральных сосудов детское население"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:38.654691+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T16:35:31.211893+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:38.661998+00:00"
+    "validated_at": "2026-07-20T16:35:31.232080+00:00"
   }
 }

@@ -1,9 +1,9 @@
 protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: 09КП Диагностика и лечение пациентов взр и дет население с мезиальным прикусом
+  title: Диагностика и лечение пациентов с мезиальным прикусом
   url: null
   local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
   document_sha256: null
@@ -19,25 +19,36 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - adult_and_child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: 09кп_диагностика_и_лечение_пациентов_взр_и_дет_н
-  name: 09КП Диагностика и лечение пациентов взр и дет население с мезиальным прикусом
+- condition_id: mesial_occlusion
+  name: Мезиальный прикус
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B24
+  - K07.01
+  - K07.03
+  - K07.11
+  - K07.14
+  - K07.2
+  - K07.21
+  - K07.5
+  - K07.51
+  - K07.54
+  - K07.55
+  - K07.9
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: на зубоальвеолярном и (или) гнатическом уровне, определение степени выраженности,
+    - text: Выявление факторов возникновения и развития МП на зубоальвеолярном и (или)
+        гнатическом уровне
       logic_group: null
       operator: unknown
       values: []
@@ -54,9 +65,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: на зубоальвеолярном и (или) гнатическом уровне, определение степени
-          выраженности,
-    - text: а также определение медицинских показаний к лечению, выбору метода лечения
+        quote: Выявление факторов возникновения и развития МП на зубоальвеолярном
+          и (или) гнатическом уровне
+    - text: Определение степени выраженности МП
       logic_group: null
       operator: unknown
       values: []
@@ -73,217 +84,527 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: а также определение медицинских показаний к лечению, выбору метода
-          лечения
+        quote: Определение степени выраженности МП
+    - text: Проведение дифференциальной диагностики МП
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Проведение дифференциальной диагностики МП
+    - text: Выявление взаимосвязи стоматологического и общего здоровья с МП
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выявление взаимосвязи стоматологического и общего здоровья с МП
     optional: []
     exclusion: []
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: '[treatment] 8. Дополнительные диагностические мероприятия (по медицинским
-        показаниям) (стр. 5)'
-      source_ref:
-        protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 8. Дополнительные диагностические мероприятия (по медицинским
-          показаниям) (стр. 5)'
-    - text: стоматолога-терапевта, врача-стоматолога-ортопеда, врача-стоматолога-хирурга,
-        врача-
-      source_ref:
-        protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: стоматолога-терапевта, врача-стоматолога-ортопеда, врача-стоматолога-хирурга,
-          врача-
-    - text: челюстно-лицевого хирурга, врача-оториноларинголога, врача-травматолога-ортопеда,
-      source_ref:
-        protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: челюстно-лицевого хирурга, врача-оториноларинголога, врача-травматолога-ортопеда,
-    - text: врача-психотерапевта, врача-психиатра-нарколога, врача-стоматолога детского,
-        врача-
-      source_ref:
-        protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: врача-психотерапевта, врача-психиатра-нарколога, врача-стоматолога
-          детского, врача-
-    - text: психиатра детского) при нарушениях осанки, функции дыхания, глотания,
-        смыкания губ,
-      source_ref:
-        protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: психиатра детского) при нарушениях осанки, функции дыхания, глотания,
-          смыкания губ,
-    - text: речи, жевания и наличии вредных привычек для выяснения причины нарушения(ий)
-      source_ref:
-        protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: речи, жевания и наличии вредных привычек для выяснения причины нарушения(ий)
-    drug_groups: []
-    drugs:
-    - drug_name: августа
-      active_substance: null
-      drug_group: null
-      dose_text: 2022 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: августа 2022 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: марта
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: марта 2023 г
-    procedures: []
-    surgery: []
-    source_refs: []
+  required_exams:
+  - name: Обследование общесоматического состояния
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При диагностике МП также определяют общесоматическое состояние пациентов,
+        в первую очередь с выявлением патологии, которая может повлиять на выбор метода
+        лечения.
+  - name: Оценка психоэмоционального состояния пациента
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'целенаправленно выявляют: неадекватное психоэмоциональное состояние
+        пациента'
+  - name: Осмотр слизистой оболочки полости рта и красной каймы губ
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'целенаправленно выявляют: острые поражения слизистой оболочки полости
+        рта и красной каймы губ'
+  - name: Выявление острых воспалительных заболеваний органов и тканей рта
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'целенаправленно выявляют: острые воспалительные заболевания органов
+        и тканей рта'
+  - name: Оценка состояния периодонта
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'целенаправленно выявляют: болезни периодонта в стадии обострения'
+  - name: Оценка гигиенического состояния полости рта
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'целенаправленно выявляют: неудовлетворительное гигиеническое состояние
+        полости рта'
+  - name: Определение желания пациента лечиться
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'целенаправленно выявляют: желание лечиться или отказ от лечения'
+  conditional_exams:
+  - name: Конусно-лучевая компьютерная томография челюстно-лицевой области
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: конусно-лучевая компьютерная томография челюстно-лицевой области (детям
+        с МП в возрасте 6 лет и старше, детям младше 6 лет для исключения врожденной
+        аномалии)
+  - name: Телерентгенография головы в боковой проекции
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: телерентгенография головы в боковой проекции (детям с МП в возрасте 6
+        лет и старше, детям младше 6 лет для исключения врожденной аномалии)
+  - name: Прицельная внутриротовая контактная рентгенография или радиовизиография
+      зубов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: прицельная внутриротовая контактная рентгенография или радиовизиография
+        зубов
+  - name: Конусно-лучевая компьютерная томография височно-нижнечелюстных суставов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: конусно-лучевая компьютерная томография височно-нижнечелюстных суставов
+        (детям с МП в возрасте 6 лет и старше, детям младше 6 лет для исключения врожденной
+        аномалии)
+  - name: Функциональные пробы
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: функциональные методы исследования (функциональные пробы; электромиография,
+        миотонометрия)
+  - name: Электромиография
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: функциональные методы исследования (функциональные пробы; электромиография,
+        миотонометрия)
+  - name: Миотонометрия
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: функциональные методы исследования (функциональные пробы; электромиография,
+        миотонометрия)
+  - name: Фотографирование лица и зубных рядов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'фотографирование для оценки эстетики лица, симметрии лица, вида профиля,
+        ширины улыбки, наличия или отсутствия «десневой» улыбки: фотографии лица в
+        привычном положении нижней челюсти (фас, профиль, полупрофиль); фотографии
+        лица с улыбкой'
+  treatment: null
   follow_up: []
   hospitalization: []
   routing: []
-  red_flags: []
+  red_flags:
+  - text: Состояние на учете у врача-психиатра-нарколога или врача-психиатра детского
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: состояния, при которых противопоказано ортодонтическое лечение (состояние
+        на учете у врача-психиатра-нарколога, врача-психиатра детского, другое).
+  - text: Отказ пациента от лечения
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'целенаправленно выявляют: [...] желание лечиться или отказ от лечения'
+  - text: Неадекватное психоэмоциональное состояние пациента
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'целенаправленно выявляют: неадекватное психоэмоциональное состояние
+        пациента'
+  - text: Острые поражения слизистой оболочки полости рта и красной каймы губ
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'целенаправленно выявляют: острые поражения слизистой оболочки полости
+        рта и красной каймы губ'
+  - text: Острые воспалительные заболевания органов и тканей рта
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'целенаправленно выявляют: острые воспалительные заболевания органов
+        и тканей рта'
+  - text: Болезни периодонта в стадии обострения
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'целенаправленно выявляют: болезни периодонта в стадии обострения'
+  - text: Неудовлетворительное гигиеническое состояние полости рта
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'целенаправленно выявляют: неудовлетворительное гигиеническое состояние
+        полости рта'
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиаль
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_мезиальным_прикусом_пост_МЗ_10.08.2022_84.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: 09КП Диагностика и лечение пациентов взр и дет население с мезиальным прикусом
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:48.364149+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T18:19:25.833658+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:48.365872+00:00'
+  validated_at: '2026-07-20T18:19:25.838449+00:00'

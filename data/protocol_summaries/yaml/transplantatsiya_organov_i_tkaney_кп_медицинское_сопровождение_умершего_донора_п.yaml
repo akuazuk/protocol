@@ -1,9 +1,9 @@
 protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Медицинское сопровождение умершего донора
+  title: Медицинское сопровождение умершего донора (взрослое население)
   url: null
   local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
   document_sha256: null
@@ -26,7 +26,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: медицинское_сопровождение_умершего_донора
+- condition_id: medical_support_deceased_donor
   name: Медицинское сопровождение умершего донора
   synonyms: []
   abbreviations: []
@@ -38,8 +38,7 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: 'коагулограмма, включающая: определение активированного частичного тромбопластинового
-        времени, | Фибробронхоскопия'
+    - text: 'Целевая температура тела: 35–38 °C'
       logic_group: null
       operator: unknown
       values: []
@@ -56,9 +55,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'коагулограмма, включающая: определение активированного частичного
-          тромбопластинового времени, | Фибробронхоскопия'
-    - text: 'БАК): определение общего белка,'
+        quote: 'Целевая температура тела: 35–38 °C'
+    - text: 'Целевое среднее артериальное давление (СрАД): 60–110 мм рт. ст.'
       logic_group: null
       operator: unknown
       values: []
@@ -75,8 +73,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'БАК): определение общего белка,'
-    - text: определение активированного частичного
+        quote: 'Целевое среднее артериальное давление (СрАД): 60–110 мм рт. ст.'
+    - text: 'Целевая частота сердечных сокращений (ЧСС): 70–100 мин.'
       logic_group: null
       operator: unknown
       values: []
@@ -93,11 +91,245 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение активированного частичного
+        quote: 'Целевая частота сердечных сокращений (ЧСС): 70–100 мин.'
+    - text: 'Целевая сатурация кислорода (SpO2): > 95%'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Целевая сатурация кислорода (SpO2): > 95%'
+    - text: 'Целевой диурез: <0,5–1,0 мл/кг/час'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Целевой диурез: <0,5–1,0 мл/кг/час'
+    - text: 'Целевое центральное венозное давление (ЦВД): 5–12 см вод.ст. (5–9**)'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Целевое центральное венозное давление (ЦВД): 5–12 см вод.ст. (5–9**)'
+    - text: 'Целевой pH крови: 7,3–7,5'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Целевой pH крови: 7,3–7,5'
+    - text: 'Целевая концентрация натрия: 135–145 ммоль/л'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Целевая концентрация натрия: 135–145 ммоль/л'
+    - text: 'Целевая концентрация калия: 3,5–5,0 ммоль/л'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Целевая концентрация калия: 3,5–5,0 ммоль/л'
+    - text: 'Целевая глюкоза крови: 3,0–8,3 ммоль/л'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Целевая глюкоза крови: 3,0–8,3 ммоль/л'
+    - text: 'Целевые значения для БАК, ОАМ, коагулограммы: референтные'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Целевые значения для БАК, ОАМ, коагулограммы: референтные'
+    - text: 'Целевой гемоглобин: >90 г/л'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Целевой гемоглобин: >90 г/л'
+    - text: 'Целевой гематокрит: >30 %'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Целевой гематокрит: >30 %'
+    - text: 'Целевое количество тромбоцитов: >50 Х109/л'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Целевое количество тромбоцитов: >50 Х109/л'
+    - text: 'Целевой прокальцитонин (РСТ): 0–0,046 нг/мл'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Целевой прокальцитонин (РСТ): 0–0,046 нг/мл'
+    - text: 'Целевой С-реактивный белок (СРБ): 0–5 мг/л'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Целевой С-реактивный белок (СРБ): 0–5 мг/л'
     optional: []
     exclusion: []
   required_exams:
-  - name: ОАК
+  - name: Антиген вируса гепатита В (HBsAg)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -111,15 +343,14 @@ conditions:
       protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
       document_url: null
       local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
-      page_start: null
+      page_start: 8
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: оцитов и лейкоцитарной формулы (далее – ОАК); КОС; общий анализ мочи
-        (далее – ОАМ); биохимический анализ крови (далее – БАК
-  - name: ЭКГ
+      quote: антиген вируса гепатита В (далее – HBsAg)
+  - name: Антитела к вирусу гепатита С (анти-HCV)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -133,22 +364,385 @@ conditions:
       protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
       document_url: null
       local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
-      page_start: null
+      page_start: 8
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: 'сов или чаще по медицинским показаниям; ЭКГ; СрАД (неизвазивное СрАД
-        – каждый час); частота |
-
-
-        [diagnostics] ГЛАВА 2 (стр.'
-  conditional_exams: []
+      quote: антитела к вирусу гепатита С (далее – анти-HCV)
+  - name: Серологическое исследование крови на сифилис
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: серологическое исследование крови на сифилис
+  - name: Антитела к ВИЧ (анти-HIV)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: антитела к ВИЧ (далее – анти-HIV)
+  - name: ПЦР исследование на инфекцию, вызванную коронавирусом COVID-19
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ПЦР исследование на инфекцию, вызванную коронавирусом COVID-19
+  - name: Общий анализ крови (ОАК) с подсчетом количества тромбоцитов и лейкоцитарной
+      формулы
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ крови с подсчетом количества тромбоцитов и лейкоцитарной
+        формулы (далее – ОАК)
+  - name: Кислотно-основное состояние (КОС)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: КОС
+  - name: Общий анализ мочи (ОАМ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ мочи (далее – ОАМ)
+  - name: 'Биохимический анализ крови (БАК): общий белок, альбумин, мочевина, креатинин,
+      глюкоза, холестерин, кальций ионизированный, калий, натрий, хлор, билирубин,
+      амилаза, АЛТ, АСТ, ГГТП, ЛДГ, ЩФ, СРБ'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'биохимический анализ крови (далее – БАК): определение общего белка,
+        альбумина, мочевины, креатинина, глюкозы, холестерина, кальция ионизированного,
+        калия, натрия, хлора, билирубина, амилазы, аланинаминотрансферазы, аспартатаминотрансферазы,
+        гамма-глутамилтранспептидазы, лактатдегидрогеназы, щелочной фосфатазы, С-реактивного
+        белка (далее – СРБ)'
+  - name: Коагулограмма (АЧТВ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'коагулограмма, включающая: определение активированного частичного тромбопластинового
+        времени'
+  conditional_exams:
+  - name: Фибробронхоскопия
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Фибробронхоскопия
+  - name: Фиброгастродуоденоскопия
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: фиброгастродуоденоскопия
+  - name: Компьютерная томография (КТ) органов грудной клетки, брюшной полости
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: компьютерная томография органов грудной клетки, брюшной полости
+  - name: Коронарография
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: коронарография
+  - name: Давление заклинивания в легочной артерии
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: давление заклинивания в легочной артерии
+  - name: Токсикологические тесты (опиаты, барбитураты, бензодиазепины в моче, алкоголь
+      в крови и моче)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: токсикологические тесты (содержание опиатов, барбитуратов, бензодиазепинов
+        в моче, алкоголя в крови и моче)
+  - name: Прокальцитонин (PCT)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: прокальцитонин (далее – PCT)
+  - name: Липокаин, связанный с нейтрофильной желатиназоной в моче
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: липокаин, связанный с нейтрофильной желатиназоной в моче
+  - name: Кардиомаркеры (КК-МВ, миоглобин, тропонин-Т, тропонин-I)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: кардиомаркеры (КК-МВ, миоглобин, тропонин-Т, тропонин-I)
   treatment:
     non_drug:
-    - text: '[treatment] 7. Доноры с локальной, негенерализованной формой инфекции
-        рассматриваются (стр. 3)'
+    - text: Обеспечение минутной вентиляции
       source_ref:
         protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
         document_url: null
@@ -159,10 +753,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 7. Доноры с локальной, негенерализованной формой инфекции
-          рассматриваются (стр. 3)'
-    - text: для забора органов, не вовлеченных в инфекционно-воспалительный процесс,
-        при
+        quote: Обеспечение минутной вентиляции
+    - text: Оценка оксигенации
       source_ref:
         protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
         document_url: null
@@ -173,10 +765,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: для забора органов, не вовлеченных в инфекционно-воспалительный процесс,
-          при
-    - text: условии применения адекватной антибактериальной терапии не менее 48 часов
-        с момента
+        quote: Оценка оксигенации
+    - text: Принудительный режим МВЛ с контролем давления кислородно-воздушной смеси
+        и поддержанием низкого дыхательного объема в сочетании с достаточно высокой
+        частотой дыхания для обеспечения адекватной минутной вентиляции легких
       source_ref:
         protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
         document_url: null
@@ -187,9 +779,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: условии применения адекватной антибактериальной терапии не менее 48
-          часов с момента
-    - text: выявления инфекции, а также наблюдения положительной динамики признаков,
+        quote: Принудительный режим МВЛ с контролем давления кислородно-воздушной
+          смеси и поддержанием низкого дыхательного объема в сочетании с достаточно
+          высокой частотой дыхания для обеспечения адекватной минутно
+    - text: Регулярное проведение маневра «открытия легких» и (или) рекрутмента (обязательно
+        после окончания проведения теста на отсутствие дыхания при констатации смерти
+        головного мозга)
       source_ref:
         protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
         document_url: null
@@ -200,8 +795,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: выявления инфекции, а также наблюдения положительной динамики признаков,
-    - text: симптомов инфекции на основании клинических данных и результатов лабораторных
+        quote: Регулярное проведение маневра «открытия легких» и (или) рекрутмента
+          (обязательно после окончания проведения теста на отсутствие дыхания при
+          констатации смерти головного мозга)
+    - text: Регулярный асептический туалет ротовой полости и трахеобронхиального дерева
       source_ref:
         protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
         document_url: null
@@ -212,9 +809,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: симптомов инфекции на основании клинических данных и результатов лабораторных
-    - text: '[treatment] 13. Для защиты легких умершего донора ограничивается проведение
-        избыточной (стр. 4)'
+        quote: Регулярный асептический туалет ротовой полости и трахеобронхиального
+          дерева
+    - text: Изменения положения тела умершего донора каждые 2 часа
       source_ref:
         protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
         document_url: null
@@ -225,271 +822,281 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 13. Для защиты легких умершего донора ограничивается проведение
-          избыточной (стр. 4)'
+        quote: Изменения положения тела умершего донора каждые 2 часа
+    - text: Контроль подъема головного конца кровати на 30°
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Контроль подъема головного конца кровати на 30°
+    - text: Подогрев и увлажнение дыхательных газов
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Подогрев и увлажнение дыхательных газов
+    - text: Обязательное использование антибактериального фильтра
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Обязательное использование антибактериального фильтра
     drug_groups: []
-    drugs:
-    - drug_name: введения
-      active_substance: null
-      drug_group: null
-      dose_text: 10 мкг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
-        document_url: null
-        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: введения 10 мкг/мин
-    - drug_name: дозировке
-      active_substance: null
-      drug_group: null
-      dose_text: 500 мкг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
-        document_url: null
-        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: дозировке 500 мкг/кг болюсом с последующей постоянной инф
-    - drug_name: узией
-      active_substance: null
-      drug_group: null
-      dose_text: 25 мкг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
-        document_url: null
-        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "узией  \n25 мкг/кг/мин"
-    - drug_name: доза
-      active_substance: null
-      drug_group: null
-      dose_text: 15 мкг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
-        document_url: null
-        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: доза 15 мкг/кг/мин
-    - drug_name: дозе
-      active_substance: null
-      drug_group: null
-      dose_text: 200 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
-        document_url: null
-        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: дозе 200 мг
-    - drug_name: февраля
-      active_substance: null
-      drug_group: null
-      dose_text: 2022 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
-        document_url: null
-        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: февраля 2022 г
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
-        document_url: null
-        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
-        document_url: null
-        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: марта
-      active_substance: null
-      drug_group: null
-      dose_text: 1997 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
-        document_url: null
-        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: марта 1997 г
+    drugs: []
     procedures: []
     surgery: []
     source_refs: []
-  follow_up:
-  - text: контроль
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
-      document_url: null
-      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: контроль
-  - text: контроль
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
-      document_url: null
-      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: контроль
+  follow_up: []
   hospitalization: []
-  routing: []
-  red_flags: []
+  routing:
+  - text: г
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: г
+  - text: о
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: о
+  - text: с
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: с
+  - text: п
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: п
+  - text: и
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: и
+  - text: т
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: т
+  red_flags:
+  - text: ВИЧ-инфекция
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ВИЧ-инфекция;
+  - text: Активные формы туберкулеза
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: активные формы туберкулеза;
+  - text: Паразитарные заболевания (эхинококкоз, токсоплазмоз, трипаносомоз, филяриатоз,
+      ришта, лейшманиоз)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: паразитарные заболевания, в том числе, эхинококкоз, токсоплазмоз, трипаносомоз,
+        филяриатоз, ришта, лейшманиоз;
+  - text: Наркомания (за исключением длительной ремиссии без гемотрансмиссивных инфекций
+      и признаков инфицирования кровообращения)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: наркомания (за исключением нозологий с длительной ремиссией, отсутствием
+        гемотрансмиссивных инфекций и признаков инфицирования системы кровообращения);
+  - text: Злокачественные новообразования (за исключением первичных опухолей ЦНС и
+      некоторых неметастатических опухолей кожи)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: злокачественные новообразования (за исключением примитивных первичных
+        опухолей центральной нервной системы, в том числе глиобластом, астроцитом,
+        медуллобластом и некоторых неметастатических опухолей кожи (базалиома);
+  - text: Доказанный сепсис различной этиологии (за исключением SIRS)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'доказанный сепсис различной этиологии, за исключением синдрома системной
+        воспалительной реакции (англ.: Systemic Inflammatory Response Syndrome, SIRS);'
+  - text: Подтвержденная активная вирусная или бактериальная инфекция (включая коронавирус)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: подтвержденная активная инфекция вирусной или бактериальной этиологии,
+        в том числе инфекция, вызванная коронавирусом
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
-    document_url: null
-    local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Медицинское_сопровождение_умершего_донора_пост_МЗ_15_02_2022_№11.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Медицинское сопровождение умершего донора
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:52.398712+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T18:12:56.258005+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:52.403886+00:00'
+  validated_at: '2026-07-20T18:12:56.265448+00:00'

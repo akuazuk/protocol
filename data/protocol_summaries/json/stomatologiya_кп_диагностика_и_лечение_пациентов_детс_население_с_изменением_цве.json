@@ -1,10 +1,10 @@
 {
   "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика и лечение пациентов детс население с изменением цвета зубов в процессе формирования",
+    "title": "Диагностика и лечение изменения цвета зубов в процессе формирования у детей",
     "url": null,
     "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,12 +32,17 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_и_лечение_пациентов_детс_население_с",
-      "name": "Диагностика и лечение пациентов детс население с изменением цвета зубов в процессе формирования",
+      "condition_id": "tooth_discoloration_during_formation",
+      "name": "Изменение цвета зубов в процессе формирования",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "B24"
+        "K00.8",
+        "K00.80",
+        "K00.81",
+        "K00.82",
+        "K00.83",
+        "K00.88"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -45,7 +50,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[criteria] 5. Признаками и критериями, определяющими изменение цвета зубов в процессе (стр. 4)",
+            "text": "Повышенное содержание билирубина в крови, вызывающее окрашивание временных зубов (желтый, зеленовато-голубой, коричневый).",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -62,11 +67,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 5. Признаками и критериями, определяющими изменение цвета зубов в процессе (стр. 4)"
+              "quote": "Повышенное содержание билирубина в крови, вызывающее окрашивание временных зубов (желтый, зеленовато-голубой, коричневый)."
             }
           },
           {
-            "text": "[criteria] 5. Признаками и критериями, определяющими изменение цвета зубов в процессе (стр. 4)",
+            "text": "Врожденный порок билиарной системы, приводящий к окрашиванию временных и постоянных зубов (от желтого до коричневого) из-за холестаза.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -83,11 +88,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 5. Признаками и критериями, определяющими изменение цвета зубов в процессе (стр. 4)"
+              "quote": "Врожденный порок билиарной системы, приводящий к окрашиванию временных и постоянных зубов (от желтого до коричневого) из-за холестаза."
             }
           },
           {
-            "text": "[criteria] 5. Признаками и критериями, определяющими изменение цвета зубов в процессе (стр. 4)",
+            "text": "Нарушение обмена порфиринов, проявляющееся пурпурно-коричневой окраской временных и постоянных зубов, флуоресцирующих в ультрафиолетовом свете.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -104,11 +109,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 5. Признаками и критериями, определяющими изменение цвета зубов в процессе (стр. 4)"
+              "quote": "Нарушение обмена порфиринов, проявляющееся пурпурно-коричневой окраской временных и постоянных зубов, флуоресцирующих в ультрафиолетовом свете."
             }
           },
           {
-            "text": "[criteria] 5. Признаками и критериями, определяющими изменение цвета зубов в процессе (стр. 4)",
+            "text": "Окрашивание зубов (от желтого до черного) вследствие применения тетрациклина в период кальцификации.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -125,11 +130,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 5. Признаками и критериями, определяющими изменение цвета зубов в процессе (стр. 4)"
+              "quote": "Окрашивание зубов (от желтого до черного) вследствие применения тетрациклина в период кальцификации."
             }
           },
           {
-            "text": "ПРИЗНАКИ И КРИТЕРИИ ИЗМЕНЕНИЯ ЦВЕТА ЗУБОВ",
+            "text": "Степень 1 тетрациклинового окрашивания: минимально выраженное, до 3/4 коронки, светло-желтый цвет.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -146,115 +151,134 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ПРИЗНАКИ И КРИТЕРИИ ИЗМЕНЕНИЯ ЦВЕТА ЗУБОВ"
+              "quote": "Степень 1 тетрациклинового окрашивания: минимально выраженное, до 3/4 коронки, светло-желтый цвет."
+            }
+          },
+          {
+            "text": "Степень 2 тетрациклинового окрашивания: однородный насыщенный желтый до полосок серого цвета с заметной разницей цвета.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Степень 2 тетрациклинового окрашивания: однородный насыщенный желтый до полосок серого цвета с заметной разницей цвета."
+            }
+          },
+          {
+            "text": "Степень 3 тетрациклинового окрашивания: темное однородное голубое или серое изменение цвета всего зуба.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Степень 3 тетрациклинового окрашивания: темное однородное голубое или серое изменение цвета всего зуба."
+            }
+          },
+          {
+            "text": "Критический период для развития тетрациклиновой патологии во временных резцах: от 4-го месяца внутриутробного развития до 3 месяцев после рождения.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Критический период для развития тетрациклиновой патологии во временных резцах: от 4-го месяца внутриутробного развития до 3 месяцев после рождения."
+            }
+          },
+          {
+            "text": "Критический период для развития тетрациклиновой патологии в постоянных зубах: от 3–5 месяцев жизни до 7-летнего возраста (исключение — латеральные резцы верхней челюсти, с 10–12 месяцев).",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Критический период для развития тетрациклиновой патологии в постоянных зубах: от 3–5 месяцев жизни до 7-летнего возраста (исключение — латеральные резцы верхней челюсти, с 10–12 месяцев)."
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
+      "required_exams": [
+        {
+          "name": "Сбор анамнеза",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "сбор анамнеза и выявление факторов, влияющих на изменение цвета зубов в период закладки и минерализации"
+          }
+        }
+      ],
       "conditional_exams": [],
       "treatment": {
-        "non_drug": [
-          {
-            "text": "ЛЕЧЕНИЕ ИЗМЕНЕНИЯ ЦВЕТА ЗУБОВ В ПРОЦЕССЕ ФОРМИРОВАНИЯ",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "ЛЕЧЕНИЕ ИЗМЕНЕНИЯ ЦВЕТА ЗУБОВ В ПРОЦЕССЕ ФОРМИРОВАНИЯ"
-            }
-          },
-          {
-            "text": "[treatment] 10. Общий принцип лечения и медицинской профилактики изменения цвета зубов (стр. 5)",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 10. Общий принцип лечения и медицинской профилактики изменения цвета зубов (стр. 5)"
-            }
-          },
-          {
-            "text": "в процессе формирования: проводится при наличии жалоб на эстетический недостаток.",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "в процессе формирования: проводится при наличии жалоб на эстетический недостаток."
-            }
-          },
-          {
-            "text": "[treatment] 11. Терапевтические лечебные мероприятия у пациентов с изменением цвета зубов (стр. 6)",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 11. Терапевтические лечебные мероприятия у пациентов с изменением цвета зубов (стр. 6)"
-            }
-          },
-          {
-            "text": "Предназначен для детей с 2 лет. Для детей",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Предназначен для детей с 2 лет. Для детей"
-            }
-          },
-          {
-            "text": "в возрасте от 2 до 11 лет максимально",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "в возрасте от 2 до 11 лет максимально"
-            }
-          }
-        ],
+        "non_drug": [],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "превышать",
+            "drug_name": "Лидокаин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2,9 мг",
+            "dose_text": "Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну. Лекарственное средство можно нан",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -266,20 +290,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 1,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "превышать 2,9 мг/кг"
+              "quote": "Лидокаин Спрей для местного применения 100 мг/мл во флаконах 50 мл Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну."
             }
           },
           {
-            "drug_name": "ампулах",
+            "drug_name": "Лидокаин/Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2 мл",
+            "dose_text": "Анестезирующий гель в шприцах 12,5 г; анестезирующий гель в шприцах 8,5 г. Для аппликационной анестезии слизистой оболочки полости рта, а также перед инъекционной анестезией. У детей до 2 лет применен",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -291,20 +315,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 1,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ампулах 2 мл \n(картриджах 1,7 мл)"
+              "quote": "Лидокаин/Хлоргексидин Анестезирующий гель в шприцах 12,5 г; анестезирующий гель в шприцах 8,5 г. Для аппликационной анестезии слизистой полости рта. У детей до 2 лет применение противопоказано."
             }
           },
           {
-            "drug_name": "картриджах",
+            "drug_name": "Лидокаин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1,7 мл",
+            "dose_text": "Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну. Лекарственное средство можно нан",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -316,20 +340,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "картриджах \n1,7 мл"
+              "quote": "Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну."
             }
           },
           {
-            "drug_name": "применения",
+            "drug_name": "Лидокаин/Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "100 мг",
+            "dose_text": "Анестезирующий гель в шприцах 12,5 г; анестезирующий гель в шприцах 8,5 г. Для аппликационной анестезии слизистой оболочки полости рта, а также перед инъекционной анестезией. У детей до 2 лет применен",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -341,20 +365,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "применения 100 мг/мл во флаконах 50 мл | Одну порцию (1–3"
+              "quote": "Анестезирующий гель в шприцах 12,5 г; 8,5 г. Для аппликационной анестезии слизистой оболочки полости рта. У детей до 2 лет противопоказано. Для детей 2-11 лет доза лидокаина гидрохлорида не превышает 2,9 мг/кг."
             }
           },
           {
-            "drug_name": "шприцах",
+            "drug_name": "Артикаин/Эпинефрин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "12,5 г",
+            "dose_text": "Раствор для инъекций (40 мг + 0,006 мг)/1 мл в ампулах 2 мл (картриджах 1,7 мл); раствор для инъекций (40 мг + 0,005 мг)/1 мл в ампулах 2 мл; раствор для инъекций (40 мг/0,005 мг)/мл в картриджах 1,7 ",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -366,113 +390,13 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "шприцах 12,5 г"
-            }
-          },
-          {
-            "drug_name": "ноября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2022 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "ноября 2022 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          },
-          {
-            "drug_name": "марта",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2023 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "марта 2023 г"
+              "quote": "Инъекционная анестезия тканей полости рта. Разовая доза назначается индивидуально. Используйте меньший объем для адекватной анестезии; доза не должна превышать 7 мг артикаина на 1 кг массы тела. Использование у детей до года не изучалось."
             }
           }
         ],
@@ -480,45 +404,166 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
+      "follow_up": [
+        {
+          "text": "Медицинское наблюдение – 1 раз в 12 месяцев.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинское наблюдение – 1 раз в 12 месяцев."
+          }
+        }
+      ],
       "hospitalization": [],
       "routing": [],
-      "red_flags": [],
+      "red_flags": [
+        {
+          "text": "Применение анестезирующего геля Лидокаин/Хлоргексидин противопоказано у детей до 2 лет.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 1,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "У детей до 2 лет применение противопоказано."
+          }
+        },
+        {
+          "text": "Применение Лидокаина/Хлоргексидина у детей до 2 лет противопоказано.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "У детей до 2 лет применение противопоказано."
+          }
+        },
+        {
+          "text": "Максимально допустимая доза лидокаина гидрохлорида для детей 2-11 лет не должна превышать 2,9 мг/кг.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Для детей в возрасте от 2 до 11 лет максимально допустимая доза лидокаина гидрохлорида не должна превышать 2,9 мг/кг."
+          }
+        },
+        {
+          "text": "Использование Артикаина/Эпинефрина у детей до года не изучалось.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Использование у детей до года не изучалось"
+          }
+        },
+        {
+          "text": "Доза артикаина для инъекционной анестезии не должна превышать 7 мг на 1 кг массы тела.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "доза лекарственного средства не должна превышать 7 мг артикаина на 1 кг массы тела."
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_изменением_цве",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_изменением_цвета_зубов_в_процессе_формирования_пост_МЗ_30.11.2022_112.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика и лечение пациентов детс население с изменением цвета зубов в процессе формирования"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:51.354005+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T18:06:36.314466+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-06-23T19:15:51.357764+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[tooth_discoloration_during_formation].treatment.drugs[2]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[tooth_discoloration_during_formation].treatment.drugs[3]"
+      }
+    ],
+    "validated_at": "2026-07-20T18:06:36.318617+00:00"
   }
 }

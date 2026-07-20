@@ -1,9 +1,9 @@
 protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение коклюша детское население
+  title: Диагностика лечение коклюша
   url: null
   local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
   document_sha256: null
@@ -19,15 +19,15 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_лечение_коклюша_детское_население
-  name: Диагностика лечение коклюша детское население
+- condition_id: pertussis
+  name: Коклюш
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -39,8 +39,8 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[diagnostics] 5. Формулировка диагноза должна включать, помимо клинической
-        формы, степени (стр. 3)'
+    - text: Формулировка диагноза включает клиническую форму, степень тяжести, характер
+        течения, период заболевания и подтверждающие лабораторные результаты.
       logic_group: null
       operator: unknown
       values: []
@@ -57,231 +57,201 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 5. Формулировка диагноза должна включать, помимо клинической
-          формы, степени (стр. 3)'
-    - text: 'Примерами диагноза коклюш являются:'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Примерами диагноза коклюш являются:'
-    - text: 8.2. лабораторные исследования – общий анализ крови с определением уровня
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 8.2. лабораторные исследования – общий анализ крови с определением
-          уровня
-    - text: для определения дезоксирибонуклеиновой кислоты (далее – ДНК) Bordetella
-        pertussis,
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: для определения дезоксирибонуклеиновой кислоты (далее – ДНК) Bordetella
-          pertussis,
-    - text: коклюша не менее 1 года выполняется определение уровня антител класса
-        G (далее – IgG)
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: коклюша не менее 1 года выполняется определение уровня антител класса
-          G (далее – IgG)
-    - text: к токсину Bordetella pertussis (количественное определение) в сыворотке
-        крови методом
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: к токсину Bordetella pertussis (количественное определение) в сыворотке
-          крови методом
-    - text: общий анализ крови с определением уровня гемоглобина, количества эритроцитов
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: общий анализ крови с определением уровня гемоглобина, количества эритроцитов
-    - text: ПЦР назофарингеального мазка или аспирата для определения ДНК Bordetella
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ПЦР назофарингеального мазка или аспирата для определения ДНК Bordetella
+        quote: Формулировка диагноза включает клиническую форму, степень тяжести,
+          характер течения, период заболевания и подтверждающие лабораторные результаты.
     optional: []
     exclusion: []
-  required_exams: []
-  conditional_exams: []
+  required_exams:
+  - name: Сбор жалоб
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: сбор жалоб – ежедневно один раз в день, при необходимости чаще
+  - name: Сбор анамнеза
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: сбор анамнеза – однократно в первый день госпитализации, при необходимости
+        чаще
+  - name: Физикальное обследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: физикальное обследование ежедневно один раз в день, при необходимости
+        чаще
+  - name: Общий анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ крови с определением уровня гемоглобина, количества эритроцитов
+        и лейкоцитов, подсчетом лейкоцитарной формулы, уровня тромбоцитов, СОЭ – однократно
+        в первый день госпитализации, далее один раз в 7–10 дней
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ мочи – однократно в первый день госпитализации
+  - name: ПЦР на Bordetella pertussis/parapertussis
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ПЦР назофарингеального мазка или аспирата для определения ДНК Bordetella
+        pertussis, parapertussis и других возбудителей рода Bordetella при длительности
+        кашля не более 2–3 недель, у детей в возрасте до года при длительности кашля
+        не более 6 недель (однократно)
+  conditional_exams:
+  - name: Бактериологический метод на Bordetella pertussis/parapertussis
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: бактериологический метод для выявления Bordetella pertussis и parapertussis
+        в назофарингеальном мазке или аспирате, проведенным до начала антибактериального
+        лечения и длительности кашля не более 2 недель (однократно)
+  - name: Определение IgG к токсину Bordetella pertussis
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Определение уровня IgG к токсину Bordetella pertussis (количественное)
+        в сыворотке крови методом ИФА однократно, если кашель >2 недель у детей >1
+        года без недавней вакцинации.
   treatment:
-    non_drug:
-    - text: '[treatment] 6. Медицинскими показаниями для лечения в стационарных условиях
-        являются: (стр. 3)'
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 6. Медицинскими показаниями для лечения в стационарных
-          условиях являются: (стр. 3)'
-    - text: 6.2. частота приступов спазматического кашля более 5 раз в сутки у детей
-        в возрасте
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 6.2. частота приступов спазматического кашля более 5 раз в сутки у
-          детей в возрасте
-    - text: до 6 лет и более 10 раз в сутки у детей старше 6 лет
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: до 6 лет и более 10 раз в сутки у детей старше 6 лет
-    - text: '[treatment] 6. Медицинскими показаниями для лечения в стационарных условиях
-        являются: (стр. 3)'
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 6. Медицинскими показаниями для лечения в стационарных
-          условиях являются: (стр. 3)'
-    - text: '6.3. наличие любого из следующих признаков:'
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '6.3. наличие любого из следующих признаков:'
-    - text: отечный синдром (пастозность или отечность век, лица, снижение диуреза)
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: отечный синдром (пастозность или отечность век, лица, снижение диуреза)
+    non_drug: []
     drug_groups: []
     drugs:
-    - drug_name: внутрь
+    - drug_name: Сульфаметоксазол + Триметоприм
       active_substance: null
       drug_group: null
-      dose_text: 200 мг
+      dose_text: Детям с 6 лет до 12 лет – 8 мг/кг в сутки из расчета по триметоприму,
+        разделенные на 2 приема внутрь, максимальная суточная доза – 320 мг по триметоприму,
+        1600 мг по сульфаметоксазолу. Детям старше 12
       frequency_text: null
       duration_text: null
       route: null
@@ -293,246 +263,54 @@ conditions:
         protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
         document_url: null
         local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-        page_start: null
+        page_start: 1
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "внутрь 200 мг/5 мл, \n200 мг/20 мл"
-    - drug_name: капсулы
-      active_substance: null
-      drug_group: null
-      dose_text: 250 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: капсулы 250 мг, 500 мг) детям дозируется исходя из мас
-    - drug_name: диспергируемые
-      active_substance: null
-      drug_group: null
-      dose_text: 1000 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: диспергируемые 1000 мг) по 50 мг/кг в сутки внутрь в 2 приема,
-    - drug_name: сироп
-      active_substance: null
-      drug_group: null
-      dose_text: 1,5 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "сироп \n1,5 мг/1 мл (для детей старше 3 лет)) детям от"
-    - drug_name: декабря
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: декабря 2023 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: ноября
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ноября 1993 г
-    - drug_name: менее
-      active_substance: null
-      drug_group: null
-      dose_text: 1 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: менее 1 года выполняется определение уровня IgG к
+        quote: назначается сульфаметоксазол + триметоприм (таблетки 400 мг/80 мг),
+          дети с 6 лет до 12 лет – 8 мг/кг в сутки из расчета по триметоприму, разделенные
+          на 2 приема внутрь, максимальная суточная доза – 320 мг...
     procedures: []
     surgery: []
     source_refs: []
-  follow_up:
-  - text: через 3 дн
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: через 3 дн
-  - text: "через  \n3 дн"
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "через  \n3 дн"
-  - text: через 2 нед
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: через 2 нед
+  follow_up: []
   hospitalization: []
-  routing: []
+  routing:
+  - text: Амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторно
+  - text: Госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация
   red_flags:
-  - text: "ратно в первый день госпитализации, при необходимости \nчаще; \nфизикальное\
-      \ обследование ежедневно один раз в день, при необходимости чаще;\n\n[diagnostics]\
-      \ В СТАЦИОНАРНЫХ"
+  - text: 'Медицинские противопоказания к применению макролидов: повышенная чувствительность,
+      удлинение интервала QT, желудочковая аритмия.'
     aliases: []
-    red_flag_type: urgent_referral
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -540,61 +318,32 @@ conditions:
       protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
       document_url: null
       local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-      page_start: null
+      page_start: 1
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "ратно в первый день госпитализации, при необходимости \nчаще; \nфизикальное\
-        \ обследование ежедневно один раз в день, при необходимости чаще;\n\n[diagnostics]\
-        \ В СТАЦИОНАРНЫХ"
-  - text: "аличие экстренных и неотложных признаков: судороги; шок; тяжелое \nобезвоживание;\
-      \ угнетение сознания (сонливость) или возбуждение;\n\n[treatment] 6. Ме"
-    aliases: []
-    red_flag_type: urgent_referral
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "аличие экстренных и неотложных признаков: судороги; шок; тяжелое \n\
-        обезвоживание; угнетение сознания (сонливость) или возбуждение;\n\n[treatment]\
-        \ 6. Ме"
+      quote: При наличии медицинских противопоказаний к применению макролидов (стр.
+        5) (повышенная чувствительность, удлинение интервала QT, желудочковая аритмия
+        и иных)
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_коклюша_дет_нас_пост_мз_08_12_
-    document_url: null
-    local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_коклюша_дет_нас_пост_МЗ_08.12.2023_192.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика лечение коклюша детское население
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:30.815956+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T16:00:41.192356+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:30.820091+00:00'
+  validated_at: '2026-07-20T16:00:41.200854+00:00'

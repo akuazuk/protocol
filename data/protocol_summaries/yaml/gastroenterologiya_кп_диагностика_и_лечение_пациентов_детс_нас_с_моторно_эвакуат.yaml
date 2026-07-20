@@ -1,6 +1,6 @@
 protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Диагностика и лечение пациентов детское население с моторно эвакуаторными
@@ -21,27 +21,34 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов_детское_населени
-  name: Диагностика и лечение пациентов детское население с моторно эвакуаторными
-    нарушениями акта дефекации
+- condition_id: motility_defecation_disorders_pediatric
+  name: Моторно-эвакуаторные нарушения акта дефекации
   synonyms: []
   abbreviations: []
   icd10_codes:
   - F98.1
+  - K59.0
+  - Q42.0
+  - Q42.1
+  - Q42.2
+  - Q42.3
+  - Q43.1
+  - Q43.5
+  - Q43.6
+  - Q43.7
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[criteria] 5. Для определения точного базального давления пациент расслабляется
-        и находится (стр. 9)'
+    - text: 2 или менее дефекации у пациента в возрасте старше 4 лет.
       logic_group: null
       operator: unknown
       values: []
@@ -59,10 +66,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[criteria] 5. Для определения точного базального давления пациент
-          расслабляется и находится (стр. 9)'
-    - text: '[criteria] 7. Для измерения и определения выносливости сжатия пациент
-        максимально (стр. 9)'
+        quote: 2 или менее дефекации у пациента в возрасте старше 4 лет.
+    - text: По крайней мере 1 эпизод недержания кала в неделю.
       logic_group: null
       operator: unknown
       values: []
@@ -80,10 +85,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[criteria] 7. Для измерения и определения выносливости сжатия пациент
-          максимально (стр. 9)'
-    - text: '[criteria] 9. Для определения РАИР и оценки порога чувствительности в
-        баллон нагнетается (стр. 10)'
+        quote: По крайней мере 1 эпизод недержания кала в неделю.
+    - text: Эпизоды намеренного удержания кала в кишечнике.
       logic_group: null
       operator: unknown
       values: []
@@ -101,10 +104,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[criteria] 9. Для определения РАИР и оценки порога чувствительности
-          в баллон нагнетается (стр. 10)'
-    - text: '[criteria] 5. Для определения точного базального давления пациент расслабляется
-        и находится (стр. 9)'
+        quote: Эпизоды намеренного удержания кала в кишечнике.
+    - text: Эпизоды болезненной или затрудненной дефекации.
       logic_group: null
       operator: unknown
       values: []
@@ -122,10 +123,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[criteria] 5. Для определения точного базального давления пациент
-          расслабляется и находится (стр. 9)'
-    - text: '[criteria] 7. Для измерения и определения выносливости сжатия пациент
-        максимально (стр. 9)'
+        quote: Эпизоды болезненной или затрудненной дефекации.
+    - text: Присутствие больших масс кала в прямой кишке.
       logic_group: null
       operator: unknown
       values: []
@@ -143,10 +142,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[criteria] 7. Для измерения и определения выносливости сжатия пациент
-          максимально (стр. 9)'
-    - text: '[criteria] 9. Для определения РАИР и оценки порога чувствительности в
-        баллон нагнетается (стр. 10)'
+        quote: Присутствие больших масс кала в прямой кишке.
+    - text: Эпизоды каловых масс большого диаметра, которые могут заполнять унитаз.
       logic_group: null
       operator: unknown
       values: []
@@ -164,9 +161,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[criteria] 9. Для определения РАИР и оценки порога чувствительности
-          в баллон нагнетается (стр. 10)'
-    - text: Диагностические критерии функционального запора согласно
+        quote: Эпизоды каловых масс большого диаметра, которые могут заполнять унитаз.
+    - text: Критерии должны включать 2 или более из перечисленных симптомов, возникающих
+        не реже 1 раза в неделю в течение минимум 1 месяца.
       logic_group: null
       operator: unknown
       values: []
@@ -184,8 +181,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Диагностические критерии функционального запора согласно
-    - text: Римским критериям IV пересмотра*
+        quote: Критерии должны включать 2 или более из перечисленных симптомов, возникающих
+          не реже 1 раза в неделю в течение минимум 1 месяца.
+    - text: Симптомы не могут быть полностью объяснены другим заболеванием.
       logic_group: null
       operator: unknown
       values: []
@@ -203,15 +201,229 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Римским критериям IV пересмотра*
+        quote: Симптомы не могут быть полностью объяснены другим заболеванием.
+    - text: Симптомы выявляются в течение минимум 3 месяцев.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
+          _14.02.2024_33.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Симптомы выявляются в течение минимум 3 месяцев.
     optional: []
     exclusion: []
-  required_exams: []
-  conditional_exams: []
+  required_exams:
+  - name: Аноректальная манометрия высокого разрешения (АРМВР)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
+        _14.02.2024_33.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Приложение 2 к клиническому протоколу «Диагностика и лечение пациентов
+        (детское население) с моторно-эвакуаторными нарушениями акта дефекации» Порядок
+        проведения АРМВР
+  - name: Сбор анамнеза и жалоб пациента
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
+        _14.02.2024_33.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими исследованиями при подозрении на моторно-эвакуаторные
+        нарушения акта дефекации в амбулаторных условиях являются: сбор анамнеза и
+        жалоб пациента'
+  - name: Глубокая скользящая пальпация толстой кишки
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
+        _14.02.2024_33.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: глубокая скользящая пальпация толстой кишки для исключения или подтверждения
+        каловых камней
+  - name: Пальцевое ректальное исследование прямой кишки
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
+        _14.02.2024_33.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: пальцевое ректальное исследование прямой кишки для оценки анатомии и
+        работы наружного анального сфинктера и оценки наличия или отсутствия каловых
+        масс
+  - name: Аноректальная манометрия высокого разрешения (АРМВР)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
+        _14.02.2024_33.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обязательным диагностическим исследованием при моторно-эвакуаторных нарушениях
+        акта дефекации для оценки функциональной работы толстой кишки... является
+        проведение АРМВР
+  conditional_exams:
+  - name: Консультация врача-гастроэнтеролога (или педиатра)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
+        _14.02.2024_33.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультация врача-гастроэнтеролога организации здравоохранения районного
+        (врача-педиатра при отсутствии врача-гастроэнтеролога), областного... при
+        неэффективности терапии
+  - name: Консультация врача-детского хирурга
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
+        _14.02.2024_33.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультация врача-детского хирурга организации здравоохранения районного...
+        при проведении хирургического вмешательства на толстой кишке в анамнезе
+  - name: Консультация врача-детского невролога/психиатра детского
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
+        _14.02.2024_33.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультация врача-детского невролога, врача-психиатра детского организации
+        здравоохранения районного... в случае, если хирургическое вмешательство на
+        толстой кишке не проводилось.
   treatment:
     non_drug:
-    - text: '[treatment] 3. Для целей настоящего клинического протокола используются
-        термины и их (стр. 2)'
+    - text: 'Продукты, способствующие опорожнению кишечника: содержащие органические
+        кислоты (кислое молоко, фруктовые соки, черный хлеб, кислые фрукты), сахаристые
+        вещества (сахара, мед, варенье, джем, сиропы, сладкие блюда), богатые поваренной
+        солью, содержащие углекислоту (минеральные воды), преимущественно растительные
+        жиры, богатые оболочками растительных клеток (овощи, блюда из овсяной, гречневой,
+        ячменной, перловой круп), продукты в холодном виде, жилистое мясо, хрящи,
+        отруби.'
       source_ref:
         protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
         document_url: null
@@ -223,10 +435,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 3. Для целей настоящего клинического протокола используются
-          термины и их (стр. 2)'
-    - text: «Об обращении лекарственных средств», Законом Республики Беларусь от 19
-        ноября
+        quote: 'Продукты, способствующие опорожнению кишечника: содержащие органические
+          кислоты (кислое молоко, фруктовые соки, черный хлеб, кислые фрукты), сахаристые
+          вещества (сахара, мед, варенье, джем, сиропы, сл'
+    - text: 'Продукты, задерживающие опорожнение кишечника: содержащие танин (чай
+        черный, кофе, какао), гранат, черника, хурма, груша, редька, лук, чеснок,
+        пища в протертом виде, каши (манная, рисовая), слизистые супы, кисель, теплые
+        и горячие блюда.'
       source_ref:
         protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
         document_url: null
@@ -238,10 +453,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: «Об обращении лекарственных средств», Законом Республики Беларусь от
-          19 ноября
-    - text: '1993 г. № 2570-XII «О правах ребенка», а также следующие термины и их
-        определения:'
+        quote: 'Продукты, задерживающие опорожнение кишечника: содержащие танин (чай
+          черный, кофе, какао), гранат, черника, хурма, груша, редька, лук, чеснок,
+          пища в протертом виде, каши (манная, рисовая), слизистые '
+    - text: 'Индифферентные продукты: мясо, рыба, паровые блюда, пшеничный хлеб, пресный
+        творог.'
       source_ref:
         protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
         document_url: null
@@ -253,10 +469,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '1993 г. № 2570-XII «О правах ребенка», а также следующие термины и
-          их определения:'
-    - text: '[treatment] 6. Для лечения моторно-эвакуаторных нарушений акта дефекации
-        рекомендованы (стр. 3)'
+        quote: 'Индифферентные продукты: мясо, рыба, паровые блюда, пшеничный хлеб,
+          пресный творог.'
+    - text: Разъяснительная работа с несовершеннолетним пациентом и его родителями
+        о причинах и механизмах нарушений
       source_ref:
         protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
         document_url: null
@@ -268,9 +484,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 6. Для лечения моторно-эвакуаторных нарушений акта дефекации
-          рекомендованы (стр. 3)'
-    - text: базовые схемы поведенческой терапии, фармакотерапии, включающие основные
+        quote: Разъяснительная работа с несовершеннолетним пациентом и его родителями
+          о причинах и механизмах нарушений
+    - text: Поведенческая терапия, основанная на выработке режима посещения туалета
       source_ref:
         protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
         document_url: null
@@ -282,8 +498,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: базовые схемы поведенческой терапии, фармакотерапии, включающие основные
-    - text: фармакотерапевтические группы лекарственных препаратов (далее – ЛП), БОС-терапия,
+        quote: Поведенческая терапия, основанная на выработке режима посещения туалета
+    - text: Коррекция питания с учетом особенностей влияния пищевых веществ на опорожнение
+        кишечника
       source_ref:
         protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
         document_url: null
@@ -295,14 +512,100 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: фармакотерапевтические группы лекарственных препаратов (далее – ЛП),
-          БОС-терапия,
+        quote: Коррекция питания с учетом особенностей влияния пищевых веществ на
+          опорожнение кишечника
+    - text: Повышение суточного потребления жидкости и пищевых волокон (стимулирующих
+        перистальтику, смягчающих стул)
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
+          _14.02.2024_33.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Повышение суточного потребления жидкости и пищевых волокон (стимулирующих
+          перистальтику, смягчающих стул)
+    - text: Контроль гигиены анальной области
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
+          _14.02.2024_33.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Контроль гигиены анальной области
+    - text: Контроль ежедневного стула (при отсутствии самостоятельного стула необходимо
+        выполнение очистительной клизмы)
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
+          _14.02.2024_33.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Контроль ежедневного стула (при отсутствии самостоятельного стула необходимо
+          выполнение очистительной клизмы)
+    - text: Брюшной массаж (для укрепления мышц брюшного пресса и улучшения перистальтики)
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
+          _14.02.2024_33.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Брюшной массаж (для укрепления мышц брюшного пресса и улучшения перистальтики)
+    - text: Физическая активность (спорт) для укрепления мышц, улучшения иннервации,
+        кровообращения и эмоционального состояния
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
+          _14.02.2024_33.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Физическая активность (спорт) для укрепления мышц, улучшения иннервации,
+          кровообращения и эмоционального состояния
+    - text: БОС-терапия (терапия по принципу «биологической обратной связи»)
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
+          _14.02.2024_33.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: БОС-терапия (терапия по принципу «биологической обратной связи»)
     drug_groups: []
     drugs:
-    - drug_name: июля
+    - drug_name: Натрия пикосульфат
       active_substance: null
       drug_group: null
-      dose_text: 2006 г
+      dose_text: 'Капли для приема внутрь 7,5 мг/мл. Пациенты старше 4 лет: разовая
+        доза 5–9 капель (2,5–5 мг пикосульфата натрия), максимальная суточная доза
+        – 9 капель.'
       frequency_text: null
       duration_text: null
       route: null
@@ -315,17 +618,21 @@ conditions:
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
           _14.02.2024_33.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: июля 2006 г
-    - drug_name: ноября
+        quote: натрия пикосульфат, капли для приема внутрь 7,5 мг/мл. Пациенты старше
+          4 лет – разовая доза 5–9 капель (2,5–5 мг пикосульфата), максимальная суточная
+          – 9 капель.
+    - drug_name: Лактулоза
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: 'Сироп 667 мг/мл (принимается при отсутствии непереносимости сахаров;
+        длительность применения до 6 месяцев). До 1 года: начальная доза до 5 мл,
+        поддерживающая до 5 мл. 1–6 лет: начальная 5–10 мл, подде'
       frequency_text: null
       duration_text: null
       route: null
@@ -338,17 +645,21 @@ conditions:
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
           _14.02.2024_33.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "ноября \n1993 г"
-    - drug_name: сироп
+        quote: 'лактулоза, сироп 667 мг/мл. Принимается при отсутствии непереносимости
+          сахаров; длительность до 6 месяцев. Пациенты до 1 года: внутрь начальная
+          доза до 5 мл (до 3 г), поддерживающая – до 5 мл (до 3 г).'
+    - drug_name: Макрогол
       active_substance: null
       drug_group: null
-      dose_text: 667 мг
+      dose_text: 'Порошок для приготовления раствора для приема внутрь в саше или
+        пакетах (продолжительность приема – не более 3 месяцев). От 6 месяцев до 1
+        года: 4 г в день. 1–4 лет: 4–8 г в день. 4–8 лет: 8–16 г в де'
       frequency_text: null
       duration_text: null
       route: null
@@ -361,172 +672,112 @@ conditions:
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
           _14.02.2024_33.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: сироп 667 мг/мл (принимается при отсутствии неперено
-    - drug_name: доза
-      active_substance: null
-      drug_group: null
-      dose_text: 15 мл
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
-          _14.02.2024_33.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "доза 15 мл (10 г лактулозы), поддерживающая \nдоза –"
-    - drug_name: февраля
-      active_substance: null
-      drug_group: null
-      dose_text: 2024 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
-          _14.02.2024_33.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: февраля 2024 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
-          _14.02.2024_33.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
-          _14.02.2024_33.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
+        quote: макрогол, порошок для приготовления раствора для приема внутрь (в саше
+          или пакетах), продолжительность приема – не более 3 месяцев. Пациенты от
+          6 месяцев до 1 года – 4 г в день.
     procedures: []
     surgery: []
     source_refs: []
-  follow_up:
-  - text: контроль
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
-      document_url: null
-      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
-        _14.02.2024_33.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: контроль
-  - text: контроль
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
-      document_url: null
-      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
-        _14.02.2024_33.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: контроль
+  follow_up: []
   hospitalization: []
-  routing: []
-  red_flags: []
+  routing:
+  - text: госпитализация/амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
+        _14.02.2024_33.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация/амбулаторно
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
+        _14.02.2024_33.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  red_flags:
+  - text: Уменьшение потребления клетчатки у пациентов с нарушением функции сфинктерного
+      аппарата аноректальной зоны (гипо-, гипертонус анальных сфинктеров).
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
+        _14.02.2024_33.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Потребление клетчатки у пациентов с нарушением функции сфинктерного аппарата
+        аноректальной зоны (гипо-, гипертонус анальных сфинктеров) уменьшается;
+  - text: Лактулоза принимается при отсутствии непереносимости сахаров.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
+        _14.02.2024_33.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: лактулоза, сироп 667 мг/мл (принимается при отсутствии непереносимости
+        сахаров; длительность применения до 6 месяцев)
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_моторно_эвакуат
-    document_url: null
-    local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_моторно-_эвакуаторными_нарушениями_акта_дефекации_пост_МЗ
-      _14.02.2024_33.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов детское население с моторно эвакуаторными
-      нарушениями акта дефекации
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:28.397344+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T15:58:03.031197+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:28.400945+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[motility_defecation_disorders_pediatric].required_exams[4]
+  validated_at: '2026-07-20T15:58:03.039619+00:00'

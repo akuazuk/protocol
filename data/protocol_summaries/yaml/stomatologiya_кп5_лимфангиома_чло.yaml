@@ -1,9 +1,9 @@
 protocol_id: stomatologiya_кп5_лимфангиома_чло
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: лимфангиома ЧЛО
+  title: Лимфангиома челюстно-лицевой области
   url: null
   local_path: minzdrav_protocols/stomatologiya/КП5_лимфангиома_ЧЛО.pdf
   document_sha256: null
@@ -26,8 +26,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: лимфангиома_чло
-  name: лимфангиома ЧЛО
+- condition_id: limfangioma_chlo
+  name: Лимфангиома челюстно-лицевой области
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -41,76 +41,85 @@ conditions:
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria:
-    required:
-    - text: '[classification] 10. Для постановки или подтверждения диагноза осуществляются:
-        (стр. 4)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: stomatologiya_кп5_лимфангиома_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП5_лимфангиома_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 10. Для постановки или подтверждения диагноза осуществляются:
-          (стр. 4)'
-    - text: образования с определением локализации его, размеров, плотности, четкости
-        границ,
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: stomatologiya_кп5_лимфангиома_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП5_лимфангиома_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: образования с определением локализации его, размеров, плотности, четкости
-          границ,
-    - text: '[diagnostics] 16. Критерии эффективности лечения пациентов с лимфангиомой
-        челюстно-лицевой (стр. 5)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: stomatologiya_кп5_лимфангиома_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП5_лимфангиома_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[diagnostics] 16. Критерии эффективности лечения пациентов с лимфангиомой
-          челюстно-лицевой (стр. 5)'
-    optional: []
-    exclusion: []
-  required_exams: []
+  diagnostic_criteria: null
+  required_exams:
+  - name: Инструментальные диагностические исследования (лучевые методы исследования)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп5_лимфангиома_чло
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП5_лимфангиома_ЧЛО.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: обязательные и дополнительные инструментальные диагностические исследования
+        (лучевые методы исследования), цитологическое исследование пунктата и врачебные
+        консультации врачей-специалистов по профилю сопутствующей патологи проводятся
+        на догоспитальном этапе.
+  - name: Цитологическое исследование пунктата
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп5_лимфангиома_чло
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП5_лимфангиома_ЧЛО.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: обязательные и дополнительные инструментальные диагностические исследования
+        (лучевые методы исследования), цитологическое исследование пунктата и врачебные
+        консультации врачей-специалистов по профилю сопутствующей патологи проводятся
+        на догоспитальном этапе.
+  - name: Врачебные консультации врачей-специалистов по профилю сопутствующей патологии
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп5_лимфангиома_чло
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП5_лимфангиома_ЧЛО.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: обязательные и дополнительные инструментальные диагностические исследования
+        (лучевые методы исследования), цитологическое исследование пунктата и врачебные
+        консультации врачей-специалистов по профилю сопутствующей патологи проводятся
+        на догоспитальном этапе.
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] 1. Настоящий клинический протокол определяет общие требования
-        к объему (стр. 3)'
+    - text: Частичное удаление новообразования с перевязкой питающих сосудов и прошиванием
+        оставшейся части опухоли
       source_ref:
         protocol_id: stomatologiya_кп5_лимфангиома_чло
         document_url: null
@@ -121,9 +130,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 1. Настоящий клинический протокол определяет общие требования
-          к объему (стр. 3)'
-    - text: оказания челюстно-лицевой и стоматологической хирургической помощи пациентам
+        quote: Частичное удаление новообразования с перевязкой питающих сосудов и
+          прошиванием оставшейся части опухоли
+    - text: Поэтапное частичное удаление образования
       source_ref:
         protocol_id: stomatologiya_кп5_лимфангиома_чло
         document_url: null
@@ -134,9 +143,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: оказания челюстно-лицевой и стоматологической хирургической помощи
-          пациентам
-    - text: (взрослое население) с лимфангиомой и мальформациями лимфатических сосудов
+        quote: Поэтапное частичное удаление образования
+    - text: Удаление новообразования с одномоментным устранением послеоперационного
+        дефекта мягких тканей аутотрансплантатом или лоскутом на питающей ножке
       source_ref:
         protocol_id: stomatologiya_кп5_лимфангиома_чло
         document_url: null
@@ -147,54 +156,16 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: (взрослое население) с лимфангиомой и мальформациями лимфатических
-          сосудов
-    - text: челюстно-лицевой области (шифр по Международной статистической классификации
-      source_ref:
-        protocol_id: stomatologiya_кп5_лимфангиома_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП5_лимфангиома_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: челюстно-лицевой области (шифр по Международной статистической классификации
-    - text: болезней и проблем, связанных со здоровьем, десятого пересмотра – D18.1
-        Лимфангиома
-      source_ref:
-        protocol_id: stomatologiya_кп5_лимфангиома_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП5_лимфангиома_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: болезней и проблем, связанных со здоровьем, десятого пересмотра – D18.1
-          Лимфангиома
-    - text: '[treatment] 3. Для лечения пациентов с лимфангиомой челюстно-лицевой
-        области применяют (стр. 3)'
-      source_ref:
-        protocol_id: stomatologiya_кп5_лимфангиома_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП5_лимфангиома_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 3. Для лечения пациентов с лимфангиомой челюстно-лицевой
-          области применяют (стр. 3)'
+        quote: Удаление новообразования с одномоментным устранением послеоперационного
+          дефекта мягких тканей аутотрансплантатом или лоскутом на питающей ножке
     drug_groups: []
     drugs:
-    - drug_name: картриджах
+    - drug_name: Артикаин/Эпинефрин
       active_substance: null
       drug_group: null
-      dose_text: 1,7 мл
+      dose_text: 'Раствор для инъекций (40 мг + 0,005 мг)/мл в картриджах 1,7 мл (1,8
+        мл), в ампулах 2 мл; раствор для инъекций (40 мг + 0,006 мг)/мл в картриджах
+        1,7 мл (в ампулах 2 мл); раствор для инъекций (40 мг + '
       frequency_text: null
       duration_text: null
       route: null
@@ -206,17 +177,21 @@ conditions:
         protocol_id: stomatologiya_кп5_лимфангиома_чло
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП5_лимфангиома_ЧЛО.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "картриджах 1,7 мл \n(1,8 мл), в ампулах 2 мл"
-    - drug_name: инъекций
+        quote: 'Артикаин/Эпинефрин: Местная анестезия (инфильтрационная, проводниковая).
+          Применяется инъекционно в полости рта без воспаления. Максимальная доза
+          для взрослых до 7 мг на 1 кг массы тела за одну процедуру.'
+    - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: 10 мг
+      dose_text: Раствор для инъекций 10 мг/мл в ампулах 5 мл; раствор для инъекций
+        20 мг/мл в ампулах 2 мл. Местная анестезия (инфильтрационная, проводниковая).
+        Режим дозирования устанавливают индивидуально в зависим
       frequency_text: null
       duration_text: null
       route: null
@@ -228,17 +203,21 @@ conditions:
         protocol_id: stomatologiya_кп5_лимфангиома_чло
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП5_лимфангиома_ЧЛО.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "инъекций 10 мг/мл \nв ампулах 5 мл"
-    - drug_name: превышать
+        quote: 'Лидокаин: Местная анестезия (инфильтрационная, проводниковая). Режим
+          дозирования индивидуальный, зависит от вида анестезии, места и размера участка,
+          возраста. Максимальная доза для взрослых 300 мг.'
+    - drug_name: Производные имидазола (группа J01XD)
       active_substance: null
       drug_group: null
-      dose_text: 300 мг
+      dose_text: 'Для достижения быстрого терапевтического эффекта доза может быть
+        увеличена до 400 мг 3 раза в сутки. При достижении лечебного эффекта суточную
+        дозу ЛП уменьшают до 600–800 мг. Утреннюю дозу принимают '
       frequency_text: null
       duration_text: null
       route: null
@@ -250,18 +229,21 @@ conditions:
         protocol_id: stomatologiya_кп5_лимфангиома_чло
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП5_лимфангиома_ЧЛО.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "превышать 300 мг\n  \n  \nПриложение 2 \nк клиническому протоколу\
-          \ \n"
-    - drug_name: применения
+        quote: 'J01XD Производные имидазола: Начальная доза до 400 мг 3 раза в сутки,
+          затем 600–800 мг/сутки. Максимальная суточная доза 1200 мг. Принимать не
+          чаще, чем через 4 ч. Длительность при болевом синдроме 3–5 дней.'
+    - drug_name: Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 0,5 мг
+      dose_text: Раствор для наружного (местного) применения 0,5 мг/мл. Применяется
+        местно для инстилляции и ирригации ран в полости рта и лунок удаленных зубов
+        – 5–10 мл раствора 2–3 раза в сутки.
       frequency_text: null
       duration_text: null
       route: null
@@ -273,112 +255,71 @@ conditions:
         protocol_id: stomatologiya_кп5_лимфангиома_чло
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП5_лимфангиома_ЧЛО.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "применения 0,5 мг/мл \nПрименяется местно для инстилляции "
-    - drug_name: марта
-      active_substance: null
-      drug_group: null
-      dose_text: 2026 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп5_лимфангиома_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП5_лимфангиома_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: марта 2026 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп5_лимфангиома_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП5_лимфангиома_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июня 1993 г
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп5_лимфангиома_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП5_лимфангиома_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "октября \n2011 г"
+        quote: 'Хлоргексидин: Раствор для наружного (местного) применения 0,5 мг/мл.
+          Применяется местно для инстилляции и ирригации ран в полости рта и лунок
+          удаленных зубов – 5–10 мл раствора 2–3 раза в сутки.'
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Медицинское наблюдение у врача-стоматолога-хирурга территориальной амбулаторно-поликлинической
+      организации здравоохранения с периодичностью 1 раз в 6 месяцев в течение 2 лет.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп5_лимфангиома_чло
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП5_лимфангиома_ЧЛО.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение у врача-стоматолога-хирурга территориальной амбулаторно-поликлинической
+        организации здравоохранения с периодичностью 1 раз в 6 месяцев в течение 2
+        лет.
   hospitalization: []
-  routing: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_кп5_лимфангиома_чло
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП5_лимфангиома_ЧЛО.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_кп5_лимфангиома_чло
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/КП5_лимфангиома_ЧЛО.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: лимфангиома ЧЛО
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:49.516618+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T18:24:56.827843+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:49.519947+00:00'
+  validated_at: '2026-07-20T18:24:56.833405+00:00'

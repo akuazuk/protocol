@@ -1,10 +1,9 @@
 protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: пост. МЗ РБ от 23.12.2025 №206 КП стриктуры уретры у мужчин (взрослые) офиц.
-    опубликование
+  title: Стриктуры уретры у мужчин
   url: null
   local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
   document_sha256: null
@@ -27,8 +26,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры
-  name: пост. МЗ РБ от 23.12.2025 №206 КП стриктуры уретры у мужчин
+- condition_id: urethral_stricture
+  name: Стриктура уретры
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -37,20 +36,12 @@ conditions:
   - N35.8
   - N35.9
   - N99.1
-  - C90.0
-  - D68.5
-  - I21.9
-  - I50.9
-  - I64
-  - J44.9
-  - J45.9
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[criteria] 10. Диагностическими критериями стриктуры уретры являются
-        наличие: (стр. 4)'
+    - text: наличие обструктивных симптомов нижних мочевых путей
       logic_group: null
       operator: unknown
       values: []
@@ -67,10 +58,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[criteria] 10. Диагностическими критериями стриктуры уретры являются
-          наличие: (стр. 4)'
-    - text: '[diagnostics] 26. Критерии оценки эффективности лечения пациентов со
-        стриктурой уретры: (стр. 8)'
+        quote: наличие обструктивных симптомов нижних мочевых путей
+    - text: характерный график мочеиспускания по данным урофлоуметрии
       logic_group: null
       operator: unknown
       values: []
@@ -87,12 +76,31 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 26. Критерии оценки эффективности лечения пациентов
-          со стриктурой уретры: (стр. 8)'
+        quote: характерный график мочеиспускания по данным урофлоуметрии
+    - text: сужение уретры по данным рентгенологических методов исследования (уретрограммы)
+        или уретроцистоскопии
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: сужение уретры по данным рентгенологических методов исследования (уретрограммы)
+          или уретроцистоскопии
     optional: []
     exclusion: []
   required_exams:
-  - name: УЗИ
+  - name: Общий анализ крови
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -106,19 +114,327 @@ conditions:
       protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
       document_url: null
       local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
-      page_start: null
+      page_start: 4
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "тоды исследования: \nуретроцистоскопия; \nУЗИ уретры; \nкомпьютерная\
-        \ томография или магнитно-резонансная томография органов ма"
-  conditional_exams: []
+      quote: 'Обязательные ... лабораторные методы исследования: общий анализ крови;'
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательные ... лабораторные методы исследования: ... общий анализ
+        мочи;'
+  - name: Биохимический анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательные ... биохимический анализ крови: исследование уровня глюкозы,
+        общего белка, общего билирубина, мочевины, креатинина, аланинаминотрансферазы,
+        аспартатаминотрансферазы, электролитов (калия, натрия, хлора);'
+  - name: Простатспецифический антиген (общий)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обязательные ... простатспецифический антиген (общий) – у пациентов 45
+        лет и старше, при отягощенном наследственном онкоанамнезе ... – у пациентов
+        старше 40 лет;
+  conditional_exams:
+  - name: Бактериологический посев мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительные диагностические исследования ...: бактериологический
+        посев мочи на наличие микрофлоры и чувствительность к антибактериальным ЛП;'
+  - name: Уретроцистоскопия
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительные диагностические исследования ...: ... уретроцистоскопия;'
+  - name: УЗИ уретры
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительные диагностические исследования ...: ... УЗИ уретры;'
+  - name: Компьютерная томография или магнитно-резонансная томография органов малого
+      таза
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительные диагностические исследования ...: ... КТ или МРТ органов
+        малого таза (при травматическом анамнезе стриктуры уретры);'
+  - name: Обзорная урография
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительные диагностические исследования ...: ... обзорная урография;'
+  - name: Экскреторная урография
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительные диагностические исследования ...: ... экскреторная урография;'
+  - name: Микционная (антеградная) цистоуретрография
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительные диагностические исследования ...: ... микционная (антеградная)
+        цистоуретрография;'
+  - name: Фистулография
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительные диагностические исследования ...: ... фистулография (при
+        наличии свища);'
+  - name: Комплексное уродинамическое исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительные диагностические исследования ...: ... комплексное уродинамическое
+        исследование.'
+  - name: Консультация врача-уролога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Консультации врачей-специалистов: врача-уролога, врача общей практики
+        (врача-терапевта, врача-кардиолога и иных в зависимости от наличия сопутствующей
+        патологии) при направлении пациентов на плановое хирургическое лечение.'
+  - name: Консультация врача общей практики (терапевта, кардиолога и иных)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Консультации врачей-специалистов: врача-уролога, врача общей практики
+        (врача-терапевта, врача-кардиолога и иных в зависимости от наличия сопутствующей
+        патологии) при направлении пациентов на плановое хирургическое лечение.'
   treatment:
     non_drug:
-    - text: '[treatment] 5. Фармакотерапия стриктуры уретры назначается в соответствии
-        с настоящим (стр. 2)'
+    - text: Поведенческая терапия (коррекция объема выпиваемой жидкости и питьевого
+        режима, режима опорожнения мочевого пузыря)
       source_ref:
         protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
         document_url: null
@@ -129,9 +445,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 5. Фармакотерапия стриктуры уретры назначается в соответствии
-          с настоящим (стр. 2)'
-    - text: клиническим протоколом с учетом формы, характера течения и фазы заболевания,
+        quote: Поведенческая терапия (коррекция объема выпиваемой жидкости и питьевого
+          режима, режима опорожнения мочевого пузыря)
+    - text: Динамическое наблюдение (при противопоказаниях к хирургическому лечению)
       source_ref:
         protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
         document_url: null
@@ -142,8 +458,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: клиническим протоколом с учетом формы, характера течения и фазы заболевания,
-    - text: лекарственных препаратов (далее – ЛП). При этом необходимо учитывать наличие
+        quote: Динамическое наблюдение (при противопоказаниях к хирургическому лечению)
+    - text: Бужирование уретры
       source_ref:
         protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
         document_url: null
@@ -154,10 +470,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: лекарственных препаратов (далее – ЛП). При этом необходимо учитывать
-          наличие
-    - text: Национальный правовой Интернет-портал Республики Беларусь, 11.03.2026,
-        11-3/44651
+        quote: Бужирование уретры
+    - text: Внутренняя оптическая уретротомия (ВОУ)
       source_ref:
         protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
         document_url: null
@@ -168,9 +482,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Национальный правовой Интернет-портал Республики Беларусь, 11.03.2026,
-          11-3/44651
-    - text: '[treatment] 9. Классификация стриктур уретры: (стр. 3)'
+        quote: Внутренняя оптическая уретротомия (ВОУ)
+    - text: Анастомотическая уретропластика
       source_ref:
         protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
         document_url: null
@@ -181,8 +494,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 9. Классификация стриктур уретры: (стр. 3)'
-    - text: 'ятрогенные: «посткатетерные», послеоперационные, постлучевые, «химические»'
+        quote: Анастомотическая уретропластика
+    - text: Аугментационная уретропластика
       source_ref:
         protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
         document_url: null
@@ -193,13 +506,50 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'ятрогенные: «посткатетерные», послеоперационные, постлучевые, «химические»'
+        quote: Аугментационная уретропластика
+    - text: Заместительная многоэтапная уретропластика
+      source_ref:
+        protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Заместительная многоэтапная уретропластика
+    - text: Перинеостома (промежностная уретростома)
+      source_ref:
+        protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Перинеостома (промежностная уретростома)
+    - text: Цистостомия
+      source_ref:
+        protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Цистостомия
     drug_groups: []
     drugs:
-    - drug_name: капсулы
+    - drug_name: Нефракционный гепарин
       active_substance: null
       drug_group: null
-      dose_text: 4 мг
+      dose_text: 'Умеренный риск ВТЭО: Подкожно 5000 МЕ за 2–4 часа до хирургического
+        вмешательства, затем через 6–8 часов после и далее 5000 МЕ 2–3 раза в сутки.'
       frequency_text: null
       duration_text: null
       route: null
@@ -211,17 +561,21 @@ conditions:
         protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
         document_url: null
         local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
-        page_start: null
+        page_start: 16
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: капсулы 4 мг, 8 мг) по 4 мг 1 раз в сутки) в течение
-    - drug_name: декабря
+        quote: Подкожно 5000 МЕ за 2–4 часа до хирургического вмешательства, затем
+          через 6–8 часов после хирургического вмешательства и далее 5000 МЕ 2–3 раза
+          в сутки
+    - drug_name: Нефракционный гепарин
       active_substance: null
       drug_group: null
-      dose_text: 2025 г
+      dose_text: 'Высокий и очень высокий риск ВТЭО: Подкожно 5000 МЕ за 4–6 часов
+        до хирургического вмешательства, 5000 МЕ через 6–8 часов после, далее – по
+        5000 МЕ 3 раза в сутки.'
       frequency_text: null
       duration_text: null
       route: null
@@ -233,17 +587,20 @@ conditions:
         protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
         document_url: null
         local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
-        page_start: null
+        page_start: 16
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: декабря 2025 г
-    - drug_name: июня
+        quote: Подкожно 5000 МЕ за 4–6 часов до хирургического вмешательства, 5000
+          МЕ через 6–8 часов после хирургического вмешательства, далее – по 5000 МЕ
+          3 раза в сутки
+    - drug_name: Далтепарин натрия
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: 'Умеренный риск ВТЭО: Подкожно 2500 МЕ за 2 часа до хирургического
+        вмешательства, в последующие дни 2500 МЕ 1 раз в сутки.'
       frequency_text: null
       duration_text: null
       route: null
@@ -255,17 +612,20 @@ conditions:
         protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
         document_url: null
         local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
-        page_start: null
+        page_start: 16
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: июня 1993 г
-    - drug_name: октября
+        quote: Подкожно 2500 МЕ за 2 часа до хирургического вмешательства, в последующие
+          дни 2500 МЕ 1 раз в сутки
+    - drug_name: Далтепарин натрия
       active_substance: null
       drug_group: null
-      dose_text: 2011 г
+      dose_text: 'Высокий и очень высокий риск ВТЭО: Подкожно 5000 МЕ вечером накануне
+        хирургического вмешательства, затем 5000 МЕ 1 раз в сутки или подкожно 2500
+        МЕ за 2 часа до вмешательства, затем 2500 МЕ через 12 ч'
       frequency_text: null
       duration_text: null
       route: null
@@ -277,17 +637,21 @@ conditions:
         protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
         document_url: null
         local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
-        page_start: null
+        page_start: 16
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: октября 2011 г
-    - drug_name: введением
+        quote: Подкожно 5000 МЕ вечером накануне хирургического вмешательства, затем
+          5000 МЕ 1 раз в сутки или подкожно 2500 МЕ за 2 часа до хирургического вмешательства,
+          затем 2500 МЕ через 12 часов (но не ранее, чем через 4 часа после окончания
+          хирургического вмешательства), затем со следующего дня 5000 МЕ 1 раз в сутки
+    - drug_name: Надропарин кальция
       active_substance: null
       drug_group: null
-      dose_text: 100 мл
+      dose_text: 'Умеренный риск ВТЭО: Подкожно 2850 МЕ (0,3 мл) за 2–4 часа до хирургического
+        вмешательства, в последующие дни по 0,3 мл 1 раз в сутки.'
       frequency_text: null
       duration_text: null
       route: null
@@ -299,18 +663,224 @@ conditions:
         protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
         document_url: null
         local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
-        page_start: null
+        page_start: 17
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: введением 100 мл 0,9 % раствора NaCl в наружное отверстие
+        quote: Подкожно 2850 МЕ (0,3 мл) за 2–4 часа до хирургического вмешательства,
+          в последующие дни по 0,3 мл 1 раз в сутки
+    - drug_name: Надропарин кальция
+      active_substance: null
+      drug_group: null
+      dose_text: 'Высокий и очень высокий риск ВТЭО (масса тела менее 50 кг): доза
+        ЛП, вводимого за 12 часов до и через 12 часов после хирургического вмешательства,
+        далее – 1 раз в сутки до третьего дня после хирургиче'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+        page_start: 17
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'У пациентов с массой тела менее 50 кг: доза ЛП, вводимого за 12 часов
+          до и через 12 часов после хирургического вмешательства, далее – 1 раз в
+          сутки до третьего дня после хирургического вмешательства составляет 1900
+          МЕ (0,2 мл); доза ЛП, вводимого 1 раз в сутки, начиная с четвертого дня
+          после хирургического вмешательства составляет 2850 МЕ (0,3 мл)'
+    - drug_name: Надропарин кальция
+      active_substance: null
+      drug_group: null
+      dose_text: 'Высокий и очень высокий риск ВТЭО (масса тела 51–70 кг): доза ЛП,
+        вводимого за 12 часов до и через 12 часов после хирургического вмешательства,
+        далее – 1 раз в сутки до третьего дня после хирургическо'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+        page_start: 17
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'У пациентов с массой тела 51–70 кг: доза ЛП, вводимого за 12 часов
+          до и через 12 часов после хирургического вмешательства, далее – 1 раз в
+          сутки до третьего дня после хирургического вмешательства составляет 2850
+          МЕ (0,3 мл); доза ЛП, вводимого 1 раз в сутки, начиная с четвертого дня
+          после хирургического вмешательства составляет 3800 МЕ (0,4 мл)'
+    - drug_name: Надропарин кальция
+      active_substance: null
+      drug_group: null
+      dose_text: 'Высокий и очень высокий риск ВТЭО (масса тела более 70 кг): доза
+        ЛП, вводимого за 12 часов до и через 12 часов после хирургического вмешательства,
+        далее 1 раз в сутки до третьего дня после хирургическ'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+        page_start: 17
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'У пациентов с массой тела более 70 кг: доза ЛП, вводимого за 12 часов
+          до и через 12 часов после хирургического вмешательства, далее 1 раз в сутки
+          до третьего дня после хирургического вмешательства составляет 3800 МЕ (0,4
+          мл); доза ЛП, вводимого 1 раз в сутки, начиная с четвертого дня после хирургического
+          вмешательства составляет 5700 МЕ (0,6 мл)'
+    - drug_name: Эноксапарин натрия
+      active_substance: null
+      drug_group: null
+      dose_text: 'Умеренный риск ВТЭО: Подкожно 20 мг за 2 часа до хирургического
+        вмешательства, в последующие дни 20 мг 1 раз в сутки.'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+        page_start: 17
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Подкожно 20 мг за 2 часа до хирургического вмешательства, в последующие
+          дни 20 мг 1 раз в сутки
+    - drug_name: Эноксапарин натрия
+      active_substance: null
+      drug_group: null
+      dose_text: 'Высокий и очень высокий риск ВТЭО: Подкожно 40 мг за 12 часов до
+        хирургического вмешательства, затем 40 мг 1 раз в сутки после хирургического
+        вмешательства.'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+        page_start: 17
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Подкожно 40 мг за 12 часов до хирургического вмешательства, затем 40
+          мг 1 раз в сутки после хирургического вмешательства
+    - drug_name: Фондапаринукс натрия
+      active_substance: null
+      drug_group: null
+      dose_text: 'Умеренный, высокий и очень высокий риск ВТЭО: Подкожно 2,5 мг не
+        ранее, чем через 6 часов после хирургического вмешательства, в последующие
+        дни 2,5 мг 1 раз в сутки.'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+        page_start: 17
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Подкожно 2,5 мг не ранее, чем через 6 часов после хирургического вмешательства,
+          в последующие дни 2,5 мг 1 раз в сутки
+    - drug_name: Тамсулозин
+      active_substance: null
+      drug_group: null
+      dose_text: 0,4 мг 1 раз в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: тамсулозин (капсулы с модифицированным высвобождением, таблетки с контролируемым
+          высвобождением, покрытые оболочкой, капсулы пролонгированного действия,
+          таблетки пролонгированного действия) по 0,4 мг 1 раз в сутки
+    - drug_name: Силодозин
+      active_substance: null
+      drug_group: null
+      dose_text: 4 мг 1 раз в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: силодозин (капсулы 4 мг, 8 мг) по 4 мг 1 раз в сутки) в течение длительного
+          времени, возможно назначение ЛП на постоянной основе.
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: контроль
+  - text: Оценка количества баллов по шкале IPSS (согласно приложению 1)
     timing: null
     required_if: []
     expected_actions: []
@@ -324,8 +894,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
-  - text: контроль
+      quote: Оценка количества баллов по шкале IPSS (согласно приложению 1)
+  - text: Оценка количества баллов по шкале PROM-USS (согласно приложению 2)
     timing: null
     required_if: []
     expected_actions: []
@@ -339,8 +909,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
-  - text: контроль
+      quote: Оценка количества баллов по шкале PROM-USS (согласно приложению 2)
+  - text: Измерение остаточной мочи
     timing: null
     required_if: []
     expected_actions: []
@@ -354,8 +924,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
-  - text: контроль
+      quote: Измерение остаточной мочи
+  - text: Оценка показателей урофлоуметрии
     timing: null
     required_if: []
     expected_actions: []
@@ -369,8 +939,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
-  - text: динамическое наблюден
+      quote: Оценка показателей урофлоуметрии
+  - text: Финальный этап заместительной многоэтапной уретропластики проводят не ранее
+      трех месяцев после предыдущего этапа.
     timing: null
     required_if: []
     expected_actions: []
@@ -384,11 +955,28 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: динамическое наблюден
+      quote: Финальный этап заместительной многоэтапной уретропластики проводят не
+        ранее трех месяцев после предыдущего этапа.
+  - text: Коррекция уретральной площадки при контрактуре после первого этапа заместительной
+      многоэтапной уретропластики перед финальным этапом.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Коррекция уретральной площадки при контрактуре после первого этапа заместительной
+        многоэтапной уретропластики перед финальным этапом.
   hospitalization: []
   routing:
-  - text: '[routing] 4. Направление пациентов со стриктурой уретры для оказания медицинской
-      помощи (стр. 2)'
+  - text: амбулаторно
     timing: null
     required_if: []
     source_ref:
@@ -401,10 +989,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 4. Направление пациентов со стриктурой уретры для оказания
-        медицинской помощи (стр. 2)'
-  - text: почек и мочевого пузыря, урофлоуметрии в амбулаторных условиях зависит от
-      симптомов
+      quote: амбулаторно
+  - text: госпитализация
     timing: null
     required_if: []
     source_ref:
@@ -417,36 +1003,137 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: почек и мочевого пузыря, урофлоуметрии в амбулаторных условиях зависит
-        от симптомов
-  red_flags: []
+      quote: госпитализация
+  - text: госпитализация/амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация/амбулаторно
+  - text: направление пациентов со стриктурой уретры для оказания медицинской помощи
+      в стационарных условиях
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: направление пациентов со стриктурой уретры для оказания медицинской помощи
+        в стационарных условиях
+  red_flags:
+  - text: Уретроррагия и инфекция нижних мочевых путей в стадии обострения
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Уретроррагия и инфекция нижних мочевых путей в стадии обострения являются
+        медицинскими противопоказаниями к выполнению бужирования уретры
+  - text: Не рекомендуется выполнять повторную ВОУ при рецидивных стриктурах уретры
+      после 2 неуспешных попыток
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Не рекомендуется выполнять повторную ВОУ при рецидивных стриктурах уретры
+        после 2 неуспешных попыток ранее выполненной ВОУ
+  - text: Не рекомендуется выполнять анастомотическую уретропластику при стриктурах
+      пенильного отдела уретры любой протяженности (риск укорочения и деформации полового
+      члена)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Не рекомендуется выполнять анастомотическую уретропластику при стриктурах
+        пенильного отдела уретры любой протяженности в связи с потенциальным риском
+        формирования укорочения и деформации полового члена.
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: urologiya_пост_мз_рб_от_23_12_2025_206_кп_стриктуры_уретры_у_мужчин_взрослые_офи
-    document_url: null
-    local_path: minzdrav_protocols/urologiya/пост._МЗ_РБ_от_23.12.2025_№206_КП_стриктуры_уретры_у_мужчин_(взрослые)_офиц._опубликование.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: пост. МЗ РБ от 23.12.2025 №206 КП стриктуры уретры у мужчин (взрослые)
-      офиц. опубликование
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:57.014291+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T19:05:06.405991+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:57.018238+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urethral_stricture].treatment.drugs[1]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urethral_stricture].treatment.drugs[3]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urethral_stricture].treatment.drugs[5]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urethral_stricture].treatment.drugs[6]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urethral_stricture].treatment.drugs[7]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urethral_stricture].treatment.drugs[9]
+  validated_at: '2026-07-20T19:05:06.423523+00:00'

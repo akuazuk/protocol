@@ -1,10 +1,10 @@
 {
   "protocol_id": "stomatologiya_кп16_открытая_рана_чло",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "открытая рана ЧЛО",
+    "title": "Открытая рана ЧЛО",
     "url": null,
     "local_path": "minzdrav_protocols/stomatologiya/КП16_открытая_рана_ЧЛО.pdf",
     "document_sha256": null,
@@ -32,14 +32,16 @@
   },
   "conditions": [
     {
-      "condition_id": "открытая_рана_чло",
-      "name": "открытая рана ЧЛО",
+      "condition_id": "open_wound_chlo",
+      "name": "Открытая рана челюстно-лицевой области",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
         "S01.4",
         "S01.5",
         "S01.7",
+        "B24",
+        "C90.0",
         "K01.1",
         "K04.5",
         "K04.7",
@@ -54,7 +56,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[classification] 13. Для постановки или подтверждения диагноза осуществляются: (стр. 4)",
+            "text": "Дифференциальная диагностика открытых ран челюстно-лицевой области с ушибами и травматическими повреждениями костей лицевого скелета.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -71,49 +73,7 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 13. Для постановки или подтверждения диагноза осуществляются: (стр. 4)"
-            }
-          },
-          {
-            "text": "[diagnostics] 19. Критерии эффективности лечения пациентов с открытой раной челюстно- (стр. 5)",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп16_открытая_рана_чло",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП16_открытая_рана_ЧЛО.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[diagnostics] 19. Критерии эффективности лечения пациентов с открытой раной челюстно- (стр. 5)"
-            }
-          },
-          {
-            "text": "[diagnostics] 20. Критерии для выписки пациента из стационара при лечении открытой раной (стр. 5)",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп16_открытая_рана_чло",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП16_открытая_рана_ЧЛО.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[diagnostics] 20. Критерии для выписки пациента из стационара при лечении открытой раной (стр. 5)"
+              "quote": "Дифференциальная диагностика открытых ран челюстно-лицевой области с ушибами и травматическими повреждениями костей лицевого скелета."
             }
           }
         ],
@@ -125,7 +85,7 @@
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 1. Настоящий клинический протокол определяет общие требования к объему (стр. 3)",
+            "text": "Первичная хирургическая обработка раны челюстно-лицевой области (ревизия, удаление инородных тел/сгустков крови, гемостаз, послойное зашивание).",
             "source_ref": {
               "protocol_id": "stomatologiya_кп16_открытая_рана_чло",
               "document_url": null,
@@ -136,11 +96,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 1. Настоящий клинический протокол определяет общие требования к объему (стр. 3)"
+              "quote": "Первичная хирургическая обработка раны челюстно-лицевой области (ревизия, удаление инородных тел/сгустков крови, гемостаз, послойное зашивание)."
             }
           },
           {
-            "text": "оказания челюстно-лицевой и стоматологической хирургической медицинской помощи",
+            "text": "Дренирование глубокой раны резиновым или трубчатым дренажом (при проникающем характере раны).",
             "source_ref": {
               "protocol_id": "stomatologiya_кп16_открытая_рана_чло",
               "document_url": null,
@@ -151,11 +111,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "оказания челюстно-лицевой и стоматологической хирургической медицинской помощи"
+              "quote": "Дренирование глубокой раны резиновым или трубчатым дренажом (при проникающем характере раны)."
             }
           },
           {
-            "text": "по Международной статистической классификации болезней и проблем, связанных",
+            "text": "Профилактика столбняка, анаэробной инфекции, антирабической инфекции.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп16_открытая_рана_чло",
               "document_url": null,
@@ -166,11 +126,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "по Международной статистической классификации болезней и проблем, связанных"
+              "quote": "Профилактика столбняка, анаэробной инфекции, антирабической инфекции."
             }
           },
           {
-            "text": "S01.7 Множественные открытые раны головы).",
+            "text": "Микрохирургическая нейропластика (при повреждении ветвей лицевого нерва, при наличии технической возможности).",
             "source_ref": {
               "protocol_id": "stomatologiya_кп16_открытая_рана_чло",
               "document_url": null,
@@ -181,11 +141,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "S01.7 Множественные открытые раны головы)."
+              "quote": "Микрохирургическая нейропластика (при повреждении ветвей лицевого нерва, при наличии технической возможности)."
             }
           },
           {
-            "text": "[treatment] 3. Для лечения открытой раны челюстно-лицевой области применяют базовые схемы (стр. 3)",
+            "text": "Восстановление анатомической целостности протока или создание сиалодохостомы с ушиванием капсулы слюнной железы (при повреждении капсулы/выводного протока больших слюнных желез).",
             "source_ref": {
               "protocol_id": "stomatologiya_кп16_открытая_рана_чло",
               "document_url": null,
@@ -196,32 +156,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 3. Для лечения открытой раны челюстно-лицевой области применяют базовые схемы (стр. 3)"
-            }
-          },
-          {
-            "text": "лекарственных препаратов (далее – ЛП).",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп16_открытая_рана_чло",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП16_открытая_рана_ЧЛО.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "лекарственных препаратов (далее – ЛП)."
+              "quote": "Восстановление анатомической целостности протока или создание сиалодохостомы с ушиванием капсулы слюнной железы (при повреждении капсулы/выводного протока больших слюнных желез)."
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "картриджах",
+            "drug_name": "Артикаин/Эпинефрин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1,7 мл",
+            "dose_text": "Раствор для инъекций (40 мг + 0,005 мг)/мл, (40 мг + 0,006 мг)/мл, (40 мг + 0,010 мг)/мл, (40 мг + 0,012 мг)/мл. Доза до 7 мг на 1 кг массы тела. Вводить в ткани, где отсутствует воспаление.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -233,20 +178,20 @@
               "protocol_id": "stomatologiya_кп16_открытая_рана_чло",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП16_открытая_рана_ЧЛО.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "картриджах 1,7 мл \n(1,8 мл), в ампулах 2 мл"
+              "quote": "ЛП предназначен для инъекционного применения в полости рта и может вводиться только в ткани, где отсутствует воспаление."
             }
           },
           {
-            "drug_name": "инъекций",
+            "drug_name": "Лидокаин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "10 мг",
+            "dose_text": "Раствор для инъекций 10 мг/мл, 20 мг/мл. Режим дозирования индивидуальный. Максимальная доза для взрослых не должна превышать 300 мг.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -258,20 +203,20 @@
               "protocol_id": "stomatologiya_кп16_открытая_рана_чло",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП16_открытая_рана_ЧЛО.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "инъекций 10 мг/мл \nв ампулах 5 мл"
+              "quote": "Режим дозирования устанавливают индивидуально в зависимости от вида анестезии и места введения, размера анестезируемого участка, возраста пациента."
             }
           },
           {
-            "drug_name": "превышать",
+            "drug_name": "Глюкоза",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "300 мг",
+            "dose_text": "Раствор для инфузий 50 мг/мл, 10 мг/мл. Внутривенно капельно по 400 мл раствора 5 % или 10 % (с добавлением инсулина 1 МЕ на 4 г глюкозы) 1–2 раза в сутки, до купирования симптомов интоксикации.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -283,20 +228,20 @@
               "protocol_id": "stomatologiya_кп16_открытая_рана_чло",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП16_открытая_рана_ЧЛО.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "превышать 300 мг \n  \n  \nПриложение 2 \nк клиническому протоколу \n"
+              "quote": "При дезинтоксикационной терапии внутривенно капельно по 400 мл раствора 5 % или 10 % (с добавлением в раствор инсулина простого из расчета 1 МЕ на 4 г глюкозы)."
             }
           },
           {
-            "drug_name": "дозирования",
+            "drug_name": "Нимесулид",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1 Г",
+            "dose_text": "Таблетки 100 мг; порошок/гранулы 100 мг. Внутрь после еды по 100 мг 2 раза в сутки. Для быстрого эффекта доза до 400 мг 3 раза в сутки. Максимальная суточная доза – 1200 мг. Длительность 3–5 дней.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -308,20 +253,20 @@
               "protocol_id": "stomatologiya_кп16_открытая_рана_чло",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП16_открытая_рана_ЧЛО.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "дозирования \n1 Глюкоза \nРаствор для инфузий \n(для внутри"
+              "quote": "Внутрь после еды по 100 мг 2 раза в сутки. Для достижения быстрого терапевтического эффекта доза может быть увеличена до 400 мг 3 раза в сутки."
             }
           },
           {
-            "drug_name": "Таблетки",
+            "drug_name": "Дексаметазон",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "100 мг",
+            "dose_text": "Раствор для инъекций 4 мг/мл в ампулах 1 мл. Режим дозирования индивидуальный.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -333,88 +278,13 @@
               "protocol_id": "stomatologiya_кп16_открытая_рана_чло",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП16_открытая_рана_ЧЛО.pdf",
-              "page_start": null,
+              "page_start": 8,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Таблетки 100 мг"
-            }
-          },
-          {
-            "drug_name": "марта",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2026 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп16_открытая_рана_чло",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП16_открытая_рана_ЧЛО.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "марта 2026 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп16_открытая_рана_чло",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП16_открытая_рана_ЧЛО.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня 1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп16_открытая_рана_чло",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП16_открытая_рана_ЧЛО.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября \n2011 г"
+              "quote": "Кортикостероидные ЛП для системного действия для уменьшения отека тканей."
             }
           }
         ],
@@ -422,45 +292,104 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
+      "follow_up": [
+        {
+          "text": "Медицинское наблюдение у врача-стоматолога-хирурга в амбулаторных условиях 1 раз в 3 месяца в течение 6 месяцев. В дальнейшем медицинское наблюдение не требуется.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп16_открытая_рана_чло",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП16_открытая_рана_ЧЛО.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинское наблюдение у врача-стоматолога-хирурга в амбулаторных условиях 1 раз в 3 месяца в течение 6 месяцев. В дальнейшем медицинское наблюдение не требуется."
+          }
+        }
+      ],
       "hospitalization": [],
-      "routing": [],
+      "routing": [
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп16_открытая_рана_чло",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП16_открытая_рана_ЧЛО.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        },
+        {
+          "text": "Стационарные условия (для пациентов с ранами челюстно-лицевой области).",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп16_открытая_рана_чло",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП16_открытая_рана_ЧЛО.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Стационарные условия (для пациентов с ранами челюстно-лицевой области)."
+          }
+        },
+        {
+          "text": "Амбулаторные условия (для пациентов с поверхностными ранами челюстно-лицевой до 2 см длиной).",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп16_открытая_рана_чло",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП16_открытая_рана_ЧЛО.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Амбулаторные условия (для пациентов с поверхностными ранами челюстно-лицевой до 2 см длиной)."
+          }
+        }
+      ],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "stomatologiya_кп16_открытая_рана_чло",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/stomatologiya/КП16_открытая_рана_ЧЛО.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "открытая рана ЧЛО"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:48.916296+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T18:22:16.939017+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:48.920547+00:00"
+    "validated_at": "2026-07-20T18:22:16.944347+00:00"
   }
 }

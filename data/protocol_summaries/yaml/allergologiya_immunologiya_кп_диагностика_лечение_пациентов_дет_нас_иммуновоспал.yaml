@@ -1,27 +1,24 @@
 protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-summary_version: '1.0'
-extraction_status: auto_extracted
-review_status: not_reviewed
+summary_version: '2.0'
+extraction_status: llm_extracted
+review_status: needs_review
 source:
-  title: КП Диагностика лечение пациентов дет нас иммуновоспалительными ревматическими
-    заболеваниями пост МЗ 2024 167
-  url: https://minzdrav.gov.by/upload/dadvfiles/CProtokol/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+  title: Диагностика и лечение иммуновоспалительных ревматических заболеваний у детей
+  url: null
   local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-  document_sha256: acb1eebaec32593286b81f4459b4303a25579af88f07b3aa96d1862291934a2e
-  approval_date: '2024-01-01'
-  approval_number: '167'
+  document_sha256: null
+  approval_date: null
+  approval_number: null
   valid_from: null
   valid_to: null
-  document_year: 2024
+  document_year: null
   pages_total: null
 rubric:
-  name: Аллергология и иммунология
+  name: Allergologiya-Immunologiya
   slug: allergologiya-immunologiya
-  specialty_slugs:
-  - allergologiya-immunologiya
+  specialty_slugs: []
 applicability:
   population:
-  - adult
   - child
   age_min_years: null
   age_max_years: null
@@ -29,46 +26,21 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: b19_клинический_протокол_устанавливает_общие_требования_
-  name: клинический протокол устанавливает общие требования к объему
+- condition_id: juvenile_dermatomyositis
+  name: Ювенильный дерматомиозит
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B19
+  - M33.0
   condition_applicability: null
   diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к объему (МКБ B19)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 25
-        page_end: 26
-        section_title: перед назначением/коррекцией противоревматической терапии с
-          целью исключения
-        section_type: criteria_block
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к объему
-    optional: []
-    exclusion: []
+  clinical_criteria: null
   diagnostic_criteria: null
   required_exams:
-  - name: ЭКГ
+  - name: Клиническое обследование пациента (жалобы, анамнез, объективное обследование)
     aliases: []
-    exam_type: laboratory
-    requirement_level: recommended
+    exam_type: unknown
+    requirement_level: required
     accepted_statuses:
     - performed
     - recommended
@@ -79,18 +51,19 @@ conditions:
       protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
       document_url: null
       local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-      page_start: 25
-      page_end: 26
-      section_title: перед назначением/коррекцией противоревматической терапии с целью
-        исключения
-      section_type: criteria_block
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
       table_index: null
       row_index: null
-      quote: ЭКГ
-  - name: МРТ
+      quote: клиническое обследование пациента (жалобы, анамнез заболевания, анамнез
+        жизни, генеалогический анамнез, объективное обследование)
+  - name: Общий клинический анализ крови (ОАК) с исследованием скорости оседания эритроцитов
+      (СОЭ) (амбулаторно)
     aliases: []
-    exam_type: instrumental
-    requirement_level: recommended
+    exam_type: unknown
+    requirement_level: required
     accepted_statuses:
     - performed
     - recommended
@@ -101,18 +74,21 @@ conditions:
       protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
       document_url: null
       local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-      page_start: 25
-      page_end: 26
-      section_title: перед назначением/коррекцией противоревматической терапии с целью
-        исключения
-      section_type: criteria_block
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
       table_index: null
       row_index: null
-      quote: МРТ
-  - name: ЭГДС
+      quote: ОАК с СОЭ – при установлении диагноза, при изменении характера течения
+        заболевания, перед каждым снижением дозы ГК, перед назначением ЛП патогенетической
+        терапии и после их применения, при мониторинге безопасности
+  - name: Биохимический анализ крови (БАК) с исследованием уровней АЛТ, АСТ, ЛДГ,
+      КФК, общего билирубина, мочевины, креатинина, глюкозы, общего белка, С-реактивного
+      белка (СРБ) (амбулаторно)
     aliases: []
-    exam_type: instrumental
-    requirement_level: recommended
+    exam_type: unknown
+    requirement_level: required
     accepted_statuses:
     - performed
     - recommended
@@ -123,18 +99,20 @@ conditions:
       protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
       document_url: null
       local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-      page_start: 25
-      page_end: 26
-      section_title: перед назначением/коррекцией противоревматической терапии с целью
-        исключения
-      section_type: criteria_block
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
       table_index: null
       row_index: null
-      quote: ЭГДС
-  - name: УЗИ
+      quote: БАК с уровнями АЛТ, АСТ, ЛДГ, КФК, билирубина, мочевины, креатинина,
+        глюкозы, белка, СРБ – при установлении диагноза, изменении течения заболевания,
+        перед снижением дозы ГК, перед назначением ЛП патогенетической терапии
+  - name: Общий клинический анализ крови (ОАК) с исследованием скорости оседания эритроцитов
+      (СОЭ) (стационар)
     aliases: []
-    exam_type: instrumental
-    requirement_level: recommended
+    exam_type: unknown
+    requirement_level: required
     accepted_statuses:
     - performed
     - recommended
@@ -145,99 +123,208 @@ conditions:
       protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
       document_url: null
       local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-      page_start: 30
-      page_end: 31
-      section_title: верификации диагноза, перед назначением ЛП патогенетической терапии
-        и после их
-      section_type: criteria_block
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
       table_index: null
       row_index: null
-      quote: УЗИ
+      quote: ОАК с исследованием СОЭ – 1 раз в 7 дней, чаще – по медицинским показаниям
+  - name: Биохимический анализ крови (БАК) с исследованием уровней АЛТ, АСТ, ЛДГ,
+      КФК, общего билибирубина, мочевины, креатинина, глюкозы, общего белка, СРБ (стационар)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: БАК с исследованием уровней АЛТ, АСТ, ЛДГ, КФК, общего билирубина, мочевины,
+        креатинина, глюкозы, общего белка, СРБ – 1 раз в 7 дней, чаще – по медицинским
+        показаниям
+  - name: 'Иммунологическое исследование крови: исследование уровней антинуклеарных
+      антител (АНА) методом иммуноблоттинга (анти-Jo-1, анти-Mi-2, анти-SSA/Ro, анти-PM-Scl)'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'иммунологическое исследование крови: исследование уровней антинуклеарных
+        антител (далее – АНА) методом иммуноблоттинга – анти-Jo-1, анти-Mi-2, анти-SSA/Ro,
+        анти-PM-Scl – при установлении диагноза'
+  - name: Исследование сыворотки крови на маркеры вирусного гепатита (HBsAg; HBc-core;
+      анти-HCV)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование сыворотки крови на маркеры вирусного гепатита (HBsAg; HBc-core;
+        анти-HCV) – при постановке диагноза; перед назначением ЛП патогенетической
+        терапии
+  - name: Консультации врачей-специалистов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Для постановки диагноза проводится комплекс мероприятий, включающий:
+        ... консультации врачей-специалистов.'
+  - name: Кожные туберкулиновые пробы (проба Манту/диаскинтест)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: кожные туберкулиновые пробы (проба Манту/диаскинтест) – перед назначением
+        ЛП патогенетической терапии (БПВП, иммунодепрессантов, ГИБП), далее – 1 раз
+        в 12 месяцев при продолжении терапии
+  - name: Электрокардиография (ЭКГ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: электрокардиография (далее – ЭКГ) – 1 раз в 3 месяца и при изменении
+        характера течения заболевания (при обострении, при подозрении на развитие
+        осложнений)
+  - name: Рентгенография органов грудной полости (РОГП)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: рентгенография органов грудной полости (далее – РОГП) – 1 раз в 12 месяцев
+  - name: Консультация врача – детского кардиоревматолога
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультация врача – детского кардиоревматолога – первые 6 месяцев после
+        установления диагноза – 1 раз в месяц, затем – 1 раз в 3 месяца до достижения
+        ремиссии заболевания, далее – 1 раз в 6 месяцев
   conditional_exams: []
   treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 25
-        page_end: 26
-        section_title: перед назначением/коррекцией противоревматической терапии с
-          целью исключения
-        section_type: criteria_block
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: b27_клинический_протокол_устанавливает_общие_требования_
-  name: клинический протокол устанавливает общие требования к объему
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - B27
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к объему (МКБ B27)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 53
-        page_end: 53
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к объему
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 53
-        page_end: 53
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: диета, режим
+    non_drug: []
     drug_groups: []
     drugs:
-    - drug_name: пациентов
+    - drug_name: Метилпреднизолон (перорально)
       active_substance: null
       drug_group: null
-      dose_text: null
+      dose_text: Таблетки 4, 8, 16, 32 мг. Максимальная подавляющая доза – 0,8 мг/кг
+        в сутки. При высокой активности допустимо до 1,5 мг/кг в сутки (по преднизолону).
+        Суточную дозу делят на несколько приемов (2/3 утро
       frequency_text: null
       duration_text: null
       route: null
@@ -249,804 +336,1645 @@ conditions:
         protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
         document_url: null
         local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 52
-        page_end: 53
-        section_title: «Диагностика и лечение
-        section_type: drug_list
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
         table_index: null
         row_index: null
-        quote: пациентов
+        quote: Максимальная подавляющая доза метилпреднизолона – 0,8 мг/кг в сутки,
+          преднизолона – 1 мг/кг в сутки. При высокой активности заболевания, кризовых
+          состояниях допустимо назначение более высокой дозы, но не более 1,5 мг/кг
+          в сутки по преднизолону. Суточную дозу ГК делят на несколько приемов в первой
+          половине дня, причем большая часть суточной дозировки (2/3) должна приходиться
+          на ранние утренние часы
+    - drug_name: Преднизолон (перорально)
+      active_substance: null
+      drug_group: null
+      dose_text: Таблетки 5 мг. Максимальная подавляющая доза – 1 мг/кг в сутки. При
+        высокой активности допустимо до 1,5 мг/кг в сутки. Суточную дозу делят на
+        несколько приемов (2/3 утром). Максимальную дозу на 6–8 не
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Максимальная подавляющая доза метилпреднизолона – 0,8 мг/кг в сутки,
+          преднизолона – 1 мг/кг в сутки. При высокой активности заболевания, кризовых
+          состояниях допустимо назначение более высокой дозы, но не более 1,5 мг/кг
+          в сутки по преднизолону. Суточную дозу ГК делят на несколько приемов в первой
+          половине дня, причем большая часть суточной дозировки (2/3) должна приходиться
+          на ранние утренние часы
+    - drug_name: Метилпреднизолон (парентерально, пульс-терапия)
+      active_substance: null
+      drug_group: null
+      dose_text: Лиофилизат для раствора для в/в и в/м введения, 125, 250, 500, 1000
+        мг. 10–30 мг/кг на 1 введение в течение 3–5 последовательных дней.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Системное парентеральное применение ГК (пульс-терапия) рекомендовано
+          при наличии тяжелых резистентных форм, в случае дисфагии (риск аспирационной
+          пневмонии), при развитии системных проявлений (интерстициальное поражение
+          легких (далее – ИПЛ), миокардит), при высокой степени активности заболевания
+          из расчета 10–30 мг/кг на 1 введение в течение 3–5 последовательных дней
+    - drug_name: Метотрексат (перорально)
+      active_substance: null
+      drug_group: null
+      dose_text: Таблетки 2,5, 5, 10 мг. 10–15 мг/м2 площади поверхности тела 1 раз
+        в неделю. Стартовая доза 2,5–5 мг в неделю, с постепенным повышением на 2,5
+        мг 1 раз в неделю до целевой дозы.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Терапевтическая доза метотрексата назначается из расчета 10–15 мг/м2
+          площади поверхности тела 1 раз в неделю в фиксированный день; стартовая
+          доза составляет 2,5–5 мг в неделю в один прием с постепенным повышением
+          на 2,5 мг 1 раз в неделю до достижения целевой дозы
+    - drug_name: Метотрексат (парентерально)
+      active_substance: null
+      drug_group: null
+      dose_text: Раствор для инъекций 10 мг/мл, раствор для подкожных инъекций 50
+        мг/мл. 10–15 мг/м2 площади поверхности тела 1 раз в неделю. При недостаточной
+        эффективности/плохой переносимости таблетированной формы,
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: парентеральные формы метотрексата назначаются пациентам при недостаточной
+          эффективности или плохой переносимости таблетированной формы, а также в
+          дебюте лечения ЮДМ пациентам с высокой активностью заболевания и прогностически
+          неблагоприятным течением заболевания
+    - drug_name: Фолиевая кислота
+      active_substance: null
+      drug_group: null
+      dose_text: 1 мг в сутки ежедневно, вне дня приема метотрексата (не ранее 24
+        часов от последнего приема).
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При применении метотрексата назначают фолиевую кислоту ежедневно вне
+          дня его приема (не ранее 24 часов от момента последнего приема) в дозе 1
+          мг в сутки
+    - drug_name: Азатиоприн
+      active_substance: null
+      drug_group: null
+      dose_text: Таблетки 50 мг. 1–3 мг/кг массы тела в сутки, но не более 200 мг.
+        В 2–3 приема. При умеренной и высокой активности ЮДМ, при противопоказаниях/непереносимости
+        метотрексата.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: азатиоприн, таблетки 50 мг – назначается пациентам с умеренной и высокой
+          степенью активности ЮДМ при наличии медицинских противопоказаний или непереносимости
+          метотрексата. Расчет дозы у детей – 1–3 мг/кг массы тела в сутки, но не
+          более 200 мг; суточная доза принимается в 2–3 приема
+    - drug_name: Циклофосфамид
+      active_substance: null
+      drug_group: null
+      dose_text: 'Порошок для приготовления раствора для в/в введения, 200 мг. 10–15
+        мг/кг (эквивалентно 400–600 мг/м2 поверхности тела 1 раз в месяц или 200–300
+        мг/м2 каждые 2 недели) в течение не менее 6 месяцев, до '
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Циклофосфамид является препаратом выбора при ИПЛ, язвенно-некротическом
+          васкулите, миозите, резистентном к ГК; применяется в дозе 10–15 мг/кг (эквивалентно
+          400–600 мг/м2 поверхности тела – 1 раз в месяц или 200–300 мг/м2 поверхности
+          тела каждые 2 недели) в течение не менее 6 месяцев, при хорошей переносимости
+          длительность терапии составляет 12 месяцев и более до стабилизации процесса.
+          Для медицинс
+    - drug_name: Иммуноглобулин человека нормальный (в/в)
+      active_substance: null
+      drug_group: null
+      dose_text: Раствор для инфузий 50 мг/мл, 100 мг/мл. 1–2 г/кг массы тела в месяц
+        в течение 6 месяцев. Применяется в составе комплексной терапии с ГК и иммунодепрессантами
+        при тяжелой дисфагии и миозите с выраженн
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'иммуноглобулины (иммуноглобулины для внутривенного введения применяются
+          при ЮДМ в составе комплексной терапии с ГК и иммунодепрессантами при тяжелой
+          дисфагии и миозите с выраженными функциональными нарушениями): иммуноглобулин
+          человека нормальный, раствор для инфузий 50 мг/мл, 100 мг/мл; назначается
+          из расчета 1–2 г/кг массы тела в месяц в течение 6 месяцев.'
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Мониторинг безопасности применения БПВП, иммунодепрессантов, ГИБП.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Мониторинг безопасности применения БПВП, иммунодепрессантов, ГИБП.
+  - text: Кожные туберкулиновые пробы (проба Манту/диаскинтест) – 1 раз в 12 месяцев
+      при продолжении терапии.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Кожные туберкулиновые пробы (проба Манту/диаскинтест) – 1 раз в 12 месяцев
+        при продолжении терапии.
+  - text: Электрокардиография (ЭКГ) – 1 раз в 3 месяца и при изменении характера течения
+      заболевания.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Электрокардиография (ЭКГ) – 1 раз в 3 месяца и при изменении характера
+        течения заболевания.
+  - text: Рентгенография органов грудной полости (РОГП) – 1 раз в 12 месяцев.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Рентгенография органов грудной полости (РОГП) – 1 раз в 12 месяцев.
+  - text: 'Консультация врача – детского кардиоревматолога: первые 6 месяцев после
+      установления диагноза – 1 раз в месяц, затем – 1 раз в 3 месяца до достижения
+      ремиссии, далее – 1 раз в 6 месяцев.'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Консультация врача – детского кардиоревматолога: первые 6 месяцев после
+        установления диагноза – 1 раз в месяц, затем – 1 раз в 3 месяца до достижения
+        ремиссии, далее – 1 раз в 6 месяцев.'
   hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: m02_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспа
-  name: КП Диагностика лечение пациентов дет нас иммуновоспалительными ревматическими
-    заболеваниями пост МЗ 2024 167
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - M02
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии КП Диагностика лечение пациентов дет нас иммуновоспалительными
-        ревматическими заболеваниями пост МЗ 2024 167 (МКБ M02)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 29
-        page_end: 29
-        section_title: ДИАГНОСТИКА И ЛЕЧЕНИЕ РЕАКТИВНОГО АРТРИТА
-        section_type: diagnostics
-        table_index: null
-        row_index: null
-        quote: КП Диагностика лечение пациентов дет нас иммуновоспалительными ревматическими
-          заболеваниями пост МЗ 2024 167
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 29
-        page_end: 29
-        section_title: ДИАГНОСТИКА И ЛЕЧЕНИЕ РЕАКТИВНОГО АРТРИТА
-        section_type: diagnostics
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: m08_клинический_протокол_устанавливает_общие_требования_
-  name: клинический протокол устанавливает общие требования к объему
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - M08
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к объему (МКБ M08)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 23
-        page_end: 23
-        section_title: 40. Классификация
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к объему
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 23
-        page_end: 23
-        section_title: 40. Классификация
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: m08_0_клинический_протокол_устанавливает_общие_требовани
-  name: клинический протокол устанавливает общие требования к объему
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - M08.0
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к объему (МКБ M08.0)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 23
-        page_end: 23
-        section_title: 40. Классификация
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к объему
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 23
-        page_end: 23
-        section_title: 40. Классификация
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: m08_1_клинический_протокол_устанавливает_общие_требовани
-  name: клинический протокол устанавливает общие требования к объему
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - M08.1
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к объему (МКБ M08.1)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 23
-        page_end: 23
-        section_title: 40. Классификация
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к объему
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 23
-        page_end: 23
-        section_title: 40. Классификация
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: m08_2_клинический_протокол_устанавливает_общие_требовани
-  name: клинический протокол устанавливает общие требования к объему
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - M08.2
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к объему (МКБ M08.2)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 23
-        page_end: 23
-        section_title: 40. Классификация
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к объему
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 23
-        page_end: 23
-        section_title: 40. Классификация
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: m08_3_клинический_протокол_устанавливает_общие_требовани
-  name: клинический протокол устанавливает общие требования к объему
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - M08.3
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к объему (МКБ M08.3)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 23
-        page_end: 23
-        section_title: 40. Классификация
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к объему
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 23
-        page_end: 23
-        section_title: 40. Классификация
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: m08_4_клинический_протокол_устанавливает_общие_требовани
-  name: клинический протокол устанавливает общие требования к объему
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - M08.4
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к объему (МКБ M08.4)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 23
-        page_end: 23
-        section_title: 40. Классификация
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к объему
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 23
-        page_end: 23
-        section_title: 40. Классификация
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: m08_8_клинический_протокол_устанавливает_общие_требовани
-  name: клинический протокол устанавливает общие требования к объему
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - M08.8
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к объему (МКБ M08.8)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 23
-        page_end: 23
-        section_title: 40. Классификация
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к объему
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 23
-        page_end: 23
-        section_title: 40. Классификация
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: m08_9_кп_диагностика_лечение_пациентов_дет_нас_иммуновос
-  name: КП Диагностика лечение пациентов дет нас иммуновоспалительными ревматическими
-    заболеваниями пост МЗ 2024 167
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - M08.9
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии КП Диагностика лечение пациентов дет нас иммуновоспалительными
-        ревматическими заболеваниями пост МЗ 2024 167 (МКБ M08.9)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 23
-        page_end: 23
-        section_title: 40. Классификация
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: КП Диагностика лечение пациентов дет нас иммуновоспалительными ревматическими
-          заболеваниями пост МЗ 2024 167
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 23
-        page_end: 23
-        section_title: 40. Классификация
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: m32_клинический_протокол_устанавливает_общие_требования_
-  name: клинический протокол устанавливает общие требования к объему
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - M32
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к объему (МКБ M32)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 14
-        page_end: 14
-        section_title: 27. Классификационные критерии системной красной волчанки (далее
-          – СКВ)
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к объему
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 14
-        page_end: 14
-        section_title: 27. Классификационные критерии системной красной волчанки (далее
-          – СКВ)
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: Амбулаторно (первичная медицинская помощь, консультации)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторно (первичная медицинская помощь, консультации)
+  - text: Госпитализация (при подозрении на иммуновоспалительное ревматическое заболевание
+      для консультации детского кардиоревматолога, для проведения пульс-терапии или
+      при тяжелых состояниях)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация (при подозрении на иммуновоспалительное ревматическое
+        заболевание для консультации детского кардиоревматолога, для проведения пульс-терапии
+        или при тяжелых состояниях)
   red_flags:
-  - text: волчанк
+  - text: Отсутствие положительной динамики в течение 4 недель на терапию ГК требует
+      пересмотра диагноза.
     aliases: []
-    red_flag_type: systemic_autoimmune
+    red_flag_type: other
     severity: medium
-    expected_actions:
-    - дообследование
-    - маршрутизация
+    expected_actions: []
     cap_if_unhandled: null
     source_ref:
       protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
       document_url: null
       local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-      page_start: 14
-      page_end: 14
-      section_title: 27. Классификационные критерии системной красной волчанки (далее
-        – СКВ)
-      section_type: classification
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
       table_index: null
       row_index: null
-      quote: волчанк
+      quote: отсутствие положительной динамики в течение 4 недель требует пересмотра
+        диагноза.
+  - text: При появлении первых признаков геморрагического цистита на фоне приема циклофосфамида
+      лечение прекращается.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При появлении первых признаков геморрагического цистита лечение прекращается
   contraindications: []
   complications: []
   kz_checklist: null
   source_refs: []
-- condition_id: m33_0_клинический_протокол_устанавливает_общие_требовани
-  name: клинический протокол устанавливает общие требования к объему
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - M33.0
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к объему (МКБ M33.0)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 3
-        page_end: 3
-        section_title: статистической классификации болезней и проблем, связанных
-          со здоровьем, десятого
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к объему
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 3
-        page_end: 3
-        section_title: статистической классификации болезней и проблем, связанных
-          со здоровьем, десятого
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: m34_клинический_протокол_устанавливает_общие_требования_
-  name: клинический протокол устанавливает общие требования к объему
+- condition_id: juvenile_systemic_sclerosis
+  name: Ювенильный системный склероз
   synonyms: []
   abbreviations: []
   icd10_codes:
   - M34
   condition_applicability: null
   diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к объему (МКБ M34)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 7
-        page_end: 7
-        section_title: ДИАГНОСТИКА И ЛЕЧЕНИЕ ЮВЕНИЛЬНОГО СИСТЕМНОГО СКЛЕРОЗА
-        section_type: diagnostics
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к объему
-    optional: []
-    exclusion: []
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams:
+  - name: Кожные туберкулиновые пробы (проба Манту/диаскинтест)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: кожные туберкулиновые пробы (проба Манту/диаскинтест) – перед назначением
+        ЛП патогенетической терапии (БПВП, иммунодепрессантов, ГИБП), далее – 1 раз
+        в 12 месяцев при продолжении терапии
+  - name: Электрокардиография (ЭКГ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: электрокардиография (далее – ЭКГ) – 1 раз в 3 месяца и при изменении
+        характера течения заболевания (при обострении, при подозрении на развитие
+        осложнений)
+  - name: Рентгенография органов грудной полости (РОГП)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: рентгенография органов грудной полости (далее – РОГП) – 1 раз в 12 месяцев
+  - name: Консультация врача – детского кардиоревматолога
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультация врача – детского кардиоревматолога – первые 6 месяцев после
+        установления диагноза – 1 раз в месяц, затем – 1 раз в 3 месяца до достижения
+        ремиссии заболевания, далее – 1 раз в 6 месяцев
+  conditional_exams: []
+  treatment: null
+  follow_up:
+  - text: 'Консультация детского кардиоревматолога: ежемесячно первые 6 месяцев после
+      установления диагноза, затем каждые 3 месяца до достижения ремиссии, далее каждые
+      6 месяцев.'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Консультация детского кардиоревматолога: ежемесячно первые 6 месяцев
+        после установления диагноза, затем каждые 3 месяца до достижения ремиссии,
+        далее каждые 6 месяцев.'
+  hospitalization: []
+  routing:
+  - text: Первичная медицинская помощь оказывается амбулаторно врачами-педиатрами
+      или врачами общей практики. При подозрении на иммуновоспалительное ревматическое
+      заболевание пациент направляется на консультацию к детскому кардиоревматологу.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Первичная медицинская помощь оказывается амбулаторно врачами-педиатрами
+        или врачами общей практики. При подозрении на иммуновоспалительное ревматическое
+        заболевание пациент направляется на консультаци
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: systemic_lupus_erythematosus_juvenile
+  name: Системная красная волчанка с ювенильным началом
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - M32
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
   diagnostic_criteria: null
   required_exams: []
   conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
-        page_start: 7
-        page_end: 7
-        section_title: ДИАГНОСТИКА И ЛЕЧЕНИЕ ЮВЕНИЛЬНОГО СИСТЕМНОГО СКЛЕРОЗА
-        section_type: diagnostics
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
+  treatment: null
   follow_up: []
   hospitalization: []
   routing: []
   red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: juvenile_idiopathic_arthritis
+  name: Ювенильный идиопатический артрит
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - M08.0
+  - M08.1
+  - M08.2
+  - M08.3
+  - M08.4
+  - M08.8
+  - M08.9
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams:
+  - name: Электрокардиография (ЭКГ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: электрокардиография (далее – ЭКГ) – 1 раз в 3 месяца и при изменении
+        характера течения заболевания (при обострении, при подозрении на развитие
+        осложнений)
+  - name: Рентгенография органов грудной полости (РОГП)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: рентгенография органов грудной полости (далее – РОГП) – 1 раз в 12 месяцев
+  conditional_exams:
+  - name: Кожные туберкулиновые пробы (проба Манту/диаскинтест)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: кожные туберкулиновые пробы (проба Манту/диаскинтест) – перед назначением
+        ЛП патогенетической терапии (БПВП, иммунодепрессантов, ГИБП), далее – 1 раз
+        в 12 месяцев при продолжении терапии
+  treatment:
+    non_drug: []
+    drug_groups: []
+    drugs:
+    - drug_name: метилпреднизолон (перорально)
+      active_substance: null
+      drug_group: null
+      dose_text: Таблетки 4 мг, 8 мг, 16 мг, 32 мг. Максимальная подавляющая доза
+        – 0,8 мг/кг в сутки. При высокой активности допустимо до 1,5 мг/кг в сутки
+        (по преднизолону). Суточную дозу делят на несколько приемов.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: метилпреднизолон, таблетки 4 мг, 8 мг, 16 мг, 32 мг или преднизолон,
+          таблетки 5 мг. Максимальная подавляющая доза метилпреднизолона – 0,8 мг/кг
+          в сутки, преднизолона – 1 мг/кг в сутки.
+    - drug_name: преднизолон (перорально)
+      active_substance: null
+      drug_group: null
+      dose_text: Таблетки 5 мг. Максимальная подавляющая доза – 1 мг/кг в сутки. При
+        высокой активности допустимо до 1,5 мг/кг в сутки. Суточную дозу делят на
+        несколько приемов. Максимальную дозу назначают на 6–8 неде
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: преднизолон, таблетки 5 мг. Максимальная подавляющая доза ... 1 мг/кг
+          в сутки. При высокой активности заболевания, кризовых состояниях допустимо
+          назначение более высокой дозы, но не более 1,5 мг/кг в сутки.
+    - drug_name: метилпреднизолон (парентерально)
+      active_substance: null
+      drug_group: null
+      dose_text: Лиофилизат для приготовления раствора для внутривенного и внутримышечного
+        введения, 125 мг, 250 мг, 500 мг, 1000 мг. 10–30 мг/кг на 1 введение в течение
+        3–5 последовательных дней при тяжелых резистент
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: метилпреднизолон, лиофилизат для приготовления раствора для внутривенного
+          и внутримышечного введения, 125 мг, 250 мг, 500 мг, 1000 мг. ...из расчета
+          10–30 мг/кг на 1 введение в течение 3–5 последовательных дней.
+    - drug_name: метотрексат (для приема внутрь)
+      active_substance: null
+      drug_group: null
+      dose_text: Таблетки, покрытые оболочкой, 2,5 мг; 5 мг; 10 мг. 10–15 мг/м2 площади
+        поверхности тела 1 раз в неделю. Стартовая доза 2,5–5 мг в неделю, с постепенным
+        повышением на 2,5 мг 1 раз в неделю до достижени
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'метотрексат для приема внутрь: таблетки, покрытые оболочкой, 2,5 мг;
+          5 мг; 10 мг, внутрь; Терапевтическая доза метотрексата назначается из расчета
+          10–15 мг/м2 площади поверхности тела 1 раз в неделю.'
+    - drug_name: метотрексат (для парентерального применения)
+      active_substance: null
+      drug_group: null
+      dose_text: 'Раствор для инъекций/подкожных инъекций (различные дозировки). 10–15
+        мг/м2 площади поверхности тела 1 раз в неделю. Стартовая доза 2,5–5 мг в неделю,
+        с постепенным повышением на 2,5 мг 1 раз в неделю '
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'метотрексат для парентерального применения: раствор для инъекций 10
+          мг/мл... Терапевтическая доза метотрексата назначается из расчета 10–15
+          мг/м2 площади поверхности тела 1 раз в неделю.'
+    - drug_name: фолиевая кислота
+      active_substance: null
+      drug_group: null
+      dose_text: 1 мг в сутки; ежедневно вне дня приема метотрексата (не ранее 24
+        часов от момента последнего приема).
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При применении метотрексата назначают фолиевую кислоту ежедневно вне
+          дня его приема (не ранее 24 часов от момента последнего приема) в дозе 1
+          мг в сутки.
+    - drug_name: азатиоприн
+      active_substance: null
+      drug_group: null
+      dose_text: Таблетки 50 мг. 1–3 мг/кг массы тела в сутки (не более 200 мг); суточная
+        доза в 2–3 приема. Длительность лечения устанавливается индивидуально. Назначается
+        пациентам с умеренной и высокой степенью акт
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: азатиоприн, таблетки 50 мг – назначается пациентам с умеренной и высокой
+          степенью активности ЮДМ при наличии медицинских противопоказаний или непереносимости
+          метотрексата. Расчет дозы у детей – 1–3 мг/кг массы тела в сутки, но не
+          более 200 мг.
+    - drug_name: циклофосфамид
+      active_substance: null
+      drug_group: null
+      dose_text: Порошок для приготовления раствора для внутривенного введения, 200
+        мг. 10–15 мг/кг (эквивалентно 400–600 мг/м2 1 раз в месяц или 200–300 мг/м2
+        каждые 2 недели) в течение не менее 6 месяцев, при хороше
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: циклофосфамид, порошок для приготовления раствора для внутривенного
+          введения, 200 мг. ...применяется в дозе 10–15 мг/кг (эквивалентно 400–600
+          мг/м2 поверхности тела – 1 раз в месяц или 200–300 мг/м2 поверхности тела
+          каждые 2 недели).
+    - drug_name: иммуноглобулин человека нормальный
+      active_substance: null
+      drug_group: null
+      dose_text: Раствор для инфузий 50 мг/мл, 100 мг/мл. 1–2 г/кг массы тела в месяц
+        в течение 6 месяцев. Применяется при тяжелой дисфагии и миозите с выраженными
+        функциональными нарушениями в составе комплексной тер
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: иммуноглобулин человека нормальный, раствор для инфузий 50 мг/мл, 100
+          мг/мл; назначается из расчета 1–2 г/кг массы тела в месяц в течение 6 месяцев.
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: 'Консультация врача – детского кардиоревматолога: первые 6 месяцев после
+      установления диагноза – 1 раз в месяц, затем – 1 раз в 3 месяца до достижения
+      ремиссии заболевания, далее – 1 раз в 6 месяцев.'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Консультация врача – детского кардиоревматолога: первые 6 месяцев после
+        установления диагноза – 1 раз в месяц, затем – 1 раз в 3 месяца до достижения
+        ремиссии заболевания, далее – 1 раз в 6 месяцев.'
+  hospitalization: []
+  routing:
+  - text: Первичная медицинская помощь пациентам с иммуновоспалительными ревматическими
+      заболеваниями оказывается врачами-педиатрами, врачами общей практики, другими
+      врачами-специалистами в амбулаторных условиях.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Первичная медицинская помощь пациентам с иммуновоспалительными ревматическими
+        заболеваниями оказывается врачами-педиатрами, врачами общей практики, другими
+        врачами-специалистами в амбулаторных условия
+  - text: В случае подозрения на наличие иммуновоспалительного ревматического заболевания
+      пациент направляется на врачебную консультацию к врачу – детскому кардиоревматологу
+      в организацию здравоохранения, оказывающую медицинскую помощь детскому населению.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: В случае подозрения на наличие иммуновоспалительного ревматического заболевания
+        пациент направляется на врачебную консультацию к врачу – детскому кардиоревматологу
+        в организацию здравоохранения, оказы
+  red_flags:
+  - text: Геморрагический цистит (при применении циклофосфамида)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При появлении первых признаков геморрагического цистита лечение прекращается
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: reactive_arthritis
+  name: Реактивные артриты
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - M02
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing: []
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: juvenile_ankylosing_spondylitis
+  name: Юношеский анкилозирующий спондилит
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - M08.1
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: наличие спондилоартропатий или олигоартрита в семейном анамнезе
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: наличие спондилоартропатий или олигоартрита в семейном анамнезе
+    - text: энтезопатия
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: энтезопатия
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Кожные туберкулиновые пробы (проба Манту/диаскинтест)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: кожные туберкулиновые пробы (проба Манту/диаскинтест) – перед назначением
+        ЛП патогенетической терапии (БПВП, иммунодепрессантов, ГИБП), далее – 1 раз
+        в 12 месяцев при продолжении терапии
+  - name: Электрокардиография (ЭКГ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: электрокардиография (далее – ЭКГ) – 1 раз в 3 месяца и при изменении
+        характера течения заболевания (при обострении, при подозрении на развитие
+        осложнений)
+  - name: Рентгенография органов грудной полости (РОГП)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: рентгенография органов грудной полости (далее – РОГП) – 1 раз в 12 месяцев
+  conditional_exams: []
+  treatment: null
+  follow_up:
+  - text: 'Консультация врача – детского кардиоревматолога: первые 6 месяцев после
+      установления диагноза – 1 раз в месяц, затем – 1 раз в 3 месяца до достижения
+      ремиссии, далее – 1 раз в 6 месяцев.'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Консультация врача – детского кардиоревматолога: первые 6 месяцев после
+        установления диагноза – 1 раз в месяц, затем – 1 раз в 3 месяца до достижения
+        ремиссии, далее – 1 раз в 6 месяцев.'
+  hospitalization: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: направление к врачу – детскому кардиоревматологу
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: направление к врачу – детскому кардиоревматологу
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: systemic_vasculitis
+  name: Системные васкулиты
+  synonyms: []
+  abbreviations: []
+  icd10_codes: []
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams:
+  - name: Электрокардиография (ЭКГ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: электрокардиография (далее – ЭКГ) – 1 раз в 3 месяца и при изменении
+        характера течения заболевания (при обострении, при подозрении на развитие
+        осложнений)
+  - name: Рентгенография органов грудной полости (РОГП)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: рентгенография органов грудной полости (далее – РОГП) – 1 раз в 12 месяцев
+  - name: Консультация врача – детского кардиоревматолога
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультация врача – детского кардиоревматолога – первые 6 месяцев после
+        установления диагноза – 1 раз в месяц, затем – 1 раз в 3 месяца до достижения
+        ремиссии заболевания, далее – 1 раз в 6 месяцев.
+  conditional_exams:
+  - name: Кожные туберкулиновые пробы (проба Манту/диаскинтест)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: кожные туберкулиновые пробы (проба Манту/диаскинтест) – перед назначением
+        ЛП патогенетической терапии (БПВП, иммунодепрессантов, ГИБП), далее – 1 раз
+        в 12 месяцев при продолжении терапии
+  treatment:
+    non_drug:
+    - text: Для профилактики геморрагического цистита при применении циклофосфамида
+        рекомендуется адекватное потребление жидкости (до 3 л в сутки) и применение
+        средств, подщелачивающих мочу перед введением ЛП и в течение 72 часов после
+        его применения.
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Для профилактики геморрагического цистита при применении циклофосфамида
+          рекомендуется адекватное потребление жидкости (до 3 л в сутки) и применение
+          средств, подщелачивающих мочу перед введением ЛП и в
+    drug_groups: []
+    drugs:
+    - drug_name: Метилпреднизолон (таблетки)
+      active_substance: null
+      drug_group: null
+      dose_text: Максимальная подавляющая доза – 0,8 мг/кг в сутки. При высокой активности
+        допустимо до 1,5 мг/кг (по преднизолону). Суточную дозу делят на несколько
+        приемов в первой половине дня. Максимальную дозу на
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: метилпреднизолон, таблетки (...) Максимальная подавляющая доза метилпреднизолона
+          – 0,8 мг/кг в сутки, (...) допустимо назначение более высокой дозы, но не
+          более 1,5 мг/кг в сутки по преднизолону.
+    - drug_name: Преднизолон (таблетки)
+      active_substance: null
+      drug_group: null
+      dose_text: Максимальная подавляющая доза – 1 мг/кг в сутки. При высокой активности
+        допустимо до 1,5 мг/кг в сутки. Суточную дозу делят на несколько приемов в
+        первой половине дня. Максимальную дозу назначают на 6
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: преднизолон, таблетки 5 мг. Максимальная подавляющая доза (...) преднизолона
+          – 1 мг/кг в сутки. При высокой активности (...) не более 1,5 мг/кг в сутки
+          по преднизолону.
+    - drug_name: Метилпреднизолон (пульс-терапия)
+      active_substance: null
+      drug_group: null
+      dose_text: 10–30 мг/кг на 1 введение в течение 3–5 последовательных дней.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: метилпреднизолон, лиофилизат для приготовления раствора для внутривенного
+          и внутримышечного введения (...) из расчета 10–30 мг/кг на 1 введение в
+          течение 3–5 последовательных дней;
+    - drug_name: Метотрексат
+      active_substance: null
+      drug_group: null
+      dose_text: 10–15 мг/м2 площади поверхности тела 1 раз в неделю в фиксированный
+        день. Стартовая доза 2,5–5 мг в неделю, с постепенным повышением на 2,5 мг
+        1 раз в неделю до целевой дозы.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Терапевтическая доза метотрексата назначается из расчета 10–15 мг/м2
+          площади поверхности тела 1 раз в неделю в фиксированный день; стартовая
+          доза составляет 2,5–5 мг в неделю в один прием с постепенным повышением
+          на 2,5 мг 1 раз в неделю
+    - drug_name: Фолиевая кислота
+      active_substance: null
+      drug_group: null
+      dose_text: 1 мг в сутки, ежедневно вне дня приема метотрексата (не ранее 24
+        часов от момента последнего приема).
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При применении метотрексата назначают фолиевую кислоту ежедневно вне
+          дня его приема (не ранее 24 часов от момента последнего приема) в дозе 1
+          мг в сутки;
+    - drug_name: Азатиоприн
+      active_substance: null
+      drug_group: null
+      dose_text: 1–3 мг/кг массы тела в сутки, но не более 200 мг; суточная доза принимается
+        в 2–3 приема.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Расчет дозы у детей – 1–3 мг/кг массы тела в сутки, но не более 200
+          мг; суточная доза принимается в 2–3 приема;
+    - drug_name: Циклофосфамид
+      active_substance: null
+      drug_group: null
+      dose_text: 10–15 мг/кг (эквивалентно 400–600 мг/м2 поверхности тела 1 раз в
+        месяц или 200–300 мг/м2 поверхности тела каждые 2 недели) в течение не менее
+        6 месяцев, при хорошей переносимости до 12 месяцев и более
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Циклофосфамид (...) применяется в дозе 10–15 мг/кг (эквивалентно 400–600
+          мг/м2 поверхности тела – 1 раз в месяц или 200–300 мг/м2 поверхности тела
+          каждые 2 недели)
+    - drug_name: Иммуноглобулин человека нормальный
+      active_substance: null
+      drug_group: null
+      dose_text: 1–2 г/кг массы тела в месяц в течение 6 месяцев.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: иммуноглобулин человека нормальный, раствор для инфузий (...) назначается
+          из расчета 1–2 г/кг массы тела в месяц в течение 6 месяцев.
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: 'Консультация врача – детского кардиоревматолога: первые 6 месяцев – 1 раз
+      в месяц, затем – 1 раз в 3 месяца до достижения ремиссии, далее – 1 раз в 6
+      месяцев.'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Консультация врача – детского кардиоревматолога: первые 6 месяцев –
+        1 раз в месяц, затем – 1 раз в 3 месяца до достижения ремиссии, далее – 1
+        раз в 6 месяцев.'
+  - text: 'Кожные туберкулиновые пробы (проба Манту/диаскинтест): 1 раз в 12 месяцев
+      при продолжении терапии.'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Кожные туберкулиновые пробы (проба Манту/диаскинтест): 1 раз в 12 месяцев
+        при продолжении терапии.'
+  - text: 'Электрокардиография (ЭКГ): 1 раз в 3 месяца и при изменении характера течения
+      заболевания.'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Электрокардиография (ЭКГ): 1 раз в 3 месяца и при изменении характера
+        течения заболевания.'
+  - text: 'Рентгенография органов грудной полости (РОГП): 1 раз в 12 месяцев.'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Рентгенография органов грудной полости (РОГП): 1 раз в 12 месяцев.'
+  hospitalization: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  red_flags:
+  - text: Появление первых признаков геморрагического цистита при применении циклофосфамида
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При появлении первых признаков геморрагического цистита лечение прекращается;
+  - text: Отсутствие положительной динамики лечения в течение 4 недель
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_дет_нас_иммуновоспалительными_ревматическими_заболеваниями_пост_МЗ_2024_167.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: отсутствие положительной динамики в течение 4 недель требует пересмотра
+        диагноза.
   contraindications: []
   complications: []
   kz_checklist: null
@@ -1055,30 +1983,103 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-05-31T18:30:00.680359+00:00'
-  extractor: builder.heuristic_v2
-  extractor_version: '2.0'
-  source_document_sha256: acb1eebaec32593286b81f4459b4303a25579af88f07b3aa96d1862291934a2e
+  extracted_at: '2026-07-20T15:21:22.497521+00:00'
+  extractor: llm_extractor
+  extractor_version: '1.0'
+  source_document_sha256: null
   notes:
-  - aggregated from 6 protocol_cards, 411 chunks
+  - llm_pipeline_v1
+  - conditions=7
 validation:
   status: needs_human_review
   errors: []
   warnings:
   - level: warning
-    code: required_exam_level
-    message: required_exams содержит элемент не с level=required
-    path: conditions[b19_клинический_протокол_устанавливает_общие_требования_].required_exams[0]
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[juvenile_systemic_sclerosis].required_exams[0]
   - level: warning
-    code: required_exam_level
-    message: required_exams содержит элемент не с level=required
-    path: conditions[b19_клинический_протокол_устанавливает_общие_требования_].required_exams[1]
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[juvenile_systemic_sclerosis].required_exams[1]
   - level: warning
-    code: required_exam_level
-    message: required_exams содержит элемент не с level=required
-    path: conditions[b19_клинический_протокол_устанавливает_общие_требования_].required_exams[2]
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[juvenile_systemic_sclerosis].required_exams[2]
   - level: warning
-    code: required_exam_level
-    message: required_exams содержит элемент не с level=required
-    path: conditions[b19_клинический_протокол_устанавливает_общие_требования_].required_exams[3]
-  validated_at: '2026-05-31T18:30:00.680415+00:00'
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[juvenile_systemic_sclerosis].required_exams[3]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[juvenile_idiopathic_arthritis].required_exams[0]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[juvenile_idiopathic_arthritis].required_exams[1]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[juvenile_idiopathic_arthritis].treatment.drugs[0]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[juvenile_idiopathic_arthritis].treatment.drugs[1]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[juvenile_idiopathic_arthritis].treatment.drugs[5]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[juvenile_idiopathic_arthritis].treatment.drugs[6]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[juvenile_idiopathic_arthritis].treatment.drugs[7]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[juvenile_ankylosing_spondylitis].required_exams[0]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[juvenile_ankylosing_spondylitis].required_exams[1]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[juvenile_ankylosing_spondylitis].required_exams[2]
+  - level: warning
+    code: missing_icd10
+    message: Нет icd10_codes у condition
+    path: conditions[systemic_vasculitis]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[systemic_vasculitis].required_exams[0]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[systemic_vasculitis].required_exams[1]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[systemic_vasculitis].required_exams[2]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[systemic_vasculitis].treatment.drugs[4]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[systemic_vasculitis].treatment.drugs[5]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[systemic_vasculitis].treatment.drugs[6]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[systemic_vasculitis].treatment.drugs[7]
+  validated_at: '2026-07-20T15:21:22.576616+00:00'

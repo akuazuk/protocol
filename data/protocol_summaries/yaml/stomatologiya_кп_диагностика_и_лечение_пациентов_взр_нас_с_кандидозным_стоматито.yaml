@@ -1,6 +1,6 @@
 protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Диагностика и лечение пациентов взрослое население с кандидозным стоматитом
@@ -26,20 +26,28 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов_взрослое_населен
-  name: Диагностика и лечение пациентов взрослое население с кандидозным стоматитом
+- condition_id: candidal_stomatitis
+  name: Кандидозный стоматит
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - L03
-  - B24
+  - B37.0
+  - B37.00
+  - B37.01
+  - B37.02
+  - B37.03
+  - B37.04
+  - B37.05
+  - B37.06
+  - B37.08
+  - B37.09
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[diagnostics] 6. Микробиологические критерии кандидозного стоматита:
-        (стр. 5)'
+    - text: Выявление грибов рода Candida, других дрожжеподобных грибов в титрах более
+        10^3 КОЕ/мл
       logic_group: null
       operator: unknown
       values: []
@@ -56,9 +64,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 6. Микробиологические критерии кандидозного стоматита:
-          (стр. 5)'
-    - text: определение чувствительности к противогрибковым антибиотикам.
+        quote: Выявление грибов рода Candida, других дрожжеподобных грибов в титрах
+          более 10^3 КОЕ/мл
+    - text: Выявление дисбиоза полости рта
       logic_group: null
       operator: unknown
       values: []
@@ -75,8 +83,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение чувствительности к противогрибковым антибиотикам.
-    - text: определение уровня стоматологического здоровья пациента с использованием
+        quote: Выявление дисбиоза полости рта
+    - text: Определение чувствительности к противогрибковым антибиотикам
       logic_group: null
       operator: unknown
       values: []
@@ -93,14 +101,394 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение уровня стоматологического здоровья пациента с использованием
+        quote: Определение чувствительности к противогрибковым антибиотикам
+    - text: Выявление местных и общих факторов риска развития кандидозного стоматита
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выявление местных и общих факторов риска развития кандидозного стоматита
+    - text: Проведение клинической дифференциальной диагностики кандидозного стоматита
+        с другими поражениями слизистой оболочки полости рта
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Проведение клинической дифференциальной диагностики кандидозного стоматита
+          с другими поражениями слизистой оболочки полости рта
+    - text: Воспалительное заболевание слизистой оболочки полости рта с нарушением
+        ее целостности (эрозии, афты, язвы), вызванное грибковой инфекцией
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Воспалительное заболевание слизистой оболочки полости рта с нарушением
+          ее целостности (эрозии, афты, язвы), вызванное грибковой инфекцией
+    - text: 'Жалобы: боль, жжение, сухость, изменение слизистой в различных областях
+        полости рта'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Жалобы: боль, жжение, сухость, изменение слизистой в различных областях
+          полости рта'
+    - text: 'Наличие клинико-морфологических элементов поражения: изменение цвета
+        слизистой (красный, белый), нарушение целостности, напластования'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Наличие клинико-морфологических элементов поражения: изменение цвета
+          слизистой (красный, белый), нарушение целостности, напластования'
+    - text: Данные анамнеза
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Данные анамнеза
     optional: []
     exclusion: []
-  required_exams: []
-  conditional_exams: []
+  required_exams:
+  - name: Клинические методы исследования
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение уровня стоматологического здоровья пациента с использованием
+        клинических и лабораторных методов исследования
+  - name: Лабораторные методы исследования
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение уровня стоматологического здоровья пациента с использованием
+        клинических и лабораторных методов исследования
+  - name: Микробиологическое исследование на грибы рода Candida
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: выявление различного рода грибов рода Candida, других дрожжеподобных
+        грибов в титрах более 103 КОЕ/мл
+  - name: Исследование на дисбиоз полости рта
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: выявление дисбиоза полости рта
+  - name: Определение чувствительности к противогрибковым антибиотикам
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение чувствительности к противогрибковым антибиотикам
+  conditional_exams:
+  - name: Консультация врачей-специалистов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: направление на консультацию и обследование к врачам-специалистам (врачу-инфекционисту,
+        врачу общей практики, врачу-аллергологу-иммунологу и другим) по медицинским
+        показаниям.
+  - name: Консультация врача-инфекциониста
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: направление на консультацию и обследование к врачам-специалистам (врачу-инфекционисту...)
+        по медицинским показаниям.
+  - name: Консультация врача общей практики
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: направление на консультацию и обследование к врачам-специалистам (...врачу
+        общей практики...) по медицинским показаниям.
+  - name: Консультация врача-аллерголога-иммунолога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: направление на консультацию и обследование к врачам-специалистам (...врачу-аллергологу-иммунологу...)
+        по медицинским показаниям.
+  - name: Консультация врача-эндокринолога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Врач-специалист (врач-инфекционист, врач общей практики, врач-эндокринолога...)
+        проводит общее лечение и медицинскую профилактику рецидивов...
+  - name: Консультация врача-гематолога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Врач-специалист (врач-инфекционист, врач общей практики, ...врач-гематолога...)
+        проводит общее лечение и медицинскую профилактику рецидивов...
+  - name: Консультация врача клинической лабораторной диагностики
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Врач-специалист (врач-инфекционист, врач общей практики, ...врач клинической
+        лабораторной диагностики...) проводит общее лечение и медицинскую профилактику
+        рецидивов...
   treatment:
     non_drug:
-    - text: кандидозный стоматит, кандидозная лейкоплакия, множественный тип хронического
+    - text: Устранение иммунодефицитных состояний
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
         document_url: null
@@ -111,8 +499,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: кандидозный стоматит, кандидозная лейкоплакия, множественный тип хронического
-    - text: гиперпластического кандидозного стоматита
+        quote: Устранение иммунодефицитных состояний
+    - text: Коррекция приема лекарственных средств системного действия
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
         document_url: null
@@ -123,8 +511,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: гиперпластического кандидозного стоматита
-    - text: В37.03 Хронический эритематозный
+        quote: Коррекция приема лекарственных средств системного действия
+    - text: Нормализация обмена веществ (уровня витаминов, гормонов, другие)
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
         document_url: null
@@ -135,8 +523,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: В37.03 Хронический эритематозный
-    - text: (атрофический) кандидозный стоматит, стоматит под съемным зубным протезом,
+        quote: Нормализация обмена веществ (уровня витаминов, гормонов, другие)
+    - text: Мотивация пациента по факторам риска развития стоматологических заболеваний
+        и кандидозной инфекции
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
         document_url: null
@@ -147,8 +536,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: (атрофический) кандидозный стоматит, стоматит под съемным зубным протезом,
-    - text: В37.05 Кандидозная гранулема полости рта
+        quote: Мотивация пациента по факторам риска развития стоматологических заболеваний
+          и кандидозной инфекции
+    - text: Подбор индивидуальных средств гигиены полости рта, коррекция гигиенических
+        мероприятий, устранение местных факторов риска
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
         document_url: null
@@ -159,8 +550,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: В37.05 Кандидозная гранулема полости рта
-    - text: уточненные проявления в полости рта
+        quote: Подбор индивидуальных средств гигиены полости рта, коррекция гигиенических
+          мероприятий, устранение местных факторов риска
+    - text: Устранение очагов одонтогенной инфекции
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
         document_url: null
@@ -171,13 +563,85 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: уточненные проявления в полости рта
+        quote: Устранение очагов одонтогенной инфекции
+    - text: Оказание терапевтической стоматологической помощи с учетом состояния слизистой
+        оболочки полости рта
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Оказание терапевтической стоматологической помощи с учетом состояния
+          слизистой оболочки полости рта
+    - text: Поддерживающая терапия (устранение факторов риска, нормализация гигиены
+        полости рта путем тщательной индивидуальной чистки зубов, межзубных промежутков,
+        спинки языка, зубных протезов)
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Поддерживающая терапия (устранение факторов риска, нормализация гигиены
+          полости рта путем тщательной индивидуальной чистки зубов, межзубных промежутков,
+          спинки языка, зубных протезов)
+    - text: Регулярное проведение профессиональной гигиены полости рта не реже двух
+        раз в год
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Регулярное проведение профессиональной гигиены полости рта не реже
+          двух раз в год
+    - text: Медицинская профилактика рецидивов кандидозного стоматита
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Медицинская профилактика рецидивов кандидозного стоматита
+    - text: Физиотерапевтический метод лечения на очаги поражения (местная лазеротерапия,
+        10 процедур ежедневно) по медицинским показаниям
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Физиотерапевтический метод лечения на очаги поражения (местная лазеротерапия,
+          10 процедур ежедневно) по медицинским показаниям
     drug_groups: []
     drugs:
-    - drug_name: дней
+    - drug_name: Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 10 Г
+      dose_text: Раствор 0,5 мг/мл. Орошения, полоскания, аппликации – 5–10 мл на
+        пораженную поверхность 2–3 раза/сут, 1–3 мин. Для полосканий смешивать с равным
+        количеством воды. Курс 5 дней.
       frequency_text: null
       duration_text: null
       route: null
@@ -189,17 +653,20 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "дней\n10 Грамицидин \nС/Цетилпиридиния \nхлорид \nТаб"
-    - drug_name: рассасывания
+        quote: Раствор для местного и наружного применения 0,5 мг/мл... применяется
+          в виде орошений, полосканий и аппликаций – 5–10 мл раствора наносят на пораженную
+          поверхность... 2–3 раза в сутки... Курс лечения 5 дней.
+    - drug_name: Холина салицилат/Цеталкония хлорид
       active_substance: null
       drug_group: null
-      dose_text: 3 мг
+      dose_text: Гель стоматологический (87,1 мг + 0,1 мг)/г. Наносится на слизистую
+        тонким слоем 1 раз/сут до 2 мин.
       frequency_text: null
       duration_text: null
       route: null
@@ -211,17 +678,19 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "рассасывания \n3 мг/1 мг \nРассасывать по 1 таблетке 3–4 раз"
-    - drug_name: Флаконы
+        quote: Гель стоматологический (87,1 мг + 0,1 мг)/г... Наносится на слизистую
+          оболочку полости рта или десну тонким слоем 1 раз в сутки до 2 мин.
+    - drug_name: Смесь лизатов бактерий
       active_substance: null
       drug_group: null
-      dose_text: 55 мл
+      dose_text: 'Таблетки для рассасывания. Профилактика: 6 раз/день с интервалом
+        2 часа, 20 дней. Лечение: 8 раз/день с интервалом 1–2 часа, 10 дней.'
       frequency_text: null
       duration_text: null
       route: null
@@ -233,17 +702,20 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 10
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "Флаконы 55 мл \nМестно"
-    - drug_name: января
+        quote: 'Таблетки для рассасывания. Профилактика: рассасывают 6 раз/день с
+          интервалом 2 часа, курс 20 дней. Лечение: рассасывают 8 раз/день с интервалом
+          1–2 часа, курс 10 дней.'
+    - drug_name: Антитела к гамма интерферону человека аффино очищенные
       active_substance: null
       drug_group: null
-      dose_text: 2023 г
+      dose_text: 'Таблетки для рассасывания. 1-й день: 8 таб. по схеме: 1 таб. каждые
+        30 мин первые 2 часа (5 таб.), затем 3 таб. 3 раза через равные промежутки.'
       frequency_text: null
       duration_text: null
       route: null
@@ -255,17 +727,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 10
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: января 2023 г
-    - drug_name: июня
+        quote: 'Таблетки для рассасывания. 1-й день: 8 таб. по схеме: 1 таб. каждые
+          30 мин первые 2 часа (5 таб.), затем 3 таб. 3 раза через равные промежутки
+          времени.'
+    - drug_name: Лизоцима гидрохлорид/Деквалиния хлорид
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: Таблетки для рассасывания. Рассасывать по одной таблетке каждые 2–3
+        часа, не более 10 таблеток в сутки, при уменьшении симптомов – по 1 таблетке
+        каждые 4 часа. Продолжительность лечения до 5 дней.
       frequency_text: null
       duration_text: null
       route: null
@@ -277,17 +753,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
+        quote: Таблетки для рассасывания Рассасывать по одной таблетке каждые 2–3
+          часа, не более 10 таблеток в сутки, при уменьшении симптомов – по 1 таблетке
+          каждые 4 часа. Продолжительность лечения до 5 дней
+    - drug_name: Лизоцим/Пиридоксин
       active_substance: null
       drug_group: null
-      dose_text: 2011 г
+      dose_text: 'Таблетки для рассасывания. Местно. Медленно рассасывать, не разжевывая,
+        задерживая растаявшую массу таблетки в полости рта как можно дольше, до полного
+        растворения. Назначается по 2 таблетки 3–4 раза '
       frequency_text: null
       duration_text: null
       route: null
@@ -299,17 +779,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: октября 2011 г
-    - drug_name: марта
+        quote: Таблетки для рассасывания Лекарственное средство применяется местно.
+          Таблетки следует медленно рассасывать, не разжевывая, задерживая растаявшую
+          массу таблетки в полости рта как можно дольше, до полного растворения. Назначается
+          по 2 таблетки 3–4 раза в сутки. Курс лечения 5 дней
+    - drug_name: Грамицидин С/Цетилпиридиния хлорид
       active_substance: null
       drug_group: null
-      dose_text: 2023 г
+      dose_text: Таблетки для рассасывания 3 мг/1 мг. Рассасывать по 1 таблетке 3–4
+        раза в день в течение 5–7 дней.
       frequency_text: null
       duration_text: null
       route: null
@@ -321,46 +805,154 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: марта 2023 г
+        quote: Таблетки для рассасывания 3 мг/1 мг Рассасывать по 1 таблетке 3–4 раза
+          в день в течение 5–7 дней
+    - drug_name: Гексетидин/Холина салицилат/Хлорбутанола гемигидрат
+      active_substance: null
+      drug_group: null
+      dose_text: Спрей для полости рта 20 мл, 50 мл во флаконах. Местно. Орошать слизистую
+        оболочку полости рта 4–6 раз в сутки, 1 орошение за 1 прием.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Спрей для полости рта 20 мл, 50 мл во флаконах Местно. Орошать слизистую
+          оболочку полости рта 4–6 раз в сутки, 1 орошение за 1 прием.
+    - drug_name: Метилурацил
+      active_substance: null
+      drug_group: null
+      dose_text: Мазь для местного и наружного применения 10 % в тубах. Местно. Мазь
+        наносится на пораженные участки слизистой оболочки полости рта или десны тонким
+        слоем 1 раз в сутки длительностью до 20 мин.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Мазь для местного и наружного применения 10 % в тубах Местно. Мазь
+          наносится на пораженные участки слизистой оболочки полости рта или десны
+          тонким слоем 1 раз в сутки длительностью до 20 мин.
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Медицинская профилактика рецидивов выявленной кандидозной инфекции
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинская профилактика рецидивов выявленной кандидозной инфекции
+  - text: Поддерживающая терапия (устранение факторов риска, нормализация гигиены
+      полости рта путем тщательной индивидуальной чистки зубов, межзубных промежутков,
+      спинки языка, зубных протезов, регулярное проведение профессиональной гигиены
+      полости рта не реже двух раз в год)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Поддерживающая терапия (устранение факторов риска, нормализация гигиены
+        полости рта путем тщательной индивидуальной чистки зубов, межзубных промежутков,
+        спинки языка, зубных протезов, регулярное прове
+  - text: Медицинская профилактика рецидивов кандидозного стоматита в зависимости
+      от нозологической формы заболевания и степени его тяжести
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинская профилактика рецидивов кандидозного стоматита в зависимости
+        от нозологической формы заболевания и степени его тяжести
   hospitalization: []
-  routing: []
+  routing:
+  - text: Амбулаторно с возможностью консультации узких специалистов
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторно с возможностью консультации узких специалистов
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматито
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_кандидозным_стоматитом_пост_МЗ_11.01.2023_4.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов взрослое население с кандидозным стоматитом
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:50.234331+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T18:03:26.655979+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:50.238460+00:00'
+  validated_at: '2026-07-20T18:03:26.668209+00:00'

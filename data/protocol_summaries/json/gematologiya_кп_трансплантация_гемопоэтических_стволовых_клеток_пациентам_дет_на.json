@@ -1,10 +1,10 @@
 {
   "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Трансплантация гемопоэтических стволовых клеток пациентам детское население с первичными иммунодефицитами",
+    "title": "Трансплантация гемопоэтических стволовых клеток пациентам с первичными иммунодефицитами",
     "url": null,
     "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,21 +32,305 @@
   },
   "conditions": [
     {
-      "condition_id": "трансплантация_гемопоэтических_стволовых_клеток_",
-      "name": "Трансплантация гемопоэтических стволовых клеток пациентам детское население с первичными иммунодефицитами",
+      "condition_id": "acute_gvhd",
+      "name": "Острая реакция «трансплантат против хозяина»",
       "synonyms": [],
       "abbreviations": [],
-      "icd10_codes": [
-        "B19",
-        "N30.0"
+      "icd10_codes": [],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [
+        {
+          "name": "Исследование крови на стерильность",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
+            "page_start": 17,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Во всех случаях подозрения на инфекционные осложнения проводится исследование крови на стерильность;"
+          }
+        }
       ],
+      "treatment": {
+        "non_drug": [],
+        "drug_groups": [],
+        "drugs": [
+          {
+            "drug_name": "Рекомбинантный гранулоцитарный колониестимулирующий фактор (для мобилизации ПСКК)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "10 мкг/кг/сут. в течение 4–5–6 дней подкожно (допускается внутривенное использование).",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "для мобилизации ПСКК у доноров применяется рекомбинантный гранулоцитарный колониестимулирующий фактор, назначаемый в дозе 10 мкг/кг/сут. в течение 4–5–6 дней подкожно (допускается внутривенное использование)."
+            }
+          },
+          {
+            "drug_name": "Ингибиторы протонной помпы (омепразол, эзомепразол)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "внутривенно в профилактических дозах с –7 дня до восстановления показателей гемопоэза.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Гастропротекция включает прием ингибиторов протонной помпы (омепразол, эзомепразол) внутривенно в профилактических дозах с –7 дня до восстановления показателей гемопоэза."
+            }
+          },
+          {
+            "drug_name": "Иммуноглобулин для внутривенного введения",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "капельно 0,2 г/кг со дня –10 – 1 раз в неделю до дня +100, далее при снижении уровня IgG в сыворотке крови ниже 5 г/л – внутривенно капельно 0,2–0,4 мг/кг 1 раз в 4 недели.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Заместительная терапия внутривенным иммуноглобулином осуществляется путем введения иммуноглобулина для внутривенного введения капельно 0,2 г/кг со дня –10 – 1 раз в неделю до дня +100..."
+            }
+          },
+          {
+            "drug_name": "Дифенгидрамин (для премедикации перед трансфузией)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "внутривенно 1 % раствор 0,5–1 мг/кг (максимально 50 мг) с промежутками между введениями не менее 4 часов.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
+              "page_start": 15,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "премедикация одним из следующих ЛП: дифенгидрамин внутривенно 1 % раствор 0,5–1 мг/кг (максимально 50 мг) с промежутками между введениями не менее 4 часов;"
+            }
+          },
+          {
+            "drug_name": "Клемастин (для премедикации перед трансфузией)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "внутривенно 1 % раствор 0,1 мл/год жизни (максимально 2 мг).",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
+              "page_start": 15,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "премедикация одним из следующих ЛП: ... клемастин внутривенно 1 % раствор 0,1 мл/год жизни (максимально 2 мг);"
+            }
+          },
+          {
+            "drug_name": "Дексаметазон (для премедикации перед трансфузией)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "внутривенно 0,15–0,2 мг/кг массы тела.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
+              "page_start": 15,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "премедикация одним из следующих ЛП: ... дексаметазон внутривенно 0,15–0,2 мг/кг массы тела."
+            }
+          }
+        ],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Инфекционные осложнения раннего посттрансплантационного периода (бактериальные, вирусные, грибковые)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
+            "page_start": 17,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "К осложнениям раннего посттрансплантационного периода, возникающим 49.2. инфекционные осложнения: бактериальные инфекции; вирусные инфекции; грибковые инфекции."
+          }
+        },
+        {
+          "text": "Недостаточное функционирование трансплантата",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "недостаточное функционирование трансплантата – частичная зависимость от трансфузий препаратов крови и (или) факторов роста при отсутствии других причин..."
+          }
+        }
+      ],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "chronic_gvhd",
+      "name": "Хроническая реакция «трансплантат против хозяина»",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": null,
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "gvhd_overlap_syndrome",
+      "name": "Синдром перекреста острой и хронической реакции «трансплантат против хозяина»",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "Определение категории РТПХ осуществляется в соответствии с классификацией",
+            "text": "D 76: семейные гемофагоцитарные лимфогистиоцитозы, синдром Чедиака–Хигаси, синдром Грисцелли тип 2, синдром Германского–Пудлака типы 2, 10 (абсолютное показание к ТГСК)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -63,11 +347,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Определение категории РТПХ осуществляется в соответствии с классификацией"
+              "quote": "D 76: семейные гемофагоцитарные лимфогистиоцитозы, синдром Чедиака–Хигаси, синдром Грисцелли тип 2, синдром Германского–Пудлака типы 2, 10 (абсолютное показание к ТГСК)"
             }
           },
           {
-            "text": "Определение категории РТПХ осуществляется в соответствии с классификацией",
+            "text": "D 81.0: Тяжелый комбинированный иммунодефицит с ретикулярным дисгенезом (абсолютное показание к ТГСК)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -84,11 +368,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Определение категории РТПХ осуществляется в соответствии с классификацией"
+              "quote": "D 81.0: Тяжелый комбинированный иммунодефицит с ретикулярным дисгенезом (абсолютное показание к ТГСК)"
             }
           },
           {
-            "text": "Определение категории РТПХ осуществляется в соответствии с классификацией",
+            "text": "D 81.1: Тяжелый комбинированный иммунодефицит с низким содержанием T- и B-клеток (абсолютное показание к ТГСК)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -105,11 +389,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Определение категории РТПХ осуществляется в соответствии с классификацией"
+              "quote": "D 81.1: Тяжелый комбинированный иммунодефицит с низким содержанием T- и B-клеток (абсолютное показание к ТГСК)"
             }
           },
           {
-            "text": "Определение категории РТПХ осуществляется в соответствии с классификацией",
+            "text": "D 81.2: Тяжелый комбинированный иммунодефицит с низким или нормальным содержанием B-клеток (абсолютное показание к ТГСК)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -126,11 +410,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Определение категории РТПХ осуществляется в соответствии с классификацией"
+              "quote": "D 81.2: Тяжелый комбинированный иммунодефицит с низким или нормальным содержанием B-клеток (абсолютное показание к ТГСК)"
             }
           },
           {
-            "text": "[criteria] 6. Определение трансплантационных групп: (стр. 2)",
+            "text": "D 81.3: Дефицит аденозиндезаминазы (ADA) (абсолютное показание к ТГСК)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -147,11 +431,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 6. Определение трансплантационных групп: (стр. 2)"
+              "quote": "D 81.3: Дефицит аденозиндезаминазы (ADA) (абсолютное показание к ТГСК)"
             }
           },
           {
-            "text": "[criteria] 51. В случае выявления диагностических критериев ТА-ТМА без протеинурии (стр. 19)",
+            "text": "D 81.6: Дефицит молекул класса I главного комплекса гистосовместимости (абсолютное показание к ТГСК)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -168,11 +452,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 51. В случае выявления диагностических критериев ТА-ТМА без протеинурии (стр. 19)"
+              "quote": "D 81.6: Дефицит молекул класса I главного комплекса гистосовместимости (абсолютное показание к ТГСК)"
             }
           },
           {
-            "text": "[criteria] 6. Определение трансплантационных групп: (стр. 2)",
+            "text": "D 81.7: Дефицит молекул класса II главного комплекса гистосовместимости (абсолютное показание к ТГСК)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -189,11 +473,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 6. Определение трансплантационных групп: (стр. 2)"
+              "quote": "D 81.7: Дефицит молекул класса II главного комплекса гистосовместимости (абсолютное показание к ТГСК)"
             }
           },
           {
-            "text": "[criteria] 51. В случае выявления диагностических критериев ТА-ТМА без протеинурии (стр. 19)",
+            "text": "D 84.8: Дефициты адгезии лейкоцитов I и II типов (абсолютное показание к ТГСК)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -210,7 +494,175 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 51. В случае выявления диагностических критериев ТА-ТМА без протеинурии (стр. 19)"
+              "quote": "D 84.8: Дефициты адгезии лейкоцитов I и II типов (абсолютное показание к ТГСК)"
+            }
+          },
+          {
+            "text": "D 82.8: X-сцепленный лимфопролиферативный синдром I и II типов (абсолютное показание к ТГСК)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "D 82.8: X-сцепленный лимфопролиферативный синдром I и II типов (абсолютное показание к ТГСК)"
+            }
+          },
+          {
+            "text": "D 82.8: Т-клеточная панникулитоподобная подкожная лимфома, ассоциированная с мутацией HAVCR2 (абсолютное показание к ТГСК)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "D 82.8: Т-клеточная панникулитоподобная подкожная лимфома, ассоциированная с мутацией HAVCR2 (абсолютное показание к ТГСК)"
+            }
+          },
+          {
+            "text": "D 89.8: Хроническая гранулематозная болезнь (относительное показание к ТГСК при наличии HLA-совместимого донора)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "D 89.8: Хроническая гранулематозная болезнь (относительное показание к ТГСК при наличии HLA-совместимого донора)"
+            }
+          },
+          {
+            "text": "D 70: Тяжелая врожденная нейтропения (ELANE, болезнь Костмана–HAX1, Х-сцепленная нейтропения/миелодисплазия–WAS GOF, синдром Кохен, дефекты рецептора G-CSF) (относительное показание)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "D 70: Тяжелая врожденная нейтропения (ELANE, болезнь Костмана–HAX1, Х-сцепленная нейтропения/миелодисплазия–WAS GOF, синдром Кохен, дефекты рецептора G-CSF) (относительное показание)"
+            }
+          },
+          {
+            "text": "D 81.8: Другие комбинированные иммунодефициты (относительное показание к ТГСК при наличии HLA-совместимого донора)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "D 81.8: Другие комбинированные иммунодефициты (относительное показание к ТГСК при наличии HLA-совместимого донора)"
+            }
+          },
+          {
+            "text": "D 82.0: Синдром Вискотта–Олдрича (относительное показание к ТГСК при наличии HLA-совместимого донора)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "D 82.0: Синдром Вискотта–Олдрича (относительное показание к ТГСК при наличии HLA-совместимого донора)"
+            }
+          },
+          {
+            "text": "D 82.8: Х-сцепленный синдром иммунодисрегуляции; полиэндокринопатии и энтеропатии (IPEX-синдром) (относительное показание)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "D 82.8: Х-сцепленный синдром иммунодисрегуляции; полиэндокринопатии и энтеропатии (IPEX-синдром) (относительное показание)"
+            }
+          },
+          {
+            "text": "Q 87.8: Синдром Ниймегена; синдром Блума, ICF1, 2, 3, 4 (относительное показание к ТГСК при наличии HLA-совместимого донора)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Q 87.8: Синдром Ниймегена; синдром Блума, ICF1, 2, 3, 4 (относительное показание к ТГСК при наличии HLA-совместимого донора)"
             }
           }
         ],
@@ -218,11 +670,37 @@
         "exclusion": []
       },
       "required_exams": [],
-      "conditional_exams": [],
+      "conditional_exams": [
+        {
+          "name": "Исследование крови на стерильность",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
+            "page_start": 17,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Во всех случаях подозрения на инфекционные осложнения проводится исследование крови на стерильность;"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 7. Фармакотерапия при ТГСК пациентам с ПИД назначается в соответствии (стр. 3)",
+            "text": "Эксфузия костного мозга (КМ) под общей или перидуральной анестезией в условиях операционной.",
             "source_ref": {
               "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
               "document_url": null,
@@ -233,11 +711,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 7. Фармакотерапия при ТГСК пациентам с ПИД назначается в соответствии (стр. 3)"
+              "quote": "Эксфузия костного мозга (КМ) под общей или перидуральной анестезией в условиях операционной."
             }
           },
           {
-            "text": "с настоящим клиническим протоколом с учетом всех индивидуальных особенностей",
+            "text": "Аспирация КМ путем множественных пункций задних остей тазовых костей с обеих сторон в шприцы, содержащие антикоагулянт.",
             "source_ref": {
               "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
               "document_url": null,
@@ -248,11 +726,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "с настоящим клиническим протоколом с учетом всех индивидуальных особенностей"
+              "quote": "Аспирация КМ путем множественных пункций задних остей тазовых костей с обеих сторон в шприцы, содержащие антикоагулянт."
             }
           },
           {
-            "text": "и фармакологического анамнеза, тяжести заболевания, наличия сопутствующей патологии",
+            "text": "Объем аспирируемой костномозговой взвеси не должен превышать 10–15 мл на 1 кг массы тела донора.",
             "source_ref": {
               "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
               "document_url": null,
@@ -263,11 +741,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "и фармакологического анамнеза, тяжести заболевания, наличия сопутствующей патологии"
+              "quote": "Объем аспирируемой костномозговой взвеси не должен превышать 10–15 мл на 1 кг массы тела донора."
             }
           },
           {
-            "text": "и клинико-фармакологической характеристики ЛП. Применение",
+            "text": "Мобилизация периферических стволовых клеток крови (ПСКК) у доноров.",
             "source_ref": {
               "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
               "document_url": null,
@@ -278,11 +756,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "и клинико-фармакологической характеристики ЛП. Применение"
+              "quote": "Мобилизация периферических стволовых клеток крови (ПСКК) у доноров."
             }
           },
           {
-            "text": "по медицинскому применению (листком-вкладышем). Допускается включение в схему",
+            "text": "Аферез ПСКК на сепараторе клеток крови (обычно на 4, 5 и/или 6 дни стимуляции).",
             "source_ref": {
               "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
               "document_url": null,
@@ -293,11 +771,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "по медицинскому применению (листком-вкладышем). Допускается включение в схему"
+              "quote": "Аферез ПСКК на сепараторе клеток крови (обычно на 4, 5 и/или 6 дни стимуляции)."
             }
           },
           {
-            "text": "по медицинскому применению (листке-вкладыше), дополнительно указываются особые",
+            "text": "Катетеризация периферических, а при их отсутствии – центральных вен для обеспечения адекватного венозного доступа при лейкаферезе.",
             "source_ref": {
               "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
               "document_url": null,
@@ -308,17 +786,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "по медицинскому применению (листке-вкладыше), дополнительно указываются особые"
+              "quote": "Катетеризация периферических, а при их отсутствии – центральных вен для обеспечения адекватного венозного доступа при лейкаферезе."
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "дозе",
+            "drug_name": "Рекомбинантный гранулоцитарный колониестимулирующий фактор (Г-КСФ)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "10 мкг",
+            "dose_text": "10 мкг/кг/сут. в течение 4–5–6 дней подкожно (допускается внутривенное использование)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -330,20 +808,20 @@
               "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "дозе 10 мкг/кг/сут"
+              "quote": "для мобилизации ПСКК у доноров применяется рекомбинантный гранулоцитарный колониестимулирующий фактор, назначаемый в дозе 10 мкг/кг/сут."
             }
           },
           {
-            "drug_name": "капельно",
+            "drug_name": "Ингибиторы протонной помпы (омепразол, эзомепразол)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,2 г",
+            "dose_text": "в профилактических дозах внутривенно с –7 дня до восстановления показателей гемопоэза",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -355,20 +833,20 @@
               "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
-              "page_start": null,
+              "page_start": 10,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "капельно 0,2 г/кг со дня –\n10 – 1 раз в неделю до дня "
+              "quote": "Гастропротекция включает прием ингибиторов протонной помпы (омепразол, эзомепразол) внутривенно в профилактических дозах с –7 дня до восстановления показателей гемопоэза."
             }
           },
           {
-            "drug_name": "ниже",
+            "drug_name": "Иммуноглобулин для внутривенного введения",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "5 г",
+            "dose_text": "0,2 г/кг капельно 1 раз в неделю со дня –10 до дня +100; далее 0,2–0,4 мг/кг 1 раз в 4 недели при снижении IgG < 5 г/л",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -380,20 +858,20 @@
               "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
-              "page_start": null,
+              "page_start": 11,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ниже \n5 г/л – внутривенно капельно 0,2–0,4 мг/кг "
+              "quote": "Заместительная терапия внутривенным иммуноглобулином осуществляется путем введения иммуноглобулина для внутривенного введения капельно 0,2 г/кг со дня –10 – 1 раз в неделю до дня +100, далее при снижении уровня IgG в сыворотке крови ниже 5 г/л – внутривенно капельно 0,2–0,4 мг/кг 1 раз в 4 недели."
             }
           },
           {
-            "drug_name": "максимально",
+            "drug_name": "Дифенгидрамин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "50 мг",
+            "dose_text": "1 % раствор 0,5–1 мг/кг (максимально 50 мг) внутривенно с промежутками не менее 4 часов (для премедикации)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -405,20 +883,20 @@
               "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
-              "page_start": null,
+              "page_start": 15,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "максимально 50 мг) \nс промежутками между введениями не ме"
+              "quote": "дифенгидрамин внутривенно 1 % раствор 0,5–1 мг/кг (максимально 50 мг) с промежутками между введениями не менее 4 часов;"
             }
           },
           {
-            "drug_name": "раствор",
+            "drug_name": "Клемастин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,1 мл",
+            "dose_text": "1 % раствор 0,1 мл/год жизни (максимально 2 мг) внутривенно (для премедикации)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -430,20 +908,20 @@
               "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
-              "page_start": null,
+              "page_start": 15,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "раствор 0,1 мл/год жизни (максимально 2 мг)"
+              "quote": "клемастин внутривенно 1 % раствор 0,1 мл/год жизни (максимально 2 мг);"
             }
           },
           {
-            "drug_name": "октября",
+            "drug_name": "Дексаметазон",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2025 г",
+            "dose_text": "0,15–0,2 мг/кг массы тела внутривенно (для премедикации)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -455,63 +933,13 @@
               "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
-              "page_start": null,
+              "page_start": 15,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "октября 2025 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "ноября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2010 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "ноября 2010 г"
+              "quote": "дексаметазон внутривенно 0,15–0,2 мг/кг массы тела."
             }
           }
         ],
@@ -521,7 +949,7 @@
       },
       "follow_up": [
         {
-          "text": "Контроль",
+          "text": "Медицинские осмотры: до +100 дней – 1–2 раза в неделю; до +180 дней – 1 раз в 2 недели; до 1 года – 1 раз в месяц.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -535,11 +963,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Контроль"
+            "quote": "Медицинские осмотры: до +100 дней – 1–2 раза в неделю; до +180 дней – 1 раз в 2 недели; до 1 года – 1 раз в месяц."
           }
         },
         {
-          "text": "контроль",
+          "text": "Контроль приема иммуносупрессивной и сопроводительной терапии (антибактериальной, противовирусной, противогрибковой).",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -553,14 +981,32 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
+            "quote": "Контроль приема иммуносупрессивной и сопроводительной терапии (антибактериальной, противовирусной, противогрибковой)."
+          }
+        },
+        {
+          "text": "Контроль роста, веса, АД на дни: +30, +60, +100, +180, +365.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Контроль роста, веса, АД на дни: +30, +60, +100, +180, +365."
           }
         }
       ],
       "hospitalization": [],
       "routing": [
         {
-          "text": "для медицинского наблюдения в амбулаторных условиях.",
+          "text": "Госпитализация для проведения ТГСК",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -573,46 +1019,86 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "для медицинского наблюдения в амбулаторных условиях."
+            "quote": "Госпитализация для проведения ТГСК"
           }
         }
       ],
-      "red_flags": [],
+      "red_flags": [
+        {
+          "text": "Недостаточное функционирование трансплантата (частичная зависимость от трансфузий препаратов крови и/или факторов роста)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "недостаточное функционирование трансплантата – частичная зависимость от трансфузий препаратов крови и (или) факторов роста при отсутствии других причин"
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "gematologiya_кп_трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет_на",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/gematologiya/КП_Трансплантация_гемопоэтических_стволовых_клеток_пациентам_дет-нас_с_первичными_иммунодефицитами»_пост_МЗ_2025_151.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Трансплантация гемопоэтических стволовых клеток пациентам детское население с первичными иммунодефицитами"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:30.456297+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T16:04:34.206093+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=3"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-06-23T19:15:30.467561+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "missing_icd10",
+        "message": "Нет icd10_codes у condition",
+        "path": "conditions[acute_gvhd]"
+      },
+      {
+        "level": "warning",
+        "code": "missing_icd10",
+        "message": "Нет icd10_codes у condition",
+        "path": "conditions[chronic_gvhd]"
+      },
+      {
+        "level": "warning",
+        "code": "missing_icd10",
+        "message": "Нет icd10_codes у condition",
+        "path": "conditions[gvhd_overlap_syndrome]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[gvhd_overlap_syndrome].treatment.drugs[1]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[gvhd_overlap_syndrome].treatment.drugs[2]"
+      }
+    ],
+    "validated_at": "2026-07-20T16:04:34.230139+00:00"
   }
 }

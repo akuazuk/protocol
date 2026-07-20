@@ -1,9 +1,9 @@
 protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение профилактика пролежней пациентов взрослое население
+  title: Диагностика, лечение, профилактика пролежней
   url: null
   local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
     пост_МЗ_2024_146.pdf
@@ -27,20 +27,18 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_лечение_профилактика_пролежней_пацие
-  name: Диагностика лечение профилактика пролежней пациентов взрослое население
+- condition_id: pressure_ulcers
+  name: Пролежни
   synonyms: []
   abbreviations: []
   icd10_codes:
   - L89
-  - B24
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[classification] 9. При формулировке диагноза необходимо указывать: (стр.
-        3)'
+    - text: Физическое состояние
       logic_group: null
       operator: unknown
       values: []
@@ -58,9 +56,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 9. При формулировке диагноза необходимо указывать:
-          (стр. 3)'
-    - text: Если имеется несколько пролежней разной локализации и стадии, в диагнозе
+        quote: Физическое состояние
+    - text: Психическое состояние
       logic_group: null
       operator: unknown
       values: []
@@ -78,8 +75,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Если имеется несколько пролежней разной локализации и стадии, в диагнозе
-    - text: 'Примеры формулировки диагноза:'
+        quote: Психическое состояние
+    - text: Активность
       logic_group: null
       operator: unknown
       values: []
@@ -97,9 +94,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Примеры формулировки диагноза:'
-    - text: '[classification] 9. При формулировке диагноза необходимо указывать: (стр.
-        3)'
+        quote: Активность
+    - text: Подвижность
       logic_group: null
       operator: unknown
       values: []
@@ -117,9 +113,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 9. При формулировке диагноза необходимо указывать:
-          (стр. 3)'
-    - text: Если имеется несколько пролежней разной локализации и стадии, в диагнозе
+        quote: Подвижность
+    - text: Недержание
       logic_group: null
       operator: unknown
       values: []
@@ -137,74 +132,152 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Если имеется несколько пролежней разной локализации и стадии, в диагнозе
-    - text: 'Примеры формулировки диагноза:'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
-          пост_МЗ_2024_146.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Примеры формулировки диагноза:'
-    - text: '[classification] 9. При формулировке диагноза необходимо указывать: (стр.
-        3)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
-          пост_МЗ_2024_146.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 9. При формулировке диагноза необходимо указывать:
-          (стр. 3)'
-    - text: Если имеется несколько пролежней разной локализации и стадии, в диагнозе
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
-          пост_МЗ_2024_146.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Если имеется несколько пролежней разной локализации и стадии, в диагнозе
+        quote: Недержание
     optional: []
     exclusion: []
-  required_exams: []
-  conditional_exams: []
+  required_exams:
+  - name: Медицинский осмотр
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+        пост_МЗ_2024_146.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Диагностика пролежней включает: медицинский осмотр;'
+  - name: Общий (клинический) анализ крови развернутый
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+        пост_МЗ_2024_146.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий (клинический) анализ крови развернутый, однократно;
+  - name: Биохимический анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+        пост_МЗ_2024_146.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: биохимический анализ крови, однократно;
+  conditional_exams:
+  - name: Консультация врача-хирурга
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+        пост_МЗ_2024_146.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при пролежнях III и IV стадий – консультация врача-хирурга;
+  - name: Бактериологическое исследование образцов жидкости
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+        пост_МЗ_2024_146.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при присоединении вторичной инфекции и (или) неэффективности лечения
+        – бактериологическое исследование образцов жидкости, полученных методом мазка
+        или пункции из краев раны с определением чувствительности к антибактериальным
+        ЛП.
+  - name: Бактериологическое исследование образцов жидкости
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+        пост_МЗ_2024_146.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Назначение антибактериальных ЛП широкого спектра действия проводится
+        после выполнения бактериологического исследования образцов жидкости, полученных
+        методом мазка или пункции из краев раны.
   treatment:
     non_drug:
-    - text: '[treatment] 5. Лечение пациентов с пролежнями осуществляется в соответствии
-        с настоящим (стр. 2)'
+    - text: Устранение длительного (непрерывного) давления на пораженные участки тела
+        – использование противопролежневых матрасов, валиков, подкладных кругов.
       source_ref:
         protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
         document_url: null
@@ -216,10 +289,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 5. Лечение пациентов с пролежнями осуществляется в соответствии
-          с настоящим (стр. 2)'
-    - text: клиническим протоколом и включает основные лекарственные препараты (далее
-        – ЛП),
+        quote: Устранение длительного (непрерывного) давления на пораженные участки
+          тела – использование противопролежневых матрасов, валиков, подкладных кругов.
+    - text: Хирургическое удаление некротических тканей (некрэктомия) в стационарных
+        условиях для пролежней III и IV стадии.
       source_ref:
         protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
         document_url: null
@@ -231,10 +304,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: клиническим протоколом и включает основные лекарственные препараты
-          (далее – ЛП),
-    - text: по систематической или заместительной номенклатуре, с указанием лекарственной
-        формы
+        quote: Хирургическое удаление некротических тканей (некрэктомия) в стационарных
+          условиях для пролежней III и IV стадии.
+    - text: Пластическое закрытие раневого дефекта при пролежнях III и IV стадии выполняется
+        врачами-специалистами хирургических отделений только пациентам с высоким реабилитационным
+        потенциалом.
       source_ref:
         protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
         document_url: null
@@ -246,9 +320,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: по систематической или заместительной номенклатуре, с указанием лекарственной
-          формы
-    - text: '[treatment] 11. Местное (консервативное) лечение: (стр. 3)'
+        quote: Пластическое закрытие раневого дефекта при пролежнях III и IV стадии
+          выполняется врачами-специалистами хирургических отделений только пациентам
+          с высоким реабилитационным потенциалом.
+    - text: Своевременная оценка риска развития пролежней (ежедневное наблюдение за
+        состоянием кожи, заполнение шкалы Нортона).
       source_ref:
         protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
         document_url: null
@@ -260,9 +336,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 11. Местное (консервативное) лечение: (стр. 3)'
-    - text: 11.1. устранение длительного (непрерывного) давления на пораженные участки
-        тела –
+        quote: Своевременная оценка риска развития пролежней (ежедневное наблюдение
+          за состоянием кожи, заполнение шкалы Нортона).
+    - text: Адекватный гигиенический уход (регулярная санитарная обработка, мытье
+        со специальными моющими средствами без трения).
       source_ref:
         protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
         document_url: null
@@ -274,9 +351,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 11.1. устранение длительного (непрерывного) давления на пораженные
-          участки тела –
-    - text: использование противопролежневых матрасов, валиков, подкладных кругов
+        quote: Адекватный гигиенический уход (регулярная санитарная обработка, мытье
+          со специальными моющими средствами без трения).
+    - text: Тщательное удаление влаги с поверхности кожи промокающими движениями.
       source_ref:
         protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
         document_url: null
@@ -288,13 +365,157 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: использование противопролежневых матрасов, валиков, подкладных кругов
+        quote: Тщательное удаление влаги с поверхности кожи промокающими движениями.
+    - text: Качественный уход за кожей с использованием косметических средств.
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+          пост_МЗ_2024_146.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Качественный уход за кожей с использованием косметических средств.
+    - text: Устранение неровностей и складок на нательном и постельном белье.
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+          пост_МЗ_2024_146.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Устранение неровностей и складок на нательном и постельном белье.
+    - text: Использование нательного белья из натуральных тканей (желательно швами
+        наружу).
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+          пост_МЗ_2024_146.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Использование нательного белья из натуральных тканей (желательно швами
+          наружу).
+    - text: Использование постельного белья из натуральных тканей (простыня на резинке).
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+          пост_МЗ_2024_146.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Использование постельного белья из натуральных тканей (простыня на
+          резинке).
+    - text: Предупреждение воздействия влаги на кожу (использование хорошо впитывающих
+        подкладок).
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+          пост_МЗ_2024_146.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Предупреждение воздействия влаги на кожу (использование хорошо впитывающих
+          подкладок).
+    - text: Смена подгузников не реже 3 раз в сутки, подкладных пеленок – по мере
+        загрязнения, нанесение защитных лосьонов на неповрежденную кожу.
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+          пост_МЗ_2024_146.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Смена подгузников не реже 3 раз в сутки, подкладных пеленок – по мере
+          загрязнения, нанесение защитных лосьонов на неповрежденную кожу.
+    - text: Использование мочеприемников и калоприемников.
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+          пост_МЗ_2024_146.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Использование мочеприемников и калоприемников.
+    - text: 'Контроль положения тела пациента: смена положения не реже 1 раза в 2
+        часа (в том числе ночью), чередование положений (полусидя, на боку, на спине,
+        на животе).'
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+          пост_МЗ_2024_146.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Контроль положения тела пациента: смена положения не реже 1 раза в
+          2 часа (в том числе ночью), чередование положений (полусидя, на боку, на
+          спине, на животе).'
+    - text: При каждом перемещении осматривать участки риска и не подвергать их трению.
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+          пост_МЗ_2024_146.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При каждом перемещении осматривать участки риска и не подвергать их
+          трению.
+    - text: Позиционирование пациента в кровати для уменьшения давления на кожу и
+        костные выступы с использованием приспособлений.
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+          пост_МЗ_2024_146.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Позиционирование пациента в кровати для уменьшения давления на кожу
+          и костные выступы с использованием приспособлений.
     drug_groups: []
     drugs:
-    - drug_name: применения
+    - drug_name: Хлоргексидин (хлоргексидина биглюконат)
       active_substance: null
       drug_group: null
-      dose_text: 0,5 мг
+      dose_text: раствор для наружного (местного) применения 0,5 мг/мл
       frequency_text: null
       duration_text: null
       route: null
@@ -307,17 +528,20 @@ conditions:
         document_url: null
         local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
           пост_МЗ_2024_146.pdf
-        page_start: null
+        page_start: 3
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: применения 0,5 мг/мл
-    - drug_name: раствор
+        quote: Антисептики применяют для обработки пролежней в виде протираний или
+          орошений. При инфицировании допускается наложение салфеток на 10 минут.
+          Обработка 1–2 раза в сутки, или при каждой смене повязок, но не реже 1 раза
+          в 1–2 суток.
+    - drug_name: Мирамистин (бензилдиметил-миристоиламинопропил-аммония хлорид)
       active_substance: null
       drug_group: null
-      dose_text: "0,1 \nмг"
+      dose_text: раствор 0,1 мг/мл
       frequency_text: null
       duration_text: null
       route: null
@@ -330,17 +554,21 @@ conditions:
         document_url: null
         local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
           пост_МЗ_2024_146.pdf
-        page_start: null
+        page_start: 3
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "раствор 0,1 \nмг/мл"
-    - drug_name: октября
+        quote: Антисептики применяют для обработки пролежней в виде протираний или
+          орошений. При инфицировании допускается наложение салфеток на 10 минут.
+          Обработка 1–2 раза в сутки, или при каждой смене повязок, но не реже 1 раза
+          в 1–2 суток.
+    - drug_name: Полигексаметиленбигуанид гидрохлорид/феноксиэтанол
       active_substance: null
       drug_group: null
-      dose_text: 2024 г
+      dose_text: раствор для наружного и местного применения 100 мл, 500 мл, 1000
+        мл
       frequency_text: null
       duration_text: null
       route: null
@@ -353,17 +581,20 @@ conditions:
         document_url: null
         local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
           пост_МЗ_2024_146.pdf
-        page_start: null
+        page_start: 3
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: октября 2024 г
-    - drug_name: июня
+        quote: Антисептики применяют для обработки пролежней в виде протираний или
+          орошений. При инфицировании допускается наложение салфеток на 10 минут.
+          Обработка 1–2 раза в сутки, или при каждой смене повязок, но не реже 1 раза
+          в 1–2 суток.
+    - drug_name: Нитрофурал
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: раствор для наружного применения 0,2 мг/мл
       frequency_text: null
       duration_text: null
       route: null
@@ -376,17 +607,21 @@ conditions:
         document_url: null
         local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
           пост_МЗ_2024_146.pdf
-        page_start: null
+        page_start: 3
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: баллонах
+        quote: Антисептики применяют для обработки пролежней в виде протираний или
+          орошений. При инфицировании допускается наложение салфеток на 10 минут.
+          Обработка 1–2 раза в сутки, или при каждой смене повязок, но не реже 1 раза
+          в 1–2 суток.
+    - drug_name: Борная кислота
       active_substance: null
       drug_group: null
-      dose_text: 32,25 г
+      dose_text: раствор для наружного применения (порошок для приготовления раствора)
+        30 мг/мл
       frequency_text: null
       duration_text: null
       route: null
@@ -399,18 +634,247 @@ conditions:
         document_url: null
         local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
           пост_МЗ_2024_146.pdf
-        page_start: null
+        page_start: 3
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "баллонах \n32,25 г"
+        quote: Антисептики применяют для обработки пролежней в виде протираний или
+          орошений. При инфицировании допускается наложение салфеток на 10 минут.
+          Обработка 1–2 раза в сутки, или при каждой смене повязок, но не реже 1 раза
+          в 1–2 суток.
+    - drug_name: Натрия гипохлорит
+      active_substance: null
+      drug_group: null
+      dose_text: раствор для местного и наружного применения 0,6 мг/мл
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+          пост_МЗ_2024_146.pdf
+        page_start: 3
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Антисептики применяют для обработки пролежней в виде протираний или
+          орошений. При инфицировании допускается наложение салфеток на 10 минут.
+          Обработка 1–2 раза в сутки, или при каждой смене повязок, но не реже 1 раза
+          в 1–2 суток.
+    - drug_name: Декспантенол
+      active_substance: null
+      drug_group: null
+      dose_text: гель (крем) для наружного применения 40 мг/г
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+          пост_МЗ_2024_146.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ЛП-стимуляторы регенерации тканей наносят на пораженные участки кожи
+          1–2 раза в день после предварительной обработки раствором антисептика.
+    - drug_name: Метилурацил
+      active_substance: null
+      drug_group: null
+      dose_text: мазь для наружного применения 100 мг/г
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+          пост_МЗ_2024_146.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ЛП-стимуляторы регенерации тканей наносят на пораженные участки кожи
+          1–2 раза в день после предварительной обработки раствором антисептика.
+    - drug_name: Повидон-йод
+      active_substance: null
+      drug_group: null
+      dose_text: мазь для наружного применения 100 мг/г
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+          пост_МЗ_2024_146.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ЛП наносят тонким слоем на пораженную поверхность кожи или на стерильную
+          марлевую салфетку и накладывают на рану. Кратность применения – 1–2 раза
+          в сутки.
+    - drug_name: Сульфадиазин серебра
+      active_substance: null
+      drug_group: null
+      dose_text: крем (мазь) для наружного применения 10 мг/г, 20 мг/г
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+          пост_МЗ_2024_146.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ЛП наносят тонким слоем на пораженную поверхность кожи или на стерильную
+          марлевую салфетку и накладывают на рану. Кратность применения – 1–2 раза
+          в сутки.
+    - drug_name: Хлорамфеникол
+      active_substance: null
+      drug_group: null
+      dose_text: линимент для наружного применения 50 мг/г, 100 мг/г
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+          пост_МЗ_2024_146.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ЛП наносят тонким слоем на пораженную поверхность кожи или на стерильную
+          марлевую салфетку и накладывают на рану. Кратность применения – 1–2 раза
+          в сутки.
+    - drug_name: Хлорамфеникол/Метилурацил
+      active_substance: null
+      drug_group: null
+      dose_text: мазь для наружного применения (7,5 мг + 40 мг)/г
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+          пост_МЗ_2024_146.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ЛП наносят тонким слоем на пораженную поверхность кожи или на стерильную
+          марлевую салфетку и накладывают на рану. Кратность применения – 1–2 раза
+          в сутки.
+    - drug_name: Бетаметазон/Гентамицин
+      active_substance: null
+      drug_group: null
+      dose_text: мазь для наружного применения (0,5 мг + 1000 МЕ)/г или (0,5 мг +
+        1 г)/1 г
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+          пост_МЗ_2024_146.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ЛП наносят тонким слоем на пораженную поверхность кожи или на стерильную
+          марлевую салфетку и накладывают на рану. Кратность применения – 1–2 раза
+          в сутки.
+    - drug_name: Гидрокортизон/Окситетрациклин
+      active_substance: null
+      drug_group: null
+      dose_text: мазь для местного и наружного применения (10 мг + 30 мг)/г или аэрозоль
+        для применения на кожу, суспензия (3,1 мг + 9,3 мг)/г в баллонах 32,25 г
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+          пост_МЗ_2024_146.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ЛП пропитываются стерильные салфетки и накладываются на пораженные
+          участки. Кратность применения – 1–2 раза в сутки.
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Контроль
+  - text: Информирование и обучение родственников, ухаживающих за пациентом, о факторах
+      риска пролежней и методах предотвращения их появления.
     timing: null
     required_if: []
     expected_actions: []
@@ -425,11 +889,68 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контроль
+      quote: Информирование и обучение родственников, ухаживающих за пациентом, о
+        факторах риска пролежней и методах предотвращения их появления.
+  - text: Оценка дефектов кожного покрова (первичный, повторный, плановый, внеплановый
+      осмотр)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+        пост_МЗ_2024_146.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Оценка дефектов кожного покрова (первичный, повторный, плановый, внеплановый
+        осмотр)
+  - text: 'Контроль эффективности лечения пролежней по признакам: уменьшение количества
+      экссудата, размеров раны, улучшение состояния тканей раневого ложа (уменьшение
+      отека, гиперемии, местной гипертермии, болевого синдрома).'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+        пост_МЗ_2024_146.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Контроль эффективности лечения пролежней по признакам: уменьшение количества
+        экссудата, размеров раны, улучшение состояния тканей раневого ложа (уменьшение
+        отека, гиперемии, местной гипертермии, болев'
+  - text: При длительном лечении пролежня для оценки динамики помогают серийные фотографии,
+      сделанные до, в процессе и после лечения.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+        пост_МЗ_2024_146.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При длительном лечении пролежня для оценки динамики помогают серийные
+        фотографии, сделанные до, в процессе и после лечения.
   hospitalization: []
   routing:
-  - text: '[routing] 4. Направление пациентов с пролежнями для оказания им медицинской
-      помощи (стр. 2)'
+  - text: госпитализация/стационарные условия при хирургическом лечении пролежней
+      III и IV стадии.
     timing: null
     required_if: []
     source_ref:
@@ -443,10 +964,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 4. Направление пациентов с пролежнями для оказания им медицинской
-        помощи (стр. 2)'
-  - text: '[routing] 4. Направление пациентов с пролежнями для оказания им медицинской
-      помощи (стр. 2)'
+      quote: госпитализация/стационарные условия при хирургическом лечении пролежней
+        III и IV стадии.
+  - text: госпитализация
     timing: null
     required_if: []
     source_ref:
@@ -460,70 +980,85 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 4. Направление пациентов с пролежнями для оказания им медицинской
-        помощи (стр. 2)'
-  - text: '[routing] 4. Направление пациентов с пролежнями для оказания им медицинской
-      помощи (стр. 2)'
-    timing: null
-    required_if: []
+      quote: госпитализация
+  red_flags:
+  - text: ЛП, содержащие глюкокортикостероиды, не накладываются под окклюзионные повязки.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
     source_ref:
       protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
       document_url: null
       local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
         пост_МЗ_2024_146.pdf
-      page_start: null
+      page_start: 4
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 4. Направление пациентов с пролежнями для оказания им медицинской
-        помощи (стр. 2)'
-  - text: '[routing] 4. Направление пациентов с пролежнями для оказания им медицинской
-      помощи (стр. 2)'
-    timing: null
-    required_if: []
+      quote: ЛП, содержащие глюкокортикостероиды, не накладываются под окклюзионные
+        повязки.
+  - text: Лечение ЛП, содержащими глюкокортикостероиды, не следует применять без перерыва
+      дольше 14 дней.
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
     source_ref:
       protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
       document_url: null
       local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
         пост_МЗ_2024_146.pdf
-      page_start: null
+      page_start: 4
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 4. Направление пациентов с пролежнями для оказания им медицинской
-        помощи (стр. 2)'
-  red_flags: []
+      quote: Лечение не следует применять без перерыва дольше 14 дней;
+  - text: Хирургическое лечение по пластическому закрытию раневых дефектов не показано
+      пациентам с низким реабилитационным потенциалом (нуждающимся в паллиативной
+      помощи).
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
+        пост_МЗ_2024_146.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Пациентам с низким реабилитационным потенциалом (обездвиженным пациентам,
+        нуждающимся в паллиативной медицинской помощи) хирургическое лечение по пластическому
+        закрытию раневых дефектов не показано.
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: khirurgiya_кп_диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_пост_
-    document_url: null
-    local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_профилактика_пролежней_пациентов_взр_нас_
-      пост_МЗ_2024_146.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика лечение профилактика пролежней пациентов взрослое население
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:38.482117+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T16:44:39.913401+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:38.486516+00:00'
+  validated_at: '2026-07-20T16:44:39.938412+00:00'

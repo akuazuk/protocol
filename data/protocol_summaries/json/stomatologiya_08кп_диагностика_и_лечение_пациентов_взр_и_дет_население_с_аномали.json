@@ -1,10 +1,10 @@
 {
   "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "08КП Диагностика и лечение пациентов взр и дет население с аномалиями положения зубов",
+    "title": "Диагностика и лечение пациентов взр и дет население с аномалиями положения зубов",
     "url": null,
     "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "adult_and_child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,12 +32,18 @@
   },
   "conditions": [
     {
-      "condition_id": "08кп_диагностика_и_лечение_пациентов_взр_и_дет_н",
-      "name": "08КП Диагностика и лечение пациентов взр и дет население с аномалиями положения зубов",
+      "condition_id": "anomalies_of_tooth_position",
+      "name": "Аномалии положения зубов",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "B24"
+        "K07.30",
+        "K07.31",
+        "K07.32",
+        "K07.33",
+        "K07.34",
+        "K07.35",
+        "K07.38"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -45,7 +51,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "выявление факторов, влияющих на возникновение и развитие АПЗ, определение",
+            "text": "Выявление факторов, влияющих на возникновение и развитие АПЗ, определение степени выраженности, медицинских показаний к лечению, выбору метода лечения и тактики врача-специалиста.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -62,11 +68,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "выявление факторов, влияющих на возникновение и развитие АПЗ, определение"
+              "quote": "Выявление факторов, влияющих на возникновение и развитие АПЗ, определение степени выраженности, медицинских показаний к лечению, выбору метода лечения и тактики врача-специалиста."
             }
           },
           {
-            "text": "степени выраженности, а также определение медицинских показаний к лечению, выбору",
+            "text": "Проведение дифференциальной диагностики АПЗ.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -83,19 +89,242 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "степени выраженности, а также определение медицинских показаний к лечению, выбору"
+              "quote": "Проведение дифференциальной диагностики АПЗ."
+            }
+          },
+          {
+            "text": "Выявление взаимосвязи стоматологического и общего здоровья с АПЗ.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Выявление взаимосвязи стоматологического и общего здоровья с АПЗ."
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
-      "conditional_exams": [],
+      "required_exams": [
+        {
+          "name": "Определение общесоматического состояния",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При диагностике АПЗ также определяют общесоматическое состояние пациентов, с выявлением патологии, которая может повлиять на выбор метода лечения (бронхиальная астма, эпилепсия, эндокринная система, аллергии)."
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Консультации врачей-специалистов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "консультации врачей-специалистов (стоматолога-терапевта, ортопеда, хирурга, челюстно-лицевого хирурга, оториноларинголога, травматолога-ортопеда, психотерапевта, психиатра-нарколога, стоматолога детского, психиатра детского) при нарушениях осанки, функции дыхания, глотания, смыкания губ, речи, жевания и наличии вредных привычек."
+          }
+        },
+        {
+          "name": "Конусно-лучевая компьютерная томография челюстно-лицевой области",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "конусно-лучевая компьютерная томография челюстно-лицевой области (детям с АПЗ в возрасте 6 лет и старше, детям младше 6 лет для исключения врожденной аномалии)"
+          }
+        },
+        {
+          "name": "Телерентгенография головы в боковой проекции",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "телерентгенография головы в боковой проекции (детям с АПЗ в возрасте 6 лет и старше, детям младше 6 лет для исключения врожденной аномалии)"
+          }
+        },
+        {
+          "name": "Прицельная внутриротовая контактная рентгенография или радиовизиография зубов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "прицельная внутриротовая контактная рентгенография или радиовизиография зубов"
+          }
+        },
+        {
+          "name": "Конусно-лучевая компьютерная томография височно-нижнечелюстных суставов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "конусно-лучевая компьютерная томография височно-нижнечелюстных суставов (детям с АПЗ в возрасте 6 лет и старше, детям младше 6 лет для исключения врожденной аномалии)"
+          }
+        },
+        {
+          "name": "Функциональные методы исследования",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "функциональные методы исследования (функциональные пробы; электромиография, миотонометрия)"
+          }
+        },
+        {
+          "name": "Фотографирование для оценки эстетики лица, симметрии лица, вида профиля, ширины улыбки",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Фотографирование для оценки эстетики лица, симметрии лица, вида профиля, ширины улыбки. Включает фотографии лица (фас, профиль, полупрофиль, с улыбкой) и зубных рядов в окклюзии."
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 7. Дополнительные диагностические мероприятия (по медицинским показаниям) (стр. 6)",
+            "text": "Ортодонтическое лечение детей во временном прикусе: создание условий для роста челюстей, расширение/удлинение зубного ряда, сдерживание роста челюсти при макрогнатии, устранение привычного смещения нижней челюсти.",
             "source_ref": {
               "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
               "document_url": null,
@@ -106,11 +335,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 7. Дополнительные диагностические мероприятия (по медицинским показаниям) (стр. 6)"
+              "quote": "Ортодонтическое лечение детей во временном прикусе: создание условий для роста челюстей, расширение/удлинение зубного ряда, сдерживание роста челюсти при макрогнатии, устранение привычного смещения ни"
             }
           },
           {
-            "text": "стоматолога-терапевта, врача-стоматолога-ортопеда, врача-стоматолога-хирурга",
+            "text": "Применение одно- или двучелюстных, механических, функциональных (индивидуальных/стандартных) или комбинированных ортодонтических аппаратов для оптимизации роста челюстей.",
             "source_ref": {
               "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
               "document_url": null,
@@ -121,11 +350,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "стоматолога-терапевта, врача-стоматолога-ортопеда, врача-стоматолога-хирурга"
+              "quote": "Применение одно- или двучелюстных, механических, функциональных (индивидуальных/стандартных) или комбинированных ортодонтических аппаратов для оптимизации роста челюстей."
             }
           },
           {
-            "text": "врача-психотерапевта, врача-психиатра-нарколога, врача-стоматолога детского, врача-",
+            "text": "Ортодонтическое лечение детей в смешанном прикусе: создание условий для роста челюстей, расширение/удлинение зубного ряда, сдерживание роста челюсти, коррекция формы зубных рядов, улучшение окклюзии, устранение привычного смещения нижней челюсти.",
             "source_ref": {
               "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
               "document_url": null,
@@ -136,11 +365,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "врача-психотерапевта, врача-психиатра-нарколога, врача-стоматолога детского, врача-"
+              "quote": "Ортодонтическое лечение детей в смешанном прикусе: создание условий для роста челюстей, расширение/удлинение зубного ряда, сдерживание роста челюсти, коррекция формы зубных рядов, улучшение окклюзии, "
             }
           },
           {
-            "text": "психиатра детского) при нарушениях осанки, функции дыхания, глотания, смыкания губ,",
+            "text": "Использование комбинированных и съемных механически-действующих ортодонтических аппаратов в смешанном и постоянном прикусе.",
             "source_ref": {
               "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
               "document_url": null,
@@ -151,11 +380,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "психиатра детского) при нарушениях осанки, функции дыхания, глотания, смыкания губ,"
+              "quote": "Использование комбинированных и съемных механически-действующих ортодонтических аппаратов в смешанном и постоянном прикусе."
             }
           },
           {
-            "text": "речи, жевания и наличии вредных привычек для выяснения причины нарушения(ий)",
+            "text": "Ортодонтическое лечение взрослых в постоянном прикусе: нормализация положения зубов и улучшение окклюзионных контактов.",
             "source_ref": {
               "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
               "document_url": null,
@@ -166,11 +395,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "речи, жевания и наличии вредных привычек для выяснения причины нарушения(ий)"
+              "quote": "Ортодонтическое лечение взрослых в постоянном прикусе: нормализация положения зубов и улучшение окклюзионных контактов."
             }
           },
           {
-            "text": "[treatment] 9. Общими принципами лечения и медицинской профилактики АПЗ являются: (стр. 7)",
+            "text": "Применение несъемной (брекет-системы) и съемной (комбинированные аппараты, механически-действующие аппараты, элайнеры, каппы) ортодонтической аппаратуры у взрослых.",
             "source_ref": {
               "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
               "document_url": null,
@@ -181,156 +410,329 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 9. Общими принципами лечения и медицинской профилактики АПЗ являются: (стр. 7)"
+              "quote": "Применение несъемной (брекет-системы) и съемной (комбинированные аппараты, механически-действующие аппараты, элайнеры, каппы) ортодонтической аппаратуры у взрослых."
+            }
+          },
+          {
+            "text": "Избирательное пришлифовывание зубов и/или удаление отдельных зубов для сокращения размеров зубного ряда (выполняется стоматологом-хирургом или челюстно-лицевым хирургом).",
+            "source_ref": {
+              "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Избирательное пришлифовывание зубов и/или удаление отдельных зубов для сокращения размеров зубного ряда (выполняется стоматологом-хирургом или челюстно-лицевым хирургом)."
+            }
+          },
+          {
+            "text": "Хирургическое обнажение ретенированного и импактного зуба, иссечение десневого «капюшона» для ретракции (выполняется стоматологом-хирургом или челюстно-лицевым хирургом).",
+            "source_ref": {
+              "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Хирургическое обнажение ретенированного и импактного зуба, иссечение десневого «капюшона» для ретракции (выполняется стоматологом-хирургом или челюстно-лицевым хирургом)."
+            }
+          },
+          {
+            "text": "Применение временных ортодонтических имплантатов для корпусного перемещения зубов.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Применение временных ортодонтических имплантатов для корпусного перемещения зубов."
+            }
+          },
+          {
+            "text": "Использование окклюзионной шины для лечения заболевания височно-нижнечелюстного сустава в сочетании с АПЗ.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Использование окклюзионной шины для лечения заболевания височно-нижнечелюстного сустава в сочетании с АПЗ."
+            }
+          },
+          {
+            "text": "Местосохраняющее, восстановительное и эстетическое протезирование для сохранения места в зубном ряду или устранения дефектов.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Местосохраняющее, восстановительное и эстетическое протезирование для сохранения места в зубном ряду или устранения дефектов."
+            }
+          },
+          {
+            "text": "Компактостеотомия для уменьшения сопротивления кости альвеолярного отростка перед исправлением выраженных зубочелюстных деформаций в постоянном прикусе (выполняется стоматологом-хирургом или челюстно-лицевым хирургом).",
+            "source_ref": {
+              "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Компактостеотомия для уменьшения сопротивления кости альвеолярного отростка перед исправлением выраженных зубочелюстных деформаций в постоянном прикусе (выполняется стоматологом-хирургом или челюстно-"
             }
           }
         ],
         "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "августа",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2022 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "августа 2022 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          },
-          {
-            "drug_name": "марта",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2023 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "марта 2023 г"
-            }
-          }
-        ],
+        "drugs": [],
         "procedures": [],
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
+      "follow_up": [
+        {
+          "text": "Ретенция результатов ортодонтического лечения с использованием съемных и/или несъемных ретенционных аппаратов.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Ретенция результатов ортодонтического лечения с использованием съемных и/или несъемных ретенционных аппаратов."
+          }
+        },
+        {
+          "text": "Информирование пациента (или законного представителя) о периоде ретенции, возможности рецидива АПЗ и правилах пользования ретенционным аппаратом.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Информирование пациента (или законного представителя) о периоде ретенции, возможности рецидива АПЗ и правилах пользования ретенционным аппаратом."
+          }
+        },
+        {
+          "text": "Сроки ретенции: не менее 2 лет, у взрослых может быть пожизненным; зависят от периода формирования прикуса, возраста и метода лечения.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Сроки ретенции: не менее 2 лет, у взрослых может быть пожизненным; зависят от периода формирования прикуса, возраста и метода лечения."
+          }
+        }
+      ],
       "hospitalization": [],
       "routing": [],
-      "red_flags": [],
+      "red_flags": [
+        {
+          "text": "Неадекватное психоэмоциональное состояние пациента",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "неадекватное психоэмоциональное состояние пациента;"
+          }
+        },
+        {
+          "text": "Острые поражения слизистой оболочки полости рта и красной каймы губ",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "острые поражения слизистой оболочки полости рта и красной каймы губ;"
+          }
+        },
+        {
+          "text": "Острые воспалительные заболевания органов и тканей рта",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "острые воспалительные заболевания органов и тканей рта;"
+          }
+        },
+        {
+          "text": "Болезни периодонта в стадии обострения",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "болезни периодонта в стадии обострения;"
+          }
+        },
+        {
+          "text": "Неудовлетворительное гигиеническое состояние полости рта",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "неудовлетворительное гигиеническое состояние полости рта;"
+          }
+        },
+        {
+          "text": "Отказ от лечения",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "желание лечиться или отказ от лечения;"
+          }
+        },
+        {
+          "text": "Состояния, при которых противопоказано ортодонтическое лечение (например, состояние на учете у врача-психиатра-нарколога, врача-психиатра детского)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "состояния, при которых противопоказано ортодонтическое лечение (состояние на учете у врача-психиатра-нарколога, врача психиатра детского, другое)."
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "stomatologiya_08кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномали",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/stomatologiya/08КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_аномалиями_положения_зубов_пост_МЗ_10.08.2022_84.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "08КП Диагностика и лечение пациентов взр и дет население с аномалиями положения зубов"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:48.219619+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T17:45:34.830603+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:48.221041+00:00"
+    "validated_at": "2026-07-20T17:45:34.831469+00:00"
   }
 }

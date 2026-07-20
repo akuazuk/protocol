@@ -1,9 +1,9 @@
 protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: 5КП Диагностика и лечение пациентов с ожирением взрослое население
+  title: Диагностика и лечение пациентов с ожирением взрослое население
   url: null
   local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
   document_sha256: null
@@ -26,23 +26,24 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: 5кп_диагностика_и_лечение_пациентов_с_ожирением_
-  name: 5КП Диагностика и лечение пациентов с ожирением взрослое население
+- condition_id: ozhirenie
+  name: Ожирение
   synonyms: []
   abbreviations: []
   icd10_codes:
+  - E66
   - E66.0
+  - E66.1
   - E66.2
+  - E66.8
   - E66.9
   - E67
-  - B24
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[classification] 12. При формулировке клинического диагноза указывается
-        этиологический фактор, (стр. 6)'
+    - text: Наличие избыточной массы тела или ожирения
       logic_group: null
       operator: unknown
       values: []
@@ -59,10 +60,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 12. При формулировке клинического диагноза указывается
-          этиологический фактор, (стр. 6)'
-    - text: а также определены медицинские показания к госпитализации и план наблюдения.
-        Перечень медицинских услуг, медицинских вмешательств в целях диагностики
+        quote: Наличие избыточной массы тела или ожирения
+    - text: 'Наличие ассоциированных с ожирением состояний и заболеваний: метаболические
+        нарушения, патология ССС, ЦНС, вен, легких, нарушения сна, ЖКТ, репродуктивные
+        нарушения, кожные покровы, костно-мышечная система, мочеполовая система, повышенный
+        риск онкозаболеваний, психо-социальные расстройства.'
       logic_group: null
       operator: unknown
       values: []
@@ -79,9 +81,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: а также определены медицинские показания к госпитализации и план наблюдения.
-          Перечень медицинских услуг, медицинских вмешательств в целях диагностики
-    - text: '[diagnostics] 8. Клинические критерии: (стр. 5)'
+        quote: 'Наличие ассоциированных с ожирением состояний и заболеваний: метаболические
+          нарушения, патология ССС, ЦНС, вен, легких, нарушения сна, ЖКТ, репродуктивные
+          нарушения, кожные покровы, костно-мышечная си'
+    - text: ИМТ >30 кг/м2
       logic_group: null
       operator: unknown
       values: []
@@ -98,102 +101,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 8. Клинические критерии: (стр. 5)'
-    - text: '[diagnostics] 8. Клинические критерии: (стр. 5)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[diagnostics] 8. Клинические критерии: (стр. 5)'
-    - text: '9. Диагностический критерий: ИМТ >30 кг/м2.'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '9. Диагностический критерий: ИМТ >30 кг/м2.'
-    - text: 'ИМТ не является достоверным критерием степени ожирения:'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'ИМТ не является достоверным критерием степени ожирения:'
-    - text: Абдоминальный тип ожирения указывает на высокий метаболический риск. Критерии
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Абдоминальный тип ожирения указывает на высокий метаболический риск.
-          Критерии
-    - text: критериев подозреваемой эндокринной патологии)
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: критериев подозреваемой эндокринной патологии)
+        quote: ИМТ >30 кг/м2
     optional: []
     exclusion: []
   required_exams:
-  - name: УЗИ
+  - name: Оценка ИМТ
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -207,291 +119,515 @@ conditions:
       protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
       document_url: null
       local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
-      page_start: null
+      page_start: 6
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "крови: витамин Д (при ИМТ >40 кг/м2); \nУЗИ органов брюшной полости;\
-        \ \nэлектрокардиография; \nосмотр (прием, консультация) вр"
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: '[treatment] 3. Для целей настоящего клинического протокола используются
-        основные термины (стр. 3)'
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 3. Для целей настоящего клинического протокола используются
-          основные термины (стр. 3)'
-    - text: '«О здравоохранении», а также специальные термины и их определения:'
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '«О здравоохранении», а также специальные термины и их определения:'
-    - text: бариатрическая операция – хирургическое вмешательство, выполненное на
-        органах
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: бариатрическая операция – хирургическое вмешательство, выполненное
-          на органах
-    - text: желудочно-кишечного тракта с целью снижения массы тела
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: желудочно-кишечного тракта с целью снижения массы тела
-    - text: инструментальные, морфологические признаки, на основании комбинации которых
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: инструментальные, морфологические признаки, на основании комбинации
-          которых
-    - text: устанавливается клинический диагноз определенного заболевания эндокринной
-        системы
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: устанавливается клинический диагноз определенного заболевания эндокринной
-          системы
-    drug_groups: []
-    drugs:
-    - drug_name: менее
-      active_substance: null
-      drug_group: null
-      dose_text: 25 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: менее 25 г/сут
-    - drug_name: составляет
-      active_substance: null
-      drug_group: null
-      dose_text: 500 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: составляет 500 мг 1 раз в день во время еды
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 2021 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июня 2021 г
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: июля
-      active_substance: null
-      drug_group: null
-      dose_text: 2013 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июля 2013 г
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up:
-  - text: контроль
-    timing: null
+      quote: 'Обязательная диагностика включает: оценку ИМТ'
+  - name: Оценка окружности талии
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
     required_if: []
-    expected_actions: []
+    timing: null
+    comment: null
     source_ref:
       protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
       document_url: null
       local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
-      page_start: null
+      page_start: 6
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
-  - text: контроль
-    timing: null
+      quote: Оценка окружности талии для выявления типа распределения жировой ткани.
+        Абдоминальный тип ожирения указывает на высокий метаболический риск.
+  - name: 'БАК: глюкоза крови'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
     required_if: []
-    expected_actions: []
+    timing: null
+    comment: null
     source_ref:
       protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
       document_url: null
       local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
-      page_start: null
+      page_start: 6
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
+      quote: 'БАК: глюкоза крови, гликированный гемоглобин, мочевая кислота; общий
+        холестерин, липопротеины низкой плотности, липопротеины высокой плотности...'
+  - name: 'БАК: гликированный гемоглобин'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'БАК: глюкоза крови, гликированный гемоглобин, мочевая кислота; общий
+        холестерин, липопротеины низкой плотности, липопротеины высокой плотности...'
+  - name: 'БАК: мочевая кислота'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'БАК: глюкоза крови, гликированный гемоглобин, мочевая кислота; общий
+        холестерин, липопротеины низкой плотности, липопротеины высокой плотности...'
+  - name: 'БАК: общий холестерин'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'БАК: ...общий холестерин, липопротеины низкой плотности, липопротеины
+        высокой плотности, триглицериды...'
+  - name: 'БАК: липопротеины низкой плотности'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'БАК: ...общий холестерин, липопротеины низкой плотности, липопротеины
+        высокой плотности, триглицериды...'
+  - name: 'БАК: липопротеины высокой плотности'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'БАК: ...общий холестерин, липопротеины низкой плотности, липопротеины
+        высокой плотности, триглицериды...'
+  - name: 'БАК: триглицериды'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'БАК: ...общий холестерин, липопротеины низкой плотности, липопротеины
+        высокой плотности, триглицериды...'
+  - name: 'БАК: аланинаминотрансфераза'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'БАК: ...аланинаминотрансфераза, аспартатаминотрансфераза, гамма-глютамилтранспептидаза,
+        креатинин;'
+  - name: 'БАК: аспартатаминотрансфераза'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'БАК: ...аланинаминотрансфераза, аспартатаминотрансфераза, гамма-глютамилтранспептидаза,
+        креатинин;'
+  - name: 'БАК: гамма-глютамилтранспептидаза'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'БАК: ...аланинаминотрансфераза, аспартатаминотрансфераза, гамма-глютамилтранспептидаза,
+        креатинин;'
+  - name: 'БАК: креатинин'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'БАК: ...аланинаминотрансфераза, аспартатаминотрансфераза, гамма-глютамилтранспептидаза,
+        креатинин;'
+  - name: Исследование уровня тиреотропного гормона
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательная диагностика включает: ... исследование уровня тиреотропного
+        гормона;'
+  - name: Стратификация риска развития СД 2 типа и сердечно-сосудистого риска
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательная диагностика включает: ... стратификация риска развития
+        сахарного диабета 2 типа и сердечно-сосудистого риска.'
+  conditional_exams:
+  - name: Исследование уровня витамина Д
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительная диагностика включает: исследование уровня гормонов крови:
+        витамин Д (при ИМТ >40 кг/м2);'
+  - name: УЗИ органов брюшной полости
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительная диагностика включает: ... УЗИ органов брюшной полости;'
+  - name: Электрокардиография
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительная диагностика включает: ... электрокардиография;'
+  - name: Осмотр эндокринолога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Осмотр (прием, консультация) врачом-эндокринологом по следующим медицинским
+        показаниям: ожирение 3-й степени (ИМТ >40 кг/м2); подозрение на эндокринные
+        формы ожирения...'
+  - name: Ночная пульсоксиметрия, полисомнография
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Ночная пульсоксиметрия, полисомнография: при нарушениях сна и проявлениях
+        апноэ сна или морбидном ожирении;'
+  - name: Осмотр психотерапевта
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Осмотр (прием, консультация) врачом-психотерапевтом при подозрении на
+        отклонения пищевого поведения;
+  - name: Осмотр невролога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Осмотр (прием, консультация) врачом-неврологом при подозрении на церебральную
+        форму патологии...
+  treatment: null
+  follow_up: []
   hospitalization: []
   routing: []
   red_flags:
-  - text: "статочность, \nтромбоэмболия и иное); \nотносительные: \nотсутствие попыток\
-      \ лечения ожирения до хирургической операции; \nотсутствие мотивации пациент"
+  - text: ИМТ не является достоверным критерием степени ожирения
     aliases: []
-    red_flag_type: thrombosis
-    severity: high
+    red_flag_type: other
+    severity: medium
     expected_actions: []
     cap_if_unhandled: null
     source_ref:
       protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
       document_url: null
       local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
-      page_start: null
+      page_start: 5
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "статочность, \nтромбоэмболия и иное); \nотносительные: \nотсутствие\
-        \ попыток лечения ожирения до хирургической операции; \nотсутствие мотивации\
-        \ пациент"
+      quote: 'ИМТ не является достоверным критерием степени ожирения: у пациентов
+        моложе 20 лет... у лиц старше 65 лет; у атлетов... у беременных женщин.'
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_5кп_диагностика_и_лечение_пациенто
-    document_url: null
-    local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/5КП_Диагностика_и_лечение_пациентов_с_ожирением_взр_нас_пост_МЗ_21062021_85.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: 5КП Диагностика и лечение пациентов с ожирением взрослое население
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:19.900345+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T15:45:49.345281+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:19.903375+00:00'
+  validated_at: '2026-07-20T15:45:49.360241+00:00'

@@ -1,6 +1,6 @@
 protocol_id: nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Протоколы медицинской реабилитации детей с болезнями почек
@@ -20,21 +20,56 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: протоколы_медицинской_реабилитации_детей_с_болез
-  name: Протоколы медицинской реабилитации детей с болезнями почек
+- condition_id: acute_pyelonephritis
+  name: Острый пиелонефрит
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - N10
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации
+        детей с болезнями почек 18.02.2011 №172.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: chronic_pyelonephritis
+  name: Хронический пиелонефрит
   synonyms: []
   abbreviations: []
   icd10_codes:
   - N11.0
   - N11.1
-  - N10
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
@@ -43,7 +78,7 @@ conditions:
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] 3.2. Лазеротерапия (мест- (стр. 5)'
+    - text: Лазеротерапия (местная, надвенное магнито-лазерное облучение крови)
       source_ref:
         protocol_id: nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201
         document_url: null
@@ -55,8 +90,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 3.2. Лазеротерапия (мест- (стр. 5)'
-    - text: '[treatment] 4.4. Лазеро- (стр. 6)'
+        quote: Лазеротерапия (местная, надвенное магнито-лазерное облучение крови)
+    - text: Лазеро-электропунктура
       source_ref:
         protocol_id: nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201
         document_url: null
@@ -68,8 +103,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 4.4. Лазеро- (стр. 6)'
-    - text: '[treatment] 3. Поддерживающая те- (стр. 7)'
+        quote: Лазеро-электропунктура
+    - text: Фитотерапия
       source_ref:
         protocol_id: nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201
         document_url: null
@@ -81,8 +116,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 3. Поддерживающая те- (стр. 7)'
-    - text: '[treatment] 3.2. Лазеротерапия (мест- (стр. 5)'
+        quote: Фитотерапия
+    - text: Диетотерапия Стол Н
       source_ref:
         protocol_id: nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201
         document_url: null
@@ -94,8 +129,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 3.2. Лазеротерапия (мест- (стр. 5)'
-    - text: '[treatment] 3.5. Оксигенобаротерапия (стр. 10)'
+        quote: Диетотерапия Стол Н
+    - text: Оксигенобаротерапия
       source_ref:
         protocol_id: nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201
         document_url: null
@@ -107,8 +142,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 3.5. Оксигенобаротерапия (стр. 10)'
-    - text: '[treatment] 4.4. Лазеро- (стр. 6)'
+        quote: Оксигенобаротерапия
+    - text: Кислородный кок-фия
       source_ref:
         protocol_id: nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201
         document_url: null
@@ -120,13 +155,78 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 4.4. Лазеро- (стр. 6)'
+        quote: Кислородный кок-фия
+    - text: Соблюдение режима «регулярных» мочеиспусканий
+      source_ref:
+        protocol_id: nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации
+          детей с болезнями почек 18.02.2011 №172.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Соблюдение режима «регулярных» мочеиспусканий
+    - text: СМВ-терапия
+      source_ref:
+        protocol_id: nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации
+          детей с болезнями почек 18.02.2011 №172.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: СМВ-терапия
+    - text: Электролечение (Гальванизация)
+      source_ref:
+        protocol_id: nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации
+          детей с болезнями почек 18.02.2011 №172.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Электролечение (Гальванизация)
+    - text: Микроиглотерапия
+      source_ref:
+        protocol_id: nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации
+          детей с болезнями почек 18.02.2011 №172.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Микроиглотерапия
+    - text: Магнитопунктура
+      source_ref:
+        protocol_id: nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации
+          детей с болезнями почек 18.02.2011 №172.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Магнитопунктура
     drug_groups: []
     drugs:
-    - drug_name: августа
+    - drug_name: Антибактериальные препараты
       active_substance: null
       drug_group: null
-      dose_text: 2000 г
+      dose_text: при необходимости
       frequency_text: null
       duration_text: null
       route: null
@@ -139,79 +239,76 @@ conditions:
         document_url: null
         local_path: minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации
           детей с болезнями почек 18.02.2011 №172.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "августа \n2000 г"
+        quote: Поддерживающая терапия при необходимости (антибактериальные препараты)
+    - drug_name: Фуросемид
+      active_substance: null
+      drug_group: null
+      dose_text: 0,5-1 мг/кг/сут через 2 дня на третий
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации
+          детей с болезнями почек 18.02.2011 №172.pdf
+        page_start: 11
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Метод форсированного диуреза с фуросемидом 0,5-1 мг/кг/сут через 2
+          дня на третий
     procedures: []
     surgery: []
     source_refs: []
-  follow_up:
-  - text: через 2 дн
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201
-      document_url: null
-      local_path: minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации
-        детей с болезнями почек 18.02.2011 №172.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: через 2 дн
-  - text: Контроль
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201
-      document_url: null
-      local_path: minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации
-        детей с болезнями почек 18.02.2011 №172.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Контроль
+  follow_up: []
   hospitalization: []
-  routing: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации
+        детей с болезнями почек 18.02.2011 №172.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201
-    document_url: null
-    local_path: minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации
-      детей с болезнями почек 18.02.2011 №172.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Протоколы медицинской реабилитации детей с болезнями почек
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:42.511087+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T16:43:33.213501+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=2
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:42.511460+00:00'
+  validated_at: '2026-07-20T16:43:33.214551+00:00'

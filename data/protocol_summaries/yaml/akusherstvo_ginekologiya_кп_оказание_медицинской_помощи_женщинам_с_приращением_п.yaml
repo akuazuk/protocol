@@ -1,6 +1,6 @@
 protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Оказание медицинской помощи женщинам с приращением плаценты
@@ -19,29 +19,36 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - pregnant
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: оказание_медицинской_помощи_женщинам_с_приращени
-  name: Оказание медицинской помощи женщинам с приращением плаценты
+- condition_id: placenta_accreta
+  name: Приращение плаценты
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B24
-  - D68.5
   - O43.2
   - O72
   - O88.2
+  - O36.3
+  - O36.4
+  - O42.0
+  - O44.1
+  - O47.0
+  - O60
+  - O71.0
+  - O71.1
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: определение локализации и выявление предлежания плаценты
+    - text: Выявление сосудистых лакун – гипоэхогенных пространств неправильной формы
+        с нечеткими краями
       logic_group: null
       operator: unknown
       values: []
@@ -58,8 +65,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение локализации и выявление предлежания плаценты
-    - text: определение наличия в малом тазу варикозно расширенных вен
+        quote: Выявление сосудистых лакун – гипоэхогенных пространств неправильной
+          формы с нечеткими краями
+    - text: Выявление наличия или отсутствия ретроплацентарной гипоэхогенной зоны
+        между плацентой и маткой
       logic_group: null
       operator: unknown
       values: []
@@ -76,8 +85,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение наличия в малом тазу варикозно расширенных вен
-    - text: определение прерывистости ретроплацентарного потока.
+        quote: Выявление наличия или отсутствия ретроплацентарной гипоэхогенной зоны
+          между плацентой и маткой
+    - text: Регистрация гиперваскуляризации в зоне границы серозной оболочки матки
+        и стенки мочевого пузыря
       logic_group: null
       operator: unknown
       values: []
@@ -94,8 +105,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение прерывистости ретроплацентарного потока.
-    - text: при объеме кровопотери более 15–20 % ОЦК или клинико-лабораторными критериями
+        quote: Регистрация гиперваскуляризации в зоне границы серозной оболочки матки
+          и стенки мочевого пузыря
+    - text: Снижение уровня гемоглобина менее 110 г/л (для диагностики анемии)
       logic_group: null
       operator: unknown
       values: []
@@ -112,15 +124,447 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: при объеме кровопотери более 15–20 % ОЦК или клинико-лабораторными
-          критериями
+        quote: Снижение уровня гемоглобина менее 110 г/л (для диагностики анемии)
+    - text: Снижение гемоглобина ниже 80 г/л и гематокрита менее 0,3 (для обоснования
+        применения компонентов крови)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Снижение гемоглобина ниже 80 г/л и гематокрита менее 0,3 (для обоснования
+          применения компонентов крови)
+    - text: Наличие бледности кожных покровов, слабости, артериальной гипотензии,
+        тахикардии
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие бледности кожных покровов, слабости, артериальной гипотензии,
+          тахикардии
+    - text: Удлинение времени свертывания с применением ТЭМ или ТЭГ
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Удлинение времени свертывания с применением ТЭМ или ТЭГ
+    - text: Время свертывания в тесте внешнего пути свертывания крови остается пролонгированным,
+        несмотря на уровень фибриногена > 1,5 г/л
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Время свертывания в тесте внешнего пути свертывания крови остается
+          пролонгированным, несмотря на уровень фибриногена > 1,5 г/л
+    - text: Наличие послеоперационного рубца матки и предлежания плаценты в анамнезе
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие послеоперационного рубца матки и предлежания плаценты в анамнезе
+    - text: Данные УЗИ и/или МРТ о степени инвазии и площади распространения приращения
+        плаценты
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Данные УЗИ и/или МРТ о степени инвазии и площади распространения приращения
+          плаценты
+    - text: Срок беременности более 20 недель для проведения диагностических мероприятий
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Срок беременности более 20 недель для проведения диагностических мероприятий
+    - text: Синеватый и/или пурпурный оттенок матки над плацентарным ложем с выпячиванием
+        («плацентарная выпуклость», «грыжа»)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Синеватый и/или пурпурный оттенок матки над плацентарным ложем с выпячиванием
+          («плацентарная выпуклость», «грыжа»)
+    - text: Визуальная инвазия плацентарной ткани через стенку матки
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Визуальная инвазия плацентарной ткани через стенку матки
+    - text: Визуализация образования в нижнем сегменте, аномальное расширение сосудов
+        брюшины
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Визуализация образования в нижнем сегменте, аномальное расширение сосудов
+          брюшины
     optional: []
     exclusion: []
   required_exams:
+  - name: Ультразвуковая диагностика (УЗД)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Ультразвуковая диагностика (далее – УЗД) проводится с осуществлением
+        следующих мероприятий: определение локализации и выявление предлежания плаценты;
+        выявление сосудистых лакун; наличие ретроплацентарной зоны.'
+  - name: Общий анализ крови (ОАК) / Уровень гемоглобина
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: диагностика и лечение анемии беременной. При снижении уровня гемоглобина
+        менее 110 г/л необходимо назначать лекарственные препараты железа. ОАК (перед
+        каждой явкой).
+  - name: Общий анализ мочи (ОАМ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+      page_start: 13
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ОАМ (перед каждой явкой).
+  - name: Биохимический анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+      page_start: 13
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Биохимический анализ крови (общий белок, С-реактивный белок, антистрептолизин
+        О, креатинин, мочевина).
+  - name: Контрастная рентгенография свищевого хода
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+      page_start: 13
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контрастная рентгенография свищевого хода.
+  - name: Цистоскопия
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+      page_start: 13
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Цистоскопия.
+  - name: Лабораторный контроль МНО и фибриногена
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: с последующим лабораторным контролем уровней МНО и фибриногена
+  - name: Тромбоэластометрия (ТЭМ) или Тромбоэластография (ТЭГ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: с применением ТЭМ или ТЭГ
+  - name: Опрос и объективное исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диагноз «Приращение плаценты» устанавливается после опроса и объективного
+        исследования женщины на основании анализа жалоб, анамнестических данных...
+  - name: Объективное физикальное исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: '...результатов объективного физикального исследования, данных ультразвуковой
+        и (или) магнитно-резонансной диагностики...'
+  - name: Ультразвуковая диагностика (УЗИ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: '...данных ультразвуковой и (или) магнитно-резонансной диагностики (степени
+        инвазии и площади распространения приращения в область послеоперационного
+        рубца...)'
+  conditional_exams:
   - name: МРТ
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -131,18 +575,19 @@ conditions:
       protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
       document_url: null
       local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
-      page_start: null
+      page_start: 4
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "Д, \nвыполняют второй этап диагностики – МРТ.\n\n[diagnostics] 13. Диагностика\
-        \ приращения плаценты позволяет определить срок и"
-  - name: ОАК
+      quote: При сомнительном результате УЗД, расположении плаценты по задней и боковой
+        стенке матки, наличии ожирения у женщины, затрудняющего проведение УЗД, выполняют
+        второй этап диагностики – МРТ.
+  - name: Магнитно-резонансная диагностика (МРТ)
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -153,19 +598,62 @@ conditions:
       protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
       document_url: null
       local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
-      page_start: null
+      page_start: 3
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "м через 1 месяц, 3 месяца \nи 6 месяцев. ОАК (перед каждой явкой). ОАМ\
-        \ (перед каждой явкой). Биохимический анализ крови (общ"
-  conditional_exams: []
+      quote: '...данных ультразвуковой и (или) магнитно-резонансной диагностики (степени
+        инвазии и площади распространения приращения в область послеоперационного
+        рубца...)'
+  - name: Интраоперационное УЗИ обнаженной матки
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При необходимости возможно использование интраоперационного УЗИ обнаженной
+        матки для определения местонахождения края плаценты и помощи в принятии решения...
+  - name: Цистоскопия
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Если для установки мочеточниковых стентов выполняется цистоскопия, то
+        поражение мочевого пузыря, выявляемое при этом, не должно изменять план...
   treatment:
     non_drug:
-    - text: '[treatment] 5. Диагноз «Приращение плаценты» устанавливается после опроса
-        и объективного (стр. 3)'
+    - text: Применение кровесберегающих технологий
       source_ref:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
         document_url: null
@@ -176,9 +664,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 5. Диагноз «Приращение плаценты» устанавливается после
-          опроса и объективного (стр. 3)'
-    - text: (послеоперационный рубец матки, предлежание плаценты), результатов объективного
+        quote: Применение кровесберегающих технологий
+    - text: Инфузионная и трансфузионная терапия
       source_ref:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
         document_url: null
@@ -189,9 +676,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: (послеоперационный рубец матки, предлежание плаценты), результатов
-          объективного
-    - text: физикального исследования, данных ультразвуковой и (или) магнитно-резонансной
+        quote: Инфузионная и трансфузионная терапия
+    - text: Хирургическое вмешательство
       source_ref:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
         document_url: null
@@ -202,8 +688,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: физикального исследования, данных ультразвуковой и (или) магнитно-резонансной
-    - text: диагностики (степени инвазии и площади распространения приращения в область
+        quote: Хирургическое вмешательство
+    - text: Анестезиологическое обеспечение
       source_ref:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
         document_url: null
@@ -214,10 +700,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: диагностики (степени инвазии и площади распространения приращения в
-          область
-    - text: послеоперационного рубца, шейку матки, заднюю стенку мочевого пузыря,
-        область
+        quote: Анестезиологическое обеспечение
+    - text: Медицинская реабилитация после родоразрешения
       source_ref:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
         document_url: null
@@ -228,9 +712,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: послеоперационного рубца, шейку матки, заднюю стенку мочевого пузыря,
-          область
-    - text: '[treatment] 8. Диагностические (стр. 3)'
+        quote: Медицинская реабилитация после родоразрешения
+    - text: Окончательное определение объема хирургического вмешательства врачебным
+        консилиумом в ходе его выполнения
       source_ref:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
         document_url: null
@@ -241,13 +725,145 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 8. Диагностические (стр. 3)'
+        quote: Окончательное определение объема хирургического вмешательства врачебным
+          консилиумом в ходе его выполнения
+    - text: Проведение врачебного консилиума для определения плана, предполагаемого
+        объема вмешательства, структуры и объема резерва крови, срока родоразрешения
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Проведение врачебного консилиума для определения плана, предполагаемого
+          объема вмешательства, структуры и объема резерва крови, срока родоразрешения
+    - text: Получение согласия пациента на сложное медицинское вмешательство
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Получение согласия пациента на сложное медицинское вмешательство
+    - text: Установка мочеточниковых стентов накануне хирургического вмешательства
+        для снижения риска повреждения мочевыводящих путей
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Установка мочеточниковых стентов накануне хирургического вмешательства
+          для снижения риска повреждения мочевыводящих путей
+    - text: Медицинская транспортировка женщины в реанимобиле в сопровождении врачей-специалистов
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Медицинская транспортировка женщины в реанимобиле в сопровождении врачей-специалистов
+    - text: Родоразрешение женщин с приращением плаценты в специализированной организации
+        здравоохранения
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Родоразрешение женщин с приращением плаценты в специализированной организации
+          здравоохранения
+    - text: Позиционирование женщины на операционном столе (ноги расположены прямо,
+        но раздвинуты)
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Позиционирование женщины на операционном столе (ноги расположены прямо,
+          но раздвинуты)
+    - text: Установка интродьюсеров в правую и левую бедренные артерии
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Установка интродьюсеров в правую и левую бедренные артерии
+    - text: Выполнение продленной нижнесрединной лапаротомии с обходом пупка слева
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выполнение продленной нижнесрединной лапаротомии с обходом пупка слева
+    - text: Выполнение КС в области дна матки (донное), избегая рассечения плаценты
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выполнение КС в области дна матки (донное), избегая рассечения плаценты
+    - text: Извлечение плода, лигирование пуповины без отделения последа и низведение
+        пуповинного остатка в полость матки
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Извлечение плода, лигирование пуповины без отделения последа и низведение
+          пуповинного остатка в полость матки
     drug_groups: []
     drugs:
-    - drug_name: апреля
+    - drug_name: Лекарственные препараты железа
       active_substance: null
       drug_group: null
-      dose_text: 2021 г
+      dose_text: Назначать перорально или внутривенно при снижении уровня гемоглобина
+        менее 110 г/л.
       frequency_text: null
       duration_text: null
       route: null
@@ -259,17 +875,18 @@ conditions:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
         document_url: null
         local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: апреля 2021 г
-    - drug_name: июня
+        quote: При снижении уровня гемоглобина менее 110 г/л необходимо назначать
+          лекарственные препараты железа (перорально или внутривенно)
+    - drug_name: Транексамовая кислота
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: 1 г внутривенно за 30 мин.
       frequency_text: null
       duration_text: null
       route: null
@@ -281,17 +898,19 @@ conditions:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
         document_url: null
         local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
-        page_start: null
+        page_start: 10
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
+        quote: внутривенно вводится транексамовая кислота 1 г за 30 мин.
+    - drug_name: Коагуляционные факторы IX, II, VII и X в комбинации
       active_substance: null
       drug_group: null
-      dose_text: 2011 г
+      dose_text: Можно ввести повторную дозу с последующим лабораторным контролем
+        МНО и фибриногена. Рекомендуется при нормальных уровнях фибриногена и удлинении
+        времени свертывания по ТЭМ/ТЭГ.
       frequency_text: null
       duration_text: null
       route: null
@@ -303,18 +922,22 @@ conditions:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
         document_url: null
         local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
-        page_start: null
+        page_start: 10
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: октября 2011 г
+        quote: Можно ввести повторную дозу коагуляционных факторов IX, II, VII и X
+          в комбинации также с последующим лабораторным контролем уровней МНО и фибриногена;
+          при нормальных уровнях фибриногена рекомендуется вводить коагуляционные
+          факторы IX, II, VII и X в комбинации на основании удлинения времени свертывания
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: через 1 мес
+  - text: 'Медицинский осмотр врача-акушера-гинеколога: после родов через 10–14 дней,
+      затем через 1 месяц, 3 месяца и 6 месяцев.'
     timing: null
     required_if: []
     expected_actions: []
@@ -328,11 +951,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: через 1 мес
+      quote: 'Медицинский осмотр врача-акушера-гинеколога: после родов через 10–14
+        дней, затем через 1 месяц, 3 месяца и 6 месяцев.'
   hospitalization: []
   routing:
-  - text: '[routing] 4. Направление беременных женщин для консультации и (или) госпитализации
-      (стр. 2)'
+  - text: госпитализация
     timing: null
     required_if: []
     source_ref:
@@ -345,14 +968,63 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 4. Направление беременных женщин для консультации и (или)
-        госпитализации (стр. 2)'
+      quote: госпитализация
+  - text: Медицинская транспортировка женщины в организацию здравоохранения, имеющую
+      рентгеноперационную (ангиографический кабинет), оборудованную цифровым ангиографическим
+      комплексом или С-дугой, и расходный инструментарий для проведения баллонной
+      окклюзии или эмболизации маточных артерий.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинская транспортировка женщины в организацию здравоохранения, имеющую
+        рентгеноперационную (ангиографический кабинет), оборудованную цифровым ангиографическим
+        комплексом или С-дугой, и расходный и
+  - text: Родоразрешение проводится в организации здравоохранения, имеющей рентгеноперационную
+      (ангиографический кабинет), оборудованную цифровым ангиографическим комплексом
+      или С-дугой, а также с наличием расходного инструментария для проведения баллонной
+      окклюзии или эмболизации маточных артерий.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Родоразрешение проводится в организации здравоохранения, имеющей рентгеноперационную
+        (ангиографический кабинет), оборудованную цифровым ангиографическим комплексом
+        или С-дугой, а также с наличием расх
+  - text: госпитализация/амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация/амбулаторно
   red_flags:
-  - text: "ка \nвенозных \nтромбоэмболических \nосложнений \nу женщин \nво \nвремя\
-      \ \nбеременности, родов, в послеродовом периоде и у их детей» (прилагается);\
-      \ \nклини"
+  - text: Кровопотеря свыше 15–20 % ОЦК
     aliases: []
-    red_flag_type: thrombosis
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -360,19 +1032,16 @@ conditions:
       protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
       document_url: null
       local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
-      page_start: null
+      page_start: 10
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "ка \nвенозных \nтромбоэмболических \nосложнений \nу женщин \nво \nвремя\
-        \ \nбеременности, родов, в послеродовом периоде и у их детей» (прилагается);\
-        \ \nклини"
-  - text: "аорты и селективной эмболизации маточных артерий; \nврачей-анестезиологов-реаниматологов;\
-      \ \nврачей-неонатологов; \nпри \nнеобходимости – \nдругих \nврач"
+      quote: кровопотеря свыше 15–20 % ОЦК
+  - text: Снижение гемоглобина ниже 80 г/л и гематокрита менее 0,3
     aliases: []
-    red_flag_type: thrombosis
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -380,18 +1049,16 @@ conditions:
       protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
       document_url: null
       local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
-      page_start: null
+      page_start: 10
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "аорты и селективной эмболизации маточных артерий; \nврачей-анестезиологов-реаниматологов;\
-        \ \nврачей-неонатологов; \nпри \nнеобходимости – \nдругих \nврач"
-  - text: "лонной окклюзии или эмболизации маточных артерий. Медицинская транспортировка\
-      \ \nосуществляется \nв условиях \nреанимобиля \nв сопровождении \nврача-ане"
+      quote: снижение гемоглобина ниже 80 г/л и гематокрита менее 0,3
+  - text: Наличие бледности кожных покровов, слабости, артериальной гипотензии, тахикардии
     aliases: []
-    red_flag_type: thrombosis
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -399,18 +1066,17 @@ conditions:
       protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
       document_url: null
       local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
-      page_start: null
+      page_start: 10
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "лонной окклюзии или эмболизации маточных артерий. Медицинская транспортировка\
-        \ \nосуществляется \nв условиях \nреанимобиля \nв сопровождении \nврача-ане"
-  - text: "онной окклюзии или \nэмболизации маточных артерий;\n\n[treatment] 20. Родоразрешение\
-      \ женщин с приращением плаценты: (стр. 6)\n20.2. на операционном ст"
+      quote: наличия бледности кожных покровов, слабости, артериальной гипотензии,
+        тахикардии в объеме, пропорциональном кровотечению
+  - text: Явные признаки аномальной инвазии плаценты
     aliases: []
-    red_flag_type: thrombosis
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -418,41 +1084,124 @@ conditions:
       protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
       document_url: null
       local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
-      page_start: null
+      page_start: 5
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "онной окклюзии или \nэмболизации маточных артерий;\n\n[treatment] 20.\
-        \ Родоразрешение женщин с приращением плаценты: (стр. 6)\n20.2. на операционном\
-        \ ст"
+      quote: Объем хирургического вмешательства окончательно определяется врачебным
+        консилиумом... на предмет наличия явных признаков аномальной инвазии плаценты...
+  - text: Поверхность матки над плацентарным ложем имеет синеватый и/или пурпурный
+      оттенок с явным выпячиванием («плацентарная выпуклость», «грыжа»)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: поверхность матки над плацентарным ложем может иметь синеватый и (или)
+        пурпурный оттенок с явным выпячиванием («плацентарная выпуклость», «грыжа»);
+  - text: Визуализируемая инвазия плацентарной ткани через стенку матки
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: визуализируется инвазия плацентарной ткани через стенку матки (плацентарная
+        ткань может, как проникать, так и не проникать через серозную оболочку);
+  - text: Несостоятельность рубца матки после КС (расхождение рубца с видимой плацентой)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: необходимо проводить дифференциальную диагностику с несостоятельностью
+        рубца матки после кесарева сечение... расхождение маточного рубца с видимой...
+  - text: Визуализация образования в нижнем сегменте, аномальное расширение сосудов
+      брюшины
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: визуализация образования в нижнем сегменте, аномальное расширение сосудов
+        брюшины.
+  - text: Риск повреждения мочевыводящих путей во время хирургического вмешательства
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Если для установки мочеточниковых стентов выполняется цистоскопия...
+        с целью снижения риска повреждения мочевыводящих путей во время хирургического
+        вмешательства.
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_приращением_п
-    document_url: null
-    local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_приращением_плаценты_пост_МЗ_01042022_24.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Оказание медицинской помощи женщинам с приращением плаценты
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:03.922456+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T15:15:54.823502+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:03.924604+00:00'
+  validated_at: '2026-07-20T15:15:54.832364+00:00'

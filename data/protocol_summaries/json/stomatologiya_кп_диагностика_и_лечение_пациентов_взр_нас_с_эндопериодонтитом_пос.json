@@ -1,7 +1,7 @@
 {
   "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "Диагностика и лечение пациентов взрослое население с эндопериодонтитом",
@@ -32,17 +32,12 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_и_лечение_пациентов_взрослое_населен",
-      "name": "Диагностика и лечение пациентов взрослое население с эндопериодонтитом",
+      "condition_id": "endoperiodontitis",
+      "name": "Эндопериодонтит",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "J01",
-        "M01",
-        "D07",
-        "A11",
-        "D01",
-        "J05"
+        "K05.5"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -50,7 +45,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[diagnostics] 5. Признаки и критерии, определяющие эндопериодонтит: (стр. 5)",
+            "text": "Состояние десны (показатели десневого индекса GI>0,8)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -67,11 +62,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 5. Признаки и критерии, определяющие эндопериодонтит: (стр. 5)"
+              "quote": "Состояние десны (показатели десневого индекса GI>0,8)"
             }
           },
           {
-            "text": "критерии эндопериодонтита: показатели десневого индекса GI>0,8",
+            "text": "Периодонтальный абсцесс",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -88,115 +83,348 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "критерии эндопериодонтита: показатели десневого индекса GI>0,8"
+              "quote": "Периодонтальный абсцесс"
+            }
+          },
+          {
+            "text": "Глубокий и широкий периодонтальный карман, в том числе гноетечение",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Глубокий и широкий периодонтальный карман, в том числе гноетечение"
+            }
+          },
+          {
+            "text": "Снижение или отсутствие жизнеспособности пульпы",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Снижение или отсутствие жизнеспособности пульпы"
+            }
+          },
+          {
+            "text": "Признаки бруксизма",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Признаки бруксизма"
+            }
+          },
+          {
+            "text": "Окклюзионная травма",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Окклюзионная травма"
+            }
+          },
+          {
+            "text": "Подвижность зуба",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Подвижность зуба"
+            }
+          },
+          {
+            "text": "Состояние фуркации и ее вовлечение",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Состояние фуркации и ее вовлечение"
+            }
+          },
+          {
+            "text": "Сочетанный деструктивный процесс в области апикальных и периодонтальных тканей",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Сочетанный деструктивный процесс в области апикальных и периодонтальных тканей"
+            }
+          },
+          {
+            "text": "Травма зуба",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Травма зуба"
+            }
+          },
+          {
+            "text": "Повышенная стираемость, рецессия десны, миграция зуба, патологическая подвижность зуба, абфракционные дефекты зуба",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Повышенная стираемость, рецессия десны, миграция зуба, патологическая подвижность зуба, абфракционные дефекты зуба"
+            }
+          },
+          {
+            "text": "Эндопериодонтальный тип резорбции",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Эндопериодонтальный тип резорбции"
+            }
+          },
+          {
+            "text": "Резорбция корня",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Резорбция корня"
+            }
+          },
+          {
+            "text": "Перфорация корня зуба",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Перфорация корня зуба"
+            }
+          },
+          {
+            "text": "Вертикальный перелом корня зуба",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Вертикальный перелом корня зуба"
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
+      "required_exams": [
+        {
+          "name": "Термометрия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "снижение или отсутствие жизнеспособности пульпы (по показателям термометрии или электродонтометрии)"
+          }
+        },
+        {
+          "name": "Электродонтометрия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "снижение или отсутствие жизнеспособности пульпы (по показателям термометрии или электродонтометрии)"
+          }
+        }
+      ],
       "conditional_exams": [],
       "treatment": {
-        "non_drug": [
-          {
-            "text": "[treatment] 9. Общими принципами медицинской профилактики и лечения эндопериодонтита (стр. 6)",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 9. Общими принципами медицинской профилактики и лечения эндопериодонтита (стр. 6)"
-            }
-          },
-          {
-            "text": "общепринятый эффективный метод медицинской профилактики эндопериодонтита –",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "общепринятый эффективный метод медицинской профилактики эндопериодонтита –"
-            }
-          },
-          {
-            "text": "регулярный индивидуальный уход пациентом за полостью рта с помощью гигиенических",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "регулярный индивидуальный уход пациентом за полостью рта с помощью гигиенических"
-            }
-          },
-          {
-            "text": "средств, а также профессиональное удаление зубных отложений с сохранением хорошего",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "средств, а также профессиональное удаление зубных отложений с сохранением хорошего"
-            }
-          },
-          {
-            "text": "уровня гигиены полости рта и устранение патологического процесса в тканях периодонта",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "уровня гигиены полости рта и устранение патологического процесса в тканях периодонта"
-            }
-          },
-          {
-            "text": "стабилизации достигнутого хорошего состояния тканей периодонта.",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "стабилизации достигнутого хорошего состояния тканей периодонта."
-            }
-          }
-        ],
+        "non_drug": [],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "рассасывания",
+            "drug_name": "Лидокаин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1,5 мг",
+            "dose_text": "Спрей 100 мг/мл. Одну порцию (1–3 нажатия) наносят на слизистую оболочку полости рта или десну. Возможно смазывание смоченным ватным тампоном.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -208,20 +436,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "рассасывания 1,5 мг\nМестно"
+              "quote": "Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну. Лекарственное средство можно также наносить путем смазывания смоченным в нем ватным тампоном"
             }
           },
           {
-            "drug_name": "применения",
+            "drug_name": "Лидокаин/Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "100 мг",
+            "dose_text": "Анестезирующий гель 12,5 г. Для аппликационной анестезии слизистой оболочки полости рта, в том числе перед инъекционной анестезией.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -233,20 +461,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "применения 100 мг \nв пакетах \nДля наружного применения в ко"
+              "quote": "Для аппликационной анестезии слизистой оболочки полости рта, в том числе перед инъекционной анестезией."
             }
           },
           {
-            "drug_name": "введения",
+            "drug_name": "Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "750 мг",
+            "dose_text": "Раствор 0,5 мг/мл. 5–10 мл раствора наносят на пораженную поверхность слизистой оболочки или десны с экспозицией 1–3 мин, 2–3 раза/сутки (орошение, полоскание, аппликации).",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -258,20 +486,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 8,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "введения 750 мг во \nфлаконах \n(порошок разводится \nна фи"
+              "quote": "Лекарственное средство применяется в виде орошений, полосканий и аппликаций – 5–10 мл раствора наносят на пораженную поверхность слизистой оболочки полости рта или на десну с экспозицией 1–3 мин 2–3 раза в сутки (на тампоне или путем орошения)"
             }
           },
           {
-            "drug_name": "более",
+            "drug_name": "Амоксициллин с клавулановой кислотой",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "750 мг",
+            "dose_text": "Таблетки 500 мг/125 мг 3 раза в сутки или 875 мг/125 мг 2 раза в сутки, внутрь в начале приема пищи. Минимальный курс 5 дней.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -283,20 +511,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 9,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "более 750 мг в одно место \nинъекции"
+              "quote": "Взрослые по 1 таблетке 500 мг/125 мг 3 раза в сутки или по 1 таблетке 875 мг/125 мг 2 раза в сутки. Лекарственное средство принимают внутрь вначале приема пищи. Минимальный курс антибактериальной терапии составляет 5 дней."
             }
           },
           {
-            "drug_name": "превышающие",
+            "drug_name": "Кеторолак",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1,5 г",
+            "dose_text": "Внутрь: 10 мг однократно или 10 мг до 4 раз в сутки (max 40 мг/сутки), курс до 5 дней. Инъекционно: 30-60 мг разовая доза.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -308,20 +536,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 12,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "превышающие 1,5 г, \nнеобходимо вводить внутривенно"
+              "quote": "Однократная доза – 10 мг, при повторном приеме рекомендуется принимать по 10 мг до 4 раз в сутки, в зависимости от выраженности боли. Максимальная суточная доза не должна превышать 40 мг. При приеме внутрь продолжительность курса не должна превышать 5 дней."
             }
           },
           {
-            "drug_name": "дозе",
+            "drug_name": "Флуметазон 0,2 мг/Клиохинол 30 мг",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1,5 г",
+            "dose_text": "Мазь. Наносится на слизистую оболочку полости рта или десну тонким слоем 1 раз в сутки; до 5 процедур (индивидуально).",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -333,20 +561,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 13,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "дозе 1,5 г за 30 мин \nдо операции \n3 Доксициклин \nТ"
+              "quote": "Наносится на слизистую оболочку полости рта или десну тонким слоем 1 раз в сутки; до 5 процедур (индивидуально)"
             }
           },
           {
-            "drug_name": "капсулы",
+            "drug_name": "Флуметазон 0,2 мг/Салициловая кислота 30 мг",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "100 мг",
+            "dose_text": "Мазь. Наносится на слизистую оболочку полости рта или десну тонким слоем 1 раз в сутки; до 5 процедур (индивидуально).",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -358,138 +586,13 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 13,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "капсулы 100 мг \nДля приема внутрь, во время или после ед"
-            }
-          },
-          {
-            "drug_name": "Таблетки",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "250 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Таблетки 250 мг \nВнутрь, во время или после еды"
-            }
-          },
-          {
-            "drug_name": "Драже",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "50 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Драже 50 мг"
-            }
-          },
-          {
-            "drug_name": "жевательные",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "25 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "жевательные \n25 мг, 50 мг, 75 мг\nПосле консультации врача-"
-            }
-          },
-          {
-            "drug_name": "лечения",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "250 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "лечения 250 мг в сутки \nНациональный правовой Интернет-"
-            }
-          },
-          {
-            "drug_name": "Пиридоксин",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "10 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Пиридоксин 10 мг/ Тиамин \n50 мг/Цианокобаламин 0,005 мг "
+              "quote": "Наносится на слизистую оболочку полости рта или десну тонким слоем 1 раз в сутки; до 5 процедур (индивидуально)"
             }
           }
         ],
@@ -497,45 +600,52 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
+      "follow_up": [
+        {
+          "text": "Мониторинг клинического течения эндопериодонтита",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Мониторинг клинического течения эндопериодонтита"
+          }
+        }
+      ],
       "hospitalization": [],
       "routing": [],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пос",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эндопериодонтитом_пост_МЗ_11.01.2023_4.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика и лечение пациентов взрослое население с эндопериодонтитом"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:50.844945+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T18:06:34.895431+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:50.858780+00:00"
+    "validated_at": "2026-07-20T18:06:34.918825+00:00"
   }
 }

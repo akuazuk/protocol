@@ -1,7 +1,7 @@
 {
   "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "Диагностика и лечение пациентов детское население с гастроэзофагеальной рефлюксной болезнью",
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,13 +32,13 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_и_лечение_пациентов_детское_населени",
-      "name": "Диагностика и лечение пациентов детское население с гастроэзофагеальной рефлюксной болезнью",
+      "condition_id": "gastroesophageal_reflux_disease",
+      "name": "Гастроэзофагеальная рефлюксная болезнь",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "B24",
-        "K21.9"
+        "K21.9",
+        "K21.0"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -46,7 +46,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[classification] 8. Диагноз ГЭРБ верифицируют: (стр. 3)",
+            "text": "Критерии диагностики ГЭРБ у детей с применением суточной внутрипищеводной рН-импедансометрии",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -63,11 +63,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 8. Диагноз ГЭРБ верифицируют: (стр. 3)"
+              "quote": "Критерии диагностики ГЭРБ у детей с применением суточной внутрипищеводной рН-импедансометрии"
             }
           },
           {
-            "text": "Диагноз ГЭРБ не устанавливается на основании эндоскопической картины РЭ",
+            "text": "Пражские критерии (C&M) для описания пищевода Барретта",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -84,11 +84,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Диагноз ГЭРБ не устанавливается на основании эндоскопической картины РЭ"
+              "quote": "Пражские критерии (C&M) для описания пищевода Барретта"
             }
           },
           {
-            "text": "Диагноз ГЭРБ не устанавливается и не верифицируется по данным ультразвукового",
+            "text": "Лос-Анджелесская классификация рефлюкс-эзофагита (стадии А, В, С, D)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -105,11 +105,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Диагноз ГЭРБ не устанавливается и не верифицируется по данным ультразвукового"
+              "quote": "Лос-Анджелесская классификация рефлюкс-эзофагита (стадии А, В, С, D)"
             }
           },
           {
-            "text": "[classification] 14. Классификация и примеры формулировки основного диагноза: (стр. 7)",
+            "text": "Гистологическое описание маркированного биоптата пищевода, взятого при проведении эндоскопии, верифицирует диагноз.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -126,11 +126,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 14. Классификация и примеры формулировки основного диагноза: (стр. 7)"
+              "quote": "Гистологическое описание маркированного биоптата пищевода, взятого при проведении эндоскопии, верифицирует диагноз."
             }
           },
           {
-            "text": "При формировании диагноза в конце формулировки могут быть указаны:",
+            "text": "При подозрении на пищевод Барретта в эндоскопическом описании используются Пражские критерии.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -147,11 +147,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "При формировании диагноза в конце формулировки могут быть указаны:"
+              "quote": "При подозрении на пищевод Барретта в эндоскопическом описании используются Пражские критерии."
             }
           },
           {
-            "text": "14.2. примеры формулировки основного диагноза:",
+            "text": "Рефлюкс-эзофагит (РЭ) – комплекс визуально оцениваемых при эзофагогастродуоденоскопии (ЭГДС) патологических изменений слизистой оболочки пищевода.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -168,11 +168,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "14.2. примеры формулировки основного диагноза:"
+              "quote": "Рефлюкс-эзофагит (РЭ) – комплекс визуально оцениваемых при эзофагогастродуоденоскопии (ЭГДС) патологических изменений слизистой оболочки пищевода."
             }
           },
           {
-            "text": "нозологический диагноз остается неясным.",
+            "text": "Эозинофильный эзофагит (ЭоЭ) – наличие в слизистой оболочке пищевода эозинофильной инфильтрации более чем 15 эозинофилов в поле зрения.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -189,28 +189,7 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "нозологический диагноз остается неясным."
-            }
-          },
-          {
-            "text": "Критерии описания пищевода Барретта",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Критерии описания пищевода Барретта"
+              "quote": "Эозинофильный эзофагит (ЭоЭ) – наличие в слизистой оболочке пищевода эозинофильной инфильтрации более чем 15 эозинофилов в поле зрения."
             }
           }
         ],
@@ -219,7 +198,7 @@
       },
       "required_exams": [
         {
-          "name": "ЭГДС",
+          "name": "Суточная внутрипищеводная рН-импедансометрия",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -234,21 +213,172 @@
             "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
             "document_url": null,
             "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
-            "page_start": null,
+            "page_start": 14,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "линическим проявлениям; \nпри наличии на ЭГДС РЭ степени В, С или D в соответствии с Лос-Анджелесской \nклассификацией согласн"
+            "quote": "Диагноз ГЭРБ устанавливается у детей разных возрастных групп при наличии следующих показателей суточной внутрипищеводной рН-импедансометрии или их сочетании"
+          }
+        },
+        {
+          "name": "Эндоскопия с биопсией пищевода",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Диагноз верифицируется на основании гистологического описания маркированного биоптата пищевода, взятого при проведении эндоскопии."
+          }
+        },
+        {
+          "name": "Эндоскопический контроль",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+            "page_start": 15,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Через 8 недель от начала лечения, далее – 1 раз в год и при появлении признаков обострения"
           }
         }
       ],
-      "conditional_exams": [],
+      "conditional_exams": [
+        {
+          "name": "Эндоскопия с оценкой пищевода Барретта",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+            "page_start": 13,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При подозрении на пищевод Барретта указываются два расстояния: циркулярного (C) поражения и максимальной протяженности (M) цилиндроклеточной метаплазии в сантиметрах."
+          }
+        },
+        {
+          "name": "Эндоскопический контроль",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+            "page_start": 15,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Эндоскопический контроль (из таблицы «Медицинское наблюдение пациентов (детское население) с ГЭРБ в амбулаторных условиях»)"
+          }
+        },
+        {
+          "name": "Суточная рН-импедансометрия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Подбор ЛП осуществляется индивидуально: с учетом... данных суточной рН-импедансометрии."
+          }
+        },
+        {
+          "name": "Эндоскопический контроль",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+            "page_start": 15,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При сохранении симптомов – через 8 недель от начала лечения, далее – при появлении признаков обострения"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 3. Для целей настоящего клинического протокола используются основные термины (стр. 2)",
+            "text": "Дети до 1 года: нормализовать режим кормления, исключить перекорм и контролировать правильное прикладывание к груди при естественном вскармливании.",
             "source_ref": {
               "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
               "document_url": null,
@@ -259,11 +389,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 3. Для целей настоящего клинического протокола используются основные термины (стр. 2)"
+              "quote": "Дети до 1 года: нормализовать режим кормления, исключить перекорм и контролировать правильное прикладывание к груди при естественном вскармливании."
             }
           },
           {
-            "text": "«Об обращении лекарственных средств», Законом Республики Беларусь от 19 ноября",
+            "text": "Дети до 1 года: при искусственном или смешанном вскармливании применять антирефлюксные смеси (АРС); объем подбирается индивидуально (от полной замены до частичной).",
             "source_ref": {
               "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
               "document_url": null,
@@ -274,11 +404,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "«Об обращении лекарственных средств», Законом Республики Беларусь от 19 ноября"
+              "quote": "Дети до 1 года: при искусственном или смешанном вскармливании применять антирефлюксные смеси (АРС); объем подбирается индивидуально (от полной замены до частичной)."
             }
           },
           {
-            "text": "1993 г. № 2570-XII «О правах ребенка», а также следующие термины и их определения:",
+            "text": "Дети до 1 года: кормление ребенка в возвышенном положении под углом 45–60°, удерживать вертикально после кормления не менее 20–30 минут.",
             "source_ref": {
               "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
               "document_url": null,
@@ -289,11 +419,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "1993 г. № 2570-XII «О правах ребенка», а также следующие термины и их определения:"
+              "quote": "Дети до 1 года: кормление ребенка в возвышенном положении под углом 45–60°, удерживать вертикально после кормления не менее 20–30 минут."
             }
           },
           {
-            "text": "внутрипищеводная суточная рН-импедансометрия – метод регистрации жидких",
+            "text": "Дети до 1 года: во время сна постуральное положение не рекомендуется.",
             "source_ref": {
               "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
               "document_url": null,
@@ -304,11 +434,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "внутрипищеводная суточная рН-импедансометрия – метод регистрации жидких"
+              "quote": "Дети до 1 года: во время сна постуральное положение не рекомендуется."
             }
           },
           {
-            "text": "и газовых внутрипищеводных рефлюксов, основанный на измерении сопротивления",
+            "text": "Дети от 1 года до 7 лет: определить и исключить пищевые провокаторы рефлюкса (шоколад, острые, газированные, кислые фрукты, консервация, жирные, жареные блюда).",
             "source_ref": {
               "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
               "document_url": null,
@@ -319,11 +449,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "и газовых внутрипищеводных рефлюксов, основанный на измерении сопротивления"
+              "quote": "Дети от 1 года до 7 лет: определить и исключить пищевые провокаторы рефлюкса (шоколад, острые, газированные, кислые фрукты, консервация, жирные, жареные блюда)."
             }
           },
           {
-            "text": "(импеданса), которое оказывает току содержимое, попадающее в просвет пищевода",
+            "text": "Дети от 1 года до 7 лет: отменить прием пищи за 3 часа до сна.",
             "source_ref": {
               "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
               "document_url": null,
@@ -334,17 +464,167 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "(импеданса), которое оказывает току содержимое, попадающее в просвет пищевода"
+              "quote": "Дети от 1 года до 7 лет: отменить прием пищи за 3 часа до сна."
+            }
+          },
+          {
+            "text": "Дети от 1 года до 7 лет: сон на кровати с приподнятым изголовьем на 10–15 см или на левом боку.",
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Дети от 1 года до 7 лет: сон на кровати с приподнятым изголовьем на 10–15 см или на левом боку."
+            }
+          },
+          {
+            "text": "Дети от 7 до 18 лет: определить и исключить пищевые провокаторы рефлюкса (кофеин, шоколад, острые, газированные, кислые фрукты, консервация, жирные, жареные блюда).",
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Дети от 7 до 18 лет: определить и исключить пищевые провокаторы рефлюкса (кофеин, шоколад, острые, газированные, кислые фрукты, консервация, жирные, жареные блюда)."
+            }
+          },
+          {
+            "text": "Дети от 7 до 18 лет: отменить прием пищи за 3–4 часа до сна.",
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Дети от 7 до 18 лет: отменить прием пищи за 3–4 часа до сна."
+            }
+          },
+          {
+            "text": "Дети от 7 до 18 лет: контроль избыточного веса.",
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Дети от 7 до 18 лет: контроль избыточного веса."
+            }
+          },
+          {
+            "text": "Дети от 7 до 18 лет: отказ от курения.",
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Дети от 7 до 18 лет: отказ от курения."
+            }
+          },
+          {
+            "text": "Дети от 7 до 18 лет: сон на кровати с приподнятым изголовьем на 10–15 см или на левом боку.",
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Дети от 7 до 18 лет: сон на кровати с приподнятым изголовьем на 10–15 см или на левом боку."
+            }
+          },
+          {
+            "text": "Контроль избыточного веса.",
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Контроль избыточного веса."
+            }
+          },
+          {
+            "text": "Ограничение и (или) исключение употребления продуктов, повышающих внутрибрюшное давление (газированные напитки, пиво, бобовые).",
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ограничение и (или) исключение употребления продуктов, повышающих внутрибрюшное давление (газированные напитки, пиво, бобовые)."
+            }
+          },
+          {
+            "text": "Ограничение и (или) исключение продуктов, усиливающих перистальтику и гастроэзофагеальный рефлюкс (кофе, шоколад, жирная и острая пища).",
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ограничение и (или) исключение продуктов, усиливающих перистальтику и гастроэзофагеальный рефлюкс (кофе, шоколад, жирная и острая пища)."
+            }
+          },
+          {
+            "text": "Ограничение и (или) исключение кислотностимулирующих продуктов (мучные изделия, шоколад, цитрусовые фрукты, специи, жирные и жареные блюда, редька, редис).",
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ограничение и (или) исключение кислотностимулирующих продуктов (мучные изделия, шоколад, цитрусовые фрукты, специи, жирные и жареные блюда, редька, редис)."
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "июля",
+            "drug_name": "Ингибиторы протонной помпы (ИПП)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2006 г",
+            "dose_text": "ЛП первой линии терапии, курс лечения не менее 4–6 недель. Отмена одномоментно или по требованию.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -356,20 +636,20 @@
               "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
               "document_url": null,
               "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
-              "page_start": null,
+              "page_start": 9,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июля 2006 г"
+              "quote": "ИПП являются ЛП первой линии терапии с длительностью курса лечения не менее 4–6 недель. Отмена ИПП у детей должна проводиться одномоментно или с рекомендацией эпизодического приема «по требованию»."
             }
           },
           {
-            "drug_name": "ноября",
+            "drug_name": "Блокаторы Н2-гистаминовых рецепторов (Н2-гистаминоблокаторы)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1993 г",
+            "dose_text": "ЛП второго выбора. Для поддержания антисекреторного эффекта рекомендовано последовательное снижение до половинной дозы в течение 2–3 недель.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -381,20 +661,20 @@
               "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
               "document_url": null,
               "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
-              "page_start": null,
+              "page_start": 9,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ноября \n1993 г"
+              "quote": "Н2-гистаминоблокаторы... могут применяться как ЛП второго выбора. ...рекомендовано последовательное снижение до половинной дозы в течение 2–3 недель."
             }
           },
           {
-            "drug_name": "апреля",
+            "drug_name": "Альгинаты",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2023 г",
+            "dose_text": "При легких формах ГЭРБ в монотерапии; при тяжелых – дополнение к ИПП на 1–2 недели или после отмены ИПП на ночь 2–4 недели.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -406,20 +686,20 @@
               "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
               "document_url": null,
               "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
-              "page_start": null,
+              "page_start": 9,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "апреля 2023 г"
+              "quote": "Альгинаты способны купировать симптомы рефлюкса... Могут быть рекомендованы при легких формах ГЭРБ в монотерапии, а при более тяжелых... в качестве дополнения к лечению... или после отмены ИПП на ночь..."
             }
           },
           {
-            "drug_name": "июня",
+            "drug_name": "Антациды",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1993 г",
+            "dose_text": "При легких формах ГЭРБ в монотерапии; при тяжелых – дополнение к ИПП на 1–2 недели или после отмены ИПП на ночь 2–4 недели. Алюминий-содержащие не показаны детям с нарушением функции почек.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -431,20 +711,20 @@
               "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
               "document_url": null,
               "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
-              "page_start": null,
+              "page_start": 9,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июня \n1993 г"
+              "quote": "Антациды нейтрализуют кислоту... Могут быть рекомендованы при легких формах ГЭРБ в монотерапии, а при более тяжелых... в качестве дополнения к лечению... или после отмены ИПП на ночь..."
             }
           },
           {
-            "drug_name": "октября",
+            "drug_name": "Прокинетики",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2011 г",
+            "dose_text": "Альтернативные ЛП.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -456,13 +736,113 @@
               "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
               "document_url": null,
               "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
-              "page_start": null,
+              "page_start": 9,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "октября 2011 г"
+              "quote": "Альтернативные ЛП: ...прокинетики."
+            }
+          },
+          {
+            "drug_name": "ИПП",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "длительностью 4–6 недель",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+              "page_start": 15,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ИПП длительностью 4–6 недель"
+            }
+          },
+          {
+            "drug_name": "Антациды или альгинаты",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "«по требованию»",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+              "page_start": 15,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "«по требованию» антациды или альгинаты"
+            }
+          },
+          {
+            "drug_name": "ИПП",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "длительностью 6–8 недель; при наступлении ремиссии – в половинной дозе на 4 недели",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+              "page_start": 15,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ИПП длительностью 6–8 недель. При наступлении клинико- эндоскопической ремиссии – назначение ИПП в половинной дозе на 4 недели"
+            }
+          },
+          {
+            "drug_name": "Антациды/альгинаты",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "2 раза в год в течение 1–1,5 лет (при ремиссии)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+              "page_start": 15,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "или антацидов/альгинатов 2 раза в год в течение 1–1,5 лет"
             }
           }
         ],
@@ -472,7 +852,7 @@
       },
       "follow_up": [
         {
-          "text": "контроль",
+          "text": "Повторная суточная рН-импедансометрия при отсутствии клинического ответа на непрерывный курс (2–4 месяца) консервативной терапии.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -486,11 +866,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
+            "quote": "Повторная суточная рН-импедансометрия при отсутствии клинического ответа на непрерывный курс (2–4 месяца) консервативной терапии."
           }
         },
         {
-          "text": "контроль",
+          "text": "Медицинское наблюдение пациентов (детское население) с ГЭРБ в амбулаторных условиях с учетом частоты и длительности.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -504,11 +884,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
+            "quote": "Медицинское наблюдение пациентов (детское население) с ГЭРБ в амбулаторных условиях с учетом частоты и длительности."
           }
         },
         {
-          "text": "контроль",
+          "text": "Прием ЛП, назначенных в стационарных условиях, продолжается в полном объеме в амбулаторных условиях под контролем врача-педиатра участкового или врача общей практики.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -522,11 +902,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
+            "quote": "Прием ЛП, назначенных в стационарных условиях, продолжается в полном объеме в амбулаторных условиях под контролем врача-педиатра участкового или врача общей практики."
           }
         },
         {
-          "text": "Контроль",
+          "text": "Все мероприятия проводятся под контролем показателей массы тела ребенка.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -540,14 +920,68 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Контроль"
+            "quote": "Все мероприятия проводятся под контролем показателей массы тела ребенка."
+          }
+        },
+        {
+          "text": "Рекомендовано ведение одним из законных представителей ребенка ежедневных записей в дневнике наблюдения.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Рекомендовано ведение одним из законных представителей ребенка ежедневных записей в дневнике наблюдения."
+          }
+        },
+        {
+          "text": "Для ГЭРБ клинически, без РЭ, с РЭ степени А: контрольный медицинский осмотр через 8 недель от начала лечения, далее – 1 раз в 6 месяцев. Длительность наблюдения – 1 год после купирования симптомов.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Для ГЭРБ клинически, без РЭ, с РЭ степени А: контрольный медицинский осмотр через 8 недель от начала лечения, далее – 1 раз в 6 месяцев. Длительность наблюдения – 1 год после купирования симптомов."
+          }
+        },
+        {
+          "text": "Для ГЭРБ с РЭ степени B: контрольный медицинский осмотр через 8 недель от начала лечения, далее – 1 раз в 6 месяцев; консультация врача-гастроэнтеролога 1 раз в год. Длительность наблюдения – 2 года после наступления клинико-эндоскопической ремиссии.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Для ГЭРБ с РЭ степени B: контрольный медицинский осмотр через 8 недель от начала лечения, далее – 1 раз в 6 месяцев; консультация врача-гастроэнтеролога 1 раз в год. Длительность наблюдения – 2 года п"
           }
         }
       ],
       "hospitalization": [],
       "routing": [
         {
-          "text": "[routing] 25. Основные профилактические мероприятия при ГЭРБ направлены на: (стр. 12)",
+          "text": "Госпитализация (при невозможности обследования амбулаторно, осложнениях ГЭРБ, сопутствующих заболеваниях, необходимости/контроле хирургического лечения)",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -560,11 +994,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "[routing] 25. Основные профилактические мероприятия при ГЭРБ направлены на: (стр. 12)"
+            "quote": "Госпитализация (при невозможности обследования амбулаторно, осложнениях ГЭРБ, сопутствующих заболеваниях, необходимости/контроле хирургического лечения)"
           }
         },
         {
-          "text": "с ГЭРБ в амбулаторных условиях (стр. 15)",
+          "text": "Амбулаторно (для диагностики и лечения, если нет показаний к госпитализации)",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -577,46 +1011,136 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "с ГЭРБ в амбулаторных условиях (стр. 15)"
+            "quote": "Амбулаторно (для диагностики и лечения, если нет показаний к госпитализации)"
+          }
+        },
+        {
+          "text": "госпитализация/амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация/амбулаторно"
+          }
+        },
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
           }
         }
       ],
-      "red_flags": [],
+      "red_flags": [
+        {
+          "text": "Срыгивания от 1/2 до полного объема смеси не менее чем в половине кормлений",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+            "page_start": 15,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Срыгивания от 1/2 до полного объема смеси не менее чем в половине кормлений"
+          }
+        },
+        {
+          "text": "При отсутствии эффекта от применения АРС в течение 2–4 недель необходимо исключить гастроинтестинальные проявления аллергии к белкам коровьего молока.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При отсутствии эффекта от применения АРС в течение 2–4 недель необходимо исключить гастроинтестинальные проявления аллергии к белкам коровьего молока."
+          }
+        },
+        {
+          "text": "Алюминий-содержащие антациды не показаны детям с нарушением функции почек.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Алюминий-содержащие антациды не показаны детям с нарушением функции почек."
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "gastroenterologiya_кп_диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеал",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика и лечение пациентов детское население с гастроэзофагеальной рефлюксной болезнью"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:28.335037+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T15:28:29.262810+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-06-23T19:15:28.337992+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[gastroesophageal_reflux_disease].treatment.drugs[7]"
+      }
+    ],
+    "validated_at": "2026-07-20T15:28:29.273976+00:00"
   }
 }

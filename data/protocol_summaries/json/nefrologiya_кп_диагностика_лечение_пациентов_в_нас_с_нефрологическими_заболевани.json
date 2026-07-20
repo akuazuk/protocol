@@ -1,10 +1,10 @@
 {
   "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика лечение пациентов взрослое население с нефрологическими заболеваниями",
+    "title": "Диагностика и лечение пациентов с нефрологическими заболеваниями",
     "url": null,
     "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
     "document_sha256": null,
@@ -32,8 +32,8 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_лечение_пациентов_взрослое_население",
-      "name": "Диагностика лечение пациентов взрослое население с нефрологическими заболеваниями",
+      "condition_id": "nephrological_diseases",
+      "name": "Нефрологические заболевания",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
@@ -56,7 +56,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[classification] 78. Исходом ОПИГН через 3 месяцев от момента установления диагноза является (стр. 12)",
+            "text": "протеинурия >3,5 г в сутки",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -73,11 +73,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 78. Исходом ОПИГН через 3 месяцев от момента установления диагноза является (стр. 12)"
+              "quote": "протеинурия >3,5 г в сутки"
             }
           },
           {
-            "text": "[classification] 102. При подтверждении первоначального диагноза и активных воспалительных (стр. 16)",
+            "text": "гипоальбуминемия",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -94,11 +94,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 102. При подтверждении первоначального диагноза и активных воспалительных (стр. 16)"
+              "quote": "гипоальбуминемия"
             }
           },
           {
-            "text": "[classification] 102. При подтверждении первоначального диагноза и активных воспалительных (стр. 17)",
+            "text": "гиперлипидемия",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -115,11 +115,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 102. При подтверждении первоначального диагноза и активных воспалительных (стр. 17)"
+              "quote": "гиперлипидемия"
             }
           },
           {
-            "text": "[classification] 236. Диагноз (стр. 42)",
+            "text": "развитие периферических или генерализованных отеков",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -136,91 +136,7 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 236. Диагноз (стр. 42)"
-            }
-          },
-          {
-            "text": "[classification] 245. Пациентам с установленным диагнозом ХБП в зависимости от стадии ХБП С3– (стр. 44)",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[classification] 245. Пациентам с установленным диагнозом ХБП в зависимости от стадии ХБП С3– (стр. 44)"
-            }
-          },
-          {
-            "text": "согласно приложению 26. Диагностика МКН–ХБП включает определение уровня неорганического фосфора",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "согласно приложению 26. Диагностика МКН–ХБП включает определение уровня неорганического фосфора"
-            }
-          },
-          {
-            "text": "и биохимических маркеров МКН–ХБП С1–С5 установлены согласно приложению 26. Диагностика дизэлектролитемии включает определения уровня натрия, калия",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "и биохимических маркеров МКН–ХБП С1–С5 установлены согласно приложению 26. Диагностика дизэлектролитемии включает определения уровня натрия, калия"
-            }
-          },
-          {
-            "text": "клинико-диагностической лаборатории. Диагностика метаболических нарушений включает определение кислотно-основного",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "клинико-диагностической лаборатории. Диагностика метаболических нарушений включает определение кислотно-основного"
+              "quote": "развитие периферических или генерализованных отеков"
             }
           }
         ],
@@ -229,462 +145,34 @@
       },
       "required_exams": [],
       "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "[treatment] 4. Фармакотерапия (стр. 2)",
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 4. Фармакотерапия (стр. 2)"
-            }
-          },
-          {
-            "text": "протоколом с учетом всех индивидуальных особенностей пациента, тяжести заболевания,",
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "протоколом с учетом всех индивидуальных особенностей пациента, тяжести заболевания,"
-            }
-          },
-          {
-            "text": "лекарственных препаратов (далее – ЛП). При этом необходимо учитывать наличие",
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "лекарственных препаратов (далее – ЛП). При этом необходимо учитывать наличие"
-            }
-          },
-          {
-            "text": "дозирования в соответствии с общей характеристикой ЛП и инструкцией по медицинскому",
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "дозирования в соответствии с общей характеристикой ЛП и инструкцией по медицинскому"
-            }
-          },
-          {
-            "text": "применению (листком-вкладышем). Допускается включение в схему лечения ЛП",
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "применению (листком-вкладышем). Допускается включение в схему лечения ЛП"
-            }
-          },
-          {
-            "text": "по медицинским показаниям, не указанным в инструкции по медицинскому применению",
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "по медицинским показаниям, не указанным в инструкции по медицинскому применению"
-            }
-          }
-        ],
-        "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "таблетки",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "5 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "таблетки 5 мг) внутрь 1 мг/кг, но не более 75 мг \nв с"
-            }
-          },
-          {
-            "drug_name": "более",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "60 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "более 60 мг в сутки в течение одной недели с последу"
-            }
-          },
-          {
-            "drug_name": "дозе",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "7,5 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "дозе 7,5 мг/кг в недиализный день"
-            }
-          },
-          {
-            "drug_name": "инфузий",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "10 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "инфузий 10 мг/мл 10 мл, \n30 мл, 50 мл) в/в кап"
-            }
-          },
-          {
-            "drug_name": "капсулы",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "250 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "капсулы 250 мг, таблетки, покрытые оболочкой, 500 мг) "
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          }
-        ],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [
-        {
-          "text": "через 3 мес",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "через 3 мес"
-          }
-        },
-        {
-          "text": "через 6 мес",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "через 6 мес"
-          }
-        },
-        {
-          "text": "контроль",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "контроль"
-          }
-        },
-        {
-          "text": "через 14 дн",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "через 14 дн"
-          }
-        }
-      ],
+      "treatment": null,
+      "follow_up": [],
       "hospitalization": [],
-      "routing": [
-        {
-          "text": "[routing] 168. Медицинскими показаниями для госпитализации пациентов с ХТИН являются: (стр. 29)",
-          "timing": null,
-          "required_if": [],
-          "source_ref": {
-            "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "[routing] 168. Медицинскими показаниями для госпитализации пациентов с ХТИН являются: (стр. 29)"
-          }
-        },
-        {
-          "text": "[routing] 220. Медицинскими показаниями для госпитализации пациентов с ПБП являются: (стр. 39)",
-          "timing": null,
-          "required_if": [],
-          "source_ref": {
-            "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "[routing] 220. Медицинскими показаниями для госпитализации пациентов с ПБП являются: (стр. 39)"
-          }
-        },
-        {
-          "text": "[routing] 230. Дополнительные диагностические исследования направлены на установление (стр. 41)",
-          "timing": null,
-          "required_if": [],
-          "source_ref": {
-            "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "[routing] 230. Дополнительные диагностические исследования направлены на установление (стр. 41)"
-          }
-        },
-        {
-          "text": "в амбулаторных условиях осуществляется в амбулаторно-поликлинических организациях,",
-          "timing": null,
-          "required_if": [],
-          "source_ref": {
-            "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "в амбулаторных условиях осуществляется в амбулаторно-поликлинических организациях,"
-          }
-        }
-      ],
+      "routing": [],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "nefrologiya_кп_диагностика_лечение_пациентов_в_нас_с_нефрологическими_заболевани",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/nefrologiya/КП_Диагностика_лечение_пациентов_в-нас_с_нефрологическими_заболеваниями_пост_МЗ_2025_49.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика лечение пациентов взрослое население с нефрологическими заболеваниями"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:42.471460+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T16:42:26.654869+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:42.477153+00:00"
+    "validated_at": "2026-07-20T16:42:26.655353+00:00"
   }
 }

@@ -1,9 +1,12 @@
 # Validation: novoobrazovaniya_кп_диагностика_и_лечение_детей_с_онкологическими_и_гематологиче
 
-- **status:** needs_human_review
-- **validated_at:** 2026-06-23T19:16:26.638768+00:00
-- **review_status:** not_reviewed
+- **status:** invalid
+- **validated_at:** 2026-07-20T16:50:02.933558+00:00
+- **review_status:** needs_review
 - **extraction_status:** auto_extracted
 
-## Warnings
-- `required_exam_level` conditions[p53_кп_диагностика_и_лечение_детей_с_онкологическими_и_г].required_exams[0]: required_exams содержит элемент не с level=required
+## Errors
+- `critical_red_flag_actions` conditions[диагностика_и_лечение_детей_с_онкологическими_и_].red_flags[0]: critical red flag без expected_actions
+- `critical_red_flag_actions` conditions[диагностика_и_лечение_детей_с_онкологическими_и_].red_flags[1]: critical red flag без expected_actions
+- `critical_red_flag_actions` conditions[диагностика_и_лечение_детей_с_онкологическими_и_].red_flags[2]: critical red flag без expected_actions
+- `critical_red_flag_actions` conditions[диагностика_и_лечение_детей_с_онкологическими_и_].red_flags[3]: critical red flag без expected_actions

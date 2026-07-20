@@ -1,7 +1,7 @@
 {
   "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "Диагностика лечение несовершенного остеогенеза",
@@ -22,7 +22,8 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child",
+      "pregnant"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,16 +33,12 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_лечение_несовершенного_остеогенеза",
-      "name": "Диагностика лечение несовершенного остеогенеза",
+      "condition_id": "osteogenesis_imperfecta",
+      "name": "Несовершенный остеогенез",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "Q78.0",
-        "B24",
-        "C90.0",
-        "E66.9",
-        "P07.3"
+        "Q78.0"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -49,7 +46,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[criteria] Диагностические критерии оценки статуса обеспеченности витамином D",
+            "text": "Концентрация 25(ОН)D в сыворотке крови",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -66,82 +63,371 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] Диагностические критерии оценки статуса обеспеченности витамином D"
-            }
-          },
-          {
-            "text": "[criteria] Диагностические критерии оценки статуса обеспеченности витамином D",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[criteria] Диагностические критерии оценки статуса обеспеченности витамином D"
-            }
-          },
-          {
-            "text": "которые позволяют установить и подтвердить диагноз. Решением врачебного консилиума",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "которые позволяют установить и подтвердить диагноз. Решением врачебного консилиума"
-            }
-          },
-          {
-            "text": "верифицированного диагноза НО",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "верифицированного диагноза НО"
+              "quote": "Концентрация 25(ОН)D в сыворотке крови"
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
-      "conditional_exams": [],
+      "required_exams": [
+        {
+          "name": "Оценка генеалогического анамнеза, анамнеза заболевания и жалоб",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Диагностика НО основана на оценке данных генеалогического анамнеза, анамнеза заболевания, жалоб пациента"
+          }
+        },
+        {
+          "name": "Медицинский осмотр с антропометрией",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "медицинский осмотр (с проведением антропометрии – измерение длины тела, массы тела, окружности грудной клетки) пациента врачом-специалистом"
+          }
+        },
+        {
+          "name": "Определение уровня общего 25-гидроксивитамина D в крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "определение уровня общего 25-гидроксивитамина D (далее – 25(OH)D) в крови"
+          }
+        },
+        {
+          "name": "Общий анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "общий анализ крови"
+          }
+        },
+        {
+          "name": "Общий анализ мочи",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "общий анализ ... мочи"
+          }
+        },
+        {
+          "name": "Биохимический анализ крови (мочевина, креатинин, общий белок, альбумин, билирубин, глюкоза, кальций, фосфор, магний, ЩФ, АСТ, АЛТ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "биохимическое исследование крови (мочевина, креатинин, общий белок, альбумин, билирубин (общий, прямой, непрямой), глюкоза, общий кальций, неорганический фосфор, магний, общая щелочная фосфатаза, АСТ, АЛТ)"
+          }
+        },
+        {
+          "name": "Определение маркеров костной резорбции (β-кросслапс) и формирования (остеокальцин)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "определение уровней маркеров костной резорбции (поперечносшитые карбокситерминальные телопептиды коллагена I типа – β-кросслапс) и формирования (остеокальцин) в крови"
+          }
+        },
+        {
+          "name": "Стандартная рентгенография пораженных костных структур",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "для выявления типичных рентгенологических признаков НО проводится стандартная рентгенография пораженных костных структур"
+          }
+        },
+        {
+          "name": "Рентгеновская морфометрия грудного и поясничного отделов позвоночника",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Для выявления и оценки тяжести деформации позвонков используется метод рентгеновской морфометрии, основанный на анализе боковых рентгенограмм грудного и поясничного отделов позвоночника"
+          }
+        },
+        {
+          "name": "Рентгеновская денситометрия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Рентгеновская денситометрия (далее – РД) проводится пациентам с НО при установлении диагноза"
+          }
+        },
+        {
+          "name": "Консультации врачей-специалистов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Консультации врачей-специалистов при диагностике НО (показаны с целью выявления экстраскелетных проявлений и осложнений НО, коморбидных заболеваний..."
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Определение уровня паратгормона, ТТГ, свободного Т4 в крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "определение уровня паратиреоидного гормона, тиреотропного гормона, свободной фракции тироксина в крови – по медицинским показаниям"
+          }
+        },
+        {
+          "name": "Биопсия и гистоморфометрическое исследование костной ткани",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "По медицинским показаниям, включая необходимость проведения дифференциальной диагностики, пациенту с НО выполняются биопсия и последующее гистоморфометрическое исследование костной ткани"
+          }
+        },
+        {
+          "name": "Консультация врача-генетика и молекулярно-генетическая диагностика",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "консультацию врача-генетика: по медицинским показаниям проводится молекулярно-генетическая диагностика"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 6. Настоящий клинический протокол в части лечения НО включает основные (стр. 2)",
+            "text": "Хирургическое лечение.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
               "document_url": null,
@@ -152,11 +438,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 6. Настоящий клинический протокол в части лечения НО включает основные (стр. 2)"
+              "quote": "Хирургическое лечение."
             }
           },
           {
-            "text": "лекарственные препараты, которые представлены в соответствии с международными",
+            "text": "Обеспечение нормального роста и развития, формирование/улучшение автономности, повышение качества жизни, улучшение социальной адаптации.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
               "document_url": null,
@@ -167,11 +453,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "лекарственные препараты, которые представлены в соответствии с международными"
+              "quote": "Обеспечение нормального роста и развития, формирование/улучшение автономности, повышение качества жизни, улучшение социальной адаптации."
             }
           },
           {
-            "text": "наименованиям по систематической или заместительной номенклатуре, с указанием",
+            "text": "Лечение болевого синдрома.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
               "document_url": null,
@@ -182,11 +468,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "наименованиям по систематической или заместительной номенклатуре, с указанием"
+              "quote": "Лечение болевого синдрома."
             }
           },
           {
-            "text": "лекарственной формы и дозировки. Решением врачебного консилиума при наличии",
+            "text": "Предотвращение переломов, помощь при переломах, профилактика/лечение костных деформаций, восстановление биомеханических осей конечностей, улучшение самостоятельного передвижения.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
               "document_url": null,
@@ -197,11 +483,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "лекарственной формы и дозировки. Решением врачебного консилиума при наличии"
+              "quote": "Предотвращение переломов, помощь при переломах, профилактика/лечение костных деформаций, восстановление биомеханических осей конечностей, улучшение самостоятельного передвижения."
             }
           },
           {
-            "text": "[treatment] 12. Лечение пациента с НО осуществляется мультидисциплинарной командой (стр. 5)",
+            "text": "Лечение экстраскелетных проявлений и осложнений НО, коморбидных заболеваний.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
               "document_url": null,
@@ -212,11 +498,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 12. Лечение пациента с НО осуществляется мультидисциплинарной командой (стр. 5)"
+              "quote": "Лечение экстраскелетных проявлений и осложнений НО, коморбидных заболеваний."
             }
           },
           {
-            "text": "врачей-специалистов и включает консервативное (фармакотерапию) и хирургическое",
+            "text": "Курс медицинской реабилитации (абилитации).",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
               "document_url": null,
@@ -227,17 +513,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "врачей-специалистов и включает консервативное (фармакотерапию) и хирургическое"
+              "quote": "Курс медицинской реабилитации (абилитации)."
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "составляет",
+            "drug_name": "Памидроновая кислота",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "9 мг",
+            "dose_text": "Суммарная годовая доза: 9 мг/кг массы тела/год. Внутривенно медленно, однократная инфузия/сут, 240 мин, 3 суток. Макс. 60 мг/сут. Разводить в 0,9% NaCl или 5% глюкозе (макс. 0,1 мг/мл).",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -249,20 +535,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "составляет 9 мг/кг \nмассы тела/год"
+              "quote": "Суммарная годовая доза памидроновой кислоты для лечения НО составляет 9 мг/кг массы тела/год. Режим дозирования: внутривенно медленно в виде однократной в течение суток инфузии, длительностью не менее 240 минут"
             }
           },
           {
-            "drug_name": "превышать",
+            "drug_name": "Памидроновая кислота",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1 мг",
+            "dose_text": "Возраст >2 лет: 0,5 мг/кг/сут, каждые 2 месяца. Первая инфузия первого курса: половина полной дозы.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -274,20 +560,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "превышать 1 мг/мин), \nна протяжении последовательных т"
+              "quote": "у пациентов в возрасте >2 лет – из расчета 0,5 мг/кг/сут, курс введения – каждые 2 месяца; доза при первой инфузии первого курса лечения, составляет половину от полной дозы на инфузию"
             }
           },
           {
-            "drug_name": "более",
+            "drug_name": "Памидроновая кислота",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "60 мг",
+            "dose_text": "Возраст 2–3 лет: 0,75 мг/кг/сут, каждые 3 месяца. Первая инфузия первого курса: половина полной дозы.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -299,20 +585,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "более  \n60 мг/сут, вне зависимости от возраста): \nНац"
+              "quote": "у пациентов в возрасте 2–3 лет – из расчета 0,75 мг/кг/сут, курс введения – каждые 3 месяца; доза при первой инфузии первого курса лечения, составляет половину от полной дозы на инфузию"
             }
           },
           {
-            "drug_name": "расчета",
+            "drug_name": "Памидроновая кислота",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,5 мг",
+            "dose_text": "Возраст 3–18 лет: 1 мг/кг/сут, каждые 4 месяца. Первая инфузия первого курса: половина полной дозы.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -324,20 +610,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "расчета 0,5 мг/кг/сут, курс введения – каждые  \n2 меся"
+              "quote": "у пациентов в возрасте 3–18 лет – из расчета 1 мг/кг/сут, курс введения – каждые 4 месяца; доза при первой инфузии первого курса лечения, составляет половину от полной дозы на инфузию"
             }
           },
           {
-            "drug_name": "инфузий",
+            "drug_name": "Золедроновая кислота",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "9 мг",
+            "dose_text": "Внутривенно однократно, 15 мин. Макс. 5 мг/инфузию. Разводить в 0,9% NaCl или 5% глюкозе (макс. 0,022 мг/мл). Не смешивать с кальций-содержащими растворами.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -349,20 +635,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "инфузий 9 мг/мл) или раствор глюкозы 5 % \n(глюкоза, "
+              "quote": "Режим дозирования золедроновой кислоты: внутривенно в виде однократной инфузии, длительностью инфузионного введения не менее 15 минут (максимальная доза – не более 5 мг на одну инфузию)."
             }
           },
           {
-            "drug_name": "выше",
+            "drug_name": "Золедроновая кислота",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,1 мг",
+            "dose_text": "Возраст <2 лет: первое введение 0,0125 мг/кг; последующие 0,025 мг/кг каждые 3 месяца.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -374,20 +660,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "выше 0,1 мг/мл)"
+              "quote": "у пациентов в возрасте <2 лет: первое для пациента внутривенное введение лекарственного препарата на основе БФ – в дозе 0,0125 мг/кг; последующие введения – в дозе 0,025 мг/кг, однократная внутривенная инфузия, повторять каждые 3 месяца"
             }
           },
           {
-            "drug_name": "дозе",
+            "drug_name": "Золедроновая кислота",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,0125 мг",
+            "dose_text": "Возраст >2 лет: первое введение 0,0125 мг/кг; последующие 0,05 мг/кг каждые 6 месяцев. При Z-критерии BMD >-2: 0,025 мг/кг каждые 6 мес. При Z-критерии BMD >0: 0,025 мг/кг каждые 12 мес.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -399,20 +685,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "дозе 0,0125 мг/кг, однократная внутривенная инфузия"
+              "quote": "у пациентов в возрасте >2 лет: первое введение – в дозе 0,0125 мг/кг; последующие – 0,05 мг/кг каждые 6 месяцев. При Z-критерии BMD >-2 – уменьшить дозу до 0,025 мг/кг, каждые 6 месяцев; при Z-критерии BMD >0 – уменьшить дозу до 0,025 мг/кг, каждые 12 месяцев."
             }
           },
           {
-            "drug_name": "введения",
+            "drug_name": "Парацетамол",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "4 мг",
+            "dose_text": "Для детей: разовая 10–15 мг/кг, суточная 40–60 мг/кг. До 3–4 раз/сут, интервал ≥4 часов. При острофазовых реакциях после БФ.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -424,20 +710,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
-              "page_start": null,
+              "page_start": 8,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "введения 4 мг порошка лиофилизированного для приготовл"
+              "quote": "При развитии у пациента нежелательных реакций после парентерального введения БФ... показано назначение внутрь лекарственных препаратов на основе парацетамола... Разовая доза для детей 10–15 мг/кг массы тела, суточная – 40–60 мг/кг."
             }
           },
           {
-            "drug_name": "дозы",
+            "drug_name": "Ибупрофен",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "3,5 мг",
+            "dose_text": "Для детей: разовая 5–10 мг/кг, суточная 30 мг/кг. До 3 раз/сут, интервал ≥4 часов. При острофазовых реакциях после БФ.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -449,20 +735,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
-              "page_start": null,
+              "page_start": 8,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "дозы 3,5 мг, 4,1 мл – для дозы 3,3 мг, 3,8 мл – \nдл"
+              "quote": "При развитии у пациента нежелательных реакций после парентерального введения БФ... показано назначение внутрь лекарственных препаратов на основе ибупрофена... Разовая доза для детей 5–10 мг/кг массы тела, суточная – 30 мг/кг массы тела."
             }
           },
           {
-            "drug_name": "внутрь",
+            "drug_name": "Кальций и Витамин D (Холекальциферол)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "24 мг",
+            "dose_text": "Для снижения риска гипокальциемии и судорог при введении БФ. Холекальциферол капли 15000 МЕ/мл, 20000 МЕ/мл; кальций/холекальциферол капсулы.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -474,63 +760,13 @@
               "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
-              "page_start": null,
+              "page_start": 8,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "внутрь 24 мг/мл"
-            }
-          },
-          {
-            "drug_name": "таблетки",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "200 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "таблетки 200 мг"
-            }
-          },
-          {
-            "drug_name": "оболочкой",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "200 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "оболочкой 200 мг, капсулы 200 мг)"
+              "quote": "С целью снижения риска развития отдельных нежелательных реакций при введении лекарственных препаратов на основе БФ (гипокальциемия, гипокальциемические судороги) показано назначение лекарственных препаратов на основе кальция и витамина D"
             }
           }
         ],
@@ -540,7 +776,7 @@
       },
       "follow_up": [
         {
-          "text": "динамическом медицинском наблюден",
+          "text": "Рентгеновская денситометрия проводится 1 раз в год (при показаниях чаще, с минимальным интервалом 6 месяцев у детей).",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -554,14 +790,50 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "динамическом медицинском наблюден"
+            "quote": "Рентгеновская денситометрия проводится 1 раз в год (при показаниях чаще, с минимальным интервалом 6 месяцев у детей)."
+          }
+        },
+        {
+          "text": "Медицинское наблюдение пациента в амбулаторных условиях после выписки из больницы.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинское наблюдение пациента в амбулаторных условиях после выписки из больницы."
+          }
+        },
+        {
+          "text": "Коррекция дозы золедроновой кислоты в зависимости от уровня BMD поясничного отдела позвоночника по данным РД у пациентов >2 лет.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Коррекция дозы золедроновой кислоты в зависимости от уровня BMD поясничного отдела позвоночника по данным РД у пациентов >2 лет."
           }
         }
       ],
       "hospitalization": [],
       "routing": [
         {
-          "text": "[routing] 7. Госпитализация пациентов с НО в организации здравоохранения осуществляется (стр. 2)",
+          "text": "Госпитализация для фармакотерапии или хирургического лечения в Республиканском центре детского остеопороза.",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -574,11 +846,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "[routing] 7. Госпитализация пациентов с НО в организации здравоохранения осуществляется (стр. 2)"
+            "quote": "Госпитализация для фармакотерапии или хирургического лечения в Республиканском центре детского остеопороза."
           }
         },
         {
-          "text": "[routing] 7. Госпитализация пациентов с НО в организации здравоохранения осуществляется (стр. 2)",
+          "text": "Амбулаторное наблюдение и лечение после стабилизации состояния и выписки из стационара.",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -591,46 +863,183 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "[routing] 7. Госпитализация пациентов с НО в организации здравоохранения осуществляется (стр. 2)"
+            "quote": "Амбулаторное наблюдение и лечение после стабилизации состояния и выписки из стационара."
+          }
+        },
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
           }
         }
       ],
-      "red_flags": [],
+      "red_flags": [
+        {
+          "text": "Множественные низкоэнергетические переломы или переломы в отсутствие травмы",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "характерны множественные переломы, низкоэнергетические переломы (не соответствующие по тяжести перелома обстоятельствам травмы или произошедшие в отсутствие травмы)"
+          }
+        },
+        {
+          "text": "Несоответствие тяжести перелома обстоятельствам травмы",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "низкоэнергетические переломы (не соответствующие по тяжести перелома обстоятельствам травмы или произошедшие в отсутствие травмы)"
+          }
+        },
+        {
+          "text": "Подозрение на жестокое обращение (насилие) у детей раннего возраста",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "у пациентов раннего возраста – дифференциальную диагностику НО с проявлениями жестокого обращения (насилия)"
+          }
+        },
+        {
+          "text": "Острофазовые реакции после парентерального введения БФ: боль в костях, лихорадка, артралгия, миалгия, артрит, головная боль.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При развитии у пациента нежелательных реакций после парентерального введения БФ в виде острофазовых реакций (обычно развиваются у части пациентов в течение трех суток после введения и включают такие симптомы, как боль в костях, лихорадка, артралгия, миалгия, артрит с последующим отеком суставов, головная боль)"
+          }
+        },
+        {
+          "text": "Гипокальциемия, гипокальциемические судороги после введения БФ.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "С целью снижения риска развития отдельных нежелательных реакций при введении лекарственных препаратов на основе БФ (гипокальциемия, гипокальциемические судороги) показано назначение лекарственных препаратов на основе кальция и витамина D"
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "khirurgiya_кп_диагностика_лечение_несовершенного_остеогенеза_пост_мз_2022_75",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_несовершенного_остеогенеза_пост_МЗ_2022_75.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика лечение несовершенного остеогенеза"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:37.509202+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T16:30:54.408637+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-06-23T19:15:37.522048+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[osteogenesis_imperfecta].treatment.drugs[1]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[osteogenesis_imperfecta].treatment.drugs[2]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[osteogenesis_imperfecta].treatment.drugs[3]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[osteogenesis_imperfecta].treatment.drugs[5]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[osteogenesis_imperfecta].treatment.drugs[6]"
+      }
+    ],
+    "validated_at": "2026-07-20T16:30:54.439313+00:00"
   }
 }

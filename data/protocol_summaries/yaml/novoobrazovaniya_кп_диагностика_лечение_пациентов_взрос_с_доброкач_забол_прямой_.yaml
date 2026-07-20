@@ -1,10 +1,10 @@
 protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение пациентов взрос с доброкач забол прямой кишки параректальной
-    и копчиковой области амбулаторных
+  title: Диагностика лечение пациентов взрослых с доброкачественными заболеваниями
+    прямой кишки, параректальной и копчиковой области амбулаторных
   url: null
   local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
   document_sha256: null
@@ -21,15 +21,15 @@ rubric:
 applicability:
   population:
   - adult
+  - pregnant
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_лечение_пациентов_взрос_с_доброкач_з
-  name: Диагностика лечение пациентов взрос с доброкач забол прямой кишки параректальной
-    и копчиковой области амбулаторных
+- condition_id: benign_rectum_pararectal_coccyx_dis
+  name: Доброкачественные заболевания прямой кишки, параректальной и копчиковой области
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -50,11 +50,284 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria: null
   required_exams: []
-  conditional_exams: []
+  conditional_exams:
+  - name: Влагалищное исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями при оказании медицинской
+        помощи пациентам ... являются (по медицинским показаниям): влагалищное исследование'
+  - name: Ирригоскопия
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями при оказании медицинской
+        помощи пациентам ... являются (по медицинским показаниям): ирригоскопия'
+  - name: Энтерография
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями при оказании медицинской
+        помощи пациентам ... являются (по медицинским показаниям): энтерография'
+  - name: Пассаж бария по кишечнику
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями при оказании медицинской
+        помощи пациентам ... являются (по медицинским показаниям): пассаж бария по
+        кишечнику'
+  - name: Двухбаллонная энтероскопия
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями при оказании медицинской
+        помощи пациентам ... являются (по медицинским показаниям): двухбаллонная энтероскопия'
+  - name: Эндовидеокапсульное исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями при оказании медицинской
+        помощи пациентам ... являются (по медицинским показаниям): эндовидеокапсульное
+        исследование'
+  - name: Ультразвуковое исследование органов малого таза и брюшной полости, в том
+      числе трансректальное
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями при оказании медицинской
+        помощи пациентам ... являются (по медицинским показаниям): ультразвуковое
+        исследование органов малого таза и брюшной полости, в том числе, трансректальное'
+  - name: Биопсия патологически измененной ткани и ее морфологическое исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями при оказании медицинской
+        помощи пациентам ... являются (по медицинским показаниям): биопсия патологически
+        измененной ткани и ее морфологическое исследование'
+  - name: Патоморфологическое исследование операционного материала
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями при оказании медицинской
+        помощи пациентам ... являются (по медицинским показаниям): патоморфологическое
+        исследование операционного материала'
+  - name: Эзофагогастродуоденоскопия
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями при оказании медицинской
+        помощи пациентам ... являются (по медицинским показаниям): эзофагогастродуоденоскопия'
+  - name: Электрокардиограмма у лиц старше 40 лет или при сопутствующей патологии
+      сердечно-сосудистой системы
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями при оказании медицинской
+        помощи пациентам ... являются (по медицинским показаниям): электрокардиограмма
+        у лиц старше 40 лет или при сопутствующей патологии сердечно-сосудистой системы'
+  - name: Проба с красителями при свищах различной локализации
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями при оказании медицинской
+        помощи пациентам ... являются (по медицинским показаниям): проба с красителями
+        при свищах различной локализации'
   treatment:
     non_drug:
-    - text: '[treatment] 1. Настоящий клинический протокол устанавливает общие требования
-        к объему (стр. 2)'
+    - text: Применение малоинвазивных хирургических методов лечения, не требующих
+        круглосуточного медицинского наблюдения в послеоперационном периоде.
       source_ref:
         protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
         document_url: null
@@ -65,10 +338,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 1. Настоящий клинический протокол устанавливает общие
-          требования к объему (стр. 2)'
-    - text: здравоохранения (далее – хирургические отделения) пациентам (взрослое
-        население)
+        quote: Применение малоинвазивных хирургических методов лечения, не требующих
+          круглосуточного медицинского наблюдения в послеоперационном периоде.
+    - text: Хирургическое вмешательство (в том числе, малоинвазивное) как радикальный
+        метод лечения геморроя, направленный на ликвидацию геморроидальных узлов.
       source_ref:
         protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
         document_url: null
@@ -79,9 +352,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: здравоохранения (далее – хирургические отделения) пациентам (взрослое
-          население)
-    - text: с доброкачественными заболеваниями прямой кишки, параректальной и копчиковой
+        quote: Хирургическое вмешательство (в том числе, малоинвазивное) как радикальный
+          метод лечения геморроя, направленный на ликвидацию геморроидальных узлов.
+    - text: Лигирование внутренних геморроидальных узлов при I–II ст. заболевания
+        (в амбулаторных условиях).
       source_ref:
         protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
         document_url: null
@@ -92,9 +366,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: с доброкачественными заболеваниями прямой кишки, параректальной и копчиковой
-    - text: области (код по Международной статистической классификации болезней и
-        проблем,
+        quote: Лигирование внутренних геморроидальных узлов при I–II ст. заболевания
+          (в амбулаторных условиях).
+    - text: Инфракрасная фотокоагуляция при I ст. заболевания (в амбулаторных условиях).
       source_ref:
         protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
         document_url: null
@@ -105,9 +379,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: области (код по Международной статистической классификации болезней
-          и проблем,
-    - text: связанных со здоровьем, десятого пересмотра – А60 Аногенитальная герпетическая
+        quote: Инфракрасная фотокоагуляция при I ст. заболевания (в амбулаторных условиях).
+    - text: Склеротерапия внутренних геморроидальных узлов при I–II ст. заболевания
+        (в амбулаторных условиях).
       source_ref:
         protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
         document_url: null
@@ -118,8 +392,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: связанных со здоровьем, десятого пересмотра – А60 Аногенитальная герпетическая
-    - text: вирусная инфекция (herpes simplex) (А60.1 Герпетические инфекции перианальных
+        quote: Склеротерапия внутренних геморроидальных узлов при I–II ст. заболевания
+          (в амбулаторных условиях).
+    - text: Хирургическое лечение перианальных бахромок и тромбированных наружных
+        геморроидальных узлов I–II степени тяжести воспаления (в амбулаторных условиях).
       source_ref:
         protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
         document_url: null
@@ -130,13 +406,138 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: вирусная инфекция (herpes simplex) (А60.1 Герпетические инфекции перианальных
+        quote: Хирургическое лечение перианальных бахромок и тромбированных наружных
+          геморроидальных узлов I–II степени тяжести воспаления (в амбулаторных условиях).
+    - text: Лазерная деструкция геморроидальных узлов (в амбулаторных условиях).
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Лазерная деструкция геморроидальных узлов (в амбулаторных условиях).
+    - text: Дезартеризация геморроидальных узлов (в стационарных условиях).
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Дезартеризация геморроидальных узлов (в стационарных условиях).
+    - text: Геморроидэктомия, в том числе, с использованием ультразвукового скальпеля
+        или аппарата электрической коагуляции (в стационарных условиях).
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Геморроидэктомия, в том числе, с использованием ультразвукового скальпеля
+          или аппарата электрической коагуляции (в стационарных условиях).
+    - text: Водная гигиена (при лечении геморроя).
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Водная гигиена (при лечении геморроя).
+    - text: Соблюдение рекомендаций по нормализации стула, здоровому образу жизни,
+        рациональному питанию и необходимости лечения сопутствующих заболеваний (при
+        лечении геморроя).
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Соблюдение рекомендаций по нормализации стула, здоровому образу жизни,
+          рациональному питанию и необходимости лечения сопутствующих заболеваний
+          (при лечении геморроя).
+    - text: Хирургическое вмешательство при хронической анальной трещине, направленное
+        на ликвидацию сфинктероспазма, удаление тканей с хронической анальной трещиной
+        и рубцовых парафиссуральных изменений.
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хирургическое вмешательство при хронической анальной трещине, направленное
+          на ликвидацию сфинктероспазма, удаление тканей с хронической анальной трещиной
+          и рубцовых парафиссуральных изменений.
+    - text: Лазерная вапоризация (при хронической анальной трещине).
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Лазерная вапоризация (при хронической анальной трещине).
+    - text: Иссечение (с использованием электрокоагулятора, ультразвукового хирургического
+        аппарата, радиоволнового хирургического аппарата) (при хронической анальной
+        трещине).
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Иссечение (с использованием электрокоагулятора, ультразвукового хирургического
+          аппарата, радиоволнового хирургического аппарата) (при хронической анальной
+          трещине).
+    - text: Дозированная сфинктеротомия (как дополнение к лечению анальной трещины).
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Дозированная сфинктеротомия (как дополнение к лечению анальной трещины).
     drug_groups: []
     drugs:
-    - drug_name: апреля
+    - drug_name: Комплекс ботулинический токсин типа А – гемагглютинин
       active_substance: null
       drug_group: null
-      dose_text: 2022 г
+      dose_text: Лиофилизилат для приготовления раствора для инъекций 300 ЕД. Лиофилизилат
+        для приготовления раствора для инъекций 500 ЕД Введение ЛП производится в
+        толщу внутреннего сфинктера шприцем 10–60 ЕД однокра
       frequency_text: null
       duration_text: null
       route: null
@@ -148,17 +549,18 @@ conditions:
         protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
         document_url: null
         local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
-        page_start: null
+        page_start: 1
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: апреля 2022 г
-    - drug_name: июня
+        quote: Комплекс ботулинический токсин типа А – гемагглютинин. Лиофилизилат
+          300/500 ЕД. Введение в толщу внутреннего сфинктера шприцем 10–60 ЕД однократно.
+    - drug_name: Кеторолак
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: null
       frequency_text: null
       duration_text: null
       route: null
@@ -170,17 +572,17 @@ conditions:
         protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
         document_url: null
         local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
-        page_start: null
+        page_start: 1
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
+        quote: НПВП Кеторолак
+    - drug_name: Нестероидные противовоспалительные препараты (НПВП)
       active_substance: null
       drug_group: null
-      dose_text: 2011 г
+      dose_text: Пероральный прием предпочтителен при стойком болевом синдроме.
       frequency_text: null
       duration_text: null
       route: null
@@ -192,24 +594,190 @@ conditions:
         protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
         document_url: null
         local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
-        page_start: null
+        page_start: 4
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: октября 2011 г
+        quote: ЛП из группы нестероидных противовоспалительных препаратов (далее –
+          НПВП) при стойком болевом синдроме. Предпочтительным является пероральный
+          прием НПВП
+    - drug_name: ЛП, используемые при варикозном расширении вен (гепарины или гепариноиды
+        для местного применения; ЛП, снижающие проницае
+      active_substance: null
+      drug_group: null
+      dose_text: При наличии геморроидального тромбоза.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ЛП, используемые при варикозном расширении вен (гепарины или гепариноиды
+          для местного применения; ЛП, снижающие проницаемость капилляров; биофлавоноиды)
+          при наличии геморроидального тромбоза
+    - drug_name: Противоанемические ЛП
+      active_substance: null
+      drug_group: null
+      dose_text: При наличии анемии в результате геморроидальных кровотечений.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: противоанемические ЛП при наличии анемии в результате геморроидальных
+          кровотечений.
+    - drug_name: Миорелаксант периферического действия
+      active_substance: null
+      drug_group: null
+      dose_text: Для фармакологической локальной сфинктерорелаксации при лечении анальной
+        трещины.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хирургические методы лечения анальной трещины могут дополняться ...
+          фармакологической локальной сфинктерорелаксацией с применением миорелаксанта
+          периферического действия.
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Применение консервативного лечения в послеоперационном периоде в качестве
+      реабилитационной терапии.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Применение консервативного лечения в послеоперационном периоде в качестве
+        реабилитационной терапии.
+  - text: Применение ЛП в послеоперационном периоде для лечения острого и хронического
+      геморроя (НПВП, препараты при варикозном расширении вен, противоанемические
+      ЛП).
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Применение ЛП в послеоперационном периоде для лечения острого и хронического
+        геморроя (НПВП, препараты при варикозном расширении вен, противоанемические
+        ЛП).
   hospitalization: []
-  routing: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
   red_flags:
-  - text: "рианальный венозный тромбоз (К64.0 Геморрой первой степени; К64.1 Геморрой\
-      \ \nвторой степени; К64.2 Геморрой третьей степени; К64.3 Геморрой четверто"
+  - text: Кровотечение из операционной раны
     aliases: []
-    red_flag_type: thrombosis
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -217,18 +785,17 @@ conditions:
       protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
       document_url: null
       local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
-      page_start: null
+      page_start: 4
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "рианальный венозный тромбоз (К64.0 Геморрой первой степени; К64.1 Геморрой\
-        \ \nвторой степени; К64.2 Геморрой третьей степени; К64.3 Геморрой четверто"
-  - text: "ианальный венозный \nтромбоз; К64.8 Другой уточненный геморрой; К64.9 Геморрой\
-      \ неуточненный); L05 \nПилонидальная киста (L05.0 Пилонидальная киста с"
+      quote: 'Возможными осложнениями после хирургического вмешательства при лечении
+        геморроя являются: кровотечение из операционной раны'
+  - text: Нагноение раны
     aliases: []
-    red_flag_type: thrombosis
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -236,19 +803,107 @@ conditions:
       protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
       document_url: null
       local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
-      page_start: null
+      page_start: 4
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "ианальный венозный \nтромбоз; К64.8 Другой уточненный геморрой; К64.9\
-        \ Геморрой неуточненный); L05 \nПилонидальная киста (L05.0 Пилонидальная киста\
-        \ с"
-  - text: "ии геморроидального тромбоза; \nпротивоанемические ЛП при наличии анемии\
-      \ в результате геморроидальных \nкровотечений.\n\n[treatment] 13. Общегигиеничес"
+      quote: 'Возможными осложнениями после хирургического вмешательства при лечении
+        геморроя являются: нагноение раны'
+  - text: Формирование сателлитных геморроидальных узлов
     aliases: []
-    red_flag_type: thrombosis
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Возможными осложнениями после хирургического вмешательства при лечении
+        геморроя являются: формирование сателлитных геморроидальных узлов'
+  - text: Инфильтрат в области раны
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Возможными осложнениями после хирургического вмешательства при лечении
+        геморроя являются: инфильтрат в области раны'
+  - text: Дизурические расстройства
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Возможными осложнениями после хирургического вмешательства при лечении
+        геморроя являются: дизурические расстройства'
+  - text: Формирование анальных кожных бахромок
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Возможными осложнениями после хирургического вмешательства при лечении
+        геморроя являются: формирование анальных кожных бахромок'
+  - text: Формирование гипергрануляций
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Возможными осложнениями после хирургического вмешательства при лечении
+        геморроя являются: формирование гипергрануляций'
+  - text: Свищ
+    aliases: []
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -256,41 +911,49 @@ conditions:
       protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
       document_url: null
       local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
-      page_start: null
+      page_start: 4
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "ии геморроидального тромбоза; \nпротивоанемические ЛП при наличии анемии\
-        \ в результате геморроидальных \nкровотечений.\n\n[treatment] 13. Общегигиеничес"
+      quote: 'Возможными осложнениями после хирургического вмешательства при лечении
+        геморроя являются: свищ'
+  - text: Рубцовая деформация тканей в зоне хирургического вмешательства
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Возможными осложнениями после хирургического вмешательства при лечении
+        геморроя являются: рубцовая деформация тканей в зоне хирургического вмешательства'
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_
-    document_url: null
-    local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика лечение пациентов взрос с доброкач забол прямой кишки параректальной
-      и копчиковой области амбулаторных
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:44.184705+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T17:04:43.084654+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:44.185865+00:00'
+  validated_at: '2026-07-20T17:04:43.090989+00:00'

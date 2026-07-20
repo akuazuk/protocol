@@ -1,6 +1,6 @@
 protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Диагностика и лечение пациентов взрослое население с изменением цвета зубов
@@ -27,19 +27,21 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов_взрослое_населен
-  name: Диагностика и лечение пациентов взрослое население с изменением цвета зубов
-    вследствие применения тетрациклина
+- condition_id: tetracycline_teeth_discoloration
+  name: Изменение цвета зубов вследствие применения тетрациклина
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B24
+  - K00.8
+  - K00.83
+  - K07.9
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: применения тетрациклина, а также определение медицинских показаний к лечению,
+    - text: Выявление факторов, влияющих на возникновение изменения цвета зубов вследствие
+        применения тетрациклина
       logic_group: null
       operator: unknown
       values: []
@@ -56,15 +58,191 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: применения тетрациклина, а также определение медицинских показаний
-          к лечению,
+        quote: Выявление факторов, влияющих на возникновение изменения цвета зубов
+          вследствие применения тетрациклина
+    - text: Определение медицинских показаний к лечению, выбор метода лечения и тактики
+        врача-специалиста
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Определение медицинских показаний к лечению, выбор метода лечения и
+          тактики врача-специалиста
+    - text: Дифференциальная диагностика изменения цвета зубов вследствие применения
+        тетрациклина
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Дифференциальная диагностика изменения цвета зубов вследствие применения
+          тетрациклина
+    - text: окрашивание дентина зуба в желто-коричневый и (или) голубовато-серый цвет,
+        возникающее в результате системного применения тетрациклина в период формирования
+        зубов
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: окрашивание дентина зуба в желто-коричневый и (или) голубовато-серый
+          цвет, возникающее в результате системного применения тетрациклина в период
+          формирования зубов
     optional: []
     exclusion: []
-  required_exams: []
+  required_exams:
+  - name: Сбор анамнеза
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями являются: сбор анамнеза'
+  - name: Внешний осмотр и пальпация челюстно-лицевой области
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями являются: внешний осмотр
+        и пальпация челюстно-лицевой области'
+  - name: Осмотр полости рта с помощью дополнительных инструментов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями являются: осмотр полости
+        рта с помощью дополнительных инструментов'
+  - name: Зондирование, перкуссия, оценка состояния твердых тканей зубов, зубных рядов,
+      пломб и протезов, слизистой оболочки полости рта, тканей периодонта
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями являются: зондирование,
+        перкуссия, оценка состояния твердых тканей зубов, зубных рядов, пломб и протезов
+        (при их наличии), оценка состояния слизистой оболочки полости рта, тканей
+        периодонта'
+  - name: Индексная оценка стоматологического здоровья (КПУ, OHI-S)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями являются: индексная оценка
+        стоматологического здоровья: индекс интенсивности кариеса зубов – КПУ, гигиенический
+        индекс Green, Vermillion – OHI-S'
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] ПРИМЕНЕНИЯ ТЕТРАЦИКЛИНА (стр. 6)'
+    - text: Предупреждение развития кариозного процесса (устранение микроорганизмов
+        с поверхности зубов)
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
         document_url: null
@@ -75,8 +253,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] ПРИМЕНЕНИЯ ТЕТРАЦИКЛИНА (стр. 6)'
-    - text: 8. Принципами лечения изменения цвета зубов вследствие применения тетрациклина
+        quote: Предупреждение развития кариозного процесса (устранение микроорганизмов
+          с поверхности зубов)
+    - text: Рекомендации по уходу за зубами и срокам повторного приема
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
         document_url: null
@@ -87,8 +266,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 8. Принципами лечения изменения цвета зубов вследствие применения тетрациклина
-    - text: предупреждение развития кариозного процесса (устранение микроорганизмов
+        quote: Рекомендации по уходу за зубами и срокам повторного приема
+    - text: Эстетическое восстановление цвета пораженных зубов
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
         document_url: null
@@ -99,8 +278,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: предупреждение развития кариозного процесса (устранение микроорганизмов
-    - text: рекомендации по уходу за зубами и срокам повторного приема
+        quote: Эстетическое восстановление цвета пораженных зубов
+    - text: Ортопедическое лечение (проводится врачом-стоматологом-ортопедом), включая
+        препарирование под искусственные коронки, вкладки, виниры
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
         document_url: null
@@ -111,8 +291,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: рекомендации по уходу за зубами и срокам повторного приема
-    - text: эстетическое восстановление цвета пораженных зубов.
+        quote: Ортопедическое лечение (проводится врачом-стоматологом-ортопедом),
+          включая препарирование под искусственные коронки, вкладки, виниры
+    - text: Изготовление временных конструкций (исключение – препарированные зубы
+        под штампованные коронки)
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
         document_url: null
@@ -123,8 +305,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: эстетическое восстановление цвета пораженных зубов.
-    - text: '[treatment] 10. Ортопедическое (стр. 6)'
+        quote: Изготовление временных конструкций (исключение – препарированные зубы
+          под штампованные коронки)
+    - text: Получение аналоговых или оптических (3D) оттисков
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
         document_url: null
@@ -135,13 +318,107 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 10. Ортопедическое (стр. 6)'
+        quote: Получение аналоговых или оптических (3D) оттисков
+    - text: Определение и фиксация центрального соотношения челюстей или центральной
+        окклюзии при помощи восковых или пластмассовых базисов с окклюзионными валиками
+        или окклюзионных силиконовых материалов
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Определение и фиксация центрального соотношения челюстей или центральной
+          окклюзии при помощи восковых или пластмассовых базисов с окклюзионными валиками
+          или окклюзионных силиконовых материалов
+    - text: Выбор цвета, размера и формы искусственных коронок, вкладок, виниров в
+        соответствии с имеющимися зубами и индивидуальными особенностями пациента
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выбор цвета, размера и формы искусственных коронок, вкладок, виниров
+          в соответствии с имеющимися зубами и индивидуальными особенностями пациента
+    - text: Наложение и припасовка каркаса коронки
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наложение и припасовка каркаса коронки
+    - text: Наложение и припасовка готовой коронки, вкладки, винира
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наложение и припасовка готовой коронки, вкладки, винира
+    - text: Фиксация коронки на временный материал (по медицинским показаниям)
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Фиксация коронки на временный материал (по медицинским показаниям)
+    - text: Фиксация коронки, вкладки, винира на постоянный материал
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Фиксация коронки, вкладки, винира на постоянный материал
+    - text: Рекомендации по гигиеническому уходу за зубным протезом, правилам адаптации
+        и срокам замены конструкций
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Рекомендации по гигиеническому уходу за зубным протезом, правилам адаптации
+          и срокам замены конструкций
     drug_groups: []
     drugs:
-    - drug_name: применения
+    - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: 100 мг
+      dose_text: Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию
+        (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку
+        полости рта или десну. Лекарственное средство можно так
       frequency_text: null
       duration_text: null
       route: null
@@ -153,17 +430,20 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "применения 100 мг/мл во \nфлаконах 50 мл \nОдну порцию (1–3"
-    - drug_name: шприцах
+        quote: 'Лидокаин: Спрей 100 мг/мл. Одну порцию (1–3 нажатия) наносят на слизистую
+          оболочку полости рта или десну.'
+    - drug_name: Лидокаин/Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 12,5 г
+      dose_text: Анестезирующий гель в шприцах 12,5 г. Для аппликационной анестезии
+        слизистой оболочки полости рта, в т. ч. перед инъекционной анестезией. Разовую
+        дозу врач-специалист назначает индивидуально, учитывая
       frequency_text: null
       duration_text: null
       route: null
@@ -175,17 +455,20 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "шприцах 12,5 г \nДля аппликационной анестезии слизистой \n"
-    - drug_name: картриджах
+        quote: 'Лидокаин/Хлоргексидин: Анестезирующий гель в шприцах 12,5 г. Для аппликационной
+          анестезии слизистой оболочки полости рта.'
+    - drug_name: Артикаин/Эпинефрин
       active_substance: null
       drug_group: null
-      dose_text: 1,7 мл
+      dose_text: 'Раствор для инъекций (40 мг + 0,005 мг)/мл в картриджах 1,7 мл (1,8
+        мл), в ампулах 2 мл; раствор для инъекций (40 мг + 0,006 мг)/мл в картриджах
+        1,7 мл (в ампулах 2 мл); раствор для инъекций (40 мг + '
       frequency_text: null
       duration_text: null
       route: null
@@ -197,131 +480,20 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "картриджах \n1,7 мл (1,8 мл), в ампулах 2 мл"
-    - drug_name: соответствует
-      active_substance: null
-      drug_group: null
-      dose_text: 12,5 мл
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'соответствует 12,5 мл раствора для инъекций)
-
-
-          [treatment] Лека'
-    - drug_name: января
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: января 2023 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: марта
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: марта 2023 г
+        quote: 'Артикаин/Эпинефрин: Раствор для инъекций. Для инъекционного применения.
+          Доза артикаина до 7 мг на 1 кг массы тела, максимально 500 мг (12,5 мл раствора).'
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: "через \n6 мес"
+  - text: Медицинские осмотры врачом-стоматологом-терапевтом через 6 месяцев после
+      завершения терапевтического лечения.
     timing: null
     required_if: []
     expected_actions: []
@@ -335,37 +507,59 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: "через \n6 мес"
+      quote: Медицинские осмотры врачом-стоматологом-терапевтом через 6 месяцев после
+        завершения терапевтического лечения.
+  - text: Последующее медицинское наблюдение за состоянием зубов и зубных протезов
+      (при их наличии) 2 раза в год (каждые 6 месяцев).
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Последующее медицинское наблюдение за состоянием зубов и зубных протезов
+        (при их наличии) 2 раза в год (каждые 6 месяцев).
   hospitalization: []
-  routing: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубо
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_изменением_цвета_зубов_вследствие_применения_тетрациклина_пост_МЗ_11.01.2023_4.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов взрослое население с изменением цвета зубов
-      вследствие применения тетрациклина
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:50.114615+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T17:53:39.282906+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:50.117791+00:00'
+  validated_at: '2026-07-20T17:53:39.287952+00:00'

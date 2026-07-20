@@ -1,7 +1,7 @@
 {
   "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "Диагностика и лечение пациентов взрослое население с чувствительным дентином",
@@ -32,12 +32,12 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_и_лечение_пациентов_взрослое_населен",
-      "name": "Диагностика и лечение пациентов взрослое население с чувствительным дентином",
+      "condition_id": "sensitive_dentin",
+      "name": "Чувствительный дентин",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "B24"
+        "K03.80"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -45,7 +45,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[diagnostics] 5. Признаками и критериями, определяющими чувствительный дентин, являются: (стр. 5)",
+            "text": "Данные анамнеза",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -62,11 +62,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 5. Признаками и критериями, определяющими чувствительный дентин, являются: (стр. 5)"
+              "quote": "Данные анамнеза"
             }
           },
           {
-            "text": "критерии чувствительного дентина: индексная оценка (КИДЧЗ > 0,1 балла).",
+            "text": "Смещение десны вдоль корня зуба",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -83,11 +83,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "критерии чувствительного дентина: индексная оценка (КИДЧЗ > 0,1 балла)."
+              "quote": "Смещение десны вдоль корня зуба"
             }
           },
           {
-            "text": "дентина, а также определение медицинских показаний к лечению, выбор метода лечения",
+            "text": "Снижение порога возбудимости зуба на местные температурные, химические и физические раздражители",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -104,19 +104,66 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "дентина, а также определение медицинских показаний к лечению, выбор метода лечения"
+              "quote": "Снижение порога возбудимости зуба на местные температурные, химические и физические раздражители"
+            }
+          },
+          {
+            "text": "Индексная оценка (КИДЧЗ > 0,1 балла)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентином_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Индексная оценка (КИДЧЗ > 0,1 балла)"
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
+      "required_exams": [
+        {
+          "name": "Индексная оценка (КИДЧЗ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентином_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "критерии чувствительного дентина: индексная оценка (КИДЧЗ > 0,1 балла)."
+          }
+        }
+      ],
       "conditional_exams": [],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 9. Общими принципами медицинской профилактики и лечения чувствительного (стр. 6)",
+            "text": "Вакуум-дарсонвализация",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
               "document_url": null,
@@ -127,11 +174,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 9. Общими принципами медицинской профилактики и лечения чувствительного (стр. 6)"
+              "quote": "Вакуум-дарсонвализация"
             }
           },
           {
-            "text": "общепринятый эффективный метод медицинской профилактики чувствительного",
+            "text": "Ультразвуковая терапия на верхний шейный отдел позвоночника",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
               "document_url": null,
@@ -142,11 +189,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "общепринятый эффективный метод медицинской профилактики чувствительного"
+              "quote": "Ультразвуковая терапия на верхний шейный отдел позвоночника"
             }
           },
           {
-            "text": "дентина – определение и устранение предрасполагающих факторов",
+            "text": "Амплипульстерапия на шейный отдел позвоночника",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
               "document_url": null,
@@ -157,11 +204,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "дентина – определение и устранение предрасполагающих факторов"
+              "quote": "Амплипульстерапия на шейный отдел позвоночника"
             }
           },
           {
-            "text": "эффективность лечения чувствительного дентина определяется длительностью",
+            "text": "Диадинамотерапия на шейный отдел позвоночника",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
               "document_url": null,
@@ -172,11 +219,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "эффективность лечения чувствительного дентина определяется длительностью"
+              "quote": "Диадинамотерапия на шейный отдел позвоночника"
             }
           },
           {
-            "text": "стабилизации достигнутого хорошего результата.",
+            "text": "Лазеротерапия на чувствительный дентин",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
               "document_url": null,
@@ -187,11 +234,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "стабилизации достигнутого хорошего результата."
+              "quote": "Лазеротерапия на чувствительный дентин"
             }
           },
           {
-            "text": "[treatment] 10. Планирование комплексного лечения пациентов с чувствительным дентином (стр. 6)",
+            "text": "Определение и устранение предрасполагающих факторов.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
               "document_url": null,
@@ -202,17 +249,137 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 10. Планирование комплексного лечения пациентов с чувствительным дентином (стр. 6)"
+              "quote": "Определение и устранение предрасполагающих факторов."
+            }
+          },
+          {
+            "text": "Мотивация к формированию здоровых повседневных привычек.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентином_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Мотивация к формированию здоровых повседневных привычек."
+            }
+          },
+          {
+            "text": "Гигиенические мероприятия.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентином_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Гигиенические мероприятия."
+            }
+          },
+          {
+            "text": "Избирательное применение физических факторов, снижающих чувствительность зуба.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентином_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Избирательное применение физических факторов, снижающих чувствительность зуба."
+            }
+          },
+          {
+            "text": "Вакуум-дарсонвализация (3–4 процедуры каждые 3 суток).",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентином_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Вакуум-дарсонвализация (3–4 процедуры каждые 3 суток)."
+            }
+          },
+          {
+            "text": "Ультразвуковая терапия на верхний шейный отдел позвоночника (8–10 процедур ежедневно).",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентином_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ультразвуковая терапия на верхний шейный отдел позвоночника (8–10 процедур ежедневно)."
+            }
+          },
+          {
+            "text": "Амплипульстерапия на шейный отдел позвоночника (8–10 процедур ежедневно).",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентином_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Амплипульстерапия на шейный отдел позвоночника (8–10 процедур ежедневно)."
+            }
+          },
+          {
+            "text": "Диадинамотерапия на шейный отдел позвоночника (8–10 процедур ежедневно).",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентином_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Диадинамотерапия на шейный отдел позвоночника (8–10 процедур ежедневно)."
+            }
+          },
+          {
+            "text": "Лазеротерапия на чувствительный дентин (до 3 процедур через день).",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентином_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лазеротерапия на чувствительный дентин (до 3 процедур через день)."
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "Таблетки",
+            "drug_name": "Кальция глицерофосфат",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "200 мг",
+            "dose_text": "Таблетки 200 мг. Внутрь 200–500 мг на прием 2–3 раза в сутки. Измельченные таблетки в порошок смешивают с водой для аппликаций на твердые ткани зубов.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -224,20 +391,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентином_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Таблетки 200 мг \nВнутрь 200–500 мг на прием 2–3 раза в су"
+              "quote": "Кальция глицерофосфат: Таблетки 200 мг. Внутрь 200–500 мг на прием 2–3 раза в сутки. Измельченные таблетки смешивают с водой для аппликаций."
             }
           },
           {
-            "drug_name": "января",
+            "drug_name": "Холекальциферол",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2023 г",
+            "dose_text": "Капсулы 50 000 МЕ; таблетки, покрытые пленочной оболочкой, 50 000 МЕ. Лекарственное средство принимается внутрь, во время еды. Лечение дефицита витамина Д: 50 000 МЕ в неделю (1 таблетка или 1 капсула",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -249,88 +416,13 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентином_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 1,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "января 2023 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентином_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентином_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          },
-          {
-            "drug_name": "марта",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2023 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентином_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "марта 2023 г"
+              "quote": "Холекальциферол: Капсулы 50 000 МЕ; таблетки... Лечение дефицита витамина Д: 50 000 МЕ в неделю (1 таб/капс) в течение 7 недель с последующим поддерживающим лечением 1 таб/капс в месяц, при необходимости."
             }
           }
         ],
@@ -340,7 +432,7 @@
       },
       "follow_up": [
         {
-          "text": "через 6 мес",
+          "text": "Медицинские осмотры врачом-стоматологом-терапевтом через 6 месяцев после завершения терапевтического лечения.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -354,7 +446,25 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "через 6 мес"
+            "quote": "Медицинские осмотры врачом-стоматологом-терапевтом через 6 месяцев после завершения терапевтического лечения."
+          }
+        },
+        {
+          "text": "Последующее медицинское наблюдение за состоянием зубов и зубных протезов (при их наличии) 2 раза в год (каждые 6 месяцев).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентином_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Последующее медицинское наблюдение за состоянием зубов и зубных протезов (при их наличии) 2 раза в год (каждые 6 месяцев)."
           }
         }
       ],
@@ -364,38 +474,26 @@
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентин",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_чувствительным_дентином_пост_МЗ_11.01.2023_4.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика и лечение пациентов взрослое население с чувствительным дентином"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:50.817020+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T18:31:15.545919+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:50.818991+00:00"
+    "validated_at": "2026-07-20T18:31:15.547906+00:00"
   }
 }

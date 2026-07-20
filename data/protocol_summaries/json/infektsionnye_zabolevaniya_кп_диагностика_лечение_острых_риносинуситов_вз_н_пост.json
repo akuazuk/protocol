@@ -1,10 +1,10 @@
 {
   "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика лечение острых риносинуситов вз н",
+    "title": "Диагностика лечение острых риносинуситов",
     "url": null,
     "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
     "document_sha256": null,
@@ -32,8 +32,8 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_лечение_острых_риносинуситов_вз_н",
-      "name": "Диагностика лечение острых риносинуситов вз н",
+      "condition_id": "ostrye_rinosinusity",
+      "name": "Острые риносинуситы",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
@@ -46,7 +46,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "Критериями диагностики бактериального ОРС (необходимо наличие трех и более",
+            "text": "Продолжительность заболевания более 7–10 дней",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -63,11 +63,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Критериями диагностики бактериального ОРС (необходимо наличие трех и более"
+              "quote": "Продолжительность заболевания более 7–10 дней"
             }
           },
           {
-            "text": "гнойные выделения в полости носа при передней риноскопии, определение гнойного",
+            "text": "Усиление симптомов после видимого улучшения (двухволновое течение)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -84,11 +84,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "гнойные выделения в полости носа при передней риноскопии, определение гнойного"
+              "quote": "Усиление симптомов после видимого улучшения (двухволновое течение)"
             }
           },
           {
-            "text": "после химиолучевой терапии выполняются общий анализ крови и определение уровня",
+            "text": "Интенсивность симптомов (болей в проекции ОНП и в зубах верхней челюсти) >7 баллов по ВАШ",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -105,115 +105,252 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "после химиолучевой терапии выполняются общий анализ крови и определение уровня"
+              "quote": "Интенсивность симптомов (болей в проекции ОНП и в зубах верхней челюсти) >7 баллов по ВАШ"
+            }
+          },
+          {
+            "text": "Гнойные выделения в полости носа при передней риноскопии",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Гнойные выделения в полости носа при передней риноскопии"
+            }
+          },
+          {
+            "text": "Определение гнойного отделяемого (полоски гноя) в области выводных отверстий пораженных ОНП",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Определение гнойного отделяемого (полоски гноя) в области выводных отверстий пораженных ОНП"
+            }
+          },
+          {
+            "text": "Повышение уровней СОЭ (согласно референтным значениям)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Повышение уровней СОЭ (согласно референтным значениям)"
+            }
+          },
+          {
+            "text": "Повышение уровней СРБ (согласно референтным значениям)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Повышение уровней СРБ (согласно референтным значениям)"
+            }
+          },
+          {
+            "text": "Температура тела >38 °C",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Температура тела >38 °C"
+            }
+          },
+          {
+            "text": "Лейкоцитоз в общем анализе крови",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лейкоцитоз в общем анализе крови"
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "[treatment] 8. Фармакотерапия (стр. 10)",
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 8. Фармакотерапия (стр. 10)"
-            }
-          },
-          {
-            "text": "фармакологической характеристики лекарственного препарата (далее – ЛП). При этом",
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "фармакологической характеристики лекарственного препарата (далее – ЛП). При этом"
-            }
-          },
-          {
-            "text": "аллергологический и фармакологический анамнез.",
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "аллергологический и фармакологический анамнез."
-            }
-          },
-          {
-            "text": "[treatment] 9. Обязательными диагностическими исследованиями являются: (стр. 10)",
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 9. Обязательными диагностическими исследованиями являются: (стр. 10)"
-            }
-          },
-          {
-            "text": "9.2. оценка тяжести течения заболевания по ВАШ",
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "9.2. оценка тяжести течения заболевания по ВАШ"
-            }
-          },
-          {
-            "text": "9.3. передняя риноскопия (задняя риноскопия – при подозрении на сфеноидит) –",
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "9.3. передняя риноскопия (задняя риноскопия – при подозрении на сфеноидит) –"
-            }
+      "required_exams": [
+        {
+          "name": "Передняя риноскопия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Критериями диагностики бактериального ОРС... являются: гнойные выделения в полости носа при передней риноскопии, определение гнойного отделяемого (полоски гноя) в области выводных отверстий пораженных ОНП"
           }
-        ],
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Общий анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При диагностике бактериального ОРС (с подозрением на него) с тяжелым и осложненным течением, в случаях потенциального риска развития гнойных осложнений, пациентам с сахарным диабетом, ХОБЛ... выполняются общий анализ крови."
+          }
+        },
+        {
+          "name": "Определение уровня СРБ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При диагностике бактериального ОРС (с подозрением на него) с тяжелым и осложненным течением, в случаях потенциального риска развития гнойных осложнений, пациентам с сахарным диабетом, ХОБЛ... выполняется определение уровня СРБ."
+          }
+        },
+        {
+          "name": "Обзорная рентгенография ОНП",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинскими показаниями к обзорной рентгенографии ОНП являются: среднетяжелое, тяжелое и осложненное течение ОРС; угроза осложнений; необходимость исключения латентно протекающего одонтогенного синусита..."
+          }
+        }
+      ],
+      "treatment": {
+        "non_drug": [],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "дозированный",
+            "drug_name": "Амоксициллин/клавулановая кислота",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "50 мкг",
+            "dose_text": "таблетки, покрытые оболочкой, 500 мг/125 мг; таблетки, покрытые оболочкой 875 мг/125 мг, по 625 мг 3 раза сутки или по 1 г 2 раза в сутки внутрь 5–7 дней.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -225,20 +362,20 @@
               "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
               "document_url": null,
               "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
-              "page_start": null,
+              "page_start": 12,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "дозированный 50 мкг/доза 140 доз – по 100 мкг (два \nвпрыски"
+              "quote": "Для лечения ОРС назначается один из следующих антибактериальных ЛП второго ряда: амоксициллин/клавулановая кислота, таблетки, покрытые оболочкой... по 625 мг 3 раза сутки или по 1 г 2 раза в сутки внутрь 5–7 дней."
             }
           },
           {
-            "drug_name": "инъекций",
+            "drug_name": "Цефуроксим",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1000 мг",
+            "dose_text": "таблетки, покрытые оболочкой, 250 мг, по 500 мг 2 раза в сутки внутрь 5–7 дней.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -250,88 +387,13 @@
               "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
               "document_url": null,
               "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
-              "page_start": null,
+              "page_start": 12,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "инъекций 1000 мг/200 мг, по 1000 мг/200 мг  \n3–4 раза в "
-            }
-          },
-          {
-            "drug_name": "декабря",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2024 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "декабря 2024 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
+              "quote": "цефуроксим, таблетки, покрытые оболочкой, 250 мг, по 500 мг 2 раза в сутки внутрь 5–7 дней."
             }
           }
         ],
@@ -339,45 +401,128 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
+      "follow_up": [
+        {
+          "text": "Терапия амоксициллин/клавулановой кислотой продолжается 2 дня после исчезновения симптомов.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Терапия амоксициллин/клавулановой кислотой продолжается 2 дня после исчезновения симптомов."
+          }
+        }
+      ],
       "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
+      "routing": [
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        },
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Среднетяжелое, тяжелое и осложненное течение ОРС",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинскими показаниями к обзорной рентгенографии ОНП являются: среднетяжелое, тяжелое и осложненное течение ОРС;"
+          }
+        },
+        {
+          "text": "Угроза осложнений ОРС",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинскими показаниями к обзорной рентгенографии ОНП являются: ...угроза осложнений;"
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика лечение острых риносинуситов вз н"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:30.921162+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T16:09:11.408243+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:30.924495+00:00"
+    "validated_at": "2026-07-20T16:09:11.411625+00:00"
   }
 }

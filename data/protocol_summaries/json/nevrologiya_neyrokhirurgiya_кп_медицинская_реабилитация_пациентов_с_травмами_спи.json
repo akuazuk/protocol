@@ -1,10 +1,10 @@
 {
   "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Медицинская реабилитация пациентов с травмами спинного мозга взрослое население",
+    "title": "Медицинская реабилитация пациентов с травмами спинного мозга (взрослое население)",
     "url": null,
     "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
     "document_sha256": null,
@@ -32,12 +32,11 @@
   },
   "conditions": [
     {
-      "condition_id": "медицинская_реабилитация_пациентов_с_травмами_сп",
-      "name": "Медицинская реабилитация пациентов с травмами спинного мозга взрослое население",
+      "condition_id": "spinal_cord_injuries",
+      "name": "Травмы спинного мозга",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "F52.3",
         "S14",
         "S14.0",
         "S14.1",
@@ -47,8 +46,7 @@
         "S34",
         "S34.0",
         "S34.1",
-        "S34.3",
-        "F52.4"
+        "S34.3"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -56,7 +54,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "Критерии оценки эффективности медицинской реабилитации (стр. 14)",
+            "text": "Значительное улучшение: уменьшение тяжести значений ФК ограничений способности к самообслуживанию или передвижению на 2 и более значения",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -73,11 +71,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Критерии оценки эффективности медицинской реабилитации (стр. 14)"
+              "quote": "Значительное улучшение: уменьшение тяжести значений ФК ограничений способности к самообслуживанию или передвижению на 2 и более значения"
             }
           },
           {
-            "text": "Качественная оценка | Критерии оценки эффективности медицинской реабилитации",
+            "text": "Улучшение: уменьшение тяжести значений ФК ограничений способности к самообслуживанию или передвижению на 1 значение",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -94,11 +92,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Качественная оценка | Критерии оценки эффективности медицинской реабилитации"
+              "quote": "Улучшение: уменьшение тяжести значений ФК ограничений способности к самообслуживанию или передвижению на 1 значение"
             }
           },
           {
-            "text": "Критерии оценки эффективности медицинской реабилитации (стр. 14)",
+            "text": "Незначительное улучшение: уменьшение тяжести значений ФК нарушений функций на 1 значение и более без динамики ограничений способности к самообслуживанию или передвижению",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -115,11 +113,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Критерии оценки эффективности медицинской реабилитации (стр. 14)"
+              "quote": "Незначительное улучшение: уменьшение тяжести значений ФК нарушений функций на 1 значение и более без динамики ограничений способности к самообслуживанию или передвижению"
             }
           },
           {
-            "text": "Качественная оценка | Критерии оценки эффективности медицинской реабилитации",
+            "text": "Без динамики: отсутствие изменений значений ФК нарушений функций и ограничений способности к самообслуживанию или передвижению",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -136,11 +134,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Качественная оценка | Критерии оценки эффективности медицинской реабилитации"
+              "quote": "Без динамики: отсутствие изменений значений ФК нарушений функций и ограничений способности к самообслуживанию или передвижению"
             }
           },
           {
-            "text": "Критерии оценки эффективности медицинской реабилитации пациентов с травмой",
+            "text": "Незначительное ухудшение: увеличение тяжести значений ФК нарушений функций без динамики ФК ограничений способности к самообслуживанию или передвижению",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -157,11 +155,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Критерии оценки эффективности медицинской реабилитации пациентов с травмой"
+              "quote": "Незначительное ухудшение: увеличение тяжести значений ФК нарушений функций без динамики ФК ограничений способности к самообслуживанию или передвижению"
             }
           },
           {
-            "text": "Критерии оценки эффективности медицинской реабилитации",
+            "text": "Ухудшение: увеличение тяжести значений ФК нарушений функций с увеличением тяжести значений ФК ограничений способности к самообслуживанию или передвижению",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -178,49 +176,7 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Критерии оценки эффективности медицинской реабилитации"
-            }
-          },
-          {
-            "text": "Критерии оценки эффективности медицинской реабилитации пациентов с травмой",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Критерии оценки эффективности медицинской реабилитации пациентов с травмой"
-            }
-          },
-          {
-            "text": "Критерии оценки эффективности медицинской реабилитации",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Критерии оценки эффективности медицинской реабилитации"
+              "quote": "Ухудшение: увеличение тяжести значений ФК нарушений функций с увеличением тяжести значений ФК ограничений способности к самообслуживанию или передвижению"
             }
           }
         ],
@@ -229,261 +185,31 @@
       },
       "required_exams": [],
       "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "[treatment] 9. Противопоказания к оказанию медицинской реабилитации при травмах спинного (стр. 3)",
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 9. Противопоказания к оказанию медицинской реабилитации при травмах спинного (стр. 3)"
-            }
-          },
-          {
-            "text": "9.2. необходимость хирургических вмешательств (в том числе повторных):",
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "9.2. необходимость хирургических вмешательств (в том числе повторных):"
-            }
-          },
-          {
-            "text": "при недостигнутой стабильности поврежденных сегментов позвоночника",
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "при недостигнутой стабильности поврежденных сегментов позвоночника"
-            }
-          },
-          {
-            "text": "при развившейся нестабильности элементов конструкций, создающей угрозу",
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "при развившейся нестабильности элементов конструкций, создающей угрозу"
-            }
-          },
-          {
-            "text": "увеличения стенозирования позвоночного канала с прогрессированием неврологической",
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "увеличения стенозирования позвоночного канала с прогрессированием неврологической"
-            }
-          },
-          {
-            "text": "[treatment] 9. Противопоказания к оказанию медицинской реабилитации при травмах спинного (стр. 3)",
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 9. Противопоказания к оказанию медицинской реабилитации при травмах спинного (стр. 3)"
-            }
+      "treatment": null,
+      "follow_up": [
+        {
+          "text": "Качественная оценка критериев эффективности медицинской реабилитации",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Качественная оценка критериев эффективности медицинской реабилитации"
           }
-        ],
-        "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "таблетки",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "таблетки 2 мг и 4 мг, от 1 мг до 8 мг 1 раз в сутки, \n"
-            }
-          },
-          {
-            "drug_name": "действия",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "0,4 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "действия 0,4 мг, 0,4 мг 1 раз в сутки, или силодозин – "
-            }
-          },
-          {
-            "drug_name": "капсулы",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "4 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "капсулы 4 мг и 8 мг, 8 мг 1 раз в сутки"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2020 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2020 г"
-            }
-          },
-          {
-            "drug_name": "августа",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2025 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "августа 2025 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          }
-        ],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [],
+        }
+      ],
       "hospitalization": [],
       "routing": [
         {
-          "text": "[routing] 35. Направление (стр. 8)",
+          "text": "Медицинская реабилитация противопоказана при острых, в том числе инфекционных, заболеваниях до выздоровления.",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -496,11 +222,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "[routing] 35. Направление (стр. 8)"
+            "quote": "Медицинская реабилитация противопоказана при острых, в том числе инфекционных, заболеваниях до выздоровления."
           }
         },
         {
-          "text": "помощь в амбулаторных условиях, в установленном порядке.",
+          "text": "Медицинская реабилитация противопоказана при паразитарных заболеваниях до окончания срока изоляции.",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -513,11 +239,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "помощь в амбулаторных условиях, в установленном порядке."
+            "quote": "Медицинская реабилитация противопоказана при паразитарных заболеваниях до окончания срока изоляции."
           }
         },
         {
-          "text": "[routing] 35. Направление (стр. 8)",
+          "text": "Медицинская реабилитация противопоказана при контагиозных кожных заболеваниях.",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -530,11 +256,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "[routing] 35. Направление (стр. 8)"
+            "quote": "Медицинская реабилитация противопоказана при контагиозных кожных заболеваниях."
           }
         },
         {
-          "text": "помощь в амбулаторных условиях, в установленном порядке.",
+          "text": "Медицинская реабилитация противопоказана при туберкулезе с бактериовыделением микобактерий.",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -547,7 +273,41 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "помощь в амбулаторных условиях, в установленном порядке."
+            "quote": "Медицинская реабилитация противопоказана при туберкулезе с бактериовыделением микобактерий."
+          }
+        },
+        {
+          "text": "Медицинская реабилитация противопоказана при выраженных и резко выраженных нарушениях интеллектуально-мнестической сферы.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинская реабилитация противопоказана при выраженных и резко выраженных нарушениях интеллектуально-мнестической сферы."
+          }
+        },
+        {
+          "text": "Медицинская реабилитация противопоказана при органических расстройствах личности, сопровождающихся асоциальным поведением и (или) расторможенностью влечений.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинская реабилитация противопоказана при органических расстройствах личности, сопровождающихся асоциальным поведением и (или) расторможенностью влечений."
           }
         }
       ],
@@ -555,38 +315,767 @@
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
+      "source_refs": []
+    },
+    {
+      "condition_id": "erectile_dysfunction_organic_origin",
+      "name": "Эректильная дисфункция органического происхождения",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "F52.4"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [
         {
-          "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Медицинская реабилитация пациентов с травмами спинного мозга взрослое население"
+          "name": "Осмотр врачом-нейрохирургом",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "осмотр врачами-специалистами: врачом-нейрохирургом, врачом-психотерапевтом, врачом-терапевтом, другими врачами-специалистами;"
+          }
+        },
+        {
+          "name": "Осмотр врачом-психотерапевтом",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "осмотр врачами-специалистами: врачом-нейрохирургом, врачом-психотерапевтом, врачом-терапевтом, другими врачами-специалистами;"
+          }
+        },
+        {
+          "name": "Осмотр врачом-терапевтом",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "осмотр врачами-специалистами: врачом-нейрохирургом, врачом-психотерапевтом, врачом-терапевтом, другими врачами-специалистами;"
+          }
+        },
+        {
+          "name": "Компьютерная томография позвоночника (поврежденный отдел)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "компьютерная томография позвоночника (поврежденный отдел);"
+          }
+        },
+        {
+          "name": "Магнитно-резонансная томография спинного мозга и позвоночника (поврежденный отдел)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "магнитно-резонансная томография спинного мозга и позвоночника (поврежденный отдел);"
+          }
+        },
+        {
+          "name": "Электронейромиография стимуляционная (с исследованием соматосенсорных вызванных потенциалов)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "электронейромиография стимуляционная (с исследованием соматосенсорных вызванных потенциалов);"
+          }
+        },
+        {
+          "name": "Транскраниальная магнитная стимуляция (с исследованием моторных ответов)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "транскраниальная магнитная стимуляция (с исследованием моторных ответов);"
+          }
+        },
+        {
+          "name": "Ультразвуковое исследование органов брюшной полости",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ультразвуковое исследование органов брюшной полости."
+          }
+        },
+        {
+          "name": "Осмотр врачом-урологом",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "осмотр врачами-специалистами: врачом-урологом, врачом-нейрохирургом, врачом-психотерапевтом, врачом-терапевтом, другими специалистами;"
+          }
         }
-      ]
+      ],
+      "treatment": {
+        "non_drug": [
+          {
+            "text": "Периодическая асептическая самокатетеризация мочевого пузыря",
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Периодическая асептическая самокатетеризация мочевого пузыря"
+            }
+          },
+          {
+            "text": "Эндоскопическое инъекционное введение в стенку мочевого пузыря или зону сфинктера ботулотоксина А",
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Эндоскопическое инъекционное введение в стенку мочевого пузыря или зону сфинктера ботулотоксина А"
+            }
+          },
+          {
+            "text": "Поведенческая терапия с применением принципов обратной биологической связи и использование физиотерапевтического лечения",
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Поведенческая терапия с применением принципов обратной биологической связи и использование физиотерапевтического лечения"
+            }
+          },
+          {
+            "text": "Оперативные медицинские вмешательства: трансуретральная резекция шейки мочевого пузыря",
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Оперативные медицинские вмешательства: трансуретральная резекция шейки мочевого пузыря"
+            }
+          },
+          {
+            "text": "Оперативные медицинские вмешательства: илеоцистоаугментация",
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Оперативные медицинские вмешательства: илеоцистоаугментация"
+            }
+          },
+          {
+            "text": "Оперативные медицинские вмешательства: аутоцистодубликатура",
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Оперативные медицинские вмешательства: аутоцистодубликатура"
+            }
+          },
+          {
+            "text": "Оперативные медицинские вмешательства: ремускуляризация мочевого пузыря",
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Оперативные медицинские вмешательства: ремускуляризация мочевого пузыря"
+            }
+          },
+          {
+            "text": "Оперативные медицинские вмешательства: имплантация систем для хронической нейромодуляции",
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Оперативные медицинские вмешательства: имплантация систем для хронической нейромодуляции"
+            }
+          },
+          {
+            "text": "Иные хирургические вмешательства, направленные на сохранение функции мочевого пузыря и предотвращение обструктивной уропатии верхних мочевых путей",
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Иные хирургические вмешательства, направленные на сохранение функции мочевого пузыря и предотвращение обструктивной уропатии верхних мочевых путей"
+            }
+          }
+        ],
+        "drug_groups": [],
+        "drugs": [],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [
+        {
+          "text": "Пациенты после декомпрессивно-стабилизирующей операции с умеренными (ФК2), выраженными (ФК3) или резко выраженными (ФК4) двигательными нарушениями и/или нарушениями функции тазовых органов (ФК2, ФК3, ФК4) направляются на этап ранней стационарной медицинской реабилитации.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Пациенты после декомпрессивно-стабилизирующей операции с умеренными (ФК2), выраженными (ФК3) или резко выраженными (ФК4) двигательными нарушениями и/или нарушениями функции тазовых органов (ФК2, ФК3, "
+          }
+        },
+        {
+          "text": "Специализированная урологическая помощь при нервно-мышечной дисфункции мочевого пузыря (N31) имеет среднюю длительность наблюдения и лечения 7–14 дней.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Специализированная урологическая помощь при нервно-мышечной дисфункции мочевого пузыря (N31) имеет среднюю длительность наблюдения и лечения 7–14 дней."
+          }
+        }
+      ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "В остром периоде травматической болезни спинного мозга медицинская реабилитация оказывается в стационарных специализированных нейрохирургических, травматологических отделениях, в отделениях реанимации и интенсивной терапии после проведения декомпрессивно-стабилизирующих операций и достигнутой стабилизации жизненно важных функций организма пациента.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "В остром периоде травматической болезни спинного мозга медицинская реабилитация оказывается в стационарных специализированных нейрохирургических, травматологических отделениях, в отделениях реанимации"
+          }
+        },
+        {
+          "text": "Пациенты направляются на этап ранней стационарной медицинской реабилитации в специализированное отделение реабилитации или в профильные отделения (неврологическое, ортопедотравматологическое) областных центров (больниц) медицинской реабилитации.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Пациенты направляются на этап ранней стационарной медицинской реабилитации в специализированное отделение реабилитации или в профильные отделения (неврологическое, ортопедотравматологическое) областны"
+          }
+        },
+        {
+          "text": "Направление (перевод) пациентов на этап ранней стационарной медицинской реабилитации осуществляется не ранее 7 дня после операций с гало-аппаратом на шейном отделе, и не ранее 12 дня после переднего спондилодеза, дорсальной декомпрессии или вентрального корпородеза грудного/поясничного отделов при стабильной фиксации позвоночника.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Направление (перевод) пациентов на этап ранней стационарной медицинской реабилитации осуществляется не ранее 7 дня после операций с гало-аппаратом на шейном отделе, и не ранее 12 дня после переднего с"
+          }
+        },
+        {
+          "text": "Госпитализация (для стационарной медицинской реабилитации)",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация (для стационарной медицинской реабилитации)"
+          }
+        },
+        {
+          "text": "Направление осуществляется из амбулаторных условий",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Направление осуществляется из амбулаторных условий"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Необходимость хирургических вмешательств (в том числе повторных) при недостигнутой стабильности поврежденных сегментов позвоночника.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "необходимость хирургических вмешательств (в том числе повторных): при недостигнутой стабильности поврежденных сегментов позвоночника;"
+          }
+        },
+        {
+          "text": "Необходимость хирургических вмешательств при развившейся нестабильности элементов конструкций, создающей угрозу увеличения стенозирования позвоночного канала с прогрессированием неврологической симптоматики.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "при развившейся нестабильности элементов конструкций, создающей угрозу увеличения стенозирования позвоночного канала с прогрессированием неврологической симптоматики;"
+          }
+        },
+        {
+          "text": "Нагноение в области проведенной операции, остеомиелит в стадии обострения, функционирующая свищевая форма остеомиелита.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "нагноение в области проведенной операции, остеомиелит в стадии обострения, функционирующая свищевая форма остеомиелита;"
+          }
+        },
+        {
+          "text": "Пролежни с вовлечением в процесс глубоких слоев кожи с активным гнойным отделяемым, с образованием затечников.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "пролежни с вовлечением в процесс глубоких слоев кожи с активным гнойным отделяемым, с образованием затечников;"
+          }
+        },
+        {
+          "text": "Острые, в том числе инфекционные, заболевания до выздоровления.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "острые, в том числе инфекционные, заболевания до выздоровления"
+          }
+        },
+        {
+          "text": "Паразитарные заболевания до окончания срока изоляции.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "паразитарные заболевания до окончания срока изоляции"
+          }
+        },
+        {
+          "text": "Контагиозные кожные заболевания.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "контагиозные кожные заболевания"
+          }
+        },
+        {
+          "text": "Туберкулез с бактериовыделением микобактерий туберкулеза.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "туберкулез с бактериовыделением микобактерий туберкулеза"
+          }
+        },
+        {
+          "text": "Выраженные и резко выраженные нарушения интеллектуально-мнестической сферы.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "выраженные и резко выраженные нарушения интеллектуально-мнестической сферы"
+          }
+        },
+        {
+          "text": "Органические расстройства личности, сопровождающиеся асоциальным поведением и (или) расторможенностью влечений.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_травмами_спи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_травмами_спинного_мозга_взр_нас_пост_МЗ_2020_85.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "органические расстройства личности, сопровождающиеся асоциальным поведением и (или) расторможенностью влечений"
+          }
+        }
+      ],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "delayed_ejaculation_orgasmic_dysfunction",
+      "name": "Замедленная эякуляция и оргазмическая дисфункция",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "F52.3"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": null,
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:43.296000+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T16:34:29.640052+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=3"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:43.299147+00:00"
+    "validated_at": "2026-07-20T16:34:29.640501+00:00"
   }
 }

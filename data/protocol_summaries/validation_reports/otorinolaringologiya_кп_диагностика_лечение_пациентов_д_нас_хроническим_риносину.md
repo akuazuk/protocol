@@ -1,6 +1,6 @@
 # Validation: otorinolaringologiya_кп_диагностика_лечение_пациентов_д_нас_хроническим_риносину
 
 - **status:** valid
-- **validated_at:** 2026-06-23T19:16:26.643739+00:00
+- **validated_at:** 2026-07-20T17:14:10.757300+00:00
 - **review_status:** needs_review
-- **extraction_status:** auto_extracted
+- **extraction_status:** llm_extracted

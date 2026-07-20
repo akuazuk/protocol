@@ -1,10 +1,10 @@
 {
   "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_отложениями_на",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика и лечение пациентов детс население с отложениями на зубах",
+    "title": "Диагностика и лечение пациентов с отложениями на зубах",
     "url": null,
     "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_отложениями_на_зубах_пост_МЗ_30.11.2022_112.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,12 +32,21 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_и_лечение_пациентов_детс_население_с",
-      "name": "Диагностика и лечение пациентов детс население с отложениями на зубах",
+      "condition_id": "dental_deposits",
+      "name": "Отложения на зубах",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "B24"
+        "K03.6",
+        "K03.60",
+        "K03.61",
+        "K03.62",
+        "K03.63",
+        "K03.64",
+        "K03.65",
+        "K03.66",
+        "K03.68",
+        "K03.69"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -45,7 +54,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[diagnostics] 5. Признаки и критерии, определяющие отложения на зубах: (стр. 4)",
+            "text": "Зубной налет: желтоватый слой на поверхности зубов, пломб, десны, накапливается в период речевого и жевательного покоя и при отсутствии рациональной гигиены.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -62,11 +71,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 5. Признаки и критерии, определяющие отложения на зубах: (стр. 4)"
+              "quote": "Зубной налет: желтоватый слой на поверхности зубов, пломб, десны, накапливается в период речевого и жевательного покоя и при отсутствии рациональной гигиены."
             }
           },
           {
-            "text": "определение медицинских показаний к лечению, выбор метода лечения и тактики врача-",
+            "text": "Наддесневой зубной камень: твердой или глинообразной консистенции, хрупкий, сероватого или беловато-желтого цвета, чаще около выводных протоков слюнных желез.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -83,19 +92,137 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "определение медицинских показаний к лечению, выбор метода лечения и тактики врача-"
+              "quote": "Наддесневой зубной камень: твердой или глинообразной консистенции, хрупкий, сероватого или беловато-желтого цвета, чаще около выводных протоков слюнных желез."
+            }
+          },
+          {
+            "text": "Поддесневой камень (у детей редко): плотный, твердый, темно-коричневого или зеленовато-черного цвета, располагается на поверхности зуба в патологическом кармане.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_отложениями_на",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_отложениями_на_зубах_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Поддесневой камень (у детей редко): плотный, твердый, темно-коричневого или зеленовато-черного цвета, располагается на поверхности зуба в патологическом кармане."
+            }
+          },
+          {
+            "text": "Дифференциальная диагностика проводится с изменением цвета твердых тканей зубов после прорезывания.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_отложениями_на",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_отложениями_на_зубах_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Дифференциальная диагностика проводится с изменением цвета твердых тканей зубов после прорезывания."
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
+      "required_exams": [
+        {
+          "name": "Визуальная диагностика",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_отложениями_на",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_отложениями_на_зубах_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "наддесневой зубной камень – ... обнаруживается при визуальной диагностике"
+          }
+        },
+        {
+          "name": "Соскабливание или скалывание специальными инструментами",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_отложениями_на",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_отложениями_на_зубах_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "наддесневой зубной камень – ... путем соскабливания или скалывания специальными инструментами"
+          }
+        },
+        {
+          "name": "Клинический осмотр",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_отложениями_на",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_отложениями_на_зубах_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Основными принципами диагностики отложений на зубах являются: выявление количества, качества отложений на зубах, их локализации"
+          }
+        }
+      ],
       "conditional_exams": [],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 10. Общими принципами медицинской профилактики и лечения отложений на зубах (стр. 4)",
+            "text": "Мотивация к формированию здоровых повседневных привычек, имеющих отношение к стоматологическому здоровью.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_отложениями_на",
               "document_url": null,
@@ -106,11 +233,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 10. Общими принципами медицинской профилактики и лечения отложений на зубах (стр. 4)"
+              "quote": "Мотивация к формированию здоровых повседневных привычек, имеющих отношение к стоматологическому здоровью."
             }
           },
           {
-            "text": "отношение к стоматологическому здоровью, исключению вредных привычек и факторов,",
+            "text": "Исключение вредных привычек и факторов, способствующих образованию отложений на зубах.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_отложениями_на",
               "document_url": null,
@@ -121,11 +248,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "отношение к стоматологическому здоровью, исключению вредных привычек и факторов,"
+              "quote": "Исключение вредных привычек и факторов, способствующих образованию отложений на зубах."
             }
           },
           {
-            "text": "способствующих образованию отложений на зубах, рекомендации по выбору методов",
+            "text": "Рекомендации по выбору методов и средств индивидуальной гигиены полости рта.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_отложениями_на",
               "document_url": null,
@@ -136,11 +263,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "способствующих образованию отложений на зубах, рекомендации по выбору методов"
+              "quote": "Рекомендации по выбору методов и средств индивидуальной гигиены полости рта."
             }
           },
           {
-            "text": "и средств индивидуальной гигиены полости рта",
+            "text": "Регулярное механическое удаление зубного налета с помощью гигиенических средств.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_отложениями_на",
               "document_url": null,
@@ -151,11 +278,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "и средств индивидуальной гигиены полости рта"
+              "quote": "Регулярное механическое удаление зубного налета с помощью гигиенических средств."
             }
           },
           {
-            "text": "регулярное механическое удаление зубного налета с помощью гигиенических",
+            "text": "Профессиональное удаление отложений на зубах.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_отложениями_на",
               "document_url": null,
@@ -166,32 +293,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "регулярное механическое удаление зубного налета с помощью гигиенических"
-            }
-          },
-          {
-            "text": "контролируемой чистки зубов 1 раз в 6 месяцев.",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_отложениями_на",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_отложениями_на_зубах_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "контролируемой чистки зубов 1 раз в 6 месяцев."
+              "quote": "Профессиональное удаление отложений на зубах."
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "применения",
+            "drug_name": "Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,5 мг",
+            "dose_text": "Раствор для местного и наружного применения 0,5 мг/мл. Неразведенный раствор применяется в виде орошений, полосканий и аппликаций – 5–10 мл раствора наносят на пораженную поверхность слизистой оболочк",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -203,20 +315,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_отложениями_на",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_отложениями_на_зубах_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "применения 0,5 мг/мл | Неразведенный раствор применяется "
+              "quote": "Неразведенный раствор применяется в виде орошений, полосканий и аппликаций – 5–10 мл раствора наносят на пораженную поверхность слизистой оболочки полости рта или на десну с экспозицией 1–3 мин 2-3 раза в сутки"
             }
           },
           {
-            "drug_name": "раствор",
+            "drug_name": "Бензилдиметил-миристоиламино-пропиламмоний",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "30 мг",
+            "dose_text": "Раствор для наружного (местного) применения 0,01 % водного раствора. Орошение (полоскание) полости рта перед и после удаления зубных отложений. При стоматитах, гингивитах, пародонтитах рекомендуется п",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -228,20 +340,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_отложениями_на",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_отложениями_на_зубах_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "раствор 30 мг/мл"
+              "quote": "Орошение (полоскание) полости рта перед и после удаления зубных отложений. При стоматитах, гингивитах, пародонтитах рекомендуется полоскание полости рта 10–15 мл 3–4 раза в сутки."
             }
           },
           {
-            "drug_name": "ноября",
+            "drug_name": "Перекись водорода",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2022 г",
+            "dose_text": "Раствор для наружного применения 30 мг/мл во флаконах. Полоскание (обработка) полости рта. Для наружного применения используют раствор 30 мг/мл; для полоскания полости рта и горла, нанесения на слизис",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -253,88 +365,13 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_отложениями_на",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_отложениями_на_зубах_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ноября 2022 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_отложениями_на",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_отложениями_на_зубах_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_отложениями_на",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_отложениями_на_зубах_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          },
-          {
-            "drug_name": "марта",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2023 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_отложениями_на",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_отложениями_на_зубах_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "марта 2023 г"
+              "quote": "Для полоскания полости рта и горла, нанесения на слизистые оболочки – раствор 2,5 мг/мл (раствор 30 мг/мл разводят водой в соотношении 1:11). Полоскание применяется у детей с 12 лет"
             }
           }
         ],
@@ -342,45 +379,52 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
+      "follow_up": [
+        {
+          "text": "Проведение контролируемой чистки зубов 1 раз в 6 месяцев.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_отложениями_на",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_отложениями_на_зубах_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Проведение контролируемой чистки зубов 1 раз в 6 месяцев."
+          }
+        }
+      ],
       "hospitalization": [],
       "routing": [],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_отложениями_на",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_отложениями_на_зубах_пост_МЗ_30.11.2022_112.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика и лечение пациентов детс население с отложениями на зубах"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:51.572015+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T18:07:18.907247+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:51.573719+00:00"
+    "validated_at": "2026-07-20T18:07:18.910141+00:00"
   }
 }

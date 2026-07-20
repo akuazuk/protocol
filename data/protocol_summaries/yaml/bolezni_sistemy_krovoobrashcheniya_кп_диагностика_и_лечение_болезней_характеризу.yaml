@@ -1,6 +1,6 @@
 protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Диагностика и лечение болезней, характеризующихся повышенным кровяным давлением
@@ -21,32 +21,51 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - adult_and_child
+  - pregnant
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_болезней_характеризующихся
-  name: Диагностика и лечение болезней, характеризующихся повышенным кровяным давлением
+- condition_id: essential_hypertension_i_iii_stage
+  name: Эссенциальная (первичная) гипертензия Артериальная гипертензия I-III ст.
   synonyms: []
   abbreviations: []
   icd10_codes:
   - I10.0
-  - I11.0
-  - I13.0
-  - I13.2
-  - B24
-  - I12.0
-  - I15.0
-  - I21.9
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Систолическое АД равно или выше 140 мм рт. ст., диастолическое – равно
+        или выше 90 мм рт. ст.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
+          и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
+          № 59.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Систолическое АД равно или выше 140 мм рт. ст., диастолическое – равно
+          или выше 90 мм рт. ст.
+    optional: []
+    exclusion: []
   required_exams:
-  - name: УЗИ
+  - name: Консультация врача-сосудистого хирурга
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -62,18 +81,95 @@ conditions:
       local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
         и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
         № 59.pdf
-      page_start: null
+      page_start: 13
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: Анализ мочи по Нечипоренко МАУ* Эхо-КГ УЗИ почек Рентгенография органов
-        грудной полости СМАД СРПВ РРГ* | Медикаментозное л
-  conditional_exams: []
+      quote: Консультация врача-сосудистого хирурга* течении 1 раз в год.
+  conditional_exams:
+  - name: Эхокардиографическое обследование сердца
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
+        и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
+        № 59.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Эхокардиографическое обследование сердца, ультразвуковое исследование
+        брахиоцефальных артерий, анализ мочи на микроальбуминурию следует проводить
+        1 раз в 2 года при отсутствии клинических проявлений со стороны поражения
+        органов-мишеней.
+  - name: Ультразвуковое исследование брахиоцефальных артерий
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
+        и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
+        № 59.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Эхокардиографическое обследование сердца, ультразвуковое исследование
+        брахиоцефальных артерий, анализ мочи на микроальбуминурию следует проводить
+        1 раз в 2 года при отсутствии клинических проявлений со стороны поражения
+        органов-мишеней.
+  - name: Анализ мочи на микроальбуминурию
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
+        и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
+        № 59.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Эхокардиографическое обследование сердца, ультразвуковое исследование
+        брахиоцефальных артерий, анализ мочи на микроальбуминурию следует проводить
+        1 раз в 2 года при отсутствии клинических проявлений со стороны поражения
+        органов-мишеней.
   treatment:
     non_drug:
-    - text: Начало медикаментозного лечения
+    - text: Модификация изменяемых факторов риска.
       source_ref:
         protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
         document_url: null
@@ -86,372 +182,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Начало медикаментозного лечения
-    - text: мг/сут внутрь, метопролол 25-200
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
-          и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
-          № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: мг/сут внутрь, метопролол 25-200
-    - text: мг/сут внутрь, карведилол 25-100
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
-          и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
-          № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: мг/сут внутрь, карведилол 25-100
-    - text: метаболическом синдроме (далее-
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
-          и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
-          № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: метаболическом синдроме (далее-
-    - text: 'диуретики: гидрохлортиазид 12,5-'
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
-          и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
-          № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'диуретики: гидрохлортиазид 12,5-'
-    - text: 25 мг/сут внутрь, индапамид 2,5
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
-          и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
-          № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 25 мг/сут внутрь, индапамид 2,5
+        quote: Модификация изменяемых факторов риска.
     drug_groups: []
-    drugs:
-    - drug_name: индапамид
-      active_substance: null
-      drug_group: null
-      dose_text: "2,5 \nмг"
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
-          и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
-          № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "индапамид 2,5 \nмг/сут внутрь"
-    - drug_name: индапамид-ретард
-      active_substance: null
-      drug_group: null
-      dose_text: 1,5 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
-          и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
-          № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "индапамид-ретард \n1,5 мг/сут"
-    - drug_name: лерканидипин
-      active_substance: null
-      drug_group: null
-      dose_text: 10 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
-          и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
-          № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "лерканидипин \n10 мг/сут, \nорганов-\nмишеней"
-    - drug_name: эпросартан
-      active_substance: null
-      drug_group: null
-      dose_text: 600 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
-          и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
-          № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "эпросартан 600 мг/сут внутрь, \nтелмисартан \n40-80 \nмг/сут"
-    - drug_name: ирбесартан
-      active_substance: null
-      drug_group: null
-      dose_text: "150 \nмг"
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
-          и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
-          № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "ирбесартан \n150 \nмг/сут"
-    - drug_name: бетагистин
-      active_substance: null
-      drug_group: null
-      dose_text: 48 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
-          и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
-          № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: бетагистин 48 мг /сутки внутрь
-    - drug_name: амлодипин
-      active_substance: null
-      drug_group: null
-      dose_text: 5 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
-          и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
-          № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "амлодипин 5 мг/сут внутрь, \nверапамил 120-240 мг/сут в"
-    - drug_name: эналаприл
-      active_substance: null
-      drug_group: null
-      dose_text: "40 \nмг"
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
-          и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
-          № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "эналаприл \n40 \nмг/сут \nвнутрь, \nфозиноприл 10-20 мг/сут в"
-    - drug_name: небиволол
-      active_substance: null
-      drug_group: null
-      dose_text: "5 \nмг"
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
-          и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
-          № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "небиволол \n5 \nмг/сут \nвнутрь, \nатенолол 25-50 мг/сут вну"
-    - drug_name: дозе
-      active_substance: null
-      drug_group: null
-      dose_text: 5 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
-          и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
-          № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "дозе \n5 мг/мин, которую увеличивают каждые 3-5 мин"
-    - drug_name: дозы
-      active_substance: null
-      drug_group: null
-      dose_text: 100 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
-          и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
-          № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: дозы 100 мг/мин
-    - drug_name: кислота
-      active_substance: null
-      drug_group: null
-      dose_text: "75 \nмг"
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
-          и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
-          № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "кислота 75 \nмг/сут \nво\n\n[treatment] II-III (стр"
+    drugs: []
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: контроль
+  - text: Эхокардиографическое обследование сердца, УЗИ брахиоцефальных артерий, анализ
+      мочи на микроальбуминурию 1 раз в 2 года при отсутствии клинических проявлений.
     timing: null
     required_if: []
     expected_actions: []
@@ -467,18 +206,13 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
-  hospitalization: []
-  routing: []
-  red_flags:
-  - text: "системной красной \nволчанки или антифосфолипидного синдрома, диабет 1\
-      \ или 2 типа, хроническая АГ) или с более чем одним \n27 \nфактором умеренного\
-      \ р"
-    aliases: []
-    red_flag_type: systemic_autoimmune
-    severity: medium
+      quote: Эхокардиографическое обследование сердца, УЗИ брахиоцефальных артерий,
+        анализ мочи на микроальбуминурию 1 раз в 2 года при отсутствии клинических
+        проявлений.
+  - text: Консультация врача-сосудистого хирурга 1 раз в год.
+    timing: null
+    required_if: []
     expected_actions: []
-    cap_if_unhandled: null
     source_ref:
       protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
       document_url: null
@@ -491,37 +225,392 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: "системной красной \nволчанки или антифосфолипидного синдрома, диабет\
-        \ 1 или 2 типа, хроническая АГ) или с более чем одним \n27 \nфактором умеренного\
-        \ р"
+      quote: Консультация врача-сосудистого хирурга 1 раз в год.
+  hospitalization: []
+  routing:
+  - text: Амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
+        и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
+        № 59.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторно
+  - text: Госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
+        и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
+        № 59.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация
+  red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
-    document_url: null
-    local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
-      и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
-      № 59.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение болезней, характеризующихся повышенным кровяным давлением
+  source_refs: []
+- condition_id: hypertension_in_pregnancy
+  name: Существовавшая ранее Эссенциальная, кардиоваскулярная, почечная, вторичная
+    гипертензия (при беременности)
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - O10.0
+  - O10.1
+  - O10.2
+  - O10.4
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Артериальная гипертензия – хроническое повышение АД, при котором САД ≥
+        140 мм рт. ст., ДАД ≥ 90 мм рт. ст.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
+          и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
+          № 59.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Артериальная гипертензия – хроническое повышение АД, при котором САД
+          ≥ 140 мм рт. ст., ДАД ≥ 90 мм рт. ст.
+    - text: АГБ – повышение АД, при котором САД ≥ 140 мм рт. ст. и/или ДАД ≥ 90 мм
+        рт. ст. при двух и более последовательных обращениях с интервалом > 4 ч в
+        любом сроке беременности и в течение 6 недель после родов.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
+          и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
+          № 59.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: АГБ – повышение АД, при котором САД ≥ 140 мм рт. ст. и/или ДАД ≥ 90
+          мм рт. ст. при двух и более последовательных обращениях с интервалом > 4
+          ч в любом сроке беременности и в течение 6 недель после род
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Эхокардиографическое обследование сердца
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
+        и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
+        № 59.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Эхокардиографическое обследование сердца ... следует проводить 1 раз
+        в 2 года при отсутствии клинических проявлений со стороны поражения органов-мишеней.
+  - name: Ультразвуковое исследование брахиоцефальных артерий
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
+        и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
+        № 59.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ультразвуковое исследование брахиоцефальных артерий ... следует проводить
+        1 раз в 2 года при отсутствии клинических проявлений со стороны поражения
+        органов-мишеней.
+  - name: Анализ мочи на микроальбуминурию
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
+        и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
+        № 59.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: анализ мочи на микроальбуминурию следует проводить 1 раз в 2 года при
+        отсутствии клинических проявлений со стороны поражения органов-мишеней.
+  - name: Диагностика эффекта “белого халата”
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
+        и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
+        № 59.pdf
+      page_start: 39
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диагностика эффекта “белого халата” у пациентов с артериальной гипертензией
+  conditional_exams:
+  - name: Консультация врача-сосудистого хирурга
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
+        и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
+        № 59.pdf
+      page_start: 13
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Консультация врача-сосудистого хирурга* течении 1 раз в год.
+  treatment: null
+  follow_up:
+  - text: Эхокардиографическое обследование сердца, ультразвуковое исследование брахиоцефальных
+      артерий, анализ мочи на микроальбуминурию следует проводить 1 раз в 2 года при
+      отсутствии клинических проявлений со стороны поражения органов-мишеней.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
+        и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
+        № 59.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Эхокардиографическое обследование сердца, ультразвуковое исследование
+        брахиоцефальных артерий, анализ мочи на микроальбуминурию следует проводить
+        1 раз в 2 года при отсутствии клинических проявлений с
+  hospitalization: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
+        и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
+        № 59.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
+        и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
+        № 59.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: Экстренное направление на стационарное лечение в акушерский стационар
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
+        и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
+        № 59.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Экстренное направление на стационарное лечение в акушерский стационар
+  - text: Направление в женскую консультацию при первичном обращении к терапевту для
+      постановки на учет и ведения
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
+        и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
+        № 59.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Направление в женскую консультацию при первичном обращении к терапевту
+        для постановки на учет и ведения
+  - text: 'Абсолютное противопоказание для тиазидовых диуретиков: подагра.'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
+        и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
+        № 59.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Абсолютное противопоказание для тиазидовых диуретиков: подагра.'
+  - text: 'Возможное противопоказание для тиазидовых диуретиков: метаболический синдром.'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
+        и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
+        № 59.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Возможное противопоказание для тиазидовых диуретиков: метаболический
+        синдром.'
+  red_flags:
+  - text: Необходимость экстренного направления на стационарное лечение в акушерский
+      стационар
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП Диагностика
+        и лечение болезней, характеризующихся повышенным кровяным давлением 06.06.2017
+        № 59.pdf
+      page_start: 31
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Экстренное направление на стационарное лечение в акушерский стационар.
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:12.000521+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T15:19:54.597532+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=2
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:12.014150+00:00'
+  validated_at: '2026-07-20T15:19:54.604494+00:00'

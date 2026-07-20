@@ -1,6 +1,6 @@
 protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Анестезиологическое обеспечение хирургических вмешательств
@@ -19,33 +19,61 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - adult
+  - pregnant
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: анестезиологическое_обеспечение_хирургических_вм
-  name: Анестезиологическое обеспечение хирургических вмешательств
+- condition_id: obesity
+  name: Ожирение
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B24
   - E66.9
-  - I21.9
-  - I64
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: chronic_obstructive_pulmonary_disease
+  name: Хроническая обструктивная болезнь легких
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
   - J44.9
-  - K04.7
-  - O26.9
-  - O72
-  - O88.2
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: выявление наличия СД у пациента, определение степени поражения органов-
+    - text: Оценка результатов лабораторных и инструментальных исследований.
       logic_group: null
       operator: unknown
       values: []
@@ -62,8 +90,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: выявление наличия СД у пациента, определение степени поражения органов-
-    - text: 'лабораторные исследования: определение уровня глюкозы в крови, электролитов,'
+        quote: Оценка результатов лабораторных и инструментальных исследований.
+    - text: Оценка степени компенсации диагностированных ранее заболеваний.
       logic_group: null
       operator: unknown
       values: []
@@ -80,11 +108,1006 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'лабораторные исследования: определение уровня глюкозы в крови, электролитов,'
+        quote: Оценка степени компенсации диагностированных ранее заболеваний.
+    - text: Выявление степени поражения органов-мишеней при СД (сосуды головного мозга,
+        периферические сосуды, почки).
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выявление степени поражения органов-мишеней при СД (сосуды головного
+          мозга, периферические сосуды, почки).
+    - text: Определение степени тяжести печеночной недостаточности по шкалам Чайлд-Пью
+        и MELD-Na.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Определение степени тяжести печеночной недостаточности по шкалам Чайлд-Пью
+          и MELD-Na.
+    - text: Выявление характерных клинических проявлений эндокринных заболеваний (щитовидной/паращитовидной
+        желез, патологии надпочечников).
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выявление характерных клинических проявлений эндокринных заболеваний
+          (щитовидной/паращитовидной желез, патологии надпочечников).
+    - text: Осмотр области шеи при увеличении щитовидной железы для выявления сдавления/смещения
+        дыхательных путей.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Осмотр области шеи при увеличении щитовидной железы для выявления сдавления/смещения
+          дыхательных путей.
+    - text: Выявление клинических проявлений феохромоцитомы (необъяснимая перемежающаяся
+        АГ с головной болью, потливостью, тахикардией).
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выявление клинических проявлений феохромоцитомы (необъяснимая перемежающаяся
+          АГ с головной болью, потливостью, тахикардией).
+    - text: Исключение признаков недостаточности коры надпочечников у пациентов, длительно
+        принимающих кортикостероиды.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Исключение признаков недостаточности коры надпочечников у пациентов,
+          длительно принимающих кортикостероиды.
+    - text: Сбор анамнеза для выявления рисков заболеваний печени (переливания крови,
+        употребление алкоголя/наркотиков).
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Сбор анамнеза для выявления рисков заболеваний печени (переливания
+          крови, употребление алкоголя/наркотиков).
+    - text: Определение нарушений свертываемости крови (кровоподтеки, кровотечения,
+        варикозное расширение вен пищевода).
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Определение нарушений свертываемости крови (кровоподтеки, кровотечения,
+          варикозное расширение вен пищевода).
+    - text: Физикальное обследование для выявления признаков патологии печени (желтуха,
+        паутинные невусы, асцит, гепатоспленомегалия, ладонная эритема).
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Физикальное обследование для выявления признаков патологии печени (желтуха,
+          паутинные невусы, асцит, гепатоспленомегалия, ладонная эритема).
+    - text: Ишемическая болезнь сердца (жалобы на стенокардитические боли, терапия
+        нитратами, инфаркт миокарда в анамнезе, патологический зубец Q на ЭКГ, положительный
+        стресс-тест в анамнезе)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ишемическая болезнь сердца (жалобы на стенокардитические боли, терапия
+          нитратами, инфаркт миокарда в анамнезе, патологический зубец Q на ЭКГ, положительный
+          стресс-тест в анамнезе)
+    - text: Почечная дисфункция (креатинин более 170 мкмоль/л или скорость клубочковой
+        фильтрации менее 60 мл/мин.)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Почечная дисфункция (креатинин более 170 мкмоль/л или скорость клубочковой
+          фильтрации менее 60 мл/мин.)
+    - text: Сахарный диабет, требующий терапии инсулином
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Сахарный диабет, требующий терапии инсулином
+    - text: Симптомы обструктивного сонного апноэ (периодическая обструкция верхних
+        дыхательных путей во время сна с десатурацией и гиперкапнией)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Симптомы обструктивного сонного апноэ (периодическая обструкция верхних
+          дыхательных путей во время сна с десатурацией и гиперкапнией)
+    - text: Высокий риск синдрома ОСА по шкале STOP-BANG (ожирение (ИМТ ≥ 35), увеличенная
+        окружность шеи (> 40 см), тяжелая гипертрофия миндалин, заложенность носа,
+        анатомические аномалии ВДП)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Высокий риск синдрома ОСА по шкале STOP-BANG (ожирение (ИМТ ≥ 35),
+          увеличенная окружность шеи (> 40 см), тяжелая гипертрофия миндалин, заложенность
+          носа, анатомические аномалии ВДП)
+    optional: []
+    exclusion: []
+  required_exams: []
+  conditional_exams:
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Общий анализ мочи назначается по мед. показаниям, включая микроскопию
+        осадка и бак. исследование (посев мочи на флору). Для СД - наличие кетонов
+        в моче.
+  - name: Гликированный гемоглобин (HbA1C)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: HbA1C измеряется у пациентов с СД при отсутствии данных за последние
+        3 месяца. Также для СД при высоком риске вмешательства или протезировании
+        крупных суставов.
+  - name: Рентгенография органов грудной клетки
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Рентгенография ОГК проводится по мед. показаниям, в т.ч. при патологии
+        органов дыхания/клинических проявлений, декомпенсированной СС патологии, или
+        для выявления сужения трахеи при ЗЩЖ.
+  - name: Эхокардиография (Эхо-КГ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Эхо-КГ не проводится, за исключением признаков/симптомов сердечной недостаточности,
+        иных медпоказаний, или при среднем риске СВМ с 1+ фактором сердечно-сосудистого
+        риска.
+  - name: ЭКГ
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ЭКГ для пациентов с СД (в рамках алгоритма ведения).
+  - name: Общий анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 62
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'ОАК: пациенты >75 лет, патология печени/почек, прием антикоагулянтов,
+        кровотечение, патология системы крови, онкология, вмешательства высокого риска/с
+        риском кровопотери.'
+  - name: Исследование гемостаза
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 62
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Исследование гемостаза: патология печени/почек, коагулопатии, прием
+        антикоагулянтов, химиотерапия (включая гемостазиограмму, количество тромбоцитов).'
+  - name: Биохимический анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 62
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Биохим. анализ крови: патология печени/почек, риск печеночной/почечной
+        дисфункции, СД (глюкоза, электролиты, креатинин), диуретики/гликозиды/кортикостероиды,
+        ЦНС, эндокринная патология, >60 лет, нарушения питания.'
+  - name: Газы крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 62
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Газы крови: декомпенсированная хроническая легочная патология, кандидаты
+        на резекцию легкого, пациенты на механической вентиляции легких.'
+  - name: Уровень ионизированного кальция в сыворотке крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль ионизированного кальция в сыворотке крови у пациентов с гиперпаратиреозом
+        для исключения гиперкальциемии.
+  - name: Исследование уровня тиреоидных гормонов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Исследование уровня тиреоидных гормонов назначается по медицинским показаниям
+        при выявлении характерных клинических проявлений заболеваний щитовидной железы.
+  - name: Исследование уровня высокочувствительного тропонина T (тропонина I)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование (перед хирургическим вмешательством и в первые 48 часов
+        после) уровня высокочувствительного тропонина T (тропонина I) у пациентов
+        с низким функциональным резервом, которым запланировано выполнение хирургического
+        вмешательства высокого риска
+  treatment:
+    non_drug:
+    - text: Разъяснение пациенту сути и хронологии предстоящих событий (общий план
+        анестезии, манипуляции, возможные осложнения, процесс пробуждения, послеоперационное
+        обезболивание)
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Разъяснение пациенту сути и хронологии предстоящих событий (общий план
+          анестезии, манипуляции, возможные осложнения, процесс пробуждения, послеоперационное
+          обезболивание)
+    - text: Учет индивидуальных особенностей и пожеланий пациента, информирование
+        об альтернативных вариантах анестезиологического пособия
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Учет индивидуальных особенностей и пожеланий пациента, информирование
+          об альтернативных вариантах анестезиологического пособия
+    - text: Рекомендация отказа от курения не менее чем за 4 недели до планового хирургического
+        вмешательства
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Рекомендация отказа от курения не менее чем за 4 недели до планового
+          хирургического вмешательства
+    - text: Определение медицинских показаний к проведению СРАР-терапии во время сна
+        в периоперационном периоде
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Определение медицинских показаний к проведению СРАР-терапии во время
+          сна в периоперационном периоде
+    - text: Резервирование места в отделении анестезиологии и реанимации для госпитализации
+        пациентов после высокотравматичных хирургических вмешательств
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Резервирование места в отделении анестезиологии и реанимации для госпитализации
+          пациентов после высокотравматичных хирургических вмешательств
+    drug_groups: []
+    drugs: []
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Повторный предоперационный осмотр пациента в амбулаторных условиях (при
+      необходимости)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Повторный предоперационный осмотр пациента в амбулаторных условиях (при
+        необходимости)
+  - text: Исследование уровня высокочувствительного тропонина T (тропонина I) в первые
+      48 часов после хирургического вмешательства
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Исследование уровня высокочувствительного тропонина T (тропонина I) в
+        первые 48 часов после хирургического вмешательства
+  hospitalization: []
+  routing:
+  - text: Амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторно
+  - text: Стационарно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Стационарно
+  - text: Госпитализация в отделение анестезиологии и реанимации после высокотравматичных
+      хирургических вмешательств
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация в отделение анестезиологии и реанимации после высокотравматичных
+        хирургических вмешательств
+  - text: Опиоиды используются для купирования болевого синдрома или анальгоседации
+      при регионарной анестезии и инвазивных манипуляциях у сознательных пациентов.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Опиоиды используются для купирования болевого синдрома или анальгоседации
+        при регионарной анестезии и инвазивных манипуляциях у сознательных пациентов.
+  - text: Обеспечение проходимости верхних дыхательных путей (ларингеальная маска
+      или интубация трахеи) проводится после индукции анестезии и миоплегии.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обеспечение проходимости верхних дыхательных путей (ларингеальная маска
+        или интубация трахеи) проводится после индукции анестезии и миоплегии.
+  - text: Коррекция доз наркотических анальгетиков показана при пожилом возрасте (>60
+      лет), печеночной недостаточности; при тяжелой почечной недостаточности интервал
+      введения увеличивается.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Коррекция доз наркотических анальгетиков показана при пожилом возрасте
+        (>60 лет), печеночной недостаточности; при тяжелой почечной недостаточности
+        интервал введения увеличивается.
+  red_flags:
+  - text: Выявление инфекции мочевыводящих путей может служить основанием для отмены
+      хирургического вмешательства.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Выявление инфекции мочевыводящих путей может служить основанием для отмены
+        хирургического вмешательства или своевременного назначения этиотропной антибиотикотерапии.
+  - text: Отмена планового хирургического вмешательства до оптимизации предоперационного
+      гликемического контроля, если имеется кетонурия, увеличен уровень HbA1C и есть
+      нарушения электролитов.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Отмена планового хирургического вмешательства до оптимизации гликемического
+        контроля при кетонурии, увеличенном HbA1C и нарушениях электролитов.
+  - text: Большая масса увеличенной щитовидной железы в положении пациента лежа на
+      спине может сдавливать или смещать верхние дыхательные пути, вызывая инспираторный
+      стридор или хрипы.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Увеличенная щитовидная железа в положении лежа на спине может сдавливать
+        или смещать верхние дыхательные пути, вызывая инспираторный стридор или хрипы.
+  - text: Необъяснимая перемежающаяся АГ у пациента, которая сопровождается головной
+      болью, повышенной потливостью и тахикардией (клинические проявления феохромоцитомы).
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Необъяснимая перемежающаяся АГ, сопровождающаяся головной болью, повышенной
+        потливостью и тахикардией, может указывать на феохромоцитому.
+  - text: Признаки недостаточности коры надпочечников у пациентов, которые принимают
+      длительно кортикостероиды (требует коррекции жидкостных и электролитных нарушений,
+      прием стероидных гормонов).
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Признаки недостаточности коры надпочечников у пациентов на длительном
+        приеме кортикостероидов требуют коррекции жидкостных/электролитных нарушений
+        и приема стероидов.
+  - text: Наличие нарушений свертываемости крови (кровоподтеки, кровотечения, варикозное
+      расширение вен пищевода, патологии синтеза факторов свертывания и (или) тромбоцитопении),
+      которые могут препятствовать выбору регионарных методов анестезии.
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 11
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Нарушения свертываемости крови (кровоподтеки, кровотечения, ВРВ пищевода,
+        патологии синтеза факторов свертывания/тромбоцитопения) могут препятствовать
+        выбору регионарной анестезии.
+  - text: Повреждение миокарда в периоперационном периоде
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: с целью своевременной диагностики повреждения миокарда в периоперационном
+        периоде.
+  - text: Послеоперационные легочные осложнения (ателектазы, пневмонии, обострение
+      ХОБЛ, отек легких, длительная потребность в механической вентиляции легких)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: повышенный риск послеоперационных легочных осложнений (ателектазы, пневмонии,
+        обострение ХОБЛ, отек легких и длительная потребность в механической вентиляции
+        легких)
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: myocardial_infarction
+  name: Инфаркт миокарда
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - I21.9
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Инфаркт миокарда в анамнезе (как фактор сердечно-сосудистого риска)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Инфаркт миокарда в анамнезе (как фактор сердечно-сосудистого риска)
+    - text: Патологический зубец Q на электрокардиографии (ЭКГ)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Патологический зубец Q на электрокардиографии (ЭКГ)
+    - text: Положительный стресс-тест в анамнезе
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Положительный стресс-тест в анамнезе
     optional: []
     exclusion: []
   required_exams:
-  - name: ЭКГ
+  - name: Оценка психического состояния пациента
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -98,23 +1121,1143 @@ conditions:
       protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
       document_url: null
       local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: оценка психического состояния пациента, его настроя в отношении предполагаемого
+        хирургического вмешательства, вида анестезиологического пособия
+  - name: Выявление симптомов сердечно-сосудистых заболеваний (ИБС, поражение клапанов,
+      ХСН)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: оценку симптомов, указывающих на возможное наличие основных сердечно-сосудистых
+        заболеваний – ишемической болезни сердца (далее – ИБС), поражения клапанного
+        аппарата, застойной сердечной недостаточности
+  - name: Выявление в анамнезе стентирования коронарных артерий (коронарного шунтирования)
+      или имплантируемого кардиостимулятора
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: выявление пациентов, имеющих в анамнезе стентирование коронарных артерий
+        (коронарное шунтирование) или имплантируемый кардиостимулятор (кардиовертер)
+  - name: Измерение частоты сердечных сокращений (ЧСС) и артериального давления (АД)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: измерение частоты сердечных сокращений (далее – ЧСС) и артериального
+        давления (далее – АД) с учетом степени предоперационной тревоги у пациента.
+  - name: 'Скрининговая оценка дыхательной системы (анамнез: курение, одышка, толерантность
+      к нагрузке, кашель, прием бронхолитиков)'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'скрининговую оценку по данным анамнеза: курение; одышка; толерантность
+        к физической нагрузке; кашель; прием бронхолитиков или стероидов; использование
+        ингаляторов'
+  - name: Физикальный осмотр дыхательной системы (частота дыхания, вспомогательные
+      мышцы, цвет ногтевых лож)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: физикальный осмотр с оценкой частоты дыхания, использования пациентом
+        при дыхании вспомогательных мышц, цвета ногтевых лож, способности пациента
+        вести беседу или ходить без одышки
+  - name: Аускультация легких
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: аускультацию для возможного обнаружения ослабления дыхания, хрипов, стридора
+  conditional_exams:
+  - name: Исследование уровня высокочувствительного тропонина T (тропонина I)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование (перед хирургическим вмешательством и в первые 48 часов
+        после) уровня высокочувствительного тропонина T (тропонина I) у пациентов
+        с низким функциональным резервом, которым запланировано выполнение хирургического
+        вмешательства высокого риска
+  - name: Оценка риска наличия синдрома обструктивного сонного апноэ (ОСА) по шкале
+      STOP-BANG
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'оценку риска наличия синдрома ОСА по шкале STOP-BANG согласно приложению
+        11 при наличии у пациента: ожирения (ИМТ 35 кг/м2 и более); увеличенной окружности
+        шеи (более 40 см); тяжелой гипертрофии миндалин'
+  - name: Полисомнография
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: направление на полисомнографию и определение медицинских показаний к
+        проведению СРАР-терапии во время сна в периоперационном периоде
+  treatment:
+    non_drug:
+    - text: Разъяснение пациенту сути и хронологии предстоящих событий (общий план
+        анестезии, манипуляции, возможные осложнения, процесс пробуждения, послеоперационное
+        обезболивание).
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Разъяснение пациенту сути и хронологии предстоящих событий (общий план
+          анестезии, манипуляции, возможные осложнения, процесс пробуждения, послеоперационное
+          обезболивание).
+    - text: Информирование пациента об альтернативных вариантах анестезиологического
+        пособия.
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Информирование пациента об альтернативных вариантах анестезиологического
+          пособия.
+    - text: Рекомендация отказа от курения не менее чем за 4 недели до планового хирургического
+        вмешательства.
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Рекомендация отказа от курения не менее чем за 4 недели до планового
+          хирургического вмешательства.
+    - text: Проведение СРАР-терапии во время сна в периоперационном периоде (при наличии
+        медицинских показаний для пациентов с ОСА).
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Проведение СРАР-терапии во время сна в периоперационном периоде (при
+          наличии медицинских показаний для пациентов с ОСА).
+    drug_groups: []
+    drugs: []
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Исследование уровня высокочувствительного тропонина T (тропонина I) в первые
+      48 часов после хирургического вмешательства у пациентов с низким функциональным
+      резервом и высоким риском вмешательства.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
       page_start: null
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: 'с СД установлен согласно приложению 12;
-
-        ЭКГ.
-
-
-        [diagnostics] 15. Предоперационное обследование пациентов с заболеваниями
-        щит'
-  conditional_exams: []
+      quote: Исследование уровня высокочувствительного тропонина T (тропонина I) в
+        первые 48 часов после хирургического вмешательства у пациентов с низким функциональным
+        резервом и высоким риском вмешательства.
+  hospitalization: []
+  routing:
+  - text: Определение необходимости повторного предоперационного осмотра пациента
+      в амбулаторных условиях.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Определение необходимости повторного предоперационного осмотра пациента
+        в амбулаторных условиях.
+  - text: Резервирование места в отделении анестезиологии и реанимации для госпитализации
+      пациентов после высокотравматичных хирургических вмешательств (за исключением
+      кардиохирургических).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Резервирование места в отделении анестезиологии и реанимации для госпитализации
+        пациентов после высокотравматичных хирургических вмешательств (за исключением
+        кардиохирургических).
+  red_flags:
+  - text: Инфаркт миокарда в анамнезе как клинический фактор сердечно-сосудистого
+      риска.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ИБС (жалобы на стенокардитические боли, терапия нитратами, инфаркт миокарда
+        в анамнезе, патологический зубец Q на ЭКГ, положительный стресс-тест в анамнезе)
+  - text: Низкий функциональный резерв и выполнение хирургического вмешательства высокого
+      риска.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: у пациентов с низким функциональным резервом, которым запланировано выполнение
+        хирургического вмешательства высокого риска из перечня рисков при хирургических
+        вмешательствах
+  - text: Высокий риск синдрома обструктивного сонного апноэ (ОСА), требующий дополнительного
+      обследования и терапии.
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение необходимости дополнительного обследования пациента с высоким
+        риском синдрома ОСА по шкале STOP-BANG
+  - text: Повышенный риск послеоперационных легочных осложнений (ателектазы, пневмонии,
+      обострение ХОБЛ, отек легких, длительная ИВЛ) при высокотравматичных вмешательствах.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: в связи с повышенным риском послеоперационных легочных осложнений (ателектазы,
+        пневмонии, обострение ХОБЛ, отек легких и длительная потребность в механической
+        вентиляции легких)
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: acute_cerebrovascular_accident
+  name: Острое нарушение мозгового кровообращения
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - I64
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Медицинские показания для выполнения отдельных лабораторных и инструментальных
+        исследований установлены согласно Приложению 6.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Медицинские показания для выполнения отдельных лабораторных и инструментальных
+          исследований установлены согласно Приложению 6.
+    - text: Срок давности лабораторных исследований не должен превышать 14 календарных
+        дней, инструментальных исследований – 90 календарных дней.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Срок давности лабораторных исследований не должен превышать 14 календарных
+          дней, инструментальных исследований – 90 календарных дней.
+    - text: При стабильном течении диабета рутинное предоперационное исследование
+        гликемического профиля не требуется.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При стабильном течении диабета рутинное предоперационное исследование
+          гликемического профиля не требуется.
+    - text: ИБС (жалобы на стенокардитические боли, терапия нитратами, инфаркт миокарда
+        в анамнезе, патологический зубец Q на ЭКГ, положительный стресс-тест в анамнезе)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ИБС (жалобы на стенокардитические боли, терапия нитратами, инфаркт
+          миокарда в анамнезе, патологический зубец Q на ЭКГ, положительный стресс-тест
+          в анамнезе)
+    - text: ХСН
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ХСН
+    - text: инсульт или транзиторная ишемическая атака в анамнезе
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: инсульт или транзиторная ишемическая атака в анамнезе
+    - text: почечная дисфункция (креатинин более 170 мкмоль/л или СКФ менее 60 мл/мин.)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: почечная дисфункция (креатинин более 170 мкмоль/л или СКФ менее 60
+          мл/мин.)
+    - text: СД, требующий терапии инсулином
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: СД, требующий терапии инсулином
+    - text: Ожирение (ИМТ 35 кг/м2 и более)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ожирение (ИМТ 35 кг/м2 и более)
+    - text: Увеличенная окружность шеи (более 40 см)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Увеличенная окружность шеи (более 40 см)
+    - text: Тяжелая гипертрофия миндалин
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Тяжелая гипертрофия миндалин
+    - text: Заложенность носа
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Заложенность носа
+    - text: Анатомические аномалии верхних дыхательных путей
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Анатомические аномалии верхних дыхательных путей
+    - text: Периодическая обструкция верхних дыхательных путей во время сна с десатурацией
+        и гиперкапнией, ассоциированная с хронической легочной гипертензией и правожелудочковой
+        сердечной недостаточностью (для ОСА)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Периодическая обструкция верхних дыхательных путей во время сна с десатурацией
+          и гиперкапнией, ассоциированная с хронической легочной гипертензией и правожелудочковой
+          сердечной недостаточностью (для О
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Предоперационный осмотр врачом-анестезиологом-реаниматологом
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При плановом хирургическом вмешательстве пациент осматривается врачом-анестезиологом-реаниматологом
+        не позднее чем за сутки; при экстренном - после выявления медицинских показаний
+        к хирургическому вмешательству.
+  - name: Оценка психического состояния и настрой пациента
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: оценка психического состояния пациента, его настроя в отношении предполагаемого
+        хирургического вмешательства, вида анестезиологического пособия, а также определение
+        необходимости проведения медикаментозной подготовки;
+  - name: Оценка риска развития сердечно-сосудистых осложнений
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: оценивает риск развития сердечно-сосудистых осложнений в соответствии
+        с факторами риска развития сердечно-сосудистых осложнений согласно приложению
+        2;
+  - name: Исследование сердечно-сосудистой системы (симптомы ИБС, клапанных поражений,
+      ХСН; анамнез стентирования/ШКГ/кардиостимулятора; ЧСС, АД)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Предоперационное исследование ССС включает: оценку симптомов ИБС, поражения
+        клапанов, ХСН; выявление пациентов с анамнезом стентирования/ШКГ/кардиостимулятора;
+        измерение ЧСС и АД.'
+  - name: Оценка индекса риска инсульта и тромбоэмболических осложнений при фибрилляции
+      предсердий (CHA2DS2-VASc)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: оценку индекса риска инсульта и тромбоэмболических осложнений при фибрилляции
+        предсердий по шкале оценки риска инсульта и системной тромбоэмболии у пациентов
+        с фибрилляцией предсердий CHA2DS2-VASc согласно приложению 8;
+  - name: Определение функциональных резервов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение функциональных резервов согласно приложению 9;
+  - name: Исследование дыхательной системы (анамнез, физикальный осмотр, аускультация)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Предоперационное исследование дыхательной системы включает: скрининг
+        по анамнезу (курение, одышка, толерантность к нагрузке, кашель); физикальный
+        осмотр (ЧДД, вспомогательные мышцы, цвет ногтей, беседа); аускультацию.'
+  conditional_exams:
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Общий анализ мочи перед хирургическим вмешательством назначается по медицинским
+        показаниям.
+  - name: Гликированный гемоглобин (HbA1C)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Гликированный гемоглобин (далее – HbA1C) перед хирургическим вмешательством
+        измеряется у пациентов с СД при отсутствии данных о его значении за последние
+        3 месяца.
+  - name: Рентгенография органов грудной клетки
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Рентгенография органов грудной клетки перед хирургическим вмешательством
+        проводится по медицинским показаниям, в том числе при наличии у пациента патологии
+        органов дыхания или соответствующих клинических проявлений.
+  - name: Эхокардиография
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Эхокардиография перед хирургическим вмешательством не проводится, за
+        исключением наличия у пациента признаков или симптомов сердечной недостаточности
+        или иных медицинских показаний.
+  - name: Общий анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 62
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Общий анализ крови: Пациенты старше 75 лет. Патология печени. Патология
+        почек. Прием антикоагулянтов. Кровотечение. Патология системы крови. Злокачественные
+        новообразования. Хирургические вмешательства высокого риска, с риском кровопотери.'
+  - name: Исследование гемостаза (гемостазиограмма, количество тромбоцитов)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 62
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Исследование гемостаза: Патология печени. Патология почек. Коагулопатии.
+        Прием антикоагулянтов. Химиотерапия.'
+  - name: Биохимический анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 62
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Биохимический анализ крови: Патология печени. Патология почек. Риск
+        интраоперационной печеночной или почечной дисфункции. СД. Прием диуретиков,
+        сердечных гликозидов или кортикостероидов. Заболевания ЦНС. Эндокринная патология.
+        Пациентам старше 60 лет. Нарушения питания.'
+  - name: Газы крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 62
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Газы крови: Декомпенсированная хроническая легочная патология. Кандидаты
+        на резекцию легкого. Пациенты на механической вентиляции легких.'
+  - name: Уровень глюкозы в крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'лабораторные исследования: определение уровня глюкозы в крови, электролитов,
+        креатинина'
+  - name: Электролиты
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'лабораторные исследования: определение уровня глюкозы в крови, электролитов,
+        креатинина'
+  - name: Креатинин
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'лабораторные исследования: определение уровня глюкозы в крови, электролитов,
+        креатинина'
+  - name: Общий анализ мочи (на кетоны)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ мочи (наличие кетонов в моче)
   treatment:
     non_drug:
-    - text: '[treatment] ПОСТАНОВЛЯЕТ: (стр. 1)'
+    - text: Разъяснение пациенту сути и хронологии предстоящих событий (общий план
+        анестезии, предполагаемые манипуляции, возможные осложнения, процесс пробуждения,
+        вопросы послеоперационного обезболивания)
       source_ref:
         protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
         document_url: null
@@ -125,8 +2268,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] ПОСТАНОВЛЯЕТ: (стр. 1)'
-    - text: 1.  Утвердить  клинический  протокол  «Анестезиологическое  обеспечение
+        quote: Разъяснение пациенту сути и хронологии предстоящих событий (общий план
+          анестезии, предполагаемые манипуляции, возможные осложнения, процесс пробуждения,
+          вопросы послеоперационного обезболивания)
+    - text: Учет индивидуальных особенностей и пожеланий пациента
       source_ref:
         protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
         document_url: null
@@ -137,8 +2282,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 1.  Утвердить  клинический  протокол  «Анестезиологическое  обеспечение
-    - text: хирургических  вмешательств»  (прилагается).
+        quote: Учет индивидуальных особенностей и пожеланий пациента
+    - text: Информирование пациента об альтернативных вариантах анестезиологического
+        пособия
       source_ref:
         protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
         document_url: null
@@ -149,8 +2295,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: хирургических  вмешательств»  (прилагается).
-    - text: '[treatment] 19.04.2023 № 57 (стр. 3)'
+        quote: Информирование пациента об альтернативных вариантах анестезиологического
+          пособия
+    - text: Рекомендация отказа от курения не менее чем за 4 недели до планового хирургического
+        вмешательства
       source_ref:
         protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
         document_url: null
@@ -161,8 +2309,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 19.04.2023 № 57 (стр. 3)'
-    - text: «Анестезиологическое обеспечение хирургических вмешательств»
+        quote: Рекомендация отказа от курения не менее чем за 4 недели до планового
+          хирургического вмешательства
+    - text: Резервирование места в отделении анестезиологии и реанимации для госпитализации
+        пациентов после высокотравматичных хирургических вмешательств (за исключением
+        кардиохирургических) в связи с повышенным риском послеоперационных легочных
+        осложнений
       source_ref:
         protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
         document_url: null
@@ -173,27 +2325,17 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: «Анестезиологическое обеспечение хирургических вмешательств»
-    - text: '[treatment] 1. Настоящий клинический протокол устанавливает общие требования
-        к объему (стр. 3)'
-      source_ref:
-        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 1. Настоящий клинический протокол устанавливает общие
-          требования к объему (стр. 3)'
+        quote: 'Резервирование места в отделении анестезиологии и реанимации для госпитализации
+          пациентов после высокотравматичных хирургических вмешательств (за исключением
+          кардиохирургических) в связи с повышенным '
     drug_groups: []
     drugs:
-    - drug_name: менее
+    - drug_name: Медикаментозная терапия (подбор или коррекция)
       active_substance: null
       drug_group: null
-      dose_text: 60 мл
+      dose_text: по схеме подбора оптимальной медикаментозной терапии, установленной
+        согласно приложению 3, или коррекции приема лекарственных препаратов в периоперационном
+        периоде по схеме, установленной согласно при
       frequency_text: null
       duration_text: null
       route: null
@@ -205,120 +2347,114 @@ conditions:
         protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
         document_url: null
         local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
-        page_start: null
+        page_start: 5
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: менее 60 мл/мин
-    - drug_name: апреля
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: апреля 2023 г
-    - drug_name: ноября
-      active_substance: null
-      drug_group: null
-      dose_text: 2023  г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ноября  2023  г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июня 1993 г
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011  г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'октября
-
-          2011  г'
+        quote: определяет необходимость подбора медикаментозной терапии по схеме подбора
+          оптимальной медикаментозной терапии, установленной согласно приложению 3,
+          или коррекции приема лекарственных препаратов в периоперационном периоде
+          по схеме, установленной согласно приложению 4;
     procedures: []
     surgery: []
     source_refs: []
   follow_up: []
   hospitalization: []
-  routing: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: стационарно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: стационарно
+  - text: госпитализация в отделение анестезиологии и реанимации
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация в отделение анестезиологии и реанимации
+  - text: Применение наркотических анальгетиков для купирования болевого синдрома.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Применение наркотических анальгетиков для купирования болевого синдрома.
+  - text: Анальгоседация опиоидами при регионарной анестезии, инвазивном мониторинге
+      или венозных линиях у сознательных пациентов.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Анальгоседация опиоидами при регионарной анестезии, инвазивном мониторинге
+        или венозных линиях у сознательных пациентов.
+  - text: Обеспечение проходимости верхних дыхательных путей (ларингеальная маска/интубация
+      трахеи) после индукции анестезии.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обеспечение проходимости верхних дыхательных путей (ларингеальная маска/интубация
+        трахеи) после индукции анестезии.
   red_flags:
-  - text: 'масс-эффектом, мезотромбоз в сочетании с выраженной сердечной
-
-      патологией, полиорганная дисфункция);
-
-      класс VI – умерший донор.
-
-
-      [classification] 11'
+  - text: Выявление инфекции мочевыводящих путей
     aliases: []
-    red_flag_type: thrombosis
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -326,30 +2462,37 @@ conditions:
       protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
       document_url: null
       local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
-      page_start: null
+      page_start: 6
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: 'масс-эффектом, мезотромбоз в сочетании с выраженной сердечной
-
-        патологией, полиорганная дисфункция);
-
-        класс VI – умерший донор.
-
-
-        [classification] 11'
-  - text: 'масс-эффектом, мезотромбоз в сочетании с выраженной сердечной
-
-      патологией, полиорганная дисфункция);
-
-      класс VI – умерший донор.
-
-
-      [classification] 11'
+      quote: выявление инфекции мочевыводящих путей может служить основанием для отмены
+        хирургического вмешательства или своевременного назначения этиотропной антибиотикотерапии.
+  - text: Острое изменение состояния пациента (простудные заболевания, обострение
+      хронической патологии)
     aliases: []
-    red_flag_type: thrombosis
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Основанием для повторного выполнения лабораторных исследований может
+        служить острое изменение состояния пациента (простудные заболевания, обострение
+        хронической патологии).
+  - text: Кетонурия, увеличенный HbA1C и нарушения электролитов у пациентов с СД
+    aliases: []
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -357,27 +2500,19 @@ conditions:
       protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
       document_url: null
       local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
-      page_start: null
+      page_start: 9
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: 'масс-эффектом, мезотромбоз в сочетании с выраженной сердечной
-
-        патологией, полиорганная дисфункция);
-
-        класс VI – умерший донор.
-
-
-        [classification] 11'
-  - text: 'инсульта  и  тромбоэмболических  осложнений
-
-      при  фибрилляции  предсердий  по  шкале  оценки  риска  инсульта  и  системной
-
-      тромбоэмболии  у  паци'
+      quote: отмену планового хирургического вмешательства до оптимизации предоперационного
+        гликемического контроля, если имеется кетонурия, увеличен уровень HbA1C и
+        есть нарушения электролитов.
+  - text: Увеличенная щитовидная железа, сдавливающая или смещающая верхние дыхательные
+      пути
     aliases: []
-    red_flag_type: thrombosis
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -385,26 +2520,18 @@ conditions:
       protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
       document_url: null
       local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
-      page_start: null
+      page_start: 10
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: 'инсульта  и  тромбоэмболических  осложнений
-
-        при  фибрилляции  предсердий  по  шкале  оценки  риска  инсульта  и  системной
-
-        тромбоэмболии  у  паци'
-  - text: 'и  системной
-
-      тромбоэмболии  у  пациентов  с  фибрилляцией  предсердий  CHA2DS2-VASc  согласно
-
-      приложению 8;
-
-      определение функциональных резервов с'
+      quote: большая масса которой в положении пациента лежа на спине может сдавливать
+        или смещать верхние дыхательные пути, вызывая инспираторный стридор или хрипы
+  - text: Клинические проявления феохромоцитомы (необъяснимая перемежающаяся АГ, головная
+      боль, потливость, тахикардия)
     aliases: []
-    red_flag_type: thrombosis
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -412,45 +2539,1348 @@ conditions:
       protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
       document_url: null
       local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
-      page_start: null
+      page_start: 10
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: 'и  системной
-
-        тромбоэмболии  у  пациентов  с  фибрилляцией  предсердий  CHA2DS2-VASc  согласно
-
-        приложению 8;
-
-        определение функциональных резервов с'
+      quote: выявление клинических проявлений феохромоцитомы во всех случаях необъяснимой
+        перемежающейся АГ у пациента, которая сопровождается головной болью, повышенной
+        потливостью и тахикардией
+  - text: Недостаточность коры надпочечников у пациентов, длительно принимающих кортикостероиды
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исключение признаков недостаточности коры надпочечников у пациентов,
+        которые принимают длительно кортикостероиды, в случае выявления при необходимости
+        осуществляется коррекция жидкостных и электролитных нарушений.
+  - text: Нарушения свертываемости крови (кровоподтеки, кровотечения, варикозное расширение
+      вен пищевода, патологии синтеза факторов свертывания и/или тромбоцитопении)
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 11
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение наличия нарушений свертываемости крови..., которые могут
+        препятствовать выбору регионарных методов анестезии;
+  - text: Низкий функциональный резерв и хирургическое вмешательство высокого риска
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Исследование тропонина T (I) у пациентов с низким функциональным резервом,
+        которым запланировано высокорисковое хирургическое вмешательство, с целью
+        своевременной диагностики повреждения миокарда.
+  - text: Тяжелое течение бронхиальной астмы (частое применение бронхолитиков, госпитализации,
+      потребность в системных стероидах)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Частота применения бронхолитиков, госпитализации по поводу обострения
+        астмы, потребность в системных стероидах — признаки тяжелого течения и гиперреактивности
+        дыхательных путей, учитывать при анестезии.
+  - text: Высокий риск синдрома обструктивного сонного апноэ (ОСА) по шкале STOP-BANG
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Определение необходимости доп. обследования пациента с высоким риском
+        ОСА по STOP-BANG (полисомнография и медпоказания к СРАР-терапии во время сна
+        в периоперационном периоде).
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
-    document_url: null
-    local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Анестезиологическое обеспечение хирургических вмешательств
+  source_refs: []
+- condition_id: chronic_heart_failure
+  name: Хроническая сердечная недостаточность
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - I50.9
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Оценка результатов лабораторных и инструментальных исследований врачом-анестезиологом-реаниматологом
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Оценка результатов лабораторных и инструментальных исследований врачом-анестезиологом-реаниматологом
+    - text: Назначение исследований по медицинским показаниям
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Назначение исследований по медицинским показаниям
+    - text: Выявление инфекции мочевыводящих путей
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выявление инфекции мочевыводящих путей
+    - text: Признаки или симптомы сердечной недостаточности (для Эхо-КГ)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Признаки или симптомы сердечной недостаточности (для Эхо-КГ)
+    - text: Патология легких или декомпенсированная сердечно-сосудистая патология
+        (для рентгенографии ОГК)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Патология легких или декомпенсированная сердечно-сосудистая патология
+          (для рентгенографии ОГК)
+    - text: Признаки СД, заболеваний щитовидной/паращитовидной желез, патологии надпочечников
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Признаки СД, заболеваний щитовидной/паращитовидной желез, патологии
+          надпочечников
+    - text: Степень поражения органов-мишеней при СД
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Степень поражения органов-мишеней при СД
+    - text: Кетонурия, увеличенный HbA1C и нарушения электролитов при СД
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Кетонурия, увеличенный HbA1C и нарушения электролитов при СД
+    - text: Увеличение щитовидной железы, сдавливающее дыхательные пути
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Увеличение щитовидной железы, сдавливающее дыхательные пути
+    - text: Гиперкальциемия при гиперпаратиреозе
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Гиперкальциемия при гиперпаратиреозе
+    - text: Клинические проявления феохромоцитомы (АГ, головная боль, потливость,
+        тахикардия)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Клинические проявления феохромоцитомы (АГ, головная боль, потливость,
+          тахикардия)
+    - text: Признаки недостаточности коры надпочечников у длительно принимающих кортикостероиды
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Признаки недостаточности коры надпочечников у длительно принимающих
+          кортикостероиды
+    - text: Нарушения свертываемости крови (кровоподтеки, кровотечения, варикоз)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Нарушения свертываемости крови (кровоподтеки, кровотечения, варикоз)
+    - text: Признаки патологии печени (желтуха, невусы, асцит, гепатоспленомегалия,
+        эритема)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Признаки патологии печени (желтуха, невусы, асцит, гепатоспленомегалия,
+          эритема)
+    - text: Оценка степени тяжести печеночной недостаточности по шкалам Чайлд-Пью
+        и MELD-Na
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Оценка степени тяжести печеночной недостаточности по шкалам Чайлд-Пью
+          и MELD-Na
+    - text: Наличие факторов сердечно-сосудистого риска (для Эхо-КГ)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие факторов сердечно-сосудистого риска (для Эхо-КГ)
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Осмотр врачом-анестезиологом-реаниматологом
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При предоперационном осмотре врачом-анестезиологом-реаниматологом оцениваются
+        результаты лабораторных и инструментальных исследований, назначенных, в том
+        числе, врачом-специалистом.
+  - name: Эхокардиография
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Эхокардиография перед хирургическим вмешательством не проводится, за
+        исключением наличия у пациента признаков или симптомов сердечной недостаточности
+        или иных медицинских показаний.
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing: []
+  red_flags:
+  - text: Кетонурия, увеличенный уровень HbA1C и нарушения электролитов при СД
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: отмену планового хирургического вмешательства до оптимизации предоперационного
+        гликемического контроля, если имеется кетонурия, увеличен уровень HbA1C и
+        есть нарушения электролитов.
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: pregnancy
+  name: Беременность
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - O26.9
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams:
+  - name: Осмотр врачом-анестезиологом-реаниматологом
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при плановом хирургическом вмешательстве пациент осматривается врачом-анестезиологом-реаниматологом
+        не позднее чем за сутки до предполагаемого хирургического вмешательства; при
+        экстренном хирургическом вмешательстве пациент осматривается врачом-анестезиологом-реаниматологом
+        после выявления медицинских показаний к хирургическому вмешательству;
+  - name: Оценка психического состояния пациента
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: оценка психического состояния пациента, его настроя в отношении предполагаемого
+        хирургического вмешательства, вида анестезиологического пособия, а также определение
+        необходимости проведения медикаментозной подготовки;
+  - name: Оценка риска развития сердечно-сосудистых осложнений
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: оценивает риск развития сердечно-сосудистых осложнений в соответствии
+        с факторами риска развития сердечно-сосудистых осложнений согласно приложению
+        2;
+  - name: Оценка симптомов сердечно-сосудистых заболеваний
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: оценку симптомов, указывающих на возможное наличие основных сердечно-сосудистых
+        заболеваний – ишемической болезни сердца (далее – ИБС), поражения клапанного
+        аппарата, застойной сердечной недостаточности...
+  - name: Выявление в анамнезе стентирования коронарных артерий или имплантируемого
+      кардиостимулятора
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: выявление пациентов, имеющих в анамнезе стентирование коронарных артерий
+        (коронарное шунтирование) или имплантируемый кардиостимулятор (кардиовертер);
+  - name: Измерение ЧСС и АД
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: измерение частоты сердечных сокращений (далее – ЧСС) и артериального
+        давления (далее – АД) с учетом степени предоперационной тревоги у пациента.
+  - name: Определение функциональных резервов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение функциональных резервов согласно приложению 9;
+  - name: Скрининговая оценка дыхательной системы по анамнезу
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'скрининговую оценку по данным анамнеза: курение; одышка; толерантность
+        к физической нагрузке; кашель; прием бронхолитиков или стероидов; использование
+        ингаляторов; недавно перенесенная инфекция верхних дыхательных путей; стридор,
+        храп или сонное апноэ;'
+  - name: Физикальный осмотр дыхательной системы
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: физикальный осмотр с оценкой частоты дыхания, использования пациентом
+        при дыхании вспомогательных мышц, цвета ногтевых лож, способности пациента
+        вести беседу или ходить без одышки;
+  - name: Аускультация дыхательной системы
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: аускультацию для возможного обнаружения ослабления дыхания, хрипов, стридора;
+  - name: Идентификация факторов риска послеоперационных легочных осложнений
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'идентификацию доказанных факторов риска развития послеоперационных легочных
+        осложнений: возраст старше 60 лет; ХОБЛ; курение; застойная сердечная недостаточность;
+        функциональная зависимость (недостаточность);'
+  - name: Выявление симптомов обструктивного сонного апноэ (ОСА)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'выявление у пациента симптомов обструктивного сонного апноэ (далее –
+        ОСА): периодическая обструкция верхних дыхательных путей во время сна с десатурацией
+        и гиперкапнией, ассоциированная с хронической легочной гипертензией...'
+  conditional_exams:
+  - name: Заполнение опросника по перенесенным заболеваниям (анамнез)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При необходимости заполняется опросник по перенесенным заболеваниям (анамнез)
+        по форме согласно приложению 1.
+  - name: Дополнительные лабораторные и инструментальные исследования и (или) врачебные
+      консультации (консилиумы)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определяет и обосновывает необходимость проведения дополнительных лабораторных
+        и инструментальных исследований и (или) врачебных консультаций (консилиумов);
+  - name: Оценка сердечно-сосудистого риска и применение дополнительных методов обследования
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: оценку сердечно-сосудистого риска, коррекцию медикаментозной терапии
+        и определение необходимости применения дополнительных методов обследования
+        по алгоритму, установленному согласно приложению 7, при наличии у пациента
+        сердечно-сосудистой патологии;
+  - name: Оценка индекса риска инсульта и тромбоэмболических осложнений при фибрилляции
+      предсердий (CHA2DS2-VASc)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: оценку индекса риска инсульта и тромбоэмболических осложнений при фибрилляции
+        предсердий по шкале оценки риска инсульта и системной тромбоэмболии у пациентов
+        с фибрилляцией предсердий CHA2DS2-VASc согласно приложению 8;
+  - name: Исследование уровня высокочувствительного тропонина T (I)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование (перед хирургическим вмешательством и в первые 48 часов
+        после) уровня высокочувствительного тропонина T (тропонина I) у пациентов
+        с низким функциональным резервом, которым запланировано выполнение хирургического
+        вмешательства высокого риска...
+  - name: Выяснение информации о бронхиальной астме
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: выяснение у пациента с сопутствующей бронхиальной астмой информации о
+        провоцирующих факторах, степени тяжести и текущем состоянии заболевания...
+  - name: Оценка риска ОСА по шкале STOP-BANG
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'оценку риска наличия синдрома ОСА по шкале STOP-BANG согласно приложению
+        11 при наличии у пациента: ожирения (ИМТ 35 кг/м2 и более); увеличенной окружности
+        шеи (более 40 см); тяжелой гипертрофии миндалин; заложенности носа; анатомических
+        аномалий верхних дыхательных путей;'
+  - name: Полисомнография и определение показаний к СРАР-терапии
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение необходимости дополнительного обследования пациента с высоким
+        риском синдрома ОСА по шкале STOP-BANG согласно приложению 11 (направление
+        на полисомнографию и определение медицинских показаний к проведению СРАР-терапии...
+  treatment:
+    non_drug:
+    - text: Разъяснение пациенту сути и хронологии предстоящих событий (общий план
+        анестезии, предполагаемые манипуляции, возможные осложнения, процесс пробуждения,
+        послеоперационное обезболивание и иные).
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Разъяснение пациенту сути и хронологии предстоящих событий (общий план
+          анестезии, предполагаемые манипуляции, возможные осложнения, процесс пробуждения,
+          послеоперационное обезболивание и иные).
+    - text: Учет индивидуальных особенностей и пожеланий пациента.
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Учет индивидуальных особенностей и пожеланий пациента.
+    - text: Информирование пациента об альтернативных вариантах анестезиологического
+        пособия.
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Информирование пациента об альтернативных вариантах анестезиологического
+          пособия.
+    - text: Рекомендация отказа от курения не менее чем за 4 недели до планового хирургического
+        вмешательства.
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Рекомендация отказа от курения не менее чем за 4 недели до планового
+          хирургического вмешательства.
+    - text: Резервирование места в отделении анестезиологии и реанимации для госпитализации
+        пациентов после высокотравматичных хирургических вмешательств (за исключением
+        кардиохирургических) в связи с повышенным риском послеоперационных легочных
+        осложнений.
+      source_ref:
+        protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Резервирование места в отделении анестезиологии и реанимации для госпитализации
+          пациентов после высокотравматичных хирургических вмешательств (за исключением
+          кардиохирургических) в связи с повышенным '
+    drug_groups: []
+    drugs: []
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Определение необходимости повторного предоперационного осмотра пациента
+      в амбулаторных условиях.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Определение необходимости повторного предоперационного осмотра пациента
+        в амбулаторных условиях.
+  hospitalization: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: Госпитализация для обеспечения анальгоседации при регионарной анестезии,
+      инвазивном мониторинге или установке венозных линий у пациентов в сознании.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация для обеспечения анальгоседации при регионарной анестезии,
+        инвазивном мониторинге или установке венозных линий у пациентов в сознании.
+  - text: Госпитализация для процедур, требующих индукции анестезии, миоплегии и обеспечения
+      проходимости верхних дыхательных путей (ларингеальная маска/интубация трахеи).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация для процедур, требующих индукции анестезии, миоплегии
+        и обеспечения проходимости верхних дыхательных путей (ларингеальная маска/интубация
+        трахеи).
+  red_flags:
+  - text: 'Ишемическая болезнь сердца (ИБС): стенокардия, терапия нитратами, инфаркт
+      миокарда в анамнезе, патологический зубец Q на ЭКГ, положительный стресс-тест
+      в анамнезе.'
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ИБС (жалобы на стенокардитические боли, терапия нитратами, инфаркт миокарда
+        в анамнезе, патологический зубец Q на электрокардиографии (далее – ЭКГ), положительный
+        стресс-тест в анамнезе);
+  - text: Хроническая сердечная недостаточность (ХСН).
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ХСН;
+  - text: Инсульт или транзиторная ишемическая атака в анамнезе.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: инсульт или транзиторная ишемическая атака в анамнезе;
+  - text: Почечная дисфункция (креатинин более 170 мкмоль/л или СКФ менее 60 мл/мин).
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: почечная дисфункция (креатинин более 170 мкмоль/л или скорость клубочковой
+        фильтрации (далее – СКФ) менее 60 мл/мин.);
+  - text: Сахарный диабет (СД), требующий терапии инсулином.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: СД, требующий терапии инсулином.
+  - text: Возраст старше 60 лет (фактор риска развития послеоперационных легочных
+      осложнений).
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'идентификацию доказанных факторов риска развития послеоперационных легочных
+        осложнений: возраст старше 60 лет;'
+  - text: Хроническая обструктивная болезнь легких (ХОБЛ) (фактор риска развития послеоперационных
+      легочных осложнений).
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ХОБЛ;
+  - text: Курение (фактор риска развития послеоперационных легочных осложнений).
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: курение;
+  - text: Застойная сердечная недостаточность (фактор риска развития послеоперационных
+      легочных осложнений).
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: застойная сердечная недостаточность;
+  - text: Функциональная зависимость (недостаточность) (фактор риска развития послеоперационных
+      легочных осложнений).
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_анестезиологическое_обеспечение_хирургических_вмешательств_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: функциональная зависимость (недостаточность);
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:37.284948+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T16:21:37.746468+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=6
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:37.290644+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[pregnancy].required_exams[0]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[pregnancy].required_exams[1]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[pregnancy].required_exams[2]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[pregnancy].required_exams[6]
+  validated_at: '2026-07-20T16:21:37.786924+00:00'

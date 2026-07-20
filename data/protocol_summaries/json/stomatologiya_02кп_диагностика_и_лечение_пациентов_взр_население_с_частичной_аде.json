@@ -1,31 +1,28 @@
 {
   "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
-  "summary_version": "1.0",
-  "extraction_status": "auto_extracted",
-  "review_status": "not_reviewed",
+  "summary_version": "2.0",
+  "extraction_status": "llm_extracted",
+  "review_status": "needs_review",
   "source": {
-    "title": "02КП Диагностика и лечение пациентов взр население с частичной адентией пост МЗ 10.08.2022 84",
-    "url": "https://minzdrav.gov.by/upload/dadvfiles/CProtokol/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+    "title": "Диагностика и лечение пациентов взрослое население с частичной адентией",
+    "url": null,
     "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
-    "document_sha256": "bce359f714909fa7b991fae78347f6c2f5165494ca8fbc6ca84a6f6a60f62f13",
-    "approval_date": "2022-08-10",
-    "approval_number": "84",
+    "document_sha256": null,
+    "approval_date": null,
+    "approval_number": null,
     "valid_from": null,
     "valid_to": null,
-    "document_year": 2022,
+    "document_year": null,
     "pages_total": null
   },
   "rubric": {
-    "name": "Стоматология",
+    "name": "Stomatologiya",
     "slug": "stomatologiya",
-    "specialty_slugs": [
-      "stomatologiya"
-    ]
+    "specialty_slugs": []
   },
   "applicability": {
     "population": [
-      "adult",
-      "child"
+      "adult"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -35,73 +32,597 @@
   },
   "conditions": [
     {
-      "condition_id": "j01_клинический_протокол_определяет_общие_требования_к_о",
-      "name": "клинический протокол определяет общие требования к объему",
+      "condition_id": "partial_adentia",
+      "name": "Частичная адентия",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "J01"
+        "K00.0",
+        "K08.1"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии клинический протокол определяет общие требования к объему (МКБ J01)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": 11,
-              "page_end": 11,
-              "section_title": "Таблицы",
-              "section_type": "table_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "клинический протокол определяет общие требования к объему"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
+      "clinical_criteria": null,
       "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
+      "required_exams": [
+        {
+          "name": "Сбор анамнеза",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Основными методами диагностики ЧА являются: сбор анамнеза;"
+          }
+        },
+        {
+          "name": "Внешний осмотр и пальпация челюстно-лицевой области",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "внешний осмотр и пальпация челюстно-лицевой области;"
+          }
+        },
+        {
+          "name": "Осмотр полости рта с дополнительными инструментами",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "осмотр полости рта с помощью дополнительных инструментов;"
+          }
+        },
+        {
+          "name": "Перкуссия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "перкуссия;"
+          }
+        },
+        {
+          "name": "Оценка состояния зубов, зубных рядов, зубных протезов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "оценка состояния зубов, зубных рядов, зубных протезов;"
+          }
+        },
+        {
+          "name": "Оценка состояния тканей периодонта и слизистой оболочки полости рта",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "оценка состояния тканей периодонта и слизистой оболочки полости рта;"
+          }
+        },
+        {
+          "name": "Индексная оценка стоматологического здоровья (гигиенический индекс OHI-S)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "индексная оценка стоматологического здоровья: индекс гигиены (гигиенический индекс Green, Vermillion – OHI-S);"
+          }
+        },
+        {
+          "name": "Прицельная внутриротовая контактная рентгенография или ортопантомография челюстей",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "инструментальные исследования (лучевые методы исследования): прицельная внутриротовая контактная рентгенография или ортопантомография челюстей."
+          }
+        },
+        {
+          "name": "Определение и фиксация центрального соотношения челюстей или центральной окклюзии",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "определение и фиксацию центрального соотношения челюстей или центральной окклюзии при помощи восковых или пластмассовых базисов с окклюзионными валиками или окклюзионных силиконовых материалов"
+          }
+        },
+        {
+          "name": "Получение аналоговых или оптических (3D) оттисков",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "получение аналоговых или оптических (3D) оттисков"
+          }
+        },
+        {
+          "name": "Медицинский осмотр и рентгенологический контроль",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "медицинский осмотр и рентгенологический контроль в течение 1 недели после проведения хирургического этапа дентальной имплантации и непосредственно перед протезированием"
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Конусно-лучевая компьютерная томография (КЛКТ) челюстно-лицевой области",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При применении метода лечения ЧА с использованием дентальных имплантатов – конусно-лучевая компьютерная томография (далее – КЛКТ) челюстно-лицевой области."
+          }
+        },
+        {
+          "name": "Проведение параллелометрии",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 14,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "проведение параллелометрии"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "немедикаментозные рекомендации (диета, режим)",
+            "text": "Мотивация к формированию здоровых повседневных привычек, имеющих отношение к стоматологическому здоровью.",
             "source_ref": {
               "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": 11,
-              "page_end": 11,
-              "section_title": "Таблицы",
-              "section_type": "table_block",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "диета, режим"
+              "quote": "Мотивация к формированию здоровых повседневных привычек, имеющих отношение к стоматологическому здоровью."
+            }
+          },
+          {
+            "text": "Рекомендации по выбору методов, предметов и средств индивидуальной гигиены рта.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Рекомендации по выбору методов, предметов и средств индивидуальной гигиены рта."
+            }
+          },
+          {
+            "text": "Рекомендации по питанию.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Рекомендации по питанию."
+            }
+          },
+          {
+            "text": "Профессиональное удаление зубных отложений.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Профессиональное удаление зубных отложений."
+            }
+          },
+          {
+            "text": "Терапевтическое лечение (при кариесе, некариозных поражениях, болезнях периодонта).",
+            "source_ref": {
+              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Терапевтическое лечение (при кариесе, некариозных поражениях, болезнях периодонта)."
+            }
+          },
+          {
+            "text": "Ортодонтическое лечение (при зубочелюстных аномалиях).",
+            "source_ref": {
+              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ортодонтическое лечение (при зубочелюстных аномалиях)."
+            }
+          },
+          {
+            "text": "Ортопедическое лечение (при дефектах зубов, подвижности зубов, при повышенной стираемости зубов).",
+            "source_ref": {
+              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ортопедическое лечение (при дефектах зубов, подвижности зубов, при повышенной стираемости зубов)."
+            }
+          },
+          {
+            "text": "Хирургическое лечение (при потере уровня эпителиального прикрепления).",
+            "source_ref": {
+              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Хирургическое лечение (при потере уровня эпителиального прикрепления)."
+            }
+          },
+          {
+            "text": "Планирование лечения ЧА с использованием дентальной имплантации осуществляется врачом-стоматологом-ортопедом совместно с врачом-стоматологом-хирургом или врачом-челюстно-лицевым хирургом.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Планирование лечения ЧА с использованием дентальной имплантации осуществляется врачом-стоматологом-ортопедом совместно с врачом-стоматологом-хирургом или врачом-челюстно-лицевым хирургом."
+            }
+          },
+          {
+            "text": "Препарирование опорных зубов под искусственные коронки (для мостовидных протезов).",
+            "source_ref": {
+              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Препарирование опорных зубов под искусственные коронки (для мостовидных протезов)."
+            }
+          },
+          {
+            "text": "Изготовление временных коронок и временных мостовидных протезов в области препарированных зубов.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Изготовление временных коронок и временных мостовидных протезов в области препарированных зубов."
+            }
+          },
+          {
+            "text": "Выбор цвета, размера и формы искусственных коронок и зубов в соответствии с имеющимися зубами и индивидуальными особенностями пациента.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Выбор цвета, размера и формы искусственных коронок и зубов в соответствии с имеющимися зубами и индивидуальными особенностями пациента."
+            }
+          },
+          {
+            "text": "Наложение и припасовка каркаса мостовидного протеза.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Наложение и припасовка каркаса мостовидного протеза."
+            }
+          },
+          {
+            "text": "Наложение и припасовка готового мостовидного протеза.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Наложение и припасовка готового мостовидного протеза."
+            }
+          },
+          {
+            "text": "Фиксация мостовидного протеза на временный материал (по медицинским показаниям).",
+            "source_ref": {
+              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Фиксация мостовидного протеза на временный материал (по медицинским показаниям)."
+            }
+          },
+          {
+            "text": "Фиксация несъемной конструкции зубного протеза на постоянный материал (для мостовидных и адгезивных протезов).",
+            "source_ref": {
+              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Фиксация несъемной конструкции зубного протеза на постоянный материал (для мостовидных и адгезивных протезов)."
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "Метронидазол",
+            "drug_name": "Лидокаин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": null,
+            "dose_text": "Спрей 100 мг/мл. Одну порцию (1–3 нажатия) наносят на слизистую оболочку полости рта или десну. Можно наносить смазыванием ватным тампоном.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -113,20 +634,20 @@
               "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": 11,
-              "page_end": 11,
-              "section_title": "Таблицы",
-              "section_type": "table_block",
+              "page_start": 1,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Метронидазол"
+              "quote": "Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну. Лекарственное средство можно также наносить путем смазывания смоченным в нем ватным тампоном"
             }
           },
           {
-            "drug_name": "из цветков ноготков",
+            "drug_name": "Лидокаин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": null,
+            "dose_text": "Раствор для инъекций 10 мг/мл (ампулы 5 мл) или 20 мг/мл (ампулы 2 мл). Режим дозирования индивидуальный. Дозы до 500 мг (12,5 мл раствора) хорошо переносились.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -138,20 +659,20 @@
               "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": 11,
-              "page_end": 11,
-              "section_title": "Таблицы",
-              "section_type": "table_block",
+              "page_start": 1,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "из цветков ноготков"
+              "quote": "Раствор для инъекций 10 мг/мл в ампулах 5 мл; раствор для инъекций 20 мг/мл в ампулах 2 мл. Режим дозирования устанавливают индивидуально... дозы до 500 мг (соответствует 12,5 мл раствора для инъекций)"
             }
           },
           {
-            "drug_name": "способствующие нормальному рубцеванию",
+            "drug_name": "Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": null,
+            "dose_text": "Раствор для местного и наружного применения 0,5 мг/мл. Орошения, полоскания, аппликации: 5–10 мл раствора наносят на пораженную поверхность или десну с экспозицией 1–3 мин 2–3 раза в сутки.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -163,20 +684,20 @@
               "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": 11,
-              "page_end": 11,
-              "section_title": "Таблицы",
-              "section_type": "table_block",
+              "page_start": 9,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "способствующие нормальному рубцеванию"
+              "quote": "Раствор для местного и наружного применения 0,5 мг/мл. Лекарственное средство применяется в виде орошений, полосканий и аппликаций – 5–10 мл раствора наносят на пораженную поверхность слизистой оболочки полости рта или на десну с экспозицией 1–3 мин 2–3 раза в сутки"
             }
           },
           {
-            "drug_name": "Маклейи листья",
+            "drug_name": "Обезболивающие лекарственные средства",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": null,
+            "dose_text": "по медицинским показаниям",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -188,20 +709,20 @@
               "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": 11,
-              "page_end": 11,
-              "section_title": "Таблицы",
-              "section_type": "table_block",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Маклейи листья"
+              "quote": "обезболивание по медицинским показаниям с использованием лекарственных средств, применяемых при лечении пациентов (взрослое население) с ЧА, согласно приложению 1"
             }
           },
           {
-            "drug_name": "используют для промываний",
+            "drug_name": "Дополнительные лекарственные средства",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": null,
+            "dose_text": "по медицинским показаниям",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -213,163 +734,13 @@
               "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": 11,
-              "page_end": 11,
-              "section_title": "Таблицы",
-              "section_type": "table_block",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "используют для промываний"
-            }
-          },
-          {
-            "drug_name": "Таблетки",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "10 мг",
-            "frequency_text": "| Внутрь взрослым 10 мг 1 раз\nв сутки",
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": 11,
-              "page_end": 11,
-              "section_title": "Таблицы",
-              "section_type": "table_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "Таблетки 10 мг | Внутрь взрослым 10 мг 1 раз\nв сутки"
-            }
-          },
-          {
-            "drug_name": "Капсулы",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "250 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": 11,
-              "page_end": 11,
-              "section_title": "Таблицы",
-              "section_type": "table_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "Капсулы 250 мг"
-            }
-          },
-          {
-            "drug_name": "применения",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "125 мг",
-            "frequency_text": "/5 мл во\nфлаконах",
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": 11,
-              "page_end": 11,
-              "section_title": "Таблицы",
-              "section_type": "table_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "применения 125 мг/5 мл во\nфлаконах"
-            }
-          },
-          {
-            "drug_name": "флаконах",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "50 мл",
-            "frequency_text": ",\n30 мл | Полоскание полости рта (1 ч",
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": 11,
-              "page_end": 11,
-              "section_title": "Таблицы",
-              "section_type": "table_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "флаконах 50 мл,\n30 мл | Полоскание полости рта (1 ч"
-            }
-          },
-          {
-            "drug_name": "бумажных",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1,5 г",
-            "frequency_text": "| Местно",
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": 11,
-              "page_end": 11,
-              "section_title": "Таблицы",
-              "section_type": "table_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "бумажных 1,5 г | Местно"
-            }
-          },
-          {
-            "drug_name": "заливают",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "200 мл",
-            "frequency_text": "(1 стакан)\nкипятка, закрывают крышкой\nи",
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": 11,
-              "page_end": 11,
-              "section_title": "Таблицы",
-              "section_type": "table_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "заливают 200 мл (1 стакан)\nкипятка, закрывают крышкой\nи"
+              "quote": "назначение дополнительных лекарственных средств, применяемых при лечении пациентов (взрослое население) с ЧА, согласно приложению 2"
             }
           }
         ],
@@ -377,86 +748,338 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "k00_0_клинический_протокол_определяет_общие_требования_к",
-      "name": "клинический протокол определяет общие требования к объему",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "K00.0"
+      "follow_up": [
+        {
+          "text": "Медицинское наблюдение за результатами лечения рекомендовано осуществлять.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинское наблюдение за результатами лечения рекомендовано осуществлять."
+          }
+        },
+        {
+          "text": "Поддерживающее лечение (медицинское наблюдение).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Поддерживающее лечение (медицинское наблюдение)."
+          }
+        },
+        {
+          "text": "Рекомендации по гигиеническому уходу за зубными протезами, а также срокам службы (замены) конструкций.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Рекомендации по гигиеническому уходу за зубными протезами, а также срокам службы (замены) конструкций."
+          }
+        },
+        {
+          "text": "Коррекция съемного протеза (по медицинским показаниям).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Коррекция съемного протеза (по медицинским показаниям)."
+          }
+        },
+        {
+          "text": "Коррекция бюгельного протеза (по медицинским показаниям).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Коррекция бюгельного протеза (по медицинским показаниям)."
+          }
+        },
+        {
+          "text": "Медицинский осмотр и рентгенологический контроль в течение 1 недели после проведения хирургического этапа дентальной имплантации и непосредственно перед протезированием.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинский осмотр и рентгенологический контроль в течение 1 недели после проведения хирургического этапа дентальной имплантации и непосредственно перед протезированием."
+          }
+        }
       ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии клинический протокол определяет общие требования к объему (МКБ K00.0)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": 3,
-              "page_end": 3,
-              "section_title": "по Международной статистической классификации болезней и проблем, связанных",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "клинический протокол определяет общие требования к объему"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "немедикаментозные рекомендации (диета, режим)",
-            "source_ref": {
-              "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": 3,
-              "page_end": 3,
-              "section_title": "по Международной статистической классификации болезней и проблем, связанных",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "диета, режим"
-            }
-          }
-        ],
-        "drug_groups": [],
-        "drugs": [],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [],
       "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
+      "routing": [
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Неадекватное психоэмоциональное состояние пациента",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При диагностике ЧА также определяют общесоматическое состояние пациентов... целенаправленно выявляют: неадекватное психоэмоциональное состояние пациента;"
+          }
+        },
+        {
+          "text": "Острые поражения слизистой оболочки полости рта и красной каймы губ",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "целенаправленно выявляют: острые поражения слизистой оболочки полости рта и красной каймы губ;"
+          }
+        },
+        {
+          "text": "Острые воспалительные заболевания органов и тканей рта",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "целенаправленно выявляют: острые воспалительные заболевания органов и тканей рта;"
+          }
+        },
+        {
+          "text": "Болезни периодонта в стадии обострения",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "целенаправленно выявляют: болезни периодонта в стадии обострения;"
+          }
+        },
+        {
+          "text": "Неудовлетворительное гигиеническое состояние полости рта",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "целенаправленно выявляют: неудовлетворительное гигиеническое состояние полости рта;"
+          }
+        },
+        {
+          "text": "Отказ пациента от лечения",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "целенаправленно выявляют: желание лечиться или отказ от лечения."
+          }
+        },
+        {
+          "text": "Абсолютные медицинские противопоказания к хирургическому лечению ЧА с имплантацией",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Абсолютными медицинскими противопоказаниями хирургического лечения ЧА с применением методов дентальной имплантации на момент обращения пациента являются:"
+          }
+        },
+        {
+          "text": "Общесоматические заболевания в стадии декомпенсации (противопоказание к имплантации)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "общесоматические заболевания в стадии декомпенсации;"
+          }
+        },
+        {
+          "text": "Инфаркт миокарда (менее 6 месяцев с момента заболевания) (противопоказание к имплантации)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "инфаркт миокарда (6 месяцев с момента заболевания);"
+          }
+        },
+        {
+          "text": "Нарушение мозгового кровообращения (менее 6 месяцев с момента заболевания) (противопоказание к имплантации)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "нарушение мозгового кровообращения (6 месяцев с момента заболевания);"
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
@@ -467,18 +1090,26 @@
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-05-31T18:30:13.594951+00:00",
-    "extractor": "builder.heuristic_v2",
-    "extractor_version": "2.0",
-    "source_document_sha256": "bce359f714909fa7b991fae78347f6c2f5165494ca8fbc6ca84a6f6a60f62f13",
+    "extracted_at": "2026-07-20T17:34:53.373909+00:00",
+    "extractor": "llm_extractor",
+    "extractor_version": "1.0",
+    "source_document_sha256": null,
     "notes": [
-      "aggregated from 14 protocol_cards, 86 chunks"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-05-31T18:30:13.594969+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[partial_adentia].treatment.drugs[1]"
+      }
+    ],
+    "validated_at": "2026-07-20T17:34:53.388320+00:00"
   }
 }

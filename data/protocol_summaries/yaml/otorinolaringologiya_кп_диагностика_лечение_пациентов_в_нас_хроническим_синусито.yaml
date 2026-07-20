@@ -1,6 +1,6 @@
 protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Диагностика лечение пациентов взрослое население хроническим синуситом
@@ -26,8 +26,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_лечение_пациентов_взрослое_население
-  name: Диагностика лечение пациентов взрослое население хроническим синуситом
+- condition_id: chronic_sinusitis
+  name: Хронический синусит
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -36,13 +36,122 @@ conditions:
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: При обострении ХРС без полипов антибактериальная терапия назначается с
+        учетом приема ЛП в последние 3 месяца и чувствительности микроорганизмов.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+        document_url: null
+        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При обострении ХРС без полипов антибактериальная терапия назначается
+          с учетом приема ЛП в последние 3 месяца и чувствительности микроорганизмов.
+    - text: Показанием для фторхинолонов является неэффективность терапии антибактериальными
+        ЛП первого–третьего рядов или иммунодефицитные состояния.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+        document_url: null
+        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Показанием для фторхинолонов является неэффективность терапии антибактериальными
+          ЛП первого–третьего рядов или иммунодефицитные состояния.
+    - text: Кларитромицин может быть назначен при рецидивирующем течении ХРС без полипов
+        (более 4 обострений в год) или отсутствии стойкой ремиссии после терапии.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+        document_url: null
+        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Кларитромицин может быть назначен при рецидивирующем течении ХРС без
+          полипов (более 4 обострений в год) или отсутствии стойкой ремиссии после
+          терапии.
+    - text: 'Медицинские показания для пункции верхнечелюстной пазухи: горизонтальный
+        уровень жидкости на рентгенографии (КТ) ОНП; отсутствие эффекта от фармакотерапии;
+        выраженный болевой синдром.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+        document_url: null
+        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Медицинские показания для пункции верхнечелюстной пазухи: горизонтальный
+          уровень жидкости на рентгенографии (КТ) ОНП; отсутствие эффекта от фармакотерапии;
+          выраженный болевой синдром.'
+    optional: []
+    exclusion: []
   required_exams: []
-  conditional_exams: []
+  conditional_exams:
+  - name: Пункция верхнечелюстной пазухи
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Методом хирургического вмешательства при лечении ХРС без полипов является
+        пункция верхнечелюстной пазухи. Медицинскими показаниями для пункции верхнечелюстной
+        пазухи: горизонтальный уровень жидкости на рентгенографии.'
   treatment:
     non_drug:
-    - text: '[treatment] 6. Медицинская помощь пациентам с ХРС оказывается врачом
-        общей практики (стр. 2)'
+    - text: 'Ирригационная терапия: промывания полости носа (4–5 раз в день) официнальными
+        солевыми растворами.'
       source_ref:
         protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
         document_url: null
@@ -53,10 +162,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 6. Медицинская помощь пациентам с ХРС оказывается врачом
-          общей практики (стр. 2)'
-    - text: (врачом-терапевтом) или врачом-оториноларингологом в амбулаторных условиях.
-        На
+        quote: 'Ирригационная терапия: промывания полости носа (4–5 раз в день) официнальными
+          солевыми растворами.'
+    - text: 'Хирургическое вмешательство: пункция верхнечелюстной пазухи при ХРС без
+        полипов по медицинским показаниям.'
       source_ref:
         protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
         document_url: null
@@ -67,67 +176,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: (врачом-терапевтом) или врачом-оториноларингологом в амбулаторных условиях.
-          На
-    - text: '[treatment] 7. Фармакотерапия (стр. 2)'
-      source_ref:
-        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
-        document_url: null
-        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 7. Фармакотерапия (стр. 2)'
-    - text: протоколом с учетом всех индивидуальных особенностей пациента, тяжести
-        заболевания,
-      source_ref:
-        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
-        document_url: null
-        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: протоколом с учетом всех индивидуальных особенностей пациента, тяжести
-          заболевания,
-    - text: лекарственных препаратов (далее – ЛП). При этом необходимо учитывать наличие
-      source_ref:
-        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
-        document_url: null
-        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: лекарственных препаратов (далее – ЛП). При этом необходимо учитывать
-          наличие
-    - text: дозирования в соответствии с общей характеристикой ЛП и инструкцией по
-        медицинскому
-      source_ref:
-        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
-        document_url: null
-        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: дозирования в соответствии с общей характеристикой ЛП и инструкцией
-          по медицинскому
+        quote: 'Хирургическое вмешательство: пункция верхнечелюстной пазухи при ХРС
+          без полипов по медицинским показаниям.'
     drug_groups: []
     drugs:
-    - drug_name: дозированный
+    - drug_name: итраконазол
       active_substance: null
       drug_group: null
-      dose_text: 50 мкг
+      dose_text: капсулы 100 мг, 200 мг 1 раз в сутки внутрь
       frequency_text: null
       duration_text: null
       route: null
@@ -139,17 +195,20 @@ conditions:
         protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
         document_url: null
         local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "дозированный 50 мкг/доза 140 доз) – по 100 мкг (по два \nвпр"
-    - drug_name: аэрозоль
+        quote: 'При инвазивном грибковом ХРС назначается один из следующих ЛП: итраконазол
+          (капсулы 100 мг) 200 мг 1 раз в сутки внутрь. Длительность применения определяется
+          тяжестью течения заболевания.'
+    - drug_name: вориконазол
       active_substance: null
       drug_group: null
-      dose_text: 10 мл
+      dose_text: таблетки, покрытые пленочной оболочкой, 200 мг, по 1 таблетке 1 раз
+        в сутки внутрь
       frequency_text: null
       duration_text: null
       route: null
@@ -161,17 +220,20 @@ conditions:
         protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
         document_url: null
         local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: аэрозоль 10 мл, содержащий ацетилцистен 10,0 мг, туами
-    - drug_name: сульфат
+        quote: 'При инвазивном грибковом ХРС назначается один из следующих ЛП: вориконазол
+          (таблетки, покрытые пленочной оболочкой, 200 мг), по 1 таблетке 1 раз в
+          сутки внутрь. Длительность применения определяется.'
+    - drug_name: Левофлоксацин
       active_substance: null
       drug_group: null
-      dose_text: 5,0 мг
+      dose_text: Таблетки 250 мг/500 мг. По 500 мг 1 раз в сутки внутрь. Курс – 10–14
+        дней.
       frequency_text: null
       duration_text: null
       route: null
@@ -183,17 +245,18 @@ conditions:
         protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
         document_url: null
         local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
-        page_start: null
+        page_start: 4
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "сульфат 5,0 мг по 2 \nдозы 3–4 раза в сутки не более 7 д"
-    - drug_name: шипучие
+        quote: левофлоксацин (таблетки, покрытые оболочкой, 250 мг; таблетки, покрытые
+          оболочкой, 500 мг) по 500 мг 1 раз в сутки внутрь. Курс – 10–14 дней;
+    - drug_name: Моксифлоксацин
       active_substance: null
       drug_group: null
-      dose_text: 200 мг
+      dose_text: Таблетки 400 мг. По 400 мг 1 раз в сутки внутрь. Курс – 10–14 дней.
       frequency_text: null
       duration_text: null
       route: null
@@ -205,17 +268,19 @@ conditions:
         protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
         document_url: null
         local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
-        page_start: null
+        page_start: 4
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: шипучие 200 мг, 600 мг) не более 600 мг в сутки внутрь
-    - drug_name: назальный
+        quote: моксифлоксацин (таблетки, покрытые пленочной оболочкой, 400 мг) по
+          400 мг 1 раз в сутки внутрь. Курс – 10–14 дней.
+    - drug_name: Мометазон
       active_substance: null
       drug_group: null
-      dose_text: 12,5 мг
+      dose_text: Спрей назальный 50 мкг/доза. По 100 мкг (два впрыскивания) 2 раза
+        в сутки в каждую половину носа (400 мкг/сутки). Курс 3–6 месяцев.
       frequency_text: null
       duration_text: null
       route: null
@@ -227,17 +292,20 @@ conditions:
         protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
         document_url: null
         local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
-        page_start: null
+        page_start: 5
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: назальный 12,5 мг (8000 МЕ)/мл 10 мл), по 1 впрыскиванию 3
-    - drug_name: ингаляций
+        quote: мометазон (спрей назальный дозированный 50 мкг/доза 140 доз) – по 100
+          мкг (по два впрыскивания) 2 раза в сутки в каждую половину носа (общая суточная
+          доза – 400 мкг). Курс лечения 3–6 месяцев
+    - drug_name: Флутиказона пропионат
       active_substance: null
       drug_group: null
-      dose_text: 500 мг
+      dose_text: Спрей назальный 50 мкг/доза. По 100 мкг (два впрыскивания) 1 раз
+        в сутки в каждую половину носа. Курс 3–6 месяцев.
       frequency_text: null
       duration_text: null
       route: null
@@ -249,17 +317,20 @@ conditions:
         protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
         document_url: null
         local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
-        page_start: null
+        page_start: 5
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "ингаляций 500 мг во флаконах в комплекте \nс растворителем"
-    - drug_name: февраля
+        quote: флутиказона пропионат (спрей назальный дозированный 50 мкг/доза 120
+          доз) – по 100 мкг (по два впрыскивания) 1 раз в сутки в каждую половину
+          носа. Курс лечения 3–6 месяцев
+    - drug_name: Ацетилцистеин + Туаминогептана сульфат
       active_substance: null
       drug_group: null
-      dose_text: 2025 г
+      dose_text: Аэрозоль (ацетилцистен 10,0 мг, туаминогептана сульфат 5,0 мг). По
+        2 дозы 3–4 раза в сутки не более 7 дней.
       frequency_text: null
       duration_text: null
       route: null
@@ -271,17 +342,19 @@ conditions:
         protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
         document_url: null
         local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
-        page_start: null
+        page_start: 5
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: февраля 2025 г
-    - drug_name: июня
+        quote: аэрозоль 10 мл, содержащий ацетилцистен 10,0 мг, туаминогептана сульфат
+          5,0 мг по 2 дозы 3–4 раза в сутки не более 7 дней
+    - drug_name: Ацетилцистеин
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: Порошок/таблетки шипучие 100 мг, 200 мг, 600 мг. Не более 600 мг
+        в сутки внутрь. Продолжительность лечения – до 14 дней.
       frequency_text: null
       duration_text: null
       route: null
@@ -293,17 +366,20 @@ conditions:
         protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
         document_url: null
         local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
-        page_start: null
+        page_start: 5
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
+        quote: ацетилцистеин (порошок для приготовления раствора для внутреннего применения
+          (...) 100 мг, 200 мг, 600 мг или таблетки шипучие 200 мг, 600 мг) не более
+          600 мг в сутки внутрь. Продолжительность лечения – до 14 дней
+    - drug_name: Фрамицетин
       active_substance: null
       drug_group: null
-      dose_text: 2011 г
+      dose_text: Спрей назальный 12,5 мг/мл. По 1 впрыскиванию 3–5 раз в сутки в каждую
+        половину носа. Курс 5–10 дней.
       frequency_text: null
       duration_text: null
       route: null
@@ -315,46 +391,468 @@ conditions:
         protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
         document_url: null
         local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
-        page_start: null
+        page_start: 5
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "октября \n2011 г"
+        quote: фрамицетин (спрей назальный 12,5 мг (8000 МЕ)/мл 10 мл), по 1 впрыскиванию
+          3–5 раз в сутки в каждую половину носа. Курс 5–10 дней;
+    - drug_name: Неомицин + Полимиксин + Фенилэфрин + Дексаметазон
+      active_substance: null
+      drug_group: null
+      dose_text: Спрей назальный. По 1 впрыскиванию 3–5 раз в сутки в каждую половину
+        носа. Курс лечения – 5–10 дней.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+        document_url: null
+        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: неомицин + полимиксин + фенилэфрин + дексаметазон (спрей назальный
+          6500 ЕД + 10 000 ЕД + 0,25 мг + 2,5 мг)/мл 15 мл) по 1 впрыскиванию 3–5
+          раз в сутки в каждую половину носа. Курс лечения – 5–10 дней.
+    - drug_name: Кларитромицин
+      active_substance: null
+      drug_group: null
+      dose_text: Таблетки 250 мг. По 250 мг 1 раз в сутки внутрь. Курс лечения – до
+        4 недель. Назначается по решению врачебного консилиума (off-label).
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+        document_url: null
+        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: кларитромицин* (таблетки, покрытые оболочкой, 250 мг) по 250 мг 1 раз
+          в сутки внутрь. Курс лечения – до 4 недель. * Назначается по решению врачебного
+          консилиума (off-label).
+    - drug_name: Тиамфеникола глицинат ацетилцистеинат
+      active_substance: null
+      drug_group: null
+      dose_text: Лиофилизат для раствора 500 мг. Возможно введение в верхнечелюстную
+        пазуху.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+        document_url: null
+        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Дополнительно в зависимости от клинической ситуации возможно введение
+          в верхнечелюстную пазуху ЛП: тиамфеникола глицинат ацетилцистеинат (лиофилизат
+          для приготовления раствора для инъекций и ингаляций 500 мг во флаконах в
+          комплекте с растворителем).'
+    - drug_name: Цефуроксим
+      active_substance: null
+      drug_group: null
+      dose_text: по 500 мг 2 раза в сутки внутрь. Курс 7–14 дней
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+        document_url: null
+        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: В качестве антибактериальных ЛП второго ряда назначается цефуроксим
+          по 500 мг 2 раза в сутки внутрь. Курс 7–14 дней
+    - drug_name: Цефдинир
+      active_substance: null
+      drug_group: null
+      dose_text: по 600 мг разовой или разделенной на 2 раза дозой внутрь. Курс 10
+        дней
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+        document_url: null
+        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: цефдинир по 600 мг разовой или разделенной на 2 раза дозой внутрь.
+          Курс 10 дней (назначаются при неэффективности приема цефалоспоринов 2-го
+          поколения в анамнезе)
+    - drug_name: Цефподоксим
+      active_substance: null
+      drug_group: null
+      dose_text: по 100 мг или 200 мг каждые 12 часов внутрь
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+        document_url: null
+        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: цефподоксим по 100 мг или 200 мг каждые 12 часов внутрь
+    - drug_name: Кларитромицин
+      active_substance: null
+      drug_group: null
+      dose_text: по 500 мг 2 раза в сутки или пролонгированные формы кларитромицина
+        по 500 мг внутрь. Курс – до 14 дней
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+        document_url: null
+        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: В качестве антибактериальных ЛП третьего ряда назначается кларитромицин
+          по 500 мг 2 раза в сутки или пролонгированные формы по 500 мг внутрь. Курс
+          – до 14 дней
+    - drug_name: Азитромицин
+      active_substance: null
+      drug_group: null
+      dose_text: по 500 мг в сутки внутрь. Курс – до 10 дней
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+        document_url: null
+        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: азитромицин* по 500 мг в сутки внутрь. Курс – до 10 дней
     procedures: []
     surgery: []
     source_refs: []
   follow_up: []
   hospitalization: []
-  routing: []
-  red_flags: []
+  routing:
+  - text: Медицинская помощь пациентам с ХРС оказывается врачом общей практики (терапевтом)
+      или врачом-оториноларингологом в амбулаторных условиях.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинская помощь пациентам с ХРС оказывается врачом общей практики
+        (терапевтом) или врачом-оториноларингологом в амбулаторных условиях.
+  - text: На плановое хирургическое вмешательство пациент направляется врачом-оториноларингологом.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: На плановое хирургическое вмешательство пациент направляется врачом-оториноларингологом.
+  - text: Госпитализация пациентов с ХРС без полипов показана при неэффективности
+      амбулаторного лечения, неинвазивной/инвазивной формах грибкового синусита, внутричерепных/орбитальных
+      осложнениях, синдроме «немого синуса».
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация пациентов с ХРС без полипов показана при неэффективности
+        амбулаторного лечения, неинвазивной/инвазивной формах грибкового синусита,
+        внутричерепных/орбитальных осложнениях, синдроме «нем
+  red_flags:
+  - text: Неэффективность лечения в амбулаторных условиях.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Медицинскими показаниями для госпитализации пациентов с ХРС без полипов
+        являются: неэффективность лечения в амбулаторных условиях;'
+  - text: Неинвазивная форма грибкового синусита (мицетома, «грибковый шар»).
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Медицинскими показаниями для госпитализации пациентов с ХРС без полипов
+        являются: ... неинвазивная форма грибкового синусита (мицетома, «грибковый
+        шар»);'
+  - text: Инвазивная форма грибкового синусита.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Медицинскими показаниями для госпитализации пациентов с ХРС без полипов
+        являются: ... инвазивная форма грибкового синусита;'
+  - text: Внутричерепные и орбитальные осложнения.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Медицинскими показаниями для госпитализации пациентов с ХРС без полипов
+        являются: ... внутричерепные и орбитальные осложнения;'
+  - text: Синдром «немого синуса».
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Медицинскими показаниями для госпитализации пациентов с ХРС без полипов
+        являются: ... синдром «немого синуса».'
+  - text: отсутствие ожидаемого клинического эффекта по прошествии 3 дней применения
+      амоксициллина/клавулановой кислоты
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: отсутствие ожидаемого клинического эффекта по прошествии 3 дней применения
+        амоксициллина/клавулановой кислоты
+  - text: 'наличие факторов риска: возраст старше 60 лет; наличие сопутствующих заболеваний,
+      способствующих прогрессированию воспалительных процессов (сахарный диабет, хроническая
+      обструктивная болезнь легких, гематологические, онкологические, аутоиммунные
+      заболевания, иммунодефицитные состояния и иных)'
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'наличие факторов риска: возраст старше 60 лет; наличие сопутствующих
+        заболеваний (сахарный диабет, ХОБЛ, онкологические, аутоиммунные, иммунодефицитные
+        состояния)'
+  - text: прием антибактериальной системной терапии первого ряда в предыдущие 3 месяца
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: прием антибактериальной системной терапии первого ряда в предыдущие 3
+        месяца
+  - text: лечение по любому заболеванию в стационарных условиях в предыдущие 3 месяца
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: лечение по любому заболеванию в стационарных условиях в предыдущие 3
+        месяца
+  - text: нахождение в хосписе или в социальном пансионате
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: нахождение в хосписе или в социальном пансионате
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_в_нас_хроническим_синусито
-    document_url: null
-    local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_МЗ_2025_25.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика лечение пациентов взрослое население хроническим синуситом
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:44.948129+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T16:55:16.202535+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:44.951826+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[chronic_sinusitis].treatment.drugs[15]
+  validated_at: '2026-07-20T16:55:16.218173+00:00'

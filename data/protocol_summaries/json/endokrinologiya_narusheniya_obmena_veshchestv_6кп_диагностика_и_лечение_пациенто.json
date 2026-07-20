@@ -1,10 +1,10 @@
 {
   "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "6КП Диагностика и лечение пациентов с остеопорозом взрослое население",
+    "title": "Диагностика и лечение пациентов с остеопорозом",
     "url": null,
     "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/6КП_Диагностика_и_лечение_пациентов_с_остеопорозом_взр_нас_пост_МЗ_21062021_85.pdf",
     "document_sha256": null,
@@ -32,19 +32,23 @@
   },
   "conditions": [
     {
-      "condition_id": "6кп_диагностика_и_лечение_пациентов_с_остеопороз",
-      "name": "6КП Диагностика и лечение пациентов с остеопорозом взрослое население",
+      "condition_id": "osteoporosis",
+      "name": "Остеопороз",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "M82.0",
-        "C90.0",
-        "M82.1",
-        "E00",
-        "E34",
-        "M82.8",
-        "B24",
-        "E66.9"
+        "M80",
+        "M81",
+        "M81.0",
+        "M81.1",
+        "M81.2",
+        "M81.3",
+        "M81.4",
+        "M81.5",
+        "M81.6",
+        "M81.8",
+        "M81.9",
+        "M82.0"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -52,7 +56,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[classification] 11. При формулировке клинического диагноза учитываются: (стр. 6)",
+            "text": "Верифицированный клинический диагноз «остеопороз» на основании результатов рентгеноденситометрии",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -69,11 +73,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 11. При формулировке клинического диагноза учитываются: (стр. 6)"
+              "quote": "Верифицированный клинический диагноз «остеопороз» на основании результатов рентгеноденситометрии"
             }
           },
           {
-            "text": "«О здравоохранении», а также специальные термины и их определения:",
+            "text": "Наличие верифицированных низкотравматических переломов типичной локализации (вертебральные переломы, переломы проксимального отдела бедра) в возрасте старше 50 лет",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -90,11 +94,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "«О здравоохранении», а также специальные термины и их определения:"
+              "quote": "Наличие верифицированных низкотравматических переломов типичной локализации (вертебральные переломы, переломы проксимального отдела бедра) в возрасте старше 50 лет"
             }
           },
           {
-            "text": "устанавливается клинический диагноз определенного заболевания эндокринной системы",
+            "text": "Верифицированный глюкокортикоидиндуцированный остеопороз при значении Т-критерия –1,5 и менее",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -111,11 +115,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "устанавливается клинический диагноз определенного заболевания эндокринной системы"
+              "quote": "Верифицированный глюкокортикоидиндуцированный остеопороз при значении Т-критерия –1,5 и менее"
             }
           },
           {
-            "text": "с целью уточнения причины заболевания, дифференциальной диагностики, определения",
+            "text": "Т-критерий от –1,0 до –2,5 и значения рассчитанного 10-летнего риска по методике FRAX для общего значения переломов 20 % и выше, для перелома проксимального отдела бедра – 3 % и выше",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -132,103 +136,45 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "с целью уточнения причины заболевания, дифференциальной диагностики, определения"
-            }
-          },
-          {
-            "text": "клинические критерии – важнейшие клинические признаки, комбинация которых",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/6КП_Диагностика_и_лечение_пациентов_с_остеопорозом_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "клинические критерии – важнейшие клинические признаки, комбинация которых"
-            }
-          },
-          {
-            "text": "позволяет предположить наличие у пациента определенного заболевания эндокринной",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/6КП_Диагностика_и_лечение_пациентов_с_остеопорозом_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "позволяет предположить наличие у пациента определенного заболевания эндокринной"
-            }
-          },
-          {
-            "text": "клинический диагноз – медицинское заключение о состоянии здоровья пациента,",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/6КП_Диагностика_и_лечение_пациентов_с_остеопорозом_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "клинический диагноз – медицинское заключение о состоянии здоровья пациента,"
-            }
-          },
-          {
-            "text": "и лечебные схемы, а также определены медицинские показания к госпитализации и план",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/6КП_Диагностика_и_лечение_пациентов_с_остеопорозом_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "и лечебные схемы, а также определены медицинские показания к госпитализации и план"
+              "quote": "Т-критерий от –1,0 до –2,5 и значения рассчитанного 10-летнего риска по методике FRAX для общего значения переломов 20 % и выше, для перелома проксимального отдела бедра – 3 % и выше"
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
+      "required_exams": [
+        {
+          "name": "Рентгеноденситометрия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/6КП_Диагностика_и_лечение_пациентов_с_остеопорозом_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "верифицированный клинический диагноз «остеопороз» на основании результатов рентгеноденситометрии;"
+          }
+        }
+      ],
       "conditional_exams": [],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 4. В настоящем клиническом протоколе приведены типовые диагностические (стр. 4)",
+            "text": "Отказ от вредных привычек, увеличение физической активности, минимизация риска падений, достаточное употребление продуктов, богатых кальцием (1200 мг/сут.) и витамином Д",
             "source_ref": {
               "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
               "document_url": null,
@@ -239,11 +185,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 4. В настоящем клиническом протоколе приведены типовые диагностические (стр. 4)"
+              "quote": "Отказ от вредных привычек, увеличение физической активности, минимизация риска падений, достаточное употребление продуктов, богатых кальцием (1200 мг/сут.) и витамином Д"
             }
           },
           {
-            "text": "ЛС представлены по международным непатентованным наименованиям, а при их",
+            "text": "Лечение заболевания, являющегося причиной вторичного остеопороза",
             "source_ref": {
               "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
               "document_url": null,
@@ -254,11 +200,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ЛС представлены по международным непатентованным наименованиям, а при их"
+              "quote": "Лечение заболевания, являющегося причиной вторичного остеопороза"
             }
           },
           {
-            "text": "отсутствии – по химическим наименованиям по систематической или заместительной",
+            "text": "Хирургическое вмешательство: протезирование проксимального отдела бедра (остеосинтез или консервативное лечение при противопоказаниях), вертебропластика и кифопластика при вертебральных переломах",
             "source_ref": {
               "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
               "document_url": null,
@@ -269,62 +215,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "отсутствии – по химическим наименованиям по систематической или заместительной"
-            }
-          },
-          {
-            "text": "номенклатуре с указанием лекарственной формы и дозировки. Применение ЛС осуществляется по медицинским показаниям в соответствии",
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/6КП_Диагностика_и_лечение_пациентов_с_остеопорозом_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "номенклатуре с указанием лекарственной формы и дозировки. Применение ЛС осуществляется по медицинским показаниям в соответствии"
-            }
-          },
-          {
-            "text": "с инструкцией по медицинскому применению (листком-вкладышем). В каждой конкретной ситуации в интересах пациента решением врачебного",
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/6КП_Диагностика_и_лечение_пациентов_с_остеопорозом_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "с инструкцией по медицинскому применению (листком-вкладышем). В каждой конкретной ситуации в интересах пациента решением врачебного"
-            }
-          },
-          {
-            "text": "консилиума объем диагностики и лечения может быть расширен с использованием",
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/6КП_Диагностика_и_лечение_пациентов_с_остеопорозом_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "консилиума объем диагностики и лечения может быть расширен с использованием"
+              "quote": "Хирургическое вмешательство: протезирование проксимального отдела бедра (остеосинтез или консервативное лечение при противопоказаниях), вертебропластика и кифопластика при вертебральных переломах"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "пищей",
+            "drug_name": "Соли кальция (карбонат или цитрат)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1200 мг",
+            "dose_text": "не более 1000 мг/сут.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -336,20 +237,20 @@
               "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
               "document_url": null,
               "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/6КП_Диагностика_и_лечение_пациентов_с_остеопорозом_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "пищей \n1200 мг/сут"
+              "quote": "при дефиците кальция в пищевом рационе – дополнительный прием солей кальция (карбоната или цитрата в эквиваленте не более 1000 мг/сут.);"
             }
           },
           {
-            "drug_name": "более",
+            "drug_name": "Холекальциферол (Витамин Д3)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1000 мг",
+            "dose_text": "поддерживающая терапия 1000–2000 МЕ/сут.; при дефиците 6000 МЕ/день или 50 000 МЕ/неделю в течение 8 недель",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -361,20 +262,20 @@
               "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
               "document_url": null,
               "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/6КП_Диагностика_и_лечение_пациентов_с_остеопорозом_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "более 1000 мг/сут"
+              "quote": "При необходимости добавляют препарат витамина Д3 в суточной дозе от 1000 до 2000 МЕ. При дефиците 25(OH)D3 – холекальциферол 6000 МЕ/день или 50 000 МЕ/неделю (8 нед) до >30 нг/мл, далее 1500–2000 МЕ/сут."
             }
           },
           {
-            "drug_name": "деносумаб",
+            "drug_name": "Деносумаб",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "60 мг",
+            "dose_text": "60 мг подкожно 1 раз в 6 месяцев длительно",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -386,20 +287,20 @@
               "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
               "document_url": null,
               "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/6КП_Диагностика_и_лечение_пациентов_с_остеопорозом_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "деносумаб 60 мг подкожно 1 раз в 6 месяцев длительно"
+              "quote": "деносумаб 60 мг подкожно 1 раз в 6 месяцев длительно."
             }
           },
           {
-            "drug_name": "июня",
+            "drug_name": "Алендроновая кислота",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2021 г",
+            "dose_text": "70 мг 1 раз в неделю внутрь длительно от 2 до 5–7 лет",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -411,20 +312,20 @@
               "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
               "document_url": null,
               "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/6КП_Диагностика_и_лечение_пациентов_с_остеопорозом_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июня 2021 г"
+              "quote": "алендроновая кислота 70 мг 1 раз в неделю внутрь длительно от 2 до 5–7 лет;"
             }
           },
           {
-            "drug_name": "октября",
+            "drug_name": "Ибандроновая кислота",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2011 г",
+            "dose_text": "150 мг 1 раз в месяц внутрь или 3 мг внутривенно струйно 1 раз в 3 месяца, длительно от 2 до 5–7 лет",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -436,20 +337,20 @@
               "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
               "document_url": null,
               "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/6КП_Диагностика_и_лечение_пациентов_с_остеопорозом_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "октября 2011 г"
+              "quote": "ибандроновая кислота (150 мг 1 раз в месяц внутрь длительно от 2 до 5–7 лет или 3 мг внутривенно струйно 1 раз в 3 месяца длительно от 2 до 5–7 лет);"
             }
           },
           {
-            "drug_name": "июля",
+            "drug_name": "Золедроновая кислота",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2013 г",
+            "dose_text": "5 мг внутривенно капельно 1 раз в год длительно от 2 до 5–7 лет",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -461,38 +362,13 @@
               "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
               "document_url": null,
               "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/6КП_Диагностика_и_лечение_пациентов_с_остеопорозом_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июля 2013 г"
-            }
-          },
-          {
-            "drug_name": "кислота",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "70 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/6КП_Диагностика_и_лечение_пациентов_с_остеопорозом_взр_нас_пост_МЗ_21062021_85.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "кислота 70 мг 1 раз в неделю внутрь длительно от 2 до "
+              "quote": "золедроновая кислота 5 мг внутривенно капельно 1 раз в год длительно от 2 до 5–7 лет."
             }
           }
         ],
@@ -502,7 +378,7 @@
       },
       "follow_up": [
         {
-          "text": "динамическом наблюден",
+          "text": "Контроль основных показателей, определяющих степень компенсации и прогноз течения заболевания",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -516,11 +392,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "динамическом наблюден"
+            "quote": "Контроль основных показателей, определяющих степень компенсации и прогноз течения заболевания"
           }
         },
         {
-          "text": "контроль",
+          "text": "Перечень и частота предоставления медицинских услуг могут быть увеличены по медицинским показаниям",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -534,48 +410,111 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
+            "quote": "Перечень и частота предоставления медицинских услуг могут быть увеличены по медицинским показаниям"
+          }
+        },
+        {
+          "text": "План наблюдения определяется индивидуально",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/6КП_Диагностика_и_лечение_пациентов_с_остеопорозом_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "План наблюдения определяется индивидуально"
+          }
+        },
+        {
+          "text": "Рентгеноостеоденситометрия каждые 1–2 года при лечении бисфосфонатами или моноклональными антителами до достижения стабильного результата",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/6КП_Диагностика_и_лечение_пациентов_с_остеопорозом_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Рентгеноостеоденситометрия каждые 1–2 года при лечении бисфосфонатами или моноклональными антителами до достижения стабильного результата"
           }
         }
       ],
       "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
+      "routing": [
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/6КП_Диагностика_и_лечение_пациентов_с_остеопорозом_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Необходимость обязательного последующего назначения бисфосфонатов при перерыве или прекращении лечения деносумабом",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/6КП_Диагностика_и_лечение_пациентов_с_остеопорозом_взр_нас_пост_МЗ_21062021_85.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Следует учитывать, что при перерыве в лечении или прекращении лечения деносумабом необходимо обязательное последующее назначение бисфосфонатов."
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_6кп_диагностика_и_лечение_пациенто",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/6КП_Диагностика_и_лечение_пациентов_с_остеопорозом_взр_нас_пост_МЗ_21062021_85.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "6КП Диагностика и лечение пациентов с остеопорозом взрослое население"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:19.944562+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T15:26:10.216363+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:19.947381+00:00"
+    "validated_at": "2026-07-20T15:26:10.222004+00:00"
   }
 }

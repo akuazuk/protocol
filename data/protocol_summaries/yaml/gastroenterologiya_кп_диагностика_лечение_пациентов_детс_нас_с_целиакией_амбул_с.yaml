@@ -1,10 +1,9 @@
 protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение пациентов детское население с целиакией амбулаторных
-    стац
+  title: Диагностика и лечение целиакии у детей
   url: null
   local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
   document_sha256: null
@@ -20,15 +19,15 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_лечение_пациентов_детское_население_
-  name: Диагностика лечение пациентов детское население с целиакией амбулаторных стац
+- condition_id: celiac_disease
+  name: Целиакия
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -38,7 +37,9 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: и гистологическими критериями (Marsh II–III)
+    - text: 'Данные анамнеза и клинических проявлений (типичные: гастроинтестинальные,
+        задержка развития; атипичные: кожные, гематологические, костно-суставные,
+        психоневрологические, репродуктивные нарушения, ассоциированные заболевания)'
       logic_group: null
       operator: unknown
       values: []
@@ -55,9 +56,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: и гистологическими критериями (Marsh II–III)
-    - text: имеются положительные серологические и гистологические критерии (Marsh
-        II–III),
+        quote: 'Данные анамнеза и клинических проявлений (типичные: гастроинтестинальные,
+          задержка развития; атипичные: кожные, гематологические, костно-суставные,
+          психоневрологические, репродуктивные нарушения, ассо'
+    - text: 'Положительные результаты серологических маркеров: антитела к тканевой
+        трансглютаминазе IgA/IgG и/или антитела к глиадину/диамидированному глиадину'
       logic_group: null
       operator: unknown
       values: []
@@ -74,9 +77,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: имеются положительные серологические и гистологические критерии (Marsh
-          II–III),
-    - text: диагноз чаще всего устанавливается в ходе скрининговых исследований пациентов
+        quote: 'Положительные результаты серологических маркеров: антитела к тканевой
+          трансглютаминазе IgA/IgG и/или антитела к глиадину/диамидированному глиадину'
+    - text: 'Гистологическая диагностика: интраэпителиальный лимфоцитоз, гиперплазия
+        крипт, атрофия ворсинок, воспалительная инфильтрация собственной пластинки'
       logic_group: null
       operator: unknown
       values: []
@@ -93,10 +97,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: диагноз чаще всего устанавливается в ходе скрининговых исследований
-          пациентов
-    - text: '[classification] 25. При формулировке диагноза целиакии указывают нозологию,
-        клиническую (стр. 7)'
+        quote: 'Гистологическая диагностика: интраэпителиальный лимфоцитоз, гиперплазия
+          крипт, атрофия ворсинок, воспалительная инфильтрация собственной пластинки'
+    - text: 'Эндоскопические критерии: мозаичный рисунок слизистой, глубокие борозды,
+        фестончатость дуоденальных складок, нодулярность, уменьшение/исчезновение
+        складок, визуализация сосудов, укорочение/притупление/отсутствие ворсинок'
       logic_group: null
       operator: unknown
       values: []
@@ -113,9 +118,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 25. При формулировке диагноза целиакии указывают
-          нозологию, клиническую (стр. 7)'
-    - text: исследования), которые позволяют установить и подтвердить диагноз. В каждой
+        quote: 'Эндоскопические критерии: мозаичный рисунок слизистой, глубокие борозды,
+          фестончатость дуоденальных складок, нодулярность, уменьшение/исчезновение
+          складок, визуализация сосудов, укорочение/притупление'
+    - text: Возможна верификация диагноза без гистологии при высоких титрах антител
+        к тканевой трансглютаминазе (>10 норм), положительном титре антител к эндомизию
+        и наличии HLA DQ2/DQ8
       logic_group: null
       operator: unknown
       values: []
@@ -132,66 +140,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: исследования), которые позволяют установить и подтвердить диагноз.
-          В каждой
-    - text: определение уровня общих сывороточных иммуноглобулинов (IgA, IgG, IgM)
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: определение уровня общих сывороточных иммуноглобулинов (IgA, IgG, IgM)
-    - text: биохимическое исследование крови (далее – БИК) с определением билирубина,
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: биохимическое исследование крови (далее – БИК) с определением билирубина,
-    - text: затрудняет верификацию диагноза и требует проведения глютеновой провокации
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: затрудняет верификацию диагноза и требует проведения глютеновой провокации
+        quote: Возможна верификация диагноза без гистологии при высоких титрах антител
+          к тканевой трансглютаминазе (>10 норм), положительном титре антител к эндомизию
+          и наличии HLA DQ2/DQ8
     optional: []
     exclusion: []
   required_exams:
-  - name: ОАК
+  - name: Общий анализ крови (ОАК)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -205,215 +160,159 @@ conditions:
       protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
       document_url: null
       local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
-      page_start: null
+      page_start: 3
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "ледования: \nобщий анализ крови (далее – ОАК); \nобщий анализ мочи (далее\
-        \ – ОАМ); \nкопрологическое исследование; \nопределение"
+      quote: 'Обязательными диагностическими мероприятиями являются: лабораторные
+        диагностические исследования: общий анализ крови (далее – ОАК);'
+  - name: Общий анализ мочи (ОАМ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями являются: лабораторные
+        диагностические исследования: ... общий анализ мочи (далее – ОАМ);'
+  - name: Копрологическое исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями являются: лабораторные
+        диагностические исследования: ... копрологическое исследование;'
+  - name: Определение уровня общих сывороточных иммуноглобулинов (IgA, IgG, IgM)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями являются: ... определение
+        уровня общих сывороточных иммуноглобулинов (IgA, IgG, IgM);'
+  - name: Биохимическое исследование крови (БИК) (билирубин, АсАТ, АлАТ, ЩФ, ГГТП,
+      белок, глюкоза, холестерин, железо, ферритин, кальций)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями являются: ... биохимическое
+        исследование крови (далее – БИК) с определением билирубина, аспартатаминотрансферазы
+        (далее – АсАТ), аланинаминотрансферазы (далее – АлАТ), щелочной фосфатазы,
+        гамма-глютамилтранспептидазы, общего белка, глюкозы, холестерина, железа,
+        ферритина, кальция;'
+  - name: Серологический скрининг на целиакию (IgG к диамидированному глиадину/глиадину,
+      IgA к тканевой трансглютаминазе)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями являются: ... серологический
+        скрининг на целиакию с определением уровня IgG к диамидированному глиадину
+        или к глиадину, уровня IgA к тканевой трансглютаминазе'
+  - name: Эзофагогастродуоденоинтестиноскопия с биопсией
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Назначение безглютеновой диеты ex juvantibus при отсутствии ... проведения
+        эзофагогастродуоденоинтестиноскопии с биопсией до начала безглютеновой диеты
+        затрудняет верификацию диагноза
   conditional_exams: []
-  treatment:
-    non_drug:
-    - text: '[treatment] 3. Для целей настоящего клинического протокола используются
-        основные термины (стр. 2)'
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 3. Для целей настоящего клинического протокола используются
-          основные термины (стр. 2)'
-    - text: «Об обращении лекарственных средств», Законом Республики Беларусь от 19
-        ноября
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: «Об обращении лекарственных средств», Законом Республики Беларусь от
-          19 ноября
-    - text: '[treatment] 3. Для целей настоящего клинического протокола используются
-        основные термины (стр. 2)'
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 3. Для целей настоящего клинического протокола используются
-          основные термины (стр. 2)'
-    - text: '№ 2570-XII «О правах ребенка», а также следующие термины и их определения:'
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '№ 2570-XII «О правах ребенка», а также следующие термины и их определения:'
-    - text: безглютеновая диета (аглиадиновая диета, аглютеновая диета) – элиминационная
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: безглютеновая диета (аглиадиновая диета, аглютеновая диета) – элиминационная
-    - text: содержащих глютен или его следы (скрытый глютен)
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: содержащих глютен или его следы (скрытый глютен)
-    drug_groups: []
-    drugs:
-    - drug_name: июля
-      active_substance: null
-      drug_group: null
-      dose_text: 2006 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июля 2006 г
-    - drug_name: ноября
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "ноября \n1993 г"
-    - drug_name: февраля
-      active_substance: null
-      drug_group: null
-      dose_text: 2024 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: февраля 2024 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    procedures: []
-    surgery: []
-    source_refs: []
+  treatment: null
   follow_up: []
   hospitalization: []
   routing:
-  - text: '[routing] 13. При направлении пациента для проведения плановой ЭГДС учитывается
-      наличие (стр. 4)'
+  - text: госпитализация
     timing: null
     required_if: []
     source_ref:
@@ -426,9 +325,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 13. При направлении пациента для проведения плановой ЭГДС
-        учитывается наличие (стр. 4)'
-  - text: указывается в направлении на ЭГДС.
+      quote: госпитализация
+  - text: амбулаторно
     timing: null
     required_if: []
     source_ref:
@@ -441,9 +339,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: указывается в направлении на ЭГДС.
-  - text: '[prevention] НАБЛЮДЕНИЕ ПАЦИЕНТОВ С ЦЕЛИАКИЕЙ В АМБУЛАТОРНЫХ УСЛОВИЯХ (стр.
-      8)'
+      quote: амбулаторно
+  - text: амбулаторно
     timing: null
     required_if: []
     source_ref:
@@ -456,50 +353,45 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[prevention] НАБЛЮДЕНИЕ ПАЦИЕНТОВ С ЦЕЛИАКИЕЙ В АМБУЛАТОРНЫХ УСЛОВИЯХ
-        (стр. 8)'
-  - text: '31. Основные профилактические мероприятия при целиакии направлены на:'
-    timing: null
-    required_if: []
+      quote: амбулаторно
+  red_flags:
+  - text: Назначение безглютеновой диеты без серологического и морфологического подтверждения
+      затрудняет верификацию диагноза и требует проведения глютеновой провокации.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
     source_ref:
       protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
       document_url: null
       local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
-      page_start: null
+      page_start: 4
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: '31. Основные профилактические мероприятия при целиакии направлены на:'
-  red_flags: []
+      quote: Назначение безглютеновой диеты ex juvantibus при отсутствии серологического
+        и морфологического подтверждения ... затрудняет верификацию диагноза и требует
+        проведения глютеновой провокации в последующем.
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_с
-    document_url: null
-    local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_детс_нас_с_целиакией_амбул_стац_пост_МЗ_29.02.2024_38.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика лечение пациентов детское население с целиакией амбулаторных
-      стац
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:29.117065+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T16:01:07.000707+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:29.119528+00:00'
+  validated_at: '2026-07-20T16:01:07.006259+00:00'

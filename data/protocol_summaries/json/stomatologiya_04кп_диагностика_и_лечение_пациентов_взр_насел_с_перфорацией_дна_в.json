@@ -1,10 +1,10 @@
 {
   "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "04КП Диагностика и лечение пациентов взр насел с перфорацией дна верхнечелюстной пазухи свищом верхнечелюстной пазухи",
+    "title": "Диагностика и лечение пациентов взрослого населения с перфорацией дна верхнечелюстной пазухи и свищом верхнечелюстной пазухи",
     "url": null,
     "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
     "document_sha256": null,
@@ -32,8 +32,8 @@
   },
   "conditions": [
     {
-      "condition_id": "04кп_диагностика_и_лечение_пациентов_взр_насел_с",
-      "name": "04КП Диагностика и лечение пациентов взр насел с перфорацией дна верхнечелюстной пазухи свищом верхнечелюстной пазухи",
+      "condition_id": "perforation_maxillary_sinus_floor_fistula",
+      "name": "Перфорация дна верхнечелюстной пазухи и свищ верхнечелюстной пазухи",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
@@ -41,8 +41,10 @@
         "K04.6",
         "K04.60",
         "B24",
+        "K04.7",
         "K07.9",
-        "O72"
+        "O72",
+        "B20.0"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -50,7 +52,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "8. Признаки и критерии, определяющие перфорацию верхнечелюстной пазухи, свищ",
+            "text": "Наличие сообщения пазухи с полостью рта",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -67,11 +69,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "8. Признаки и критерии, определяющие перфорацию верхнечелюстной пазухи, свищ"
+              "quote": "Наличие сообщения пазухи с полостью рта"
             }
           },
           {
-            "text": "[diagnostics] 11. Для постановки диагноза осуществляются: (стр. 5)",
+            "text": "Выделение алой пенистой крови из зубной альвеолы после удаления зуба или из участка операционного поля",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -88,11 +90,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 11. Для постановки диагноза осуществляются: (стр. 5)"
+              "quote": "Выделение алой пенистой крови из зубной альвеолы после удаления зуба или из участка операционного поля"
             }
           },
           {
-            "text": "[diagnostics] 15. Для постановки диагноза осуществляются: (стр. 5)",
+            "text": "Ощущение «провала» инструмента при зондировании зубной альвеолы или операционного поля",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -109,11 +111,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 15. Для постановки диагноза осуществляются: (стр. 5)"
+              "quote": "Ощущение «провала» инструмента при зондировании зубной альвеолы или операционного поля"
             }
           },
           {
-            "text": "определение чувствительности к антибактериальным ЛС",
+            "text": "Выделение крови из носового хода на стороне поражения",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -130,11 +132,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "определение чувствительности к антибактериальным ЛС"
+              "quote": "Выделение крови из носового хода на стороне поражения"
             }
           },
           {
-            "text": "определение чувствительности к противогрибковым ЛС.",
+            "text": "Положительный симптом «воздушной струи»",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -151,7 +153,7 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "определение чувствительности к противогрибковым ЛС."
+              "quote": "Положительный симптом «воздушной струи»"
             }
           }
         ],
@@ -160,7 +162,7 @@
       },
       "required_exams": [
         {
-          "name": "УЗИ",
+          "name": "Клиническое обследование пациента (амбулаторно)",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -175,117 +177,352 @@
             "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
             "document_url": null,
             "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
-            "page_start": null,
+            "page_start": 5,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "; \nультразвуковое исследование (далее – УЗИ).\n\n[diagnostics] 15. Для постановки диагноза осуществляются: (стр. 5)\nклиническ"
+            "quote": "Обязательными диагностическими мероприятиями в амбулаторных условиях являются: 12.1. клиническое обследование пациента: сбор анамнеза, установка причины развития заболевания..."
+          }
+        },
+        {
+          "name": "Клиническое обследование пациента (стационарно)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обязательными диагностическими мероприятиями в стационарных условиях являются: 16.1. клиническое обследование пациента: сбор анамнеза, установка причины развития заболевания..."
+          }
+        },
+        {
+          "name": "Общий анализ крови (стационарно)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "лабораторные диагностические исследования: общий анализ крови"
+          }
+        },
+        {
+          "name": "Биохимический анализ крови (стационарно)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "лабораторные диагностические исследования: биохимический анализ крови"
+          }
+        },
+        {
+          "name": "Коагулограмма (стационарно)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "лабораторные диагностические исследования: коагулограмма"
+          }
+        },
+        {
+          "name": "Общий анализ мочи (стационарно)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "лабораторные диагностические исследования: общий анализ мочи"
           }
         }
       ],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "[treatment] 1. Настоящий клинический протокол определяет общие требования к объему (стр. 3)",
-            "source_ref": {
-              "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 1. Настоящий клинический протокол определяет общие требования к объему (стр. 3)"
-            }
-          },
-          {
-            "text": "оказания стоматологической хирургической медицинской помощи в амбулаторных",
-            "source_ref": {
-              "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "оказания стоматологической хирургической медицинской помощи в амбулаторных"
-            }
-          },
-          {
-            "text": "Национальный правовой Интернет-портал Республики Беларусь, 15.07.2023, 8/40135",
-            "source_ref": {
-              "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Национальный правовой Интернет-портал Республики Беларусь, 15.07.2023, 8/40135"
-            }
-          },
-          {
-            "text": "верхнечелюстной пазухи, свищом верхнечелюстной пазухи (шифр по Международной",
-            "source_ref": {
-              "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "верхнечелюстной пазухи, свищом верхнечелюстной пазухи (шифр по Международной"
-            }
-          },
-          {
-            "text": "статистической классификации болезней и проблем, связанных со здоровьем, десятого",
-            "source_ref": {
-              "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "статистической классификации болезней и проблем, связанных со здоровьем, десятого"
-            }
-          },
-          {
-            "text": "пересмотра – J01.8 Другой острый синусит",
-            "source_ref": {
-              "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "пересмотра – J01.8 Другой острый синусит"
-            }
+      "conditional_exams": [
+        {
+          "name": "Рентгенография (носоподбородочная, носолобная, боковая проекции) (амбулаторно)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "инструментальные диагностические исследования (по медицинским показаниям): лучевые методы исследования: рентгенография (носоподбородочная, носолобная, боковая проекции)"
           }
-        ],
+        },
+        {
+          "name": "Конусно-лучевая компьютерная томография (КЛКТ) верхней челюсти (амбулаторно)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "инструментальные диагностические исследования (по медицинским показаниям): лучевые методы исследования: конусно-лучевая компьютерная томография (далее – КЛКТ) верхней челюсти"
+          }
+        },
+        {
+          "name": "Ультразвуковое исследование (УЗИ) (амбулаторно)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "инструментальные диагностические исследования (по медицинским показаниям): лучевые методы исследования: ультразвуковое исследование (далее – УЗИ)"
+          }
+        },
+        {
+          "name": "Рентгенография (носоподбородочная, носолобная, боковая проекции) (стационарно)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "инструментальные диагностические исследования (по медицинским показаниям): лучевые методы исследования: рентгенография (носоподбородочная, носолобная, боковая проекции)"
+          }
+        },
+        {
+          "name": "Конусно-лучевая компьютерная томография (КЛКТ) верхней челюсти (стационарно)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "инструментальные диагностические исследования (по медицинским показаниям): лучевые методы исследования: КЛКТ верхней челюсти"
+          }
+        },
+        {
+          "name": "Ультразвуковое исследование (УЗИ) (стационарно)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "инструментальные диагностические исследования (по медицинским показаниям): лучевые методы исследования: УЗИ"
+          }
+        },
+        {
+          "name": "Бактериологическое исследование с определением чувствительности к антибактериальным ЛС (стационарно)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "лабораторные диагностические исследования: бактериологическое исследование (при наличии экссудата): определение чувствительности к антибактериальным ЛС"
+          }
+        },
+        {
+          "name": "Бактериологическое исследование с определением чувствительности к противогрибковым ЛС (стационарно)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "лабораторные диагностические исследования: бактериологическое исследование (при наличии экссудата): определение чувствительности к противогрибковым ЛС"
+          }
+        }
+      ],
+      "treatment": {
+        "non_drug": [],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "капсулы",
+            "drug_name": "Артикаин/Эпинефрин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "250 мг",
+            "dose_text": "Раствор для инъекций (40 мг + 0,005 мг)/мл. Длительность применения устанавливают индивидуально.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -297,20 +534,20 @@
               "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
-              "page_start": null,
+              "page_start": 11,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "капсулы 250 мг, капсулы 500 мг, таблетки, покрытые обо"
+              "quote": "Артикаин/Эпинефрин Раствор для инъекций (40 мг + 0,005 мг)/мл Длительность применения устанавливают индивидуально"
             }
           },
           {
-            "drug_name": "метронидазол",
+            "drug_name": "Амоксициллин/клавулановая кислота",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "500 мг",
+            "dose_text": "Таблетки, покрытые оболочкой, 875 мг/125 мг; 500 мг/125 мг; порошок для приготовления раствора для внутривенного введения 1000 мг/200 мг; 500 мг/100 мг. Дозу следует корректировать исходя из амоксицил",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -322,20 +559,20 @@
               "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
-              "page_start": null,
+              "page_start": 11,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "метронидазол 500 мг в/в, или \nцефуроксим 1,5 г в/в + метрони"
+              "quote": "Амоксициллин/клавулановая кислота Таблетки... порошок для приготовления раствора для внутривенного введения... по 1000 мг/200 мг 3 раза в сутки."
             }
           },
           {
-            "drug_name": "дазол",
+            "drug_name": "Нимесулид",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "500 мг",
+            "dose_text": "Таблетки 100 мг; порошок (гранулы) для приготовления суспензии для приема внутрь 100 мг в пакетах. Внутрь после еды по 100 мг 2 раза в сутки. Максимальная длительность приема 15 суток. Продолжительнос",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -347,20 +584,20 @@
               "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
-              "page_start": null,
+              "page_start": 12,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "дазол 500 мг в/в, или ампициллин/сульбактам 3 г в/в, "
+              "quote": "Нимесулид Таблетки 100 мг; порошок (гранулы)... Внутрь после еды по 100 мг 2 раза в сутки. Максимальная длительность приема 15 суток."
             }
           },
           {
-            "drug_name": "клавуланат",
+            "drug_name": "Кеторолак",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1,2 г",
+            "dose_text": "Раствор для внутривенного и внутримышечного введения 30 мг/мл в ампулах; таблетки, покрытые пленочной оболочкой, 10 мг. При внутримышечном или внутривенном введении разовая доза может варьировать от 3",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -372,113 +609,13 @@
               "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
-              "page_start": null,
+              "page_start": 12,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "клавуланат 1,2 г в/в или клиндамицин 900 мг в/в"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          },
-          {
-            "drug_name": "декабря",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "декабря 2011 г"
-            }
-          },
-          {
-            "drug_name": "февраля",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2008 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "февраля 2008 г"
+              "quote": "Кеторолак Раствор для внутривенного и внутримышечного введения 30 мг/мл... При внутримышечном или внутривенном введении разовая доза может варьировать от 30 мг до 60 мг."
             }
           }
         ],
@@ -488,43 +625,66 @@
       },
       "follow_up": [],
       "hospitalization": [],
-      "routing": [],
+      "routing": [
+        {
+          "text": "Амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Амбулаторно"
+          }
+        },
+        {
+          "text": "Стационарно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Стационарно"
+          }
+        }
+      ],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "stomatologiya_04кп_диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_в",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/stomatologiya/04КП_Диагностика_и_лечение_пациентов_взр_насел_с_перфорацией_дна_верхнечелюстной_пазухи_свищом_верхнечелюстной_пазухи_пост_МЗ_02.05.2023_66.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "04КП Диагностика и лечение пациентов взр насел с перфорацией дна верхнечелюстной пазухи свищом верхнечелюстной пазухи"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:47.872006+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T17:43:34.383292+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:47.876604+00:00"
+    "validated_at": "2026-07-20T17:43:34.391114+00:00"
   }
 }

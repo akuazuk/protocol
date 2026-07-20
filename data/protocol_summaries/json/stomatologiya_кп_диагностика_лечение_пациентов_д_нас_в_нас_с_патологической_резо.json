@@ -1,10 +1,10 @@
 {
   "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика лечение пациентов детское население взрослое население с патологической резорбцией зуба",
+    "title": "Диагностика и лечение патологической резорбции зуба",
     "url": null,
     "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "adult"
+      "adult_and_child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,13 +32,15 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_лечение_пациентов_детское_население_",
-      "name": "Диагностика лечение пациентов детское население взрослое население с патологической резорбцией зуба",
+      "condition_id": "pathological_tooth_resorption",
+      "name": "Патологическая резорбция зуба",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "B24",
-        "K07.9"
+        "K03.3",
+        "K03.30",
+        "K03.31",
+        "K03.39"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -46,7 +48,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[criteria] 5. Признаками и критериями, определяющими различные виды патологической (стр. 3)",
+            "text": "Сбор анамнеза: выявление факторов инициации резорбции (воспаление, травма, сдавление, реплантация, общие заболевания)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -63,11 +65,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 5. Признаками и критериями, определяющими различные виды патологической (стр. 3)"
+              "quote": "Сбор анамнеза: выявление факторов инициации резорбции (воспаление, травма, сдавление, реплантация, общие заболевания)"
             }
           },
           {
-            "text": "[diagnostics] 6. Для постановки диагноза осуществляются: (стр. 3)",
+            "text": "Изменение цвета зуба (розовый, серый)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -84,11 +86,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 6. Для постановки диагноза осуществляются: (стр. 3)"
+              "quote": "Изменение цвета зуба (розовый, серый)"
             }
           },
           {
-            "text": "резорбции зуба, а также определение медицинских показаний к лечению, выбор врачом-",
+            "text": "Зондирование придесневой области (кровоточивость, дефект корня)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -105,19 +107,350 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "резорбции зуба, а также определение медицинских показаний к лечению, выбор врачом-"
+              "quote": "Зондирование придесневой области (кровоточивость, дефект корня)"
+            }
+          },
+          {
+            "text": "Осмотр слизистой (воспаление периодонта, свищевой ход)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Осмотр слизистой (воспаление периодонта, свищевой ход)"
+            }
+          },
+          {
+            "text": "Пальпация (болезненность альвеолярного отростка)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Пальпация (болезненность альвеолярного отростка)"
+            }
+          },
+          {
+            "text": "Термометрия (повышенная чувствительность, боль)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Термометрия (повышенная чувствительность, боль)"
+            }
+          },
+          {
+            "text": "Электроодонтометрия (обычные/повышенные показатели)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Электроодонтометрия (обычные/повышенные показатели)"
+            }
+          },
+          {
+            "text": "Лучевые методы исследования (деструкция корня, периодонтальной связки, верхушки корня и кости)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лучевые методы исследования (деструкция корня, периодонтальной связки, верхушки корня и кости)"
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
+      "required_exams": [
+        {
+          "name": "Клиническое обследование пациента",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Для постановки диагноза осуществляются: клиническое обследование пациента"
+          }
+        },
+        {
+          "name": "Инструментальные и физические методы исследования",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "обязательные, дополнительные инструментальные и физические методы исследования"
+          }
+        },
+        {
+          "name": "Консультация врача общей практики",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "консультации врачей-специалистов (врача общей практики)"
+          }
+        },
+        {
+          "name": "Консультация врача-терапевта",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "консультации врачей-специалистов (... врача-терапевта)"
+          }
+        },
+        {
+          "name": "Консультация врача-педиатра",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "консультации врачей-специалистов (... врача-педиатра)"
+          }
+        },
+        {
+          "name": "Консультация врача-стоматолога-ортодонта",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "консультации врачей-специалистов (... врача-стоматолога-ортодонта)"
+          }
+        },
+        {
+          "name": "Консультация врача-стоматолога-хирурга",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "консультации врачей-специалистов (... врача-стоматолога-хирурга)"
+          }
+        },
+        {
+          "name": "Прицельная внутриротовая контактная рентгенография зубов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "лучевые методы исследования: прицельная внутриротовая контактная рентгенография зубов или конусно-лучевая компьютерная томография зубов."
+          }
+        },
+        {
+          "name": "Конусно-лучевая компьютерная томография зубов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "лучевые методы исследования: прицельная внутриротовая контактная рентгенография зубов или конусно-лучевая компьютерная томография зубов."
+          }
+        }
+      ],
       "conditional_exams": [],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 9. Общими принципами медицинской профилактики и лечения патологической (стр. 4)",
+            "text": "Определение и устранение предрасполагающих факторов патологической резорбции зуба.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
               "document_url": null,
@@ -128,11 +461,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 9. Общими принципами медицинской профилактики и лечения патологической (стр. 4)"
+              "quote": "Определение и устранение предрасполагающих факторов патологической резорбции зуба."
             }
           },
           {
-            "text": "общепринятый эффективный метод медицинской профилактики патологической",
+            "text": "Мотивация к формированию здоровых повседневных привычек, имеющих отношение к стоматологическому здоровью.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
               "document_url": null,
@@ -143,11 +476,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "общепринятый эффективный метод медицинской профилактики патологической"
+              "quote": "Мотивация к формированию здоровых повседневных привычек, имеющих отношение к стоматологическому здоровью."
             }
           },
           {
-            "text": "резорбции зуба – определение и устранение предрасполагающих факторов",
+            "text": "Гигиенические мероприятия, предупреждающие дальнейшее развитие резорбтивного процесса и его осложнений.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
               "document_url": null,
@@ -158,11 +491,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "резорбции зуба – определение и устранение предрасполагающих факторов"
+              "quote": "Гигиенические мероприятия, предупреждающие дальнейшее развитие резорбтивного процесса и его осложнений."
             }
           },
           {
-            "text": "эффективность лечения патологической резорбции зуба определяется длительностью",
+            "text": "Эндодонтическое лечение зуба с временной пломбировкой корневого канала лекарственными средствами на основе гидроксида кальция и последующей постоянной обтурацией (при прогрессировании процесса резорбции).",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
               "document_url": null,
@@ -173,11 +506,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "эффективность лечения патологической резорбции зуба определяется длительностью"
+              "quote": "Эндодонтическое лечение зуба с временной пломбировкой корневого канала лекарственными средствами на основе гидроксида кальция и последующей постоянной обтурацией (при прогрессировании процесса резорбц"
             }
           },
           {
-            "text": "стабилизации достигнутого хорошего результата.",
+            "text": "Эндодонтическое лечение зубов с предварительной временной пломбировкой корневого канала лекарственными средствами на основе гидроксида кальция и последующей постоянной обтурацией (при генерализованной резорбции).",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
               "document_url": null,
@@ -188,32 +521,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "стабилизации достигнутого хорошего результата."
-            }
-          },
-          {
-            "text": "[treatment] 10. Планирование комплексного лечения пациентов с патологической резорбцией (стр. 4)",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 10. Планирование комплексного лечения пациентов с патологической резорбцией (стр. 4)"
+              "quote": "Эндодонтическое лечение зубов с предварительной временной пломбировкой корневого канала лекарственными средствами на основе гидроксида кальция и последующей постоянной обтурацией (при генерализованной"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "следующие",
+            "drug_name": "Лидокаин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2 г",
+            "dose_text": "Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию (1–3 нажатия) аэрозоля наносят на слизистую оболочку ротовой полости или десну, или смазывают ватным тампоном.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -225,20 +543,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "следующие 2 года"
+              "quote": "Лидокаин Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию (1–3 нажатия на клапан) аэрозоля наносят на слизистую ротовой полости или десну. Можно также наносить путем смазывания ватным тампоном."
             }
           },
           {
-            "drug_name": "картриджах",
+            "drug_name": "Лидокаин/Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1,7 мл",
+            "dose_text": "Анестезирующий гель в шприцах 12,5 г. Для аппликационной анестезии слизистой оболочки ротовой полости, в том числе перед инъекционной анестезией.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -250,20 +568,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "картриджах 1,7 мл (1,8 мл), в ампулах 2 мл"
+              "quote": "Лидокаин/Хлоргексидин Анестезирующий гель в шприцах 12,5 г Для аппликационной анестезии слизистой оболочки ротовой полости, в том числе перед инъекционной анестезией."
             }
           },
           {
-            "drug_name": "соответствует",
+            "drug_name": "Гидроксид кальция",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "12,5 мл",
+            "dose_text": "Временная пломбировка корневого канала.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -275,20 +593,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "соответствует 12,5 мл раствора \nдля инъекций)\n\n[other] Описани"
+              "quote": "эндодонтическое лечение зуба с временной пломбировкой корневого канала лекарственными средствами на основе гидроксида кальция"
             }
           },
           {
-            "drug_name": "июня",
+            "drug_name": "Артикаин/Эпинефрин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2025 г",
+            "dose_text": "Разовая доза индивидуальна. До 7 мг/кг массы тела взрослым, до 500 мг (12,5 мл) за процедуру.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -300,38 +618,13 @@
               "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июня 2025 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября \n2011 г"
+              "quote": "Разовую дозу врач-специалист назначает индивидуально, учитывая состояние области нанесения лекарственного средства и общее состояние пациента. При выполнении одной лечебной процедуры взрослым можно вводить артикаин в дозе до 7 мг на 1 кг массы тела."
             }
           }
         ],
@@ -341,7 +634,7 @@
       },
       "follow_up": [
         {
-          "text": "Контроль",
+          "text": "Контрольные медицинские осмотры: через 6 месяцев после завершения лечения.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -355,11 +648,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Контроль"
+            "quote": "Контрольные медицинские осмотры: через 6 месяцев после завершения лечения."
           }
         },
         {
-          "text": "контроль",
+          "text": "Динамический контроль состояния зубов: 2 раза в год (каждые 6 месяцев) в течение первого года после лечения.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -373,11 +666,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
+            "quote": "Динамический контроль состояния зубов: 2 раза в год (каждые 6 месяцев) в течение первого года после лечения."
           }
         },
         {
-          "text": "контроль",
+          "text": "Динамический контроль состояния зубов: 1 раз в год в следующие 2 года.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -391,7 +684,25 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
+            "quote": "Динамический контроль состояния зубов: 1 раз в год в следующие 2 года."
+          }
+        },
+        {
+          "text": "При каждом контрольном осмотре: повторная оценка состояния твердых тканей зубов, зубных рядов, пломб, зубных протезов, периодонта и слизистой оболочки ротовой полости; оценка гигиенического состояния ротовой полости, идентификация оттенков цвета зуба с резорбцией.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При каждом контрольном осмотре: повторная оценка состояния твердых тканей зубов, зубных рядов, пломб, зубных протезов, периодонта и слизистой оболочки ротовой полости; оценка гигиенического состояния "
           }
         }
       ],
@@ -401,38 +712,26 @@
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика лечение пациентов детское население взрослое население с патологической резорбцией зуба"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:52.125609+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T18:11:24.633166+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:52.127204+00:00"
+    "validated_at": "2026-07-20T18:11:24.639151+00:00"
   }
 }

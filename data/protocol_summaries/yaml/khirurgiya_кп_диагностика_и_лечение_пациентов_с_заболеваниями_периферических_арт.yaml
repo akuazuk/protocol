@@ -1,10 +1,9 @@
 protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов с заболеваниями периферических артерий взрослое
-    население
+  title: Диагностика и лечение пациентов с заболеваниями периферических артерий
   url: null
   local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
   document_sha256: null
@@ -27,9 +26,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов_с_заболеваниями_
-  name: Диагностика и лечение пациентов с заболеваниями периферических артерий взрослое
-    население
+- condition_id: peripheral_arterial_disease
+  name: Заболевания периферических артерий
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -39,18 +37,14 @@ conditions:
   - I73
   - I74
   - I77
-  - B24
-  - I21.9
-  - I64
-  - O72
-  - O88.2
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[classification] 8. Определение тяжести хронической ишемии нижних конечностей
-        осуществляется (стр. 3)'
+    - text: 'Стеноз артерий до 50% по диаметру: визуальная картина стеноза в В-режиме;
+        дефект заполнения на цветовой картограмме кровотока; достоверные изменения
+        УЗДС кровотока отсутствуют.'
       logic_group: null
       operator: unknown
       values: []
@@ -67,10 +61,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 8. Определение тяжести хронической ишемии нижних
-          конечностей осуществляется (стр. 3)'
-    - text: '[classification] 9. Для определения степени СМН применяется следующая
-        классификация: (стр. 3)'
+        quote: 'Стеноз артерий до 50% по диаметру: визуальная картина стеноза в В-режиме;
+          дефект заполнения на цветовой картограмме кровотока; достоверные изменения
+          УЗДС кровотока отсутствуют.'
+    - text: 'Стеноз артерий от 50 до 70% по диаметру: визуальная картина стеноза в
+        В-режиме; дефект заполнения на цветовой картограмме кровотока, изменение цветовой
+        картограммы в области турбулентного потока; локальный гемодинамический сдвиг
+        с приростом пиковой систолической скорости кровотока в 2 раза на выходе из
+        стеноза.'
       logic_group: null
       operator: unknown
       values: []
@@ -87,10 +85,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 9. Для определения степени СМН применяется следующая
-          классификация: (стр. 3)'
-    - text: '[classification] 19. Диагноз заболевания в стадии КИНК подтверждается
-        результатами определения (стр. 6)'
+        quote: 'Стеноз артерий от 50 до 70% по диаметру: визуальная картина стеноза
+          в В-режиме; дефект заполнения на цветовой картограмме кровотока, изменение
+          цветовой картограммы в области турбулентного потока; лока'
+    - text: 'Стеноз артерий 70–99% по диаметру: визуальная картина стеноза в В-режиме;
+        дефект заполнения на цветовой картограмме кровотока, изменение цветовой картограммы
+        в области турбулентного потока; локальный гемодинамический сдвиг с приростом
+        пиковой систолической скорости кровотока в 3 раза (при 70–80%) или в 4 раза
+        и более (при >80%).'
       logic_group: null
       operator: unknown
       values: []
@@ -107,9 +109,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 19. Диагноз заболевания в стадии КИНК подтверждается
-          результатами определения (стр. 6)'
-    - text: 'Пороговыми1 гемодинамическими критериями КИНК являются:'
+        quote: 'Стеноз артерий 70–99% по диаметру: визуальная картина стеноза в В-режиме;
+          дефект заполнения на цветовой картограмме кровотока, изменение цветовой
+          картограммы в области турбулентного потока; локальный '
+    - text: 'Окклюзии: визуальная картина окклюзии в В-режиме; кровоток не определяется
+        в режимах цветового допплеровского картирования и спектральной допплерографии.'
       logic_group: null
       operator: unknown
       values: []
@@ -126,91 +130,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Пороговыми1 гемодинамическими критериями КИНК являются:'
-    - text: '[classification] 126. При установлении диагноза острой мезентериальной
-        ишемии: (стр. 25)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 126. При установлении диагноза острой мезентериальной
-          ишемии: (стр. 25)'
-    - text: '[classification] 8. Определение тяжести хронической ишемии нижних конечностей
-        осуществляется (стр. 3)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 8. Определение тяжести хронической ишемии нижних
-          конечностей осуществляется (стр. 3)'
-    - text: '[classification] 9. Для определения степени СМН применяется следующая
-        классификация: (стр. 3)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 9. Для определения степени СМН применяется следующая
-          классификация: (стр. 3)'
-    - text: '[classification] 19. Диагноз заболевания в стадии КИНК подтверждается
-        результатами определения (стр. 6)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 19. Диагноз заболевания в стадии КИНК подтверждается
-          результатами определения (стр. 6)'
+        quote: 'Окклюзии: визуальная картина окклюзии в В-режиме; кровоток не определяется
+          в режимах цветового допплеровского картирования и спектральной допплерографии.'
     optional: []
     exclusion: []
   required_exams:
-  - name: ОАК
+  - name: Общий анализ крови (ОАК)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -224,148 +149,330 @@ conditions:
       protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
       document_url: null
       local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
-      page_start: null
+      page_start: 4
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "ледования: \nобщий анализ крови (далее – ОАК); \nбиохимический анализ\
-        \ крови (далее – БАК): определение уровней билирубина, \nм"
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: '[treatment] 4. Настоящий клинический протокол определяет минимальный
-        объем медицинской (стр. 3)'
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 4. Настоящий клинический протокол определяет минимальный
-          объем медицинской (стр. 3)'
-    - text: помощи пациентам с ЗПА при оказании медицинской помощи в амбулаторных
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: помощи пациентам с ЗПА при оказании медицинской помощи в амбулаторных
-    - text: и стационарных условиях врачами-терапевтами, врачами общей практики, врачами-
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: и стационарных условиях врачами-терапевтами, врачами общей практики,
-          врачами-
-    - text: хирургами, врачами-ангиохирургами, другими врачами-специалистами.
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: хирургами, врачами-ангиохирургами, другими врачами-специалистами.
-    - text: '[treatment] 6. Порядок (стр. 3)'
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 6. Порядок (стр. 3)'
-    - text: осуществляется врачом-ангиохирургом, врачом – рентгено-эндоваскулярным
-        хирургом.
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: осуществляется врачом-ангиохирургом, врачом – рентгено-эндоваскулярным
-          хирургом.
-    drug_groups: []
-    drugs:
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    procedures: []
-    surgery: []
-    source_refs: []
+      quote: общий анализ крови (далее – ОАК);
+  - name: Биохимический анализ крови (БАК)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'биохимический анализ крови (далее – БАК): определение уровней билирубина,
+        мочевины, общего белка, АсАТ, АлАТ, электролитов (калий, кальций, натрий,
+        хлор);'
+  - name: Липидограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: липидограмма (общий холестерин, триглицериды, липопротеиды высокой плотности
+        (далее – ЛПВП), липопротеиды низкой плотности (далее – ЛПНП), коэффициент
+        атерогенности);
+  - name: Исследование уровня глюкозы в крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование уровня глюкозы в крови;
+  - name: Коагулограмма (амбулаторно)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: коагулограмма (определение фибриногена, активированного частичного тромбопластинового
+        времени (далее – АЧТВ)
+  - name: Коагулограмма (стационарно)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: коагулограмма (определение фибриногена, АЧТВ, протромбинового времени,
+        МНО);
+  - name: ИФА или ПЦР на маркеры вирусных гепатитов В (HBs Ag), С (antiHCV)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ИФА или ПЦР на маркеры вирусных гепатитов В (HBs Ag), С (antiHCV);
+  - name: ИФА или ПЦР на маркеры ВИЧ-инфекции (antiHIV и HIV Ag)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ИФА или ПЦР на маркеры ВИЧ-инфекции (antiHIV и HIV Ag);
+  - name: Обследование на сифилитическую инфекцию
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: обследование на сифилитическую инфекцию;
+  - name: Общий анализ мочи (ОАМ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ОАМ;
+  - name: УЗДС периферических артерий
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗДС периферических артерий является методом диагностики первой линии
+        и позволяет оценить практически весь спектр поражений, включая оценку результатов
+        хирургического вмешательства и (или) консервативного лечения.
+  conditional_exams:
+  - name: Определение группы крови по системам АВ0 и резус-фактора
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение группы крови по системам АВ0 и резус-фактора (при планировании
+        хирургического вмешательства);
+  - name: МСКТА и (или) МРА нижних конечностей
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: МСКТА и (или) МРА нижних конечностей применяются в диагностике топического
+        поражения магистральных артерий у пациентов с ЗАНК, у которых рассматривается
+        возможность хирургического вмешательства по реваскуляризации конечности.
+  - name: Инвазивная ЦСА (ангиография)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Инвазивная ЦСА может применяться, если неинвазивные методы обследования
+        не помогли установить диагноз, а также с целью определения топографической
+        анатомии, детальной локализации и распространенности патологического процесса
+        при планировании реваскуляризации.
+  - name: Инвазивная ренгеноконтрастная ангиография с контрастированием артерий стопы
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При отсутствии медицинских противопоказаний у пациентов с КИНК для оценки
+        возможности выполнения реваскуляризации нижней конечности применяется инвазивная
+        ренгеноконтрастная ангиография с контрастированием артерий стопы.
+  treatment: null
   follow_up: []
   hospitalization: []
   routing:
-  - text: '[routing] 102. Изменение образа жизни и ОЛТ должны быть направлены на снижение
-      влияния (стр. 20)'
+  - text: Первичная диагностика ЗПА осуществляется врачами общей практики, хирургами,
+      другими специалистами в амбулаторных условиях.
     timing: null
     required_if: []
     source_ref:
@@ -378,10 +485,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 102. Изменение образа жизни и ОЛТ должны быть направлены на
-        снижение влияния (стр. 20)'
-  - text: '[routing] 102. Изменение образа жизни и ОЛТ должны быть направлены на снижение
-      влияния (стр. 20)'
+      quote: Первичная диагностика ЗПА осуществляется врачами общей практики, хирургами,
+        другими специалистами в амбулаторных условиях.
+  - text: Для уточнения диагноза и дальнейшего лечения пациент направляется на консультацию
+      к врачу-ангиохирургу.
     timing: null
     required_if: []
     source_ref:
@@ -394,10 +501,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 102. Изменение образа жизни и ОЛТ должны быть направлены на
-        снижение влияния (стр. 20)'
-  - text: '[prevention] 151. Медицинская профилактика ЗПА направлена на предотвращение
-      развития (стр. 29)'
+      quote: Для уточнения диагноза и дальнейшего лечения пациент направляется на
+        консультацию к врачу-ангиохирургу.
+  - text: Обязательные диагностические мероприятия при ЗАНК проводятся как в амбулаторных,
+      так и в стационарных условиях.
     timing: null
     required_if: []
     source_ref:
@@ -410,29 +517,14 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[prevention] 151. Медицинская профилактика ЗПА направлена на предотвращение
-        развития (стр. 29)'
-  - text: '[prevention] 151. Медицинская профилактика ЗПА направлена на предотвращение
-      развития (стр. 29)'
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: '[prevention] 151. Медицинская профилактика ЗПА направлена на предотвращение
-        развития (стр. 29)'
+      quote: Обязательные диагностические мероприятия при ЗАНК проводятся как в амбулаторных,
+        так и в стационарных условиях.
   red_flags:
-  - text: "ческих сосудов, I74 Эмболия и тромбоз артерий, I77 Другие \nпоражения артерий\
-      \ и артериол).\n\n[classification] 8. Определение тяжести хронической ише"
+  - text: Острая ишемия конечности, характеризующаяся внезапным началом заболевания
+      и резким снижением перфузии вследствие тромбоза или тромбоэмболии, требует неотложного
+      хирургического вмешательства – реваскуляризации конечности.
     aliases: []
-    red_flag_type: thrombosis
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -440,140 +532,2406 @@ conditions:
       protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
       document_url: null
       local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
-      page_start: null
+      page_start: 7
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "ческих сосудов, I74 Эмболия и тромбоз артерий, I77 Другие \nпоражения\
-        \ артерий и артериол).\n\n[classification] 8. Определение тяжести хронической\
-        \ ише"
-  - text: "удов, I74 Эмболия и тромбоз артерий, I77 Другие \nпоражения артерий и артериол).\n\
-      \n[classification] 8. Определение тяжести хронической ишемии нижних"
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "удов, I74 Эмболия и тромбоз артерий, I77 Другие \nпоражения артерий\
-        \ и артериол).\n\n[classification] 8. Определение тяжести хронической ишемии\
-        \ нижних"
-  - text: "ческих сосудов, I74 Эмболия и тромбоз артерий, I77 Другие \nпоражения артерий\
-      \ и артериол).\n\n[classification] 8. Определение тяжести хронической ише"
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "ческих сосудов, I74 Эмболия и тромбоз артерий, I77 Другие \nпоражения\
-        \ артерий и артериол).\n\n[classification] 8. Определение тяжести хронической\
-        \ ише"
-  - text: "удов, I74 Эмболия и тромбоз артерий, I77 Другие \nпоражения артерий и артериол).\n\
-      \n[classification] 8. Определение тяжести хронической ишемии нижних"
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "удов, I74 Эмболия и тромбоз артерий, I77 Другие \nпоражения артерий\
-        \ и артериол).\n\n[classification] 8. Определение тяжести хронической ишемии\
-        \ нижних"
-  - text: "ечности вследствие \nтромбоза или тромбоэмболии, что требует неотложного\
-      \ хирургического вмешательства – \nреваскуляризации конечности.\n\n[diagnostics]"
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "ечности вследствие \nтромбоза или тромбоэмболии, что требует неотложного\
-        \ хирургического вмешательства – \nреваскуляризации конечности.\n\n[diagnostics]"
-  - text: "тромбоза или тромбоэмболии, что требует неотложного хирургического вмешательства\
-      \ – \nреваскуляризации конечности.\n\n[diagnostics] 24. УЗДС перифери"
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "тромбоза или тромбоэмболии, что требует неотложного хирургического вмешательства\
-        \ – \nреваскуляризации конечности.\n\n[diagnostics] 24. УЗДС перифери"
+      quote: ЗАНК в стадии КИНК дифференцируется с острой ишемией, характеризующейся
+        внезапным началом заболевания и резким снижением перфузии конечности вследствие
+        тромбоза или тромбоэмболии, что требует неотложного хирургического вмешательства
+        – реваскуляризации конечности.
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
-    document_url: null
-    local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов с заболеваниями периферических артерий
-      взрослое население
+  source_refs: []
+- condition_id: chronic_lower_limb_ischemia
+  name: Хроническая ишемия нижних конечностей
+  synonyms: []
+  abbreviations: []
+  icd10_codes: []
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: 'Стеноз артерий до 50% по диаметру: визуальная картина стеноза в В-режиме,
+        дефект заполнения на цветовой картограмме, достоверные изменения УЗДС кровотока
+        отсутствуют.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Стеноз артерий до 50% по диаметру: визуальная картина стеноза в В-режиме,
+          дефект заполнения на цветовой картограмме, достоверные изменения УЗДС кровотока
+          отсутствуют.'
+    - text: 'Стеноз артерий от 50 до 70% по диаметру: визуальная картина стеноза в
+        В-режиме, дефект заполнения на ЦДК, прирост пиковой систолической скорости
+        кровотока в 2 раза.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Стеноз артерий от 50 до 70% по диаметру: визуальная картина стеноза
+          в В-режиме, дефект заполнения на ЦДК, прирост пиковой систолической скорости
+          кровотока в 2 раза.'
+    - text: 'Стеноз артерий 70–99% по диаметру: визуальная картина стеноза в В-режиме,
+        дефект заполнения на ЦДК, прирост пиковой систолической скорости кровотока
+        в 3 раза.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Стеноз артерий 70–99% по диаметру: визуальная картина стеноза в В-режиме,
+          дефект заполнения на ЦДК, прирост пиковой систолической скорости кровотока
+          в 3 раза.'
+    - text: 'Стеноз артерий более 80% по диаметру: прирост пиковой систолической скорости
+        кровотока в 4 раза и более, отрицательные значения СДСЧ под систолическим
+        пиком.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Стеноз артерий более 80% по диаметру: прирост пиковой систолической
+          скорости кровотока в 4 раза и более, отрицательные значения СДСЧ под систолическим
+          пиком.'
+    - text: 'Окклюзии: кровоток не определяется в режимах ЦДК и спектральной допплерографии,
+        в дистальном отделе при коллатеральном забросе определяется коллатеральный
+        тип кровотока.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Окклюзии: кровоток не определяется в режимах ЦДК и спектральной допплерографии,
+          в дистальном отделе при коллатеральном забросе определяется коллатеральный
+          тип кровотока.'
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Общий анализ крови (ОАК)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями при ЗАНК в амбулаторных...
+        лабораторные методы исследования: общий анализ крови (далее – ОАК);'
+  - name: 'Биохимический анализ крови (БАК): билирубин, мочевина, общий белок, АсАТ,
+      АлАТ, электролиты (калий, кальций, натрий, хлор)'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями при ЗАНК в амбулаторных...
+        биохимический анализ крови (далее – БАК): определение уровней билирубина,
+        мочевины, общего белка, АсАТ, АлАТ, электролитов.'
+  - name: Липидограмма (общий холестерин, триглицериды, ЛПВП, ЛПНП, коэффициент атерогенности)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями при ЗАНК в амбулаторных...
+        лабораторные методы исследования: ...липидограмма (общий холестерин, триглицериды,
+        ЛПВП, ЛПНП, коэффициент атерогенности);'
+  - name: Исследование уровня глюкозы в крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями при ЗАНК в амбулаторных...
+        лабораторные методы исследования: ...исследование уровня глюкозы в крови;'
+  - name: Коагулограмма (фибриноген, АЧТВ, протромбиновое время, МНО)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями при ЗАНК в стационарных...
+        лабораторные методы исследования: ...коагулограмма (определение фибриногена,
+        АЧТВ, протромбинового времени, МНО);'
+  - name: ИФА или ПЦР на маркеры вирусных гепатитов В (HBs Ag), С (antiHCV)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями при ЗАНК в стационарных...
+        лабораторные методы исследования: ...ИФА или ПЦР на маркеры вирусных гепатитов
+        В (HBs Ag), С (antiHCV);'
+  - name: ИФА или ПЦР на маркеры ВИЧ-инфекции (antiHIV и HIV Ag)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями при ЗАНК в стационарных...
+        лабораторные методы исследования: ...ИФА или ПЦР на маркеры ВИЧ-инфекции (antiHIV
+        и HIV Ag);'
+  - name: Обследование на сифилитическую инфекцию
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями при ЗАНК в стационарных...
+        лабораторные методы исследования: ...обследование на сифилитическую инфекцию;'
+  - name: Общий анализ мочи (ОАМ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями при ЗАНК в стационарных...
+        лабораторные методы исследования: ...ОАМ;'
+  - name: Ультразвуковое дуплексное сканирование (УЗДС) периферических артерий
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗДС периферических артерий является методом диагностики первой линии
+        и позволяет оценить практически весь спектр поражений...
+  conditional_exams:
+  - name: Определение группы крови по системам АВ0 и резус-фактора
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение группы крови по системам АВ0 и резус-фактора (при планировании
+        хирургического вмешательства);
+  - name: Мультиспиральная компьютерная томографическая ангиография (МСКТА) и/или
+      магнитно-резонансная ангиография (МРА) нижних конечностей
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: МСКТА и (или) МРА нижних конечностей применяются в диагностике топического
+        поражения магистральных артерий у пациентов с ЗАНК, у которых рассматривается
+        возможность хирургического вмешательства.
+  - name: Инвазивная цифровая субтракционная ангиография (ЦСА)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Инвазивная ЦСА может применяться, если неинвазивные методы обследования
+        не помогли установить диагноз, а также с целью определения топографической
+        анатомии... при планировании реваскуляризации.
+  - name: Инвазивная рентгеноконтрастная ангиография с контрастированием артерий стопы
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При отсутствии медицинских противопоказаний у пациентов с КИНК для оценки
+        возможности выполнения реваскуляризации нижней конечности применяется инвазивная
+        ренгеноконтрастная ангиография с контрастированием артерий стопы.
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: амбулаторно (первичная диагностика)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно (первичная диагностика)
+  - text: консультация ангиохирурга (для уточнения диагноза и дальнейшего лечения)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультация ангиохирурга (для уточнения диагноза и дальнейшего лечения)
+  - text: госпитализация (для обязательных диагностических мероприятий при ЗАНК в
+      стационарных условиях)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация (для обязательных диагностических мероприятий при ЗАНК
+        в стационарных условиях)
+  - text: госпитализация (при острой ишемии, требующей неотложного хирургического
+      вмешательства)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация (при острой ишемии, требующей неотложного хирургического
+        вмешательства)
+  - text: Реваскуляризация СА показана пациентам с недавно перенесенным инсультом
+      и стенозом (ВСА >50 %). Выполняется после стабилизации состояния (через 48 часов,
+      до 14 дней).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Реваскуляризация СА показана пациентам с недавно перенесенным инсультом
+        и стенозом (ВСА >50 %). Выполняется после стабилизации состояния (через 48
+        часов, до 14 дней).
+  - text: При бессимптомном стенозе позвоночной артерии реваскуляризация не показана.
+      Показана при резистентных ишемических симптомах или выраженных симптомах вертебробазилярной
+      недостаточности.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При бессимптомном стенозе позвоночной артерии реваскуляризация не показана.
+        Показана при резистентных ишемических симптомах или выраженных симптомах вертебробазилярной
+        недостаточности.
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: stenosing_cerebral_artery_lesions
+  name: Стенозирующие поражения магистральных артерий головы
+  synonyms: []
+  abbreviations: []
+  icd10_codes: []
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: 'Стеноз артерий до 50% по диаметру: визуальная картина стеноза в В-режиме;
+        дефект заполнения на цветовой картограмме кровотока; достоверные изменения
+        УЗДС кровотока отсутствуют.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Стеноз артерий до 50% по диаметру: визуальная картина стеноза в В-режиме;
+          дефект заполнения на цветовой картограмме кровотока; достоверные изменения
+          УЗДС кровотока отсутствуют.'
+    - text: 'Стеноз артерий от 50 до 70% по диаметру: визуальная картина стеноза в
+        В-режиме; дефект заполнения на цветовой картограмме кровотока, изменение цветовой
+        картограммы в области турбулентного потока; локальный гемодинамический сдвиг:
+        на выходе из стеноза прирост пиковой систолической скорости кровотока в 2
+        раза.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Стеноз артерий от 50 до 70% по диаметру: визуальная картина стеноза
+          в В-режиме; дефект заполнения на цветовой картограмме кровотока, изменение
+          цветовой картограммы в области турбулентного потока; лока'
+    - text: 'Стеноз артерий 70–99% по диаметру: визуальная картина стеноза в В-режиме;
+        дефект заполнения на цветовой картограмме кровотока; локальный гемодинамический
+        сдвиг: при стенозах 70–80% прирост ПСС в 3 раза; при стенозах >80% прирост
+        ПСС в 4 раза и более.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Стеноз артерий 70–99% по диаметру: визуальная картина стеноза в В-режиме;
+          дефект заполнения на цветовой картограмме кровотока; локальный гемодинамический
+          сдвиг: при стенозах 70–80% прирост ПСС в 3 раз'
+    - text: 'Окклюзии: кровоток не определяется в режимах цветового допплеровского
+        картирования и спектральной допплерографии; в дистальном отделе при наличии
+        коллатерального заброса определяется коллатеральный тип кровотока.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Окклюзии: кровоток не определяется в режимах цветового допплеровского
+          картирования и спектральной допплерографии; в дистальном отделе при наличии
+          коллатерального заброса определяется коллатеральный ти'
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Общий анализ крови (ОАК)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями при ЗАНК в амбулаторных...
+        лабораторные методы исследования: общий анализ крови (далее – ОАК);'
+  - name: Биохимический анализ крови (БАК)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями при ЗАНК в амбулаторных...
+        БАК: определение уровней билирубина, мочевины, общего белка, АсАТ, АлАТ, электролитов
+        (калий, кальций, натрий, хлор);'
+  - name: Липидограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обязательными диагностическими мероприятиями при ЗАНК в амбулаторных...
+        липидограмма (общий холестерин, триглицериды, ЛПВП, ЛПНП, коэффициент атерогенности);
+  - name: Исследование уровня глюкозы в крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обязательными диагностическими мероприятиями при ЗАНК в амбулаторных...
+        исследование уровня глюкозы в крови;
+  - name: Коагулограмма (амбулаторно)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обязательными диагностическими мероприятиями при ЗАНК в амбулаторных...
+        коагулограмма (определение фибриногена, активированного частичного тромбопластинового
+        времени);
+  - name: Коагулограмма (стационарно)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обязательными диагностическими мероприятиями при ЗАНК в стационарных...
+        коагулограмма (определение фибриногена, АЧТВ, протромбинового времени, МНО);
+  - name: ИФА или ПЦР на маркеры вирусных гепатитов В (HBs Ag), С (antiHCV)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ИФА или ПЦР на маркеры вирусных гепатитов В (HBs Ag), С (antiHCV);
+  - name: ИФА или ПЦР на маркеры ВИЧ-инфекции (antiHIV и HIV Ag)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ИФА или ПЦР на маркеры ВИЧ-инфекции (antiHIV и HIV Ag);
+  - name: Обследование на сифилитическую инфекцию
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обследование на сифилитическую инфекцию;
+  - name: Общий анализ мочи (ОАМ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ОАМ;
+  - name: УЗДС периферических артерий
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗДС периферических артерий является методом диагностики первой линии
+        и позволяет оценить практически весь спектр поражений, включая оценку результатов
+        хирургического вмешательства и (или) консервативного лечения.
+  - name: Определение АЧТВ, протромбинового времени, МНО
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение активированного частичного тромбопластинового времени (далее
+        – АЧТВ), протромбинового времени, международного нормализованного отношения
+        (далее – МНО)
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ мочи (далее – ОАМ)
+  - name: УЗДС сосудов нижних конечностей с определением ЛПИ
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗДС сосудов нижних конечностей с определением лодыжечно-плечевого индекса
+        (далее – ЛПИ)
+  - name: Электрокардиография (ЭКГ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: электрокардиография (далее – ЭКГ)
+  - name: Обзорная рентгенография или флюорография ОГК
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: обзорная рентгенография или флюорография органов грудной клетки (далее
+        – ОГК)
+  conditional_exams:
+  - name: Определение группы крови и резус-фактора
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Определение группы крови по системам АВ0 и резус-фактора (при планировании
+        хирургического вмешательства);
+  - name: МСКТА и/или МРА нижних конечностей
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: МСКТА и (или) МРА нижних конечностей применяются в диагностике топического
+        поражения магистральных артерий у пациентов с ЗАНК, у которых рассматривается
+        возможность хирургического вмешательства по реваскуляризации конечности.
+  - name: Инвазивная ЦСА
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Инвазивная ЦСА может применяться, если неинвазивные методы обследования
+        не помогли установить диагноз, а также с целью определения топографической
+        анатомии... при планировании реваскуляризации.
+  - name: Инвазивная рентгеноконтрастная ангиография с контрастированием артерий стопы
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При отсутствии медицинских противопоказаний у пациентов с КИНК для оценки
+        возможности выполнения реваскуляризации нижней конечности применяется инвазивная
+        ренгеноконтрастная ангиография с контрастированием артерий стопы.
+  - name: Определение группы крови по системам АВ0 и резус-фактора
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение группы крови по системам АВ0 и резус-фактора (при планировании
+        хирургического вмешательства)
+  - name: ИФА или ПЦР на маркеры вирусных гепатитов В, С
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: иммуноферментный анализ (далее – ИФА) или полимеразная цепная реакция
+        (далее – ПЦР) на маркеры вирусных гепатитов В (HBs Ag), С (antiHCV) (при планировании
+        хирургического вмешательства)
+  - name: ИФА или ПЦР на маркеры ВИЧ-инфекции
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ИФА или ПЦР на маркеры ВИЧ-инфекции (antiHIV или HIV Ag) (при планировании
+        хирургического вмешательства)
+  - name: Обследование на сифилитическую инфекцию
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: обследование на сифилитическую инфекцию (при планировании хирургического
+        вмешательства)
+  treatment:
+    non_drug:
+    - text: 'Модификация факторов риска атеросклероза: является одним из трех подходов
+        к консервативному лечению ПХ у всех пациентов.'
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Модификация факторов риска атеросклероза: является одним из трех подходов
+          к консервативному лечению ПХ у всех пациентов.'
+    - text: 'Лечебная физкультура (ЛФК): индивидуальная программа физических упражнений
+        под врачебным контролем. Является наиболее эффективным методом консервативного
+        лечения ЗАНК в стадии ПХ. Занятия предусматривают ходьбу (на тредмиле или
+        прогулочную) с появлением хромоты не ранее, чем через 3-5 минут. Продолжать
+        ходьбу до умеренного дискомфорта/боли, затем остановка до полного исчезновения
+        симптомов, возобновление ходьбы. Алгоритм «упражнение – отдых – упражнение»
+        длится не менее 35 минут, увеличивается н'
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Лечебная физкультура (ЛФК): индивидуальная программа физических упражнений
+          под врачебным контролем. Является наиболее эффективным методом консервативного
+          лечения ЗАНК в стадии ПХ. Занятия предусматрив'
+    drug_groups: []
+    drugs:
+    - drug_name: Ингибиторы ГМГ-КоА-редуктазы
+      active_substance: null
+      drug_group: null
+      dose_text: null
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Лекарственная терапия проводится всем пациентам и включает назначение
+          ингибиторов ГМГ-КоА-редуктазы...
+    - drug_name: Антигипертензивные лекарственные препараты
+      active_substance: null
+      drug_group: null
+      dose_text: null
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Лекарственная терапия проводится всем пациентам и включает назначение
+          ... антигипертензивных лекарственных препаратов...
+    - drug_name: Антиагрегантные лекарственные препараты
+      active_substance: null
+      drug_group: null
+      dose_text: null
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Лекарственная терапия проводится всем пациентам и включает назначение
+          ... антиагрегантных лекарственных препаратов...
+    - drug_name: Антикоагулянтная терапия (АКТ)
+      active_substance: null
+      drug_group: null
+      dose_text: null
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Лекарственная терапия проводится всем пациентам и включает назначение
+          ... антикоагулянтную терапию (далее – АКТ)
+    - drug_name: Блокаторы рецепторов АДФ – Р2Y12
+      active_substance: null
+      drug_group: null
+      dose_text: null
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При назначении антиагрегантной терапии прием блокаторов рецепторов
+          аденозиндифосфата (далее – АДФ) – Р2Y12 предпочтительнее по сравнению с
+          ингибитором циклооксигеназы.
+    - drug_name: Ацетилсалициловая кислота (АСК)
+      active_substance: null
+      drug_group: null
+      dose_text: 75–100 мг 1 раз в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ингибитором циклооксигеназы (ацетилсалициловой кислотой (далее – АСК)
+          75–100 мг 1 раз в сутки).
+    - drug_name: Двойная антиагрегантная терапия (АСК + блокатор Р2Y12)
+      active_substance: null
+      drug_group: null
+      dose_text: АСК 75–100 мг 1 раз в сутки + блокатор рецепторов АДФ – Р2Y12
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Двойная антиагрегантная терапия, включающая АСК в дозировке 75–100
+          мг 1 раз в сутки + блокатор рецепторов АДФ – Р2Y12, показана в течение минимум
+          1 месяца после выполнения стентирования артерий нижних конечностей...
+    - drug_name: Антагонисты витамина К (АВК)
+      active_substance: null
+      drug_group: null
+      dose_text: Целевой уровень МНО 2–3
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: После проведенного хирургического вмешательства аутовенозного шунтирования
+          ниже паховой связки допускается назначение антагонистов витамина К (далее
+          – АВК) (целевой уровень МНО 2–3).
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Длительная (более 1 месяца) пероральная АКТ и однокомпонентная антиагрегантная
+      терапия могут быть назначены пациентам с высоким риском окклюзии стента/шунта
+      и развития ишемии или при наличии других медицинских показаний.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Длительная (более 1 месяца) пероральная АКТ и однокомпонентная антиагрегантная
+        терапия могут быть назначены пациентам с высоким риском окклюзии стента/шунта
+        и развития ишемии или при наличии других ме
+  - text: Минимальная продолжительность курса ЛФК для оценки эффективности консервативного
+      подхода в лечении ПХ составляет 12 недель.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Минимальная продолжительность курса ЛФК для оценки эффективности консервативного
+        подхода в лечении ПХ составляет 12 недель.
+  hospitalization: []
+  routing:
+  - text: Первичная диагностика ЗПА в амбулаторных условиях осуществляется врачами
+      общей практики, хирургами, другими специалистами.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Первичная диагностика ЗПА в амбулаторных условиях осуществляется врачами
+        общей практики, хирургами, другими специалистами.
+  - text: Для уточнения диагноза и дальнейшего лечения пациент направляется на консультацию
+      к врачу-ангиохирургу по медицинским показаниям.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Для уточнения диагноза и дальнейшего лечения пациент направляется на
+        консультацию к врачу-ангиохирургу по медицинским показаниям.
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags:
+  - text: Острая ишемия конечности, характеризующаяся внезапным началом заболевания
+      и резким снижением перфузии вследствие тромбоза или тромбоэмболии, что требует
+      неотложного хирургического вмешательства.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ЗАНК в стадии КИНК дифференцируется с острой ишемией, характеризующейся
+        внезапным началом заболевания и резким снижением перфузии конечности вследствие
+        тромбоза или тромбоэмболии, что требует неотложного хирургического вмешательства
+        – реваскуляризации конечности.
+  - text: Пациенты, перенесшие в анамнезе реконструктивные хирургические вмешательства
+      на магистральных артериях нижних конечностей, относятся к группе высокого риска
+      сердечно-сосудистых осложнений и должны быть направлены к врачу-кардиологу для
+      исключения заболеваний коронарных артерий.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Пациенты, перенесшие в анамнезе реконструктивные хирургические вмешательства
+        на магистральных артериях нижних конечностей, направляются к врачу-кардиологу
+        для исключения заболеваний коронарных артерий, так как они входят в группу
+        высокого риска сердечно-сосудистых осложнений.
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: acute_mesenteric_ischemia
+  name: Острая мезентериальная ишемия
+  synonyms: []
+  abbreviations: []
+  icd10_codes: []
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams:
+  - name: АЧТВ, протромбиновое время, МНО
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: АЧТВ), протромбинового времени, международного нормализованного отношения
+        (далее – МНО)
+  - name: Общий анализ мочи (ОАМ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ мочи (далее – ОАМ)
+  - name: УЗДС сосудов нижних конечностей с определением ЛПИ
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗДС сосудов нижних конечностей с определением лодыжечно-плечевого индекса
+        (далее – ЛПИ)
+  - name: Электрокардиография (ЭКГ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: электрокардиография (далее – ЭКГ)
+  - name: Обзорная рентгенография или флюорография органов грудной клетки (ОГК)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: обзорная рентгенография или флюорография органов грудной клетки (далее
+        – ОГК)
+  - name: УЗДС брахиоцефальных сосудов (БЦА)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗДС брахиоцефальных сосудов (далее – БЦА).
+  conditional_exams:
+  - name: Определение группы крови по системам АВ0 и резус-фактора
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение группы крови по системам АВ0 и резус-фактора (при планировании
+        хирургического вмешательства)
+  - name: ИФА или ПЦР на маркеры вирусных гепатитов В, С
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: иммуноферментный анализ (далее – ИФА) или полимеразная цепная реакция
+        (далее – ПЦР) на маркеры вирусных гепатитов В (HBs Ag), С (antiHCV) (при планировании
+        хирургического вмешательства)
+  - name: ИФА или ПЦР на маркеры ВИЧ-инфекции
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ИФА или ПЦР на маркеры ВИЧ-инфекции (antiHIV или HIV Ag) (при планировании
+        хирургического вмешательства)
+  - name: Обследование на сифилитическую инфекцию
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: обследование на сифилитическую инфекцию (при планировании хирургического
+        вмешательства)
+  treatment:
+    non_drug:
+    - text: Модификация факторов риска атеросклероза.
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Модификация факторов риска атеросклероза.
+    - text: Лечебная физкультура (ЛФК) – индивидуальная программа физических упражнений
+        под врачебным контролем.
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Лечебная физкультура (ЛФК) – индивидуальная программа физических упражнений
+          под врачебным контролем.
+    - text: Занятия ЛФК предусматривают ходьбу на беговой дорожке или прогулочную
+        ходьбу по улице с выбранным темпом, когда симптомы хромоты появляются не ранее,
+        чем через 3–5 минут от начала ходьбы.
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Занятия ЛФК предусматривают ходьбу на беговой дорожке или прогулочную
+          ходьбу по улице с выбранным темпом, когда симптомы хромоты появляются не
+          ранее, чем через 3–5 минут от начала ходьбы.
+    - text: Пациенты продолжают ходьбу до появления симптомов умеренного дискомфорта
+        или умеренно выраженного болевого синдрома в мышцах, затем короткая остановка
+        до полного исчезновения симптомов, после чего ходьба возобновляется.
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Пациенты продолжают ходьбу до появления симптомов умеренного дискомфорта
+          или умеренно выраженного болевого синдрома в мышцах, затем короткая остановка
+          до полного исчезновения симптомов, после чего ход
+    - text: Алгоритм «упражнение – отдых – упражнение» продолжается не менее 35 минут,
+        с увеличением продолжительности на 5 минут до 50–60 минут ежедневно.
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Алгоритм «упражнение – отдых – упражнение» продолжается не менее 35
+          минут, с увеличением продолжительности на 5 минут до 50–60 минут ежедневно.
+    - text: Сеансы ЛФК рекомендуется повторять не менее 3 раз в неделю, оптимально
+        – ежедневно.
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Сеансы ЛФК рекомендуется повторять не менее 3 раз в неделю, оптимально
+          – ежедневно.
+    - text: Минимальная продолжительность курса ЛФК для оценки эффективности консервативного
+        лечения ПХ составляет 12 недель.
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Минимальная продолжительность курса ЛФК для оценки эффективности консервативного
+          лечения ПХ составляет 12 недель.
+    - text: Малоподвижным пациентам и пациентам с трофическими дефектами кожи рекомендуется
+        занятия на велотренажере или педальном тренажере в домашних условиях.
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Малоподвижным пациентам и пациентам с трофическими дефектами кожи рекомендуется
+          занятия на велотренажере или педальном тренажере в домашних условиях.
+    drug_groups: []
+    drugs:
+    - drug_name: Ингибиторы ГМГ-КоА-редуктазы
+      active_substance: null
+      drug_group: null
+      dose_text: в соответствии с клиническими протоколами лечения дислипидемии
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Лекарственная терапия проводится всем пациентам и включает назначение
+          ингибиторов ГМГ-КоА-редуктазы...
+    - drug_name: Антигипертензивные лекарственные препараты
+      active_substance: null
+      drug_group: null
+      dose_text: в соответствии с клиническими протоколами лечения АГ
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: '...антигипертензивных лекарственных препаратов...'
+    - drug_name: Антиагрегантные лекарственные препараты
+      active_substance: null
+      drug_group: null
+      dose_text: в соответствии с клиническими протоколами медицинской профилактики
+        тромбоэмболических осложнений
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: '...антиагрегантных лекарственных препаратов...'
+    - drug_name: Антикоагулянтная терапия (АКТ)
+      active_substance: null
+      drug_group: null
+      dose_text: в соответствии с клиническими протоколами медицинской профилактики
+        тромбоэмболических осложнений
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: '...и антикоагулянтную терапию (далее – АКТ) в соответствии с клиническими
+          протоколами лечения дислипидемии, АГ, медицинской профилактики тромбоэмболических
+          осложнений.'
+    - drug_name: Блокатор рецепторов АДФ – Р2Y12
+      active_substance: null
+      drug_group: null
+      dose_text: предпочтительнее АСК 75–100 мг 1 раз в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При назначении антиагрегантной терапии прием блокаторов рецепторов
+          аденозиндифосфата (далее – АДФ) – Р2Y12 предпочтительнее по сравнению с
+          ингибитором циклооксигеназы (ацетилсалициловой кислотой (далее – АСК) 75–100
+          мг 1 раз в сутки).
+    - drug_name: АСК
+      active_substance: null
+      drug_group: null
+      dose_text: 75–100 мг 1 раз в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Двойная антиагрегантная терапия, включающая АСК в дозировке 75–100
+          мг 1 раз в сутки + блокатор рецепторов АДФ – Р2Y12...
+    - drug_name: Антагонисты витамина К (АВК)
+      active_substance: null
+      drug_group: null
+      dose_text: целевой уровень МНО 2–3
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: После проведенного хирургического вмешательства аутовенозного шунтирования
+          ниже паховой связки допускается назначение антагонистов витамина К (далее
+          – АВК) (целевой уровень МНО 2–3).
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Минимальная продолжительность курса ЛФК, позволяющая оценить эффективность
+      консервативного подхода в лечении перемежающейся хромоты (ПХ), составляет 12
+      недель.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Минимальная продолжительность курса ЛФК, позволяющая оценить эффективность
+        консервативного подхода в лечении перемежающейся хромоты (ПХ), составляет
+        12 недель.
+  - text: Двойная антиагрегантная терапия показана в течение минимум 1 месяца после
+      стентирования артерий нижних конечностей или шунтирования синтетическим протезом
+      ниже паховой складки.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Двойная антиагрегантная терапия показана в течение минимум 1 месяца после
+        стентирования артерий нижних конечностей или шунтирования синтетическим протезом
+        ниже паховой складки.
+  - text: Длительная (более 1 месяца) двойная антиагрегантная терапия показана после
+      стентирования бедренной артерии (БА) в сочетании с баллонной ангиопластикой
+      тибиальных артерий, особенно у пациентов после повторных хирургических вмешательств.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Длительная (более 1 месяца) двойная антиагрегантная терапия показана
+        после стентирования бедренной артерии (БА) в сочетании с баллонной ангиопластикой
+        тибиальных артерий, особенно у пациентов после по
+  - text: Пероральная АКТ и однокомпонентная антиагрегантная терапия могут быть назначены
+      для приема на срок более чем 1 месяц у пациентов с высоким риском окклюзии стента,
+      шунта и развития ишемии или при наличии других медицинских показаний для длительной
+      терапии.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Пероральная АКТ и однокомпонентная антиагрегантная терапия могут быть
+        назначены для приема на срок более чем 1 месяц у пациентов с высоким риском
+        окклюзии стента, шунта и развития ишемии или при налич
+  hospitalization: []
+  routing:
+  - text: Медицинская помощь пациентам с ЗПА оказывается в амбулаторных и стационарных
+      условиях.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинская помощь пациентам с ЗПА оказывается в амбулаторных и стационарных
+        условиях.
+  - text: Порядок направления пациентов с ЗПА в стационарные условия определяется
+      Министерством здравоохранения.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Порядок направления пациентов с ЗПА в стационарные условия определяется
+        Министерством здравоохранения.
+  - text: Хирургическое лечение пациентов с ЗПА осуществляется врачом-ангиохирургом
+      или врачом – рентгено-эндоваскулярным хирургом.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Хирургическое лечение пациентов с ЗПА осуществляется врачом-ангиохирургом
+        или врачом – рентгено-эндоваскулярным хирургом.
+  - text: Госпитализация (при перитоните)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация (при перитоните)
+  red_flags:
+  - text: Пациенты, перенесшие реконструктивные хирургические вмешательства на магистральных
+      артериях нижних конечностей, входят в группу высокого риска сердечно-сосудистых
+      осложнений и требуют направления к врачу-кардиологу.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Пациенты, перенесшие в анамнезе реконструктивные хирургические вмешательства
+        на магистральных артериях нижних конечностей, направляются к врачу-кардиологу
+        для исключения заболеваний коронарных артерий, так как они входят в группу
+        высокого риска сердечно-сосудистых осложнений.
+  - text: Перитонит
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_с_заболеваниями_периферических_арт
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_с_заболеваниями_периферических_артерий_взр_нас_пост_МЗ_11.05.2023_77.pdf
+      page_start: 26
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Перитонит является абсолютным медицинским показанием к проведению лапаротомии
+        с резекцией некротизированного участка кишки (при наличии возможности).
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:37.428813+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T16:28:13.093963+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=4
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:37.431288+00:00'
+  warnings:
+  - level: warning
+    code: missing_icd10
+    message: Нет icd10_codes у condition
+    path: conditions[chronic_lower_limb_ischemia]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[chronic_lower_limb_ischemia].required_exams[0]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[chronic_lower_limb_ischemia].required_exams[3]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[chronic_lower_limb_ischemia].required_exams[5]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[chronic_lower_limb_ischemia].required_exams[6]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[chronic_lower_limb_ischemia].required_exams[7]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[chronic_lower_limb_ischemia].required_exams[8]
+  - level: warning
+    code: missing_icd10
+    message: Нет icd10_codes у condition
+    path: conditions[stenosing_cerebral_artery_lesions]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[stenosing_cerebral_artery_lesions].required_exams[0]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[stenosing_cerebral_artery_lesions].required_exams[1]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[stenosing_cerebral_artery_lesions].required_exams[2]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[stenosing_cerebral_artery_lesions].required_exams[3]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[stenosing_cerebral_artery_lesions].required_exams[4]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[stenosing_cerebral_artery_lesions].required_exams[5]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[stenosing_cerebral_artery_lesions].required_exams[6]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[stenosing_cerebral_artery_lesions].required_exams[7]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[stenosing_cerebral_artery_lesions].required_exams[8]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[stenosing_cerebral_artery_lesions].required_exams[9]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[stenosing_cerebral_artery_lesions].required_exams[10]
+  - level: warning
+    code: missing_icd10
+    message: Нет icd10_codes у condition
+    path: conditions[acute_mesenteric_ischemia]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[acute_mesenteric_ischemia].required_exams[1]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[acute_mesenteric_ischemia].required_exams[2]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[acute_mesenteric_ischemia].required_exams[3]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[acute_mesenteric_ischemia].treatment.drugs[0]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[acute_mesenteric_ischemia].treatment.drugs[1]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[acute_mesenteric_ischemia].treatment.drugs[2]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[acute_mesenteric_ischemia].treatment.drugs[3]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[acute_mesenteric_ischemia].treatment.drugs[6]
+  validated_at: '2026-07-20T16:28:13.174140+00:00'

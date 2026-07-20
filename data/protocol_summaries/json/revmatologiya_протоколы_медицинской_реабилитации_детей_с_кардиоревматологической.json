@@ -1,7 +1,7 @@
 {
   "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "Протоколы медицинской реабилитации детей с кардиоревматологической патологией",
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,21 +32,509 @@
   },
   "conditions": [
     {
-      "condition_id": "протоколы_медицинской_реабилитации_детей_с_карди",
-      "name": "Протоколы медицинской реабилитации детей с кардиоревматологической патологией",
+      "condition_id": "cardiorheumatological_pathology",
+      "name": "Кардиоревматологическая патология",
       "synonyms": [],
       "abbreviations": [],
-      "icd10_codes": [],
+      "icd10_codes": [
+        "C50",
+        "H10.15",
+        "H30.45",
+        "M08.2",
+        "M08.3",
+        "M32.0",
+        "C14",
+        "M15.20",
+        "M34.0",
+        "K45"
+      ],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
       "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
+      "required_exams": [
+        {
+          "name": "Ультразвуковое исследование",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "5. Ультразвуковое исследование"
+          }
+        },
+        {
+          "name": "Осмотр врача реабилитолога",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "1. Осмотр врача реабилитолога (статус)"
+          }
+        },
+        {
+          "name": "Оценка степени выраженности клинико-функциональных нарушений по ФК",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "3. Оценка степени выраженности клинико-функциональных нарушений по ФК"
+          }
+        },
+        {
+          "name": "Профиль артериального давления (АД)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "4. Профиль артериального давления (далее - профиль АД)"
+          }
+        },
+        {
+          "name": "Электрокардиография (ЭКГ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "5. Электрокардиография (далее - ЭКГ)"
+          }
+        },
+        {
+          "name": "Эхокардиография (Эхо-КГ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "6. Эхокардиография (далее - Эхо-КГ)"
+          }
+        },
+        {
+          "name": "Общеклинические и биохимические исследования крови и мочи",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "7. Общеклинические и биохимические исследования (общий анализ крови, общий анализ мочи, биохимический анализ крови)"
+          }
+        },
+        {
+          "name": "Нагрузочное тестирование (пробы Штанге, Генче, ортостатическая)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "8. Нагрузочное тестирование (пробы Штанге, Генче, ортостатическая)"
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Консультация окулиста",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "3. Консультация специалистов (по показаниям): - окулист"
+          }
+        },
+        {
+          "name": "Консультация кардиохирурга",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "3. Консультация специалистов (по показаниям): - кардиохирург"
+          }
+        },
+        {
+          "name": "Консультация эндокринолога",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "3. Консультация специалистов (по показаниям): - эндокринолог"
+          }
+        },
+        {
+          "name": "Консультация невропатолога",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "3. Консультация специалистов (по показаниям): - невропатолог"
+          }
+        },
+        {
+          "name": "Консультация психиатра",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "3. Консультация специалистов (по показаниям): - психиатр"
+          }
+        },
+        {
+          "name": "Рентгенография грудной клетки",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "4. Рентгенография грудной клетки (по показаниям)"
+          }
+        },
+        {
+          "name": "КИГ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "5. КИГ (по показаниям)"
+          }
+        },
+        {
+          "name": "РЭГ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "6. РЭГ (по показаниям)"
+          }
+        },
+        {
+          "name": "ВЭП, тредмил-тест",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "7. ВЭП, тредмил-тест (после 14 лет) (по показаниям)"
+          }
+        },
+        {
+          "name": "Суточное электрокардиографическое мониторирование (ЭКГ-мониторирование)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "1. Суточное электрокардиографическое мониторирование (далее - ЭКГ-мониторирование) (по показаниям)"
+          }
+        },
+        {
+          "name": "Суточное мониторирование АД",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "2. Суточное мониторирование АД (по показаниям)"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 3. Консультация (стр. 3)",
+            "text": "Активная кинезотерапия: Утренняя гигиеническая гимнастика",
             "source_ref": {
               "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
               "document_url": null,
@@ -57,11 +545,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 3. Консультация (стр. 3)"
+              "quote": "Активная кинезотерапия: Утренняя гигиеническая гимнастика"
             }
           },
           {
-            "text": "[treatment] 1. Активная кинезотерапия (стр. 3)",
+            "text": "Активная кинезотерапия: Лечебная гимнастика (индивидуальная, по типу гемодинамических нарушений)",
             "source_ref": {
               "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
               "document_url": null,
@@ -72,11 +560,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 1. Активная кинезотерапия (стр. 3)"
+              "quote": "Активная кинезотерапия: Лечебная гимнастика (индивидуальная, по типу гемодинамических нарушений)"
             }
           },
           {
-            "text": "[treatment] 2.1. Дозированная ходьба (60-70 (стр. 3)",
+            "text": "Дозированная ходьба (60-70 шагов/мин, начиная с 50 м в день до 300 м в 2-3 приема)",
             "source_ref": {
               "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
               "document_url": null,
@@ -87,11 +575,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 2.1. Дозированная ходьба (60-70 (стр. 3)"
+              "quote": "Дозированная ходьба (60-70 шагов/мин, начиная с 50 м в день до 300 м в 2-3 приема)"
             }
           },
           {
-            "text": "шагов в минуту: начиная с 50 м в",
+            "text": "Ходьба по коридору (50-60 шагов/мин на расстояние до 500-750 м в 2-3 приема)",
             "source_ref": {
               "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
               "document_url": null,
@@ -102,11 +590,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "шагов в минуту: начиная с 50 м в"
+              "quote": "Ходьба по коридору (50-60 шагов/мин на расстояние до 500-750 м в 2-3 приема)"
             }
           },
           {
-            "text": "день до 300 метров в 2-3 приема)",
+            "text": "Подъем по лестнице (подъем вверх на один пролет, спуск вниз – 1 этаж, соблюдая технику дыхания и с отдыхом)",
             "source_ref": {
               "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
               "document_url": null,
@@ -117,11 +605,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "день до 300 метров в 2-3 приема)"
+              "quote": "Подъем по лестнице (подъем вверх на один пролет, спуск вниз – 1 этаж, соблюдая технику дыхания и с отдыхом)"
             }
           },
           {
-            "text": "[treatment] 3. Эрготерапия: (стр. 4)",
+            "text": "Эрготерапия: тренировка перемещения",
             "source_ref": {
               "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
               "document_url": null,
@@ -132,17 +620,167 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 3. Эрготерапия: (стр. 4)"
+              "quote": "Эрготерапия: тренировка перемещения"
+            }
+          },
+          {
+            "text": "Эрготерапия: обучение навыкам самообслуживания",
+            "source_ref": {
+              "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Эрготерапия: обучение навыкам самообслуживания"
+            }
+          },
+          {
+            "text": "Массаж (классический, стимулирующий дыхательную мускулатуру; дренажный; перкуссионный; точечный) (по показаниям)",
+            "source_ref": {
+              "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Массаж (классический, стимулирующий дыхательную мускулатуру; дренажный; перкуссионный; точечный) (по показаниям)"
+            }
+          },
+          {
+            "text": "Индивидуальная психотерапия (рационально-эмотивная, психокоррекционная беседа, релаксационные методики, сказкотерапия, арт-терапия, игротерапия)",
+            "source_ref": {
+              "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Индивидуальная психотерапия (рационально-эмотивная, психокоррекционная беседа, релаксационные методики, сказкотерапия, арт-терапия, игротерапия)"
+            }
+          },
+          {
+            "text": "Групповая психотерапия (музыкотерапия: релаксационная, звуки природы)",
+            "source_ref": {
+              "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Групповая психотерапия (музыкотерапия: релаксационная, звуки природы)"
+            }
+          },
+          {
+            "text": "Светолечение (облучение поляризованным светом области послеоперационного рубца)",
+            "source_ref": {
+              "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Светолечение (облучение поляризованным светом области послеоперационного рубца)"
+            }
+          },
+          {
+            "text": "Лазеротерапия (облучение области послеоперационного рубца)",
+            "source_ref": {
+              "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лазеротерапия (облучение области послеоперационного рубца)"
+            }
+          },
+          {
+            "text": "Рефлексотерапия",
+            "source_ref": {
+              "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Рефлексотерапия"
+            }
+          },
+          {
+            "text": "Оксигенотерапия (кислородный коктейль)",
+            "source_ref": {
+              "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Оксигенотерапия (кислородный коктейль)"
+            }
+          },
+          {
+            "text": "Диетотерапия (Стол Н)",
+            "source_ref": {
+              "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Диетотерапия (Стол Н)"
+            }
+          },
+          {
+            "text": "Школа для пациентов после реконструктивных операций на сердце и сосудах (по показаниям)",
+            "source_ref": {
+              "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Школа для пациентов после реконструктивных операций на сердце и сосудах (по показаниям)"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "августа",
+            "drug_name": "Блокаторы кальциевых каналов",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2000 г",
+            "dose_text": null,
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -154,13 +792,63 @@
               "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
               "document_url": null,
               "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "августа \n2000 г"
+              "quote": "8. Блокаторы кальциевых каналов"
+            }
+          },
+          {
+            "drug_name": "Антибактериальные препараты широкого спектра действия",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": null,
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "9. Антибактериальные препараты широкого спектра действия"
+            }
+          },
+          {
+            "drug_name": "Глюкокортикостероиды",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": null,
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "12. Глюкокортикостероиды"
             }
           }
         ],
@@ -170,7 +858,7 @@
       },
       "follow_up": [
         {
-          "text": "Контроль",
+          "text": "Улучшение гемодинамических и клинико-лабораторных показателей",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -184,20 +872,88 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Контроль"
+            "quote": "Улучшение гемодинамических и клинико-лабораторных показателей"
+          }
+        },
+        {
+          "text": "Снижение потребности в медикаментозной терапии (дозы и кратности)",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Снижение потребности в медикаментозной терапии (дозы и кратности)"
+          }
+        },
+        {
+          "text": "Улучшение клинико-лабораторных показателей",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Улучшение клинико-лабораторных показателей"
+          }
+        },
+        {
+          "text": "Проведение медицинской реабилитации детскому населению 1-2 раза в год",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Проведение медицинской реабилитации детскому населению 1-2 раза в год"
+          }
+        },
+        {
+          "text": "Овладение методами и мероприятиями восстановления нарушенных функций в «школе» пациента",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Овладение методами и мероприятиями восстановления нарушенных функций в «школе» пациента"
           }
         }
       ],
       "hospitalization": [],
-      "routing": [],
-      "red_flags": [
+      "routing": [
         {
-          "text": "6 \n7 \n8 \nя красная \nволчанка \nс \nпоражени\nем \nопорно-\nдвигатель\nного \nаппарата\n\n[diagnostics] 1. Улучшение (стр. 24)\nклинико-\nлабораторных \nпоказат",
-          "aliases": [],
-          "red_flag_type": "systemic_autoimmune",
-          "severity": "medium",
-          "expected_actions": [],
-          "cap_if_unhandled": null,
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
           "source_ref": {
             "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
             "document_url": null,
@@ -208,16 +964,13 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "6 \n7 \n8 \nя красная \nволчанка \nс \nпоражени\nем \nопорно-\nдвигатель\nного \nаппарата\n\n[diagnostics] 1. Улучшение (стр. 24)\nклинико-\nлабораторных \nпоказат"
+            "quote": "госпитализация"
           }
         },
         {
-          "text": "6 \n7 \n8 \nя красная \nволчанка \nс \nпоражени\nем \nопорно-\nдвигатель\nного \nаппарата\n\n[diagnostics] 1. Улучшение (стр. 24)\nклинико-\nлабораторных \nпоказат",
-          "aliases": [],
-          "red_flag_type": "systemic_autoimmune",
-          "severity": "medium",
-          "expected_actions": [],
-          "cap_if_unhandled": null,
+          "text": "госпитализация (Стационарное отделение)",
+          "timing": null,
+          "required_if": [],
           "source_ref": {
             "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
             "document_url": null,
@@ -228,39 +981,28 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "6 \n7 \n8 \nя красная \nволчанка \nс \nпоражени\nем \nопорно-\nдвигатель\nного \nаппарата\n\n[diagnostics] 1. Улучшение (стр. 24)\nклинико-\nлабораторных \nпоказат"
+            "quote": "госпитализация (Стационарное отделение)"
           }
         }
       ],
+      "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "revmatologiya_протоколы_медицинской_реабилитации_детей_с_кардиоревматологической",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Протоколы медицинской реабилитации детей с кардиоревматологической патологией"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:47.516227+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T18:14:53.409173+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
@@ -269,11 +1011,17 @@
     "warnings": [
       {
         "level": "warning",
-        "code": "missing_icd10",
-        "message": "Нет icd10_codes у condition",
-        "path": "conditions[протоколы_медицинской_реабилитации_детей_с_карди]"
+        "code": "quote_not_in_source",
+        "message": "Цитата не найдена в исходном тексте",
+        "path": "conditions[cardiorheumatological_pathology].required_exams[4]"
+      },
+      {
+        "level": "warning",
+        "code": "quote_not_in_source",
+        "message": "Цитата не найдена в исходном тексте",
+        "path": "conditions[cardiorheumatological_pathology].required_exams[5]"
       }
     ],
-    "validated_at": "2026-06-23T19:15:47.516758+00:00"
+    "validated_at": "2026-07-20T18:14:53.418387+00:00"
   }
 }

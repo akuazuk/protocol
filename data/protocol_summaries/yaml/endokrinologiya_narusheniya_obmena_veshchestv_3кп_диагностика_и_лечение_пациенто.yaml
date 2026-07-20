@@ -1,10 +1,9 @@
 protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: 3КП Диагностика и лечение пациентов с заболеваниями паращитовидных желез
-    взрослое население
+  title: Диагностика и лечение пациентов с заболеваниями паращитовидных желез
   url: null
   local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
   document_sha256: null
@@ -27,22 +26,22 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: 3кп_диагностика_и_лечение_пациентов_с_заболевани
-  name: 3КП Диагностика и лечение пациентов с заболеваниями паращитовидных желез взрослое
-    население
+- condition_id: hypoparathyroidism
+  name: Гипопаратиреоз
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - N25.8
-  - B24
-  - E66.9
+  - E89.2
+  - E20.0
+  - E20.1
+  - E20.8
+  - E20.9
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Для подтверждения клинического показано двукратное определение общего
-        Са
+    - text: 'Гипокальциемия: общий Са <2,0 ммоль/л'
       logic_group: null
       operator: unknown
       values: []
@@ -59,10 +58,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Для подтверждения клинического показано двукратное определение общего
-          Са
-    - text: '[classification] 28. При постановке клинического диагноза учитывают:
-        нозологию, форму (стр. 9)'
+        quote: 'Гипокальциемия: общий Са <2,0 ммоль/л'
+    - text: Уровень ПТГ ниже нижней границы референтного интервала
       logic_group: null
       operator: unknown
       values: []
@@ -79,126 +76,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 28. При постановке клинического диагноза учитывают:
-          нозологию, форму (стр. 9)'
-    - text: '[classification] 49. При постановке клинического диагноза вторичного
-        гиперпаратиреоза учитывают (стр. 12)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 49. При постановке клинического диагноза вторичного
-          гиперпаратиреоза учитывают (стр. 12)'
-    - text: '«О здравоохранении», а также специальные термины и их определения:'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '«О здравоохранении», а также специальные термины и их определения:'
-    - text: устанавливается клинический диагноз определенного заболевания эндокринной
-        системы
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: устанавливается клинический диагноз определенного заболевания эндокринной
-          системы
-    - text: с целью уточнения причины заболевания, дифференциальной диагностики, определения
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: с целью уточнения причины заболевания, дифференциальной диагностики,
-          определения
-    - text: клинические критерии – важнейшие клинические признаки, комбинация которых
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: клинические критерии – важнейшие клинические признаки, комбинация которых
-    - text: позволяет предположить наличие у пациента определенного заболевания эндокринной
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: позволяет предположить наличие у пациента определенного заболевания
-          эндокринной
+        quote: Уровень ПТГ ниже нижней границы референтного интервала
     optional: []
     exclusion: []
   required_exams:
-  - name: ЭКГ
+  - name: Биохимический анализ крови (общий кальций)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -212,15 +94,15 @@ conditions:
       protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
       document_url: null
       local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
-      page_start: null
+      page_start: 5
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "ала QT на электрокардиограмме \n(далее – ЭКГ); \nдыхательные: ларингоспазм,\
-        \ бронхоспазм; \nгастроинтестинальные: спазмы кишечн"
-  - name: УЗИ
+      quote: 'Обязательная диагностика включает: биохимический анализ крови (далее
+        – БАК): кальций (далее – Са) общий (далее – общий Са);'
+  - name: Исследование гормонов крови (ПТГ)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -234,18 +116,20 @@ conditions:
       protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
       document_url: null
       local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
-      page_start: null
+      page_start: 5
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "Г; ультразвуковое исследование (далее – УЗИ) щитовидной железы (далее\
-        \ – \nЩЖ), ПЩЖ и почек; \nрентгеноденситометрию пояснично"
-  - name: МРТ
+      quote: 'Обязательная диагностика включает: ... исследование гормонов крови:
+        ПТГ.'
+  conditional_exams:
+  - name: Биохимический анализ крови (фосфор, магний, альбумин, скорректированный
+      и ионизированный кальций, креатинин, СКФ, ЩФ)
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -256,19 +140,200 @@ conditions:
       protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
       document_url: null
       local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
-      page_start: null
+      page_start: 5
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "агнитно-резонансную томографию (далее – МРТ) головного мозга; \nприем\
-        \ (осмотр, консультация) врачами-специалистами: врачом-н"
-  conditional_exams: []
+      quote: 'Дополнительная диагностика включает: БАК: фосфор, магний, альбумин,
+        Са скорректированный по альбумину, Са ионизированный, креатинин, скорость
+        клубочковой фильтрации (далее – СКФ), щелочная фосфатаза (далее – ЩФ);'
+  - name: Исследование суточной кальциурии и фосфатурии
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительная диагностика включает: ... исследование суточной кальциурии,
+        суточной фосфатурии;'
+  - name: Исследование гормонов крови (ТТГ, св.Т4, кортизол, АКТГ, остеокальцин, СТх,
+      витамин Д)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительная диагностика включает: ... исследование гормонов крови:
+        тиреотропный гормон (далее – ТТГ), свободный Т4 (далее – св.Т4), кортизол,
+        адренокортикотропный гормон (далее – АКТГ), остеокальцин (далее – ОС), С-концевые
+        телопептиды коллагена I типа (далее – СТх); витамин Д (далее – кальцидиол
+        или 25(OH)D);'
+  - name: Электрокардиограмма (ЭКГ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительная диагностика включает: ... ЭКГ;'
+  - name: УЗИ щитовидной, паращитовидных желез и почек
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительная диагностика включает: ... ультразвуковое исследование
+        (далее – УЗИ) щитовидной железы (далее – ЩЖ), ПЩЖ и почек;'
+  - name: Рентгеноденситометрия (поясничный отдел позвоночника, бедренные кости, лучевая
+      кость)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительная диагностика включает: ... рентгеноденситометрию поясничного
+        отдела позвоночника, проксимальных отделов бедренных костей, дистальной части
+        лучевой кости;'
+  - name: МРТ головного мозга
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительная диагностика включает: ... магнитно-резонансную томографию
+        (далее – МРТ) головного мозга;'
+  - name: Консультации специалистов (невролог, офтальмолог, оториноларинголог, генетик)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительная диагностика включает: ... прием (осмотр, консультация)
+        врачами-специалистами: врачом-неврологом, врачом-офтальмологом, врачом-оториноларингологом,
+        врачом-генетиком.'
+  - name: УЗИ почек
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: проводится УЗИ почек – при симптомах мочекаменной болезни или выявлении
+        повышенного уровня креатинина
   treatment:
     non_drug:
-    - text: '[treatment] 11. Клиническая классификация (по этиологической причине):
-        (стр. 1)'
+    - text: продукты питания с высоким содержанием кальция
       source_ref:
         protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
         document_url: null
@@ -279,10 +344,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 11. Клиническая классификация (по этиологической причине):
-          (стр. 1)'
-    - text: Национальный правовой Интернет-портал Республики Беларусь, 11.06.2022,
-        8/38190
+        quote: продукты питания с высоким содержанием кальция
+    - text: аутотрансплантация ПЩЖ
       source_ref:
         protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
         document_url: null
@@ -293,64 +356,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Национальный правовой Интернет-портал Республики Беларусь, 11.06.2022,
-          8/38190
-    - text: хирургического лечения, хронический – более 6 месяцев)
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: хирургического лечения, хронический – более 6 месяцев)
-    - text: идиопатический изолированный гипопаратиреоз
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: идиопатический изолированный гипопаратиреоз
-    - text: гипопаратиреоз вследствие аплазии ПЩЖ (синдром Ди Джорджи)
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: гипопаратиреоз вследствие аплазии ПЩЖ (синдром Ди Джорджи)
-    - text: '[treatment] 15. Цель лечения – поддержание кальциемии в пределах нижней
-        половины (стр. 6)'
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 15. Цель лечения – поддержание кальциемии в пределах нижней
-          половины (стр. 6)'
+        quote: аутотрансплантация ПЩЖ
     drug_groups: []
     drugs:
-    - drug_name: капсулы
+    - drug_name: кальция карбонат (цитрат)
       active_substance: null
       drug_group: null
-      dose_text: 0,25 мкг
+      dose_text: 500–1500 мг элементарного кальция в день в 2–3 приема
       frequency_text: null
       duration_text: null
       route: null
@@ -362,17 +374,18 @@ conditions:
         protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
         document_url: null
         local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: капсулы 0,25 мкг, внутрь 0,25–2 мкг в 1–2 приема
-    - drug_name: применения
+        quote: 'ЛС на основе кальция: кальция карбонат (цитрат), 500–1500 мг элементарного
+          кальция в день в 2–3 приема'
+    - drug_name: кальцитриол
       active_substance: null
       drug_group: null
-      dose_text: 1,25 мг
+      dose_text: капсулы 0,25 мкг, внутрь 0,25–2 мкг в 1–2 приема
       frequency_text: null
       duration_text: null
       route: null
@@ -384,17 +397,19 @@ conditions:
         protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
         document_url: null
         local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "применения 1,25 мг/мл, \n1 капля – 1670 МЕ, внутрь, по 1–6 "
-    - drug_name: июня
+        quote: кальцитриол, капсулы 0,25 мкг, внутрь 0,25–2 мкг в 1–2 приема
+    - drug_name: холекальциферол
       active_substance: null
       drug_group: null
-      dose_text: 2021 г
+      dose_text: 'внутрь 1000–10 000 МЕ в день: капли (раствор) для приема внутрь,
+        1 капля – 500 МЕ, по 2–20 капель ежедневно; капли (раствор) для приема внутрь
+        масляный, 1 капля – 500 МЕ, по 2–20 капель ежедневно; кап'
       frequency_text: null
       duration_text: null
       route: null
@@ -406,17 +421,20 @@ conditions:
         protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
         document_url: null
         local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: июня 2021 г
-    - drug_name: октября
+        quote: 'холекальциферол – внутрь 1000–10 000 МЕ в день: капли (раствор) для
+          приема внутрь (500 МЕ/капля), по 2–20 капель ежедневно; капсулы (2000, 5000,
+          50000 МЕ) с разной частотой.'
+    - drug_name: эргокальциферол
       active_substance: null
       drug_group: null
-      dose_text: 2011 г
+      dose_text: раствор масляный для внутреннего применения 1,25 мг/мл, 1 капля –
+        1670 МЕ, внутрь, по 1–6 капель ежедневно
       frequency_text: null
       duration_text: null
       route: null
@@ -428,17 +446,18 @@ conditions:
         protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
         document_url: null
         local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: октября 2011 г
-    - drug_name: июля
+        quote: эргокальциферол, раствор масляный для внутреннего применения 1,25 мг/мл,
+          1 капля – 1670 МЕ, внутрь, по 1–6 капель ежедневно
+    - drug_name: тиазидные диуретики
       active_substance: null
       drug_group: null
-      dose_text: 2013 г
+      dose_text: при гиперкальцийурии
       frequency_text: null
       duration_text: null
       route: null
@@ -450,18 +469,42 @@ conditions:
         protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
         document_url: null
         local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: июля 2013 г
+        quote: Дополнительно для оптимизации схемы лечения могут потребоваться при
+          гиперкальцийурии – прием тиазидных диуретиков
+    - drug_name: препараты магния
+      active_substance: null
+      drug_group: null
+      dose_text: курсами, при гипомагниемии
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+        document_url: null
+        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: при гипомагниемии – прием препаратов магния курсами
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: контроль
+  - text: 'После оптимизации лечения через 1–2 недели оценивается эффективность: общий
+      Са, Са, скорректированный по альбумину, фосфор, симптомы гипокальциемии, гиперкальциемии.'
     timing: null
     required_if: []
     expected_actions: []
@@ -475,10 +518,80 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
+      quote: 'После оптимизации лечения через 1–2 недели оценивается эффективность:
+        общий Са, Са, скорректированный по альбумину, фосфор, симптомы гипокальциемии,
+        гиперкальциемии.'
+  - text: 'При достижении компенсации 1 раз в 3–6 месяцев оценивается: общий Са, Са,
+      скорректированный по альбумину, фосфор, магний, креатинин с расчетом СКФ, симптомы
+      гипокальциемии, гиперкальциемии.'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'При достижении компенсации 1 раз в 3–6 месяцев оценивается: общий Са,
+        Са, скорректированный по альбумину, фосфор, магний, креатинин с расчетом СКФ,
+        симптомы гипокальциемии, гиперкальциемии.'
+  - text: Мониторинг развития признаков и симптомов ассоциированных заболеваний –
+      1 раз в год.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Мониторинг развития признаков и симптомов ассоциированных заболеваний
+        – 1 раз в год.
+  - text: Оценивается суточная кальциурия – 1 раз в 1 год.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Оценивается суточная кальциурия – 1 раз в 1 год.
+  - text: У женщин в период беременности и кормления грудью оценивается Са, скорректированный
+      по альбумину – 1 раз в 2–3 недели.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: У женщин в период беременности и кормления грудью оценивается Са, скорректированный
+        по альбумину – 1 раз в 2–3 недели.
   hospitalization: []
   routing:
-  - text: '[routing] 17. Медицинские показания к госпитализации: (стр. 6)'
+  - text: госпитализация
     timing: null
     required_if: []
     source_ref:
@@ -491,35 +604,961 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 17. Медицинские показания к госпитализации: (стр. 6)'
+      quote: госпитализация
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
-    document_url: null
-    local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: 3КП Диагностика и лечение пациентов с заболеваниями паращитовидных желез
-      взрослое население
+  source_refs: []
+- condition_id: primary_hyperparathyroidism
+  name: Первичный гиперпаратиреоз
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - E21.0
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams:
+  - name: Общий кальций в биохимическом анализе крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'биохимический анализ крови (далее – БАК): кальций (далее – Са) общий
+        (далее – общий Са);'
+  - name: Паратиреоидный гормон (ПТГ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'исследование гормонов крови: ПТГ.'
+  conditional_exams:
+  - name: Фосфор в биохимическом анализе крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'БАК: фосфор'
+  - name: Магний в биохимическом анализе крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'БАК: магний'
+  - name: Альбумин в биохимическом анализе крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'БАК: альбумин'
+  - name: Кальций скорректированный по альбумину в БАК
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'БАК: Са скорректированный по альбумину'
+  - name: Ионизированный кальций в биохимическом анализе крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'БАК: Са ионизированный'
+  - name: Креатинин в биохимическом анализе крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'БАК: креатинин'
+  - name: Скорость клубочковой фильтрации (СКФ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'БАК: скорость клубочковой фильтрации (далее – СКФ)'
+  - name: Щелочная фосфатаза (ЩФ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'БАК: щелочная фосфатаза (далее – ЩФ)'
+  - name: Суточная кальциурия
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование суточной кальциурии
+  - name: Суточная фосфатурия
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование суточной фосфатурии
+  - name: Тиреотропный гормон (ТТГ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'исследование гормонов крови: тиреотропный гормон (далее – ТТГ)'
+  - name: Свободный Т4 (св.Т4)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'исследование гормонов крови: свободный Т4 (далее – св.Т4)'
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: 'госпитализация: гипокальциемия <1,7 ммоль/л, гипокальциемический криз'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'госпитализация: гипокальциемия <1,7 ммоль/л, гипокальциемический криз'
+  - text: 'госпитализация: хроническая декомпенсация с клиническими проявлениями (приступы
+      судорог, парестезии)'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'госпитализация: хроническая декомпенсация с клиническими проявлениями
+        (приступы судорог, парестезии)'
+  - text: 'госпитализация: для выполнения аутотрансплантации ПЩЖ'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'госпитализация: для выполнения аутотрансплантации ПЩЖ'
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: secondary_hyperparathyroidism
+  name: Вторичный гиперпаратиреоз
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - E21.1
+  - N25.8
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: 'Гипокальциемия: общий Са <2,0 ммоль/л'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+        document_url: null
+        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Гипокальциемия: общий Са <2,0 ммоль/л'
+    - text: Уровень ПТГ ниже нижней границы референтного интервала
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+        document_url: null
+        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Уровень ПТГ ниже нижней границы референтного интервала
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Биохимический анализ крови (общий кальций)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'биохимический анализ крови (далее – БАК): кальций (далее – Са) общий
+        (далее – общий Са);'
+  - name: Исследование паратгормона (ПТГ) в крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'исследование гормонов крови: ПТГ.'
+  conditional_exams:
+  - name: Дополнительный биохимический анализ крови (фосфор, магний, альбумин, скорректированный
+      и ионизированный кальций, креатинин, СКФ, ЩФ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'БАК: фосфор, магний, альбумин, Са скорректированный по альбумину, Са
+        ионизированный, креатинин, скорость клубочковой фильтрации (далее – СКФ),
+        щелочная фосфатаза (далее – ЩФ);'
+  - name: Исследование суточной кальциурии и фосфатурии
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование суточной кальциурии, суточной фосфатурии;
+  - name: Дополнительное исследование гормонов крови (ТТГ, св.Т4, кортизол, АКТГ,
+      остеокальцин, СТх, витамин Д)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'исследование гормонов крови: тиреотропный гормон (далее – ТТГ), свободный
+        Т4 (далее – св.Т4), кортизол, адренокортикотропный гормон (далее – АКТГ),
+        остеокальцин (далее – ОС), С-концевые телопептиды коллагена I типа (далее
+        – СТх); витамин Д (далее – кальцидиол или 25(OH)D);'
+  - name: Электрокардиография (ЭКГ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ЭКГ;
+  - name: УЗИ щитовидной железы, паращитовидных желез и почек
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ультразвуковое исследование (далее – УЗИ) щитовидной железы (далее –
+        ЩЖ), ПЩЖ и почек;
+  - name: Рентгеноденситометрия (поясничного отдела позвоночника, бедренных костей,
+      лучевой кости)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: рентгеноденситометрию поясничного отдела позвоночника, проксимальных
+        отделов бедренных костей, дистальной части лучевой кости;
+  - name: МРТ головного мозга
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: магнитно-резонансную томографию (далее – МРТ) головного мозга;
+  - name: Консультации специалистов (невролог, офтальмолог, оториноларинголог, генетик)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'прием (осмотр, консультация) врачами-специалистами: врачом-неврологом,
+        врачом-офтальмологом, врачом-оториноларингологом, врачом-генетиком.'
+  treatment: null
+  follow_up:
+  - text: 'Достижение уровня общего Са в крови: 2,1–2,3 ммоль/л'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Достижение уровня общего Са в крови: 2,1–2,3 ммоль/л'
+  - text: Отсутствие симптомов гипокальциемии
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Отсутствие симптомов гипокальциемии
+  - text: Поддержание фосфора в крови в пределах референтного интервала
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Поддержание фосфора в крови в пределах референтного интервала
+  - text: Поддержание 25 (OH)D в крови более 30 нг/мл
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Поддержание 25 (OH)D в крови более 30 нг/мл
+  - text: Поддержание магния в крови в пределах референтного интервала
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Поддержание магния в крови в пределах референтного интервала
+  - text: Нормализация суточной кальциурии (<7,5 ммоль у мужчин, <6,25 ммоль у женщин)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Нормализация суточной кальциурии (<7,5 ммоль у мужчин, <6,25 ммоль у
+        женщин)
+  - text: Отсутствие нефрокальциноза, мочекаменной болезни и кальцификации мягких
+      тканей
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Отсутствие нефрокальциноза, мочекаменной болезни и кальцификации мягких
+        тканей
+  hospitalization: []
+  routing:
+  - text: гипокальциемия <1,7 ммоль/л, гипокальциемический криз
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: гипокальциемия <1,7 ммоль/л, гипокальциемический криз
+  - text: хроническая декомпенсация с клиническими проявлениями (приступы судорог,
+      парестезии)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: хроническая декомпенсация с клиническими проявлениями (приступы судорог,
+        парестезии)
+  - text: для выполнения аутотрансплантации ПЩЖ
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: для выполнения аутотрансплантации ПЩЖ
+  red_flags:
+  - text: Судороги, эпилептические припадки, экстрапирамидные нарушения, нарушение
+      памяти, психоз, дезориентация, депрессия
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: судороги, эпилептические припадки, экстрапирамидные нарушения (паркинсонизм,
+        хореатетоз), нарушение памяти, психоз, дезориентация, депрессия
+  - text: Обмороки, артериальная гипотензия, сердечная недостаточность резистентная
+      к сердечным гликозидам, удлинение интервала QT на ЭКГ
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: обмороки, артериальная гипотензия, сердечная недостаточность резистентная
+        к сердечным гликозидам, удлинение интервала QT на электрокардиограмме (далее
+        – ЭКГ)
+  - text: Ларингоспазм, бронхоспазм
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ларингоспазм, бронхоспазм;
+  - text: Положительный симптом Хвостека и (или) Труссо, гиперрефлексия, парестезии
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: положительный симптом Хвостека и (или) Труссо, гиперрефлексия, парестезии
+        в пальцах рук и (или) ног, периоральной области;
+  - text: Нефролитиаз
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: нефролитиаз;
+  - text: Катаракта, отложение кальция в глазу, отек зрительного нерва
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_3кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/3КП_Диагностика_и_лечение_пациентов_с_заболеваниями_паращитовидных_желез_взр_нас_пост_МЗ_21062021_85.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: катаракта, отложение кальция под капсулой в переднем или заднем отделах
+        глазного яблока, отек зрительного нерва.
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:19.817634+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T15:50:47.629082+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=3
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:19.821269+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[secondary_hyperparathyroidism].required_exams[0]
+  validated_at: '2026-07-20T15:50:47.638556+00:00'

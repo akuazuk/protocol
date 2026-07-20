@@ -1,6 +1,43 @@
 # Validation: stomatologiya_диагностика_и_лечение_пациентов_с_заболеваниями_челюстно_лицевой_о
 
-- **status:** valid
-- **validated_at:** 2026-06-23T19:16:26.652080+00:00
+- **status:** needs_human_review
+- **validated_at:** 2026-07-20T17:52:42.614595+00:00
 - **review_status:** needs_review
-- **extraction_status:** auto_extracted
+- **extraction_status:** llm_extracted
+
+## Warnings
+- `quote_not_in_source` conditions[malignant_neoplasms_lip_oral_cavity].required_exams[5]: Цитата не найдена в исходном тексте
+- `quote_not_in_source` conditions[malignant_neoplasms_lip_oral_cavity].required_exams[6]: Цитата не найдена в исходном тексте
+- `quote_not_in_source` conditions[malignant_neoplasms_lip_oral_cavity].required_exams[8]: Цитата не найдена в исходном тексте
+- `quote_not_in_source` conditions[malignant_neoplasms_lip_oral_cavity].required_exams[9]: Цитата не найдена в исходном тексте
+- `quote_not_in_source` conditions[malignant_neoplasms_lip_oral_cavity].required_exams[10]: Цитата не найдена в исходном тексте
+- `quote_not_in_source` conditions[malignant_neoplasms_lip_oral_cavity].required_exams[11]: Цитата не найдена в исходном тексте
+- `quote_not_in_source` conditions[malignant_neoplasms_lip_oral_cavity].required_exams[15]: Цитата не найдена в исходном тексте
+- `quote_not_in_source` conditions[benign_neoplasms_maxillofacial].required_exams[5]: Цитата не найдена в исходном тексте
+- `quote_not_in_source` conditions[benign_neoplasms_maxillofacial].required_exams[9]: Цитата не найдена в исходном тексте
+- `quote_not_in_source` conditions[benign_neoplasms_maxillofacial].treatment.drugs[1]: Цитата препарата не найдена в исходном тексте
+- `quote_not_in_source` conditions[benign_neoplasm_minor_salivary_gland].required_exams[0]: Цитата не найдена в исходном тексте
+- `quote_not_in_source` conditions[benign_neoplasm_minor_salivary_gland].required_exams[1]: Цитата не найдена в исходном тексте
+- `quote_not_in_source` conditions[benign_neoplasm_minor_salivary_gland].treatment.drugs[1]: Цитата препарата не найдена в исходном тексте
+- `quote_not_in_source` conditions[dentofacial_anomalies].required_exams[4]: Цитата не найдена в исходном тексте
+- `duplicate_exam` conditions[benign_neoplasms_maxillofacial].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[benign_neoplasms_maxillofacial].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[benign_neoplasms_maxillofacial].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[benign_neoplasms_maxillofacial].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[benign_neoplasms_maxillofacial].required_exams[5]: Дублирующееся обследование
+- `duplicate_exam` conditions[benign_neoplasms_maxillofacial].required_exams[8]: Дублирующееся обследование
+- `duplicate_exam` conditions[benign_neoplasms_maxillofacial].required_exams[9]: Дублирующееся обследование
+- `duplicate_drug` conditions[benign_neoplasms_maxillofacial].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_exam` conditions[benign_neoplasm_minor_salivary_gland].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[benign_neoplasm_minor_salivary_gland].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[benign_neoplasm_minor_salivary_gland].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[benign_neoplasm_minor_salivary_gland].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[benign_neoplasm_minor_salivary_gland].required_exams[4]: Дублирующееся обследование
+- `duplicate_drug` conditions[benign_neoplasm_minor_salivary_gland].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[benign_neoplasm_minor_salivary_gland].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_exam` conditions[dentofacial_anomalies].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[dentofacial_anomalies].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[dentofacial_anomalies].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[dentofacial_anomalies].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[dentofacial_anomalies].required_exams[4]: Дублирующееся обследование
+- `duplicate_drug` conditions[dentofacial_anomalies].treatment.drugs[0]: Дублирующийся препарат

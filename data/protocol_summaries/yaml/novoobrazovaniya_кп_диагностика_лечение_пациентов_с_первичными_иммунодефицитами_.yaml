@@ -1,9 +1,9 @@
 protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение пациентов с первичными иммунодефицитами детское население
+  title: Диагностика и лечение пациентов с первичными иммунодефицитами
   url: null
   local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
   document_sha256: null
@@ -19,21 +19,19 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_лечение_пациентов_с_первичными_иммун
-  name: Диагностика лечение пациентов с первичными иммунодефицитами детское население
+- condition_id: pid_hypogammaglobulinemia_cvid
+  name: Наследственная гипогаммаглобулинемия, несемейная гипогаммаглобулинемия, иммунодефицит
+    с повышенным содержанием IgM, общий вариабельный иммунодефицит
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - D82
-  - D70
-  - D72.8
   - D80.0
   - D80.1
   - D80.5
@@ -41,15 +39,135 @@ conditions:
   - D83.2
   - D83.8
   - D83.9
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: Направление на медицинскую реабилитацию для пациентов с ПИД с целью восстановления
+      нормальной жизнедеятельности организма.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Направление на медицинскую реабилитацию для пациентов с ПИД с целью восстановления
+        нормальной жизнедеятельности организма.
+  - text: Оценка эффективности медицинской реабилитации по изменению степени выраженности
+      функциональных нарушений и ограничений жизнедеятельности.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Оценка эффективности медицинской реабилитации по изменению степени выраженности
+        функциональных нарушений и ограничений жизнедеятельности.
+  - text: Выполнение стандартной иммунограммы (определение субпопуляций лимфоцитов)
+      в медицинских организациях областного и республиканского уровней.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Выполнение стандартной иммунограммы (определение субпопуляций лимфоцитов)
+        в медицинских организациях областного и республиканского уровней.
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: wiskott_aldrich_syndrome
+  name: Синдром Вискотта – Олдрича
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
   - D82.0
-  - D76
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: Проведение медицинской реабилитации для восстановления нормальной жизнедеятельности
+      организма пациента, нарушенной в результате заболевания.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Проведение медицинской реабилитации для восстановления нормальной жизнедеятельности
+        организма пациента, нарушенной в результате заболевания.
+  - text: Выполнение стандартной иммунограммы (определение субпопуляций лимфоцитов)
+      по медицинским показаниям в ОЗ областного и республиканского уровней.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Выполнение стандартной иммунограммы (определение субпопуляций лимфоцитов)
+        по медицинским показаниям в ОЗ областного и республиканского уровней.
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: pid_stat3_gof_defect
+  name: Иммунодефицит, связанный с дефектами регуляторных Т-лимфоцитов (дефект STAT3
+    GOF)
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - D82.8
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[classification] 20. При первичной постановке диагноза либо для подтверждения
-        диагноза ПИД (стр. 6)'
+    - text: Четыре и более отита за год
       logic_group: null
       operator: unknown
       values: []
@@ -66,9 +184,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 20. При первичной постановке диагноза либо для подтверждения
-          диагноза ПИД (стр. 6)'
-    - text: Числовые значения критериев
+        quote: Четыре и более отита за год
+    - text: Два и более синусита средней и тяжелой степени за год
       logic_group: null
       operator: unknown
       values: []
@@ -85,9 +202,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Числовые значения критериев
-    - text: '| № п/п | Формы БЭН | Критерии | Числовые значения критериев | Степень
-        тяжести | Шифры по МКБ-10 |'
+        quote: Два и более синусита средней и тяжелой степени за год
+    - text: Две и более пневмонии за год
       logic_group: null
       operator: unknown
       values: []
@@ -104,10 +220,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '| № п/п | Формы БЭН | Критерии | Числовые значения критериев | Степень
-          тяжести | Шифры по МКБ-10 |'
-    - text: '[classification] 20. При первичной постановке диагноза либо для подтверждения
-        диагноза ПИД (стр. 6)'
+        quote: Две и более пневмонии за год
+    - text: Двухмесячная антибиотикотерапия с недостаточным эффектом или необходимостью
+        внутривенного введения антибактериальных ЛП
       logic_group: null
       operator: unknown
       values: []
@@ -124,9 +239,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 20. При первичной постановке диагноза либо для подтверждения
-          диагноза ПИД (стр. 6)'
-    - text: Числовые значения критериев
+        quote: Двухмесячная антибиотикотерапия с недостаточным эффектом или необходимостью
+          внутривенного введения антибактериальных ЛП
+    - text: Рецидивирующие кожные абсцессы
       logic_group: null
       operator: unknown
       values: []
@@ -143,9 +258,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Числовые значения критериев
-    - text: '| № п/п | Формы БЭН | Критерии | Числовые значения критериев | Степень
-        тяжести | Шифры по МКБ-10 |'
+        quote: Рецидивирующие кожные абсцессы
+    - text: Две и более тяжелые инфекции, включая септицемию
       logic_group: null
       operator: unknown
       values: []
@@ -162,16 +276,137 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '| № п/п | Формы БЭН | Критерии | Числовые значения критериев | Степень
-          тяжести | Шифры по МКБ-10 |'
+        quote: Две и более тяжелые инфекции, включая септицемию
+    - text: Рецидивирующий кандидоз ротовой полости или иной грибковой инфекции
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Рецидивирующий кандидоз ротовой полости или иной грибковой инфекции
+    - text: Длительная или рецидивирующая диарея
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Длительная или рецидивирующая диарея
+    - text: Инфекции, вызванные оппортунистической флорой
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Инфекции, вызванные оппортунистической флорой
     optional: []
     exclusion: []
-  required_exams: []
+  required_exams:
+  - name: Сбор анамнеза (социальный, аллергологический, фармакологический, трансфузионный,
+      прививочный, перенесенных заболеваний и хирургических вмешательств)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'сбор анамнеза: социальный (семейный); аллергологический; фармакологический;
+        трансфузионный; прививочный; перенесенных заболеваний и хирургических вмешательств'
+  - name: Антропометрия, медицинский осмотр
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: антропометрия; медицинский осмотр, измерение МТ, температуры тела, оценка
+        размеров периферических лимфатических узлов (далее – ЛУ), печени, селезенки,
+        диуреза, стула, частоты сердечных сокращений, частоты дыхания, измерение артериального
+        давления
+  - name: Консультации врачей-специалистов по профилю сопутствующей патологии
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультации врачей-специалистов по профилю сопутствующей патологии
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] 7. В условиях отделения дневного пребывания ОЗ медицинская
-        помощь оказывается (стр. 2)'
+    - text: Трансплантация гемопоэтических стволовых клеток (ТГСК) при наличии HLA-совместимого
+        донора (относительное показание для дефектов регуляторных Т-клеток)
       source_ref:
         protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
         document_url: null
@@ -182,77 +417,17 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 7. В условиях отделения дневного пребывания ОЗ медицинская
-          помощь оказывается (стр. 2)'
-    - text: пациентам с ПИД при проведении сложных диагностических и лечебных мероприятий,
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: пациентам с ПИД при проведении сложных диагностических и лечебных мероприятий,
-    - text: адекватной заместительной терапии.
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: адекватной заместительной терапии.
-    - text: '[treatment] 14. Фармакотерапия (стр. 4)'
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 14. Фармакотерапия (стр. 4)'
-    - text: протоколом с учетом всех индивидуальных особенностей пациента, его индивидуальных
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: протоколом с учетом всех индивидуальных особенностей пациента, его
-          индивидуальных
-    - text: медицинских противопоказаний, аллергологического и фармакологического
-        анамнеза,
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: медицинских противопоказаний, аллергологического и фармакологического
-          анамнеза,
+        quote: Трансплантация гемопоэтических стволовых клеток (ТГСК) при наличии
+          HLA-совместимого донора (относительное показание для дефектов регуляторных
+          Т-клеток)
     drug_groups: []
     drugs:
-    - drug_name: раствор
+    - drug_name: Иммуноглобулин человека для внутривенного введения (ВВИГ)
       active_substance: null
       drug_group: null
-      dose_text: 50 мг
+      dose_text: Стартовая доза 0,4–0,8 г/кг МТ пациента 1 раз в 3–4 недели. Поддерживающая
+        доза – 0,4–0,6 г/кг МТ пациента 1 раз в 3–4 недели. Целевой уровень IgG не
+        менее 7 г/л, при бронхоэктазах/диарее – более 10 г
       frequency_text: null
       duration_text: null
       route: null
@@ -264,17 +439,22 @@ conditions:
         protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
         document_url: null
         local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "раствор 50 мг/мл \nили 100 мг/мл, или ЛП иммуноглобули"
-    - drug_name: менее
+        quote: ВВИГ в стартовой дозе 0,4–0,8 г/кг МТ пациента 1 раз в 3–4 недели.
+          Поддерживающая доза – 0,4–0,6 г/кг МТ пациента 1 раз в 3–4 недели. Целевой
+          уровень IgG не менее 7 г/л, при наличии бронхоэктазов или диарейного синдрома
+          – более 10 г/л.
+    - drug_name: Иммуноглобулин человека для подкожного введения (ПКИГ)
       active_substance: null
       drug_group: null
-      dose_text: 7 г
+      dose_text: Начало введения через 1 неделю после последнего введения ВВИГ. Доза
+        0,1 г/кг МТ в неделю (0,4 г/кг в месяц). Возможно повышение дозы до 0,2 г/кг
+        МТ в неделю при неэффективности терапии.
       frequency_text: null
       duration_text: null
       route: null
@@ -286,172 +466,21 @@ conditions:
         protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
         document_url: null
         local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "менее 7 г/л, при \nналичии бронхоэктазов или диаре"
-    - drug_name: более
-      active_substance: null
-      drug_group: null
-      dose_text: 10 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: более 10 г/л
-    - drug_name: Доза
-      active_substance: null
-      drug_group: null
-      dose_text: 0,1 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Доза 0,1 г/кг МТ в неделю (0,4 г/кг в месяц)
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 2024 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июня 2024 г
-    - drug_name: августа
-      active_substance: null
-      drug_group: null
-      dose_text: 2025 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: августа 2025 г
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: ноября
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ноября 1993 г
-    - drug_name: марта
-      active_substance: null
-      drug_group: null
-      dose_text: 1997 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "марта \n1997 г"
+        quote: ПКИГ, раствор 165 мг/мл или 200 мг/мл. Начало введения выполняется
+          через 1 неделю после последнего введения ВВИГ. Доза 0,1 г/кг МТ в неделю
+          (0,4 г/кг в месяц). Возможно повышение дозы до 0,2 г/кг МТ в неделю при
+          неэффективности терапии.
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Контроль
+  - text: Контроль эффективности терапии ПКИГ выполняется 1 раз в 3 месяца
     timing: null
     required_if: []
     expected_actions: []
@@ -465,55 +494,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контроль
-  - text: Контроль
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Контроль
-  - text: через 1 нед
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: через 1 нед
-  - text: Контроль
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Контроль
+      quote: Контроль эффективности терапии ПКИГ выполняется 1 раз в 3 месяца
   hospitalization: []
   routing:
-  - text: с ПИД является необходимость проведения комплекса медицинских услуг, направленных
+  - text: Отделение дневного пребывания ОЗ (для сложных диагностических и лечебных
+      мероприятий, подбора заместительной терапии)
     timing: null
     required_if: []
     source_ref:
@@ -526,9 +511,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: с ПИД является необходимость проведения комплекса медицинских услуг,
-        направленных
-  - text: с ПИД является необходимость проведения комплекса медицинских услуг, направленных
+      quote: Отделение дневного пребывания ОЗ (для сложных диагностических и лечебных
+        мероприятий, подбора заместительной терапии)
+  - text: Амбулаторные условия
     timing: null
     required_if: []
     source_ref:
@@ -541,9 +526,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: с ПИД является необходимость проведения комплекса медицинских услуг,
-        направленных
-  - text: с ПИД является необходимость проведения комплекса медицинских услуг, направленных
+      quote: Амбулаторные условия
+  - text: Домашние условия (для введения ПКИГ после обучения пациента или его законных
+      представителей)
     timing: null
     required_if: []
     source_ref:
@@ -556,16 +541,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: с ПИД является необходимость проведения комплекса медицинских услуг,
-        направленных
-  red_flags:
-  - text: "цессы; \nдве и более тяжелые инфекции, включая септицемию; \nрецидивирующий\
-      \ кандидоз ротовой полости или иной грибковой инфекции; \nдлительная или рецидивир"
-    aliases: []
-    red_flag_type: severe_infection
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
+      quote: Домашние условия (для введения ПКИГ после обучения пациента или его законных
+        представителей)
+  - text: Направление на медицинскую реабилитацию пациентов с ПИД для проведения комплекса
+      медицинских услуг.
+    timing: null
+    required_if: []
     source_ref:
       protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
       document_url: null
@@ -576,16 +557,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: "цессы; \nдве и более тяжелые инфекции, включая септицемию; \nрецидивирующий\
-        \ кандидоз ротовой полости или иной грибковой инфекции; \nдлительная или рецидивир"
-  - text: "едрасположенность к тяжелым вирусным инфекциям; энцефалиты, вызванные \n\
-      вирусом простого герпеса); \nE31.0 Аутоиммунная полигландулярная недостаточность;\
-      \ \nG11.3 Моз"
-    aliases: []
-    red_flag_type: severe_infection
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
+      quote: Направление на медицинскую реабилитацию пациентов с ПИД для проведения
+        комплекса медицинских услуг.
+  - text: Направление в ОЗ областного и республиканского уровней для выполнения стандартной
+      иммунограммы.
+    timing: null
+    required_if: []
     source_ref:
       protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
       document_url: null
@@ -596,35 +573,2807 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: "едрасположенность к тяжелым вирусным инфекциям; энцефалиты, вызванные\
-        \ \nвирусом простого герпеса); \nE31.0 Аутоиммунная полигландулярная недостаточность;\
-        \ \nG11.3 Моз"
+      quote: Направление в ОЗ областного и республиканского уровней для выполнения
+        стандартной иммунограммы.
+  red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
-    document_url: null
-    local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика лечение пациентов с первичными иммунодефицитами детское население
+  source_refs: []
+- condition_id: agranulocytosis_neutropenia
+  name: Агранулоцитоз; Другие уточненные нарушения белых кровяных клеток (тяжелая
+    врожденная нейтропения)
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - D70
+  - D72.8
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: 'Инфекционный анамнез: четыре и более отита за год'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Инфекционный анамнез: четыре и более отита за год'
+    - text: 'Инфекционный анамнез: два и более синусита средней и тяжелой степени
+        за год'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Инфекционный анамнез: два и более синусита средней и тяжелой степени
+          за год'
+    - text: 'Инфекционный анамнез: две и более пневмонии за год'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Инфекционный анамнез: две и более пневмонии за год'
+    - text: 'Инфекционный анамнез: двухмесячная антибиотикотерапия с недостаточным
+        эффектом или необходимостью внутривенного введения антибактериальных ЛП'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Инфекционный анамнез: двухмесячная антибиотикотерапия с недостаточным
+          эффектом или необходимостью внутривенного введения антибактериальных ЛП'
+    - text: 'Инфекционный анамнез: рецидивирующие кожные абсцессы'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Инфекционный анамнез: рецидивирующие кожные абсцессы'
+    - text: 'Инфекционный анамнез: две и более тяжелые инфекции, включая септицемию'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Инфекционный анамнез: две и более тяжелые инфекции, включая септицемию'
+    - text: 'Инфекционный анамнез: рецидивирующий кандидоз ротовой полости или иной
+        грибковой инфекции'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Инфекционный анамнез: рецидивирующий кандидоз ротовой полости или
+          иной грибковой инфекции'
+    - text: 'Инфекционный анамнез: длительная или рецидивирующая диарея'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Инфекционный анамнез: длительная или рецидивирующая диарея'
+    - text: 'Инфекционный анамнез: инфекции, вызванные оппортунистической флорой'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Инфекционный анамнез: инфекции, вызванные оппортунистической флорой'
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Сбор анамнеза (социальный, аллергологический, фармакологический, трансфузионный,
+      прививочный, перенесенных заболеваний и хирургических вмешательств)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'сбор анамнеза: социальный (семейный); аллергологический; фармакологический;
+        трансфузионный; прививочный; перенесенных заболеваний и хирургических вмешательств;'
+  - name: Антропометрия
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: антропометрия;
+  - name: Медицинский осмотр (измерение МТ, температуры тела, оценка размеров периферических
+      лимфатических узлов, печени, селезенки, диуреза, стула, частоты сердечных сокращений,
+      частоты дыхания, измерение арте
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: медицинский осмотр, измерение МТ, температуры тела, оценка размеров периферических
+        лимфатических узлов (далее – ЛУ), печени, селезенки, диуреза, стула, частоты
+        сердечных сокращений, частоты дыхания, измерение артериального давления;
+  - name: Консультации врачей-специалистов по профилю сопутствующей патологии
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультации врачей-специалистов по профилю сопутствующей патологии;
+  conditional_exams: []
+  treatment:
+    non_drug:
+    - text: Трансплантация гемопоэтических стволовых клеток (ТГСК) по абсолютным медицинским
+        показаниям
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Трансплантация гемопоэтических стволовых клеток (ТГСК) по абсолютным
+          медицинским показаниям
+    - text: Трансплантация гемопоэтических стволовых клеток (ТГСК) по относительным
+        медицинским показаниям при наличии HLA-совместимого донора
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Трансплантация гемопоэтических стволовых клеток (ТГСК) по относительным
+          медицинским показаниям при наличии HLA-совместимого донора
+    drug_groups: []
+    drugs:
+    - drug_name: Иммуноглобулин человека для внутривенного введения (ВВИГ)
+      active_substance: null
+      drug_group: null
+      dose_text: Пожизненная заместительная терапия, раствор 50 мг/мл или 100 мг/мл.
+        Стартовая доза 0,4–0,8 г/кг МТ 1 раз в 3–4 недели. Поддерживающая доза 0,4–0,6
+        г/кг МТ 1 раз в 3–4 недели. Целевой уровень IgG не ме
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Показания для пожизненной заместительной терапии ВВИГ, раствор 50/100
+          мг/мл. Стартовая доза 0,4–0,8 г/кг МТ 1 раз в 3–4 недели. Поддерживающая
+          0,4–0,6 г/кг МТ 1 раз в 3–4 недели. Целевой IgG не менее 7 г/л (10 г/л при
+          бронхоэктазах/диарее).
+    - drug_name: Иммуноглобулин человека для подкожного введения (ПКИГ)
+      active_substance: null
+      drug_group: null
+      dose_text: Пожизненная заместительная терапия, раствор 165 мг/мл или 200 мг/мл.
+        Начало введения через 1 неделю после ВВИГ. Доза 0,1 г/кг МТ в неделю (0,4
+        г/кг в месяц). Возможно повышение дозы до 0,2 г/кг МТ в н
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Показания для пожизненной заместительной терапии ПКИГ, раствор 165/200
+          мг/мл. Начало через 1 нед после ВВИГ. Доза 0,1 г/кг МТ/нед (0,4 г/кг/мес),
+          возможно до 0,2 г/кг МТ/нед при неэффективности.
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Контроль эффективности заместительной терапии ПКИГ выполняется 1 раз в 3
+      месяца.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль эффективности заместительной терапии ПКИГ выполняется 1 раз
+        в 3 месяца.
+  hospitalization: []
+  routing:
+  - text: Отделение дневного пребывания для сложных диагностических/лечебных мероприятий
+      или подбора заместительной терапии.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Отделение дневного пребывания для сложных диагностических/лечебных мероприятий
+        или подбора заместительной терапии.
+  - text: Амбулаторные условия (лечение сопутствующих патологий, введение ПКИГ).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторные условия (лечение сопутствующих патологий, введение ПКИГ).
+  - text: Домашние условия (для введения ПКИГ после обучения пациента/представителей).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Домашние условия (для введения ПКИГ после обучения пациента/представителей).
+  - text: Медицинская реабилитация показана пациентам с ПИД для восстановления нормальной
+      жизнедеятельности.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинская реабилитация показана пациентам с ПИД для восстановления
+        нормальной жизнедеятельности.
+  - text: По медицинским показаниям в ОЗ областного и республиканского уровней выполняется
+      стандартная иммунограмма.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: По медицинским показаниям в ОЗ областного и республиканского уровней
+        выполняется стандартная иммунограмма.
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: hemophagocytic_lymphohistiocytosis
+  name: Гемофагоцитарный лимфогистиоцитоз и другие гистиоцитозные синдромы
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - D76
+  - D76.1
+  - D76.3
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Четыре и более отита за год
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Четыре и более отита за год
+    - text: Два и более синусита средней и тяжелой степени за год
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Два и более синусита средней и тяжелой степени за год
+    - text: Две и более пневмонии за год
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Две и более пневмонии за год
+    - text: Двухмесячная антибиотикотерапия с недостаточным эффектом или необходимостью
+        внутривенного введения
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Двухмесячная антибиотикотерапия с недостаточным эффектом или необходимостью
+          внутривенного введения
+    - text: Рецидивирующие кожные абсцессы
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Рецидивирующие кожные абсцессы
+    - text: Две и более тяжелые инфекции, включая септицемию
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Две и более тяжелые инфекции, включая септицемию
+    - text: Рецидивирующий кандидоз ротовой полости или иной грибковой инфекции
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Рецидивирующий кандидоз ротовой полости или иной грибковой инфекции
+    - text: Длительная или рецидивирующая диарея
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Длительная или рецидивирующая диарея
+    - text: Инфекции, вызванные оппортунистической флорой
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Инфекции, вызванные оппортунистической флорой
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Сбор анамнеза
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'сбор анамнеза: социальный (семейный); аллергологический; фармакологический;
+        трансфузионный; прививочный; перенесенных заболеваний и хирургических вмешательств'
+  - name: Антропометрия и медицинский осмотр
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: антропометрия; медицинский осмотр, измерение МТ, температуры тела, оценка
+        размеров периферических лимфатических узлов (далее – ЛУ), печени, селезенки,
+        диуреза, стула, частоты сердечных сокращений, частоты дыхания, измерение артериального
+        давления
+  - name: Консультации врачей-специалистов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультации врачей-специалистов по профилю сопутствующей патологии
+  conditional_exams: []
+  treatment:
+    non_drug:
+    - text: Трансплантация гемопоэтических стволовых клеток (ТГСК) показана при D76
+        (семейные гемофагоцитарные лимфогистиоцитозы, синдром Чедиака – Хигаси, синдром
+        Грисцелли тип 2, синдром Германского – Пудлака типы 2, 10).
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Трансплантация гемопоэтических стволовых клеток (ТГСК) показана при
+          D76 (семейные гемофагоцитарные лимфогистиоцитозы, синдром Чедиака – Хигаси,
+          синдром Грисцелли тип 2, синдром Германского – Пудлака т
+    drug_groups: []
+    drugs:
+    - drug_name: Иммуноглобулин человека для внутривенного введения (ВВИГ)
+      active_substance: null
+      drug_group: null
+      dose_text: Стартовая доза 0,4–0,8 г/кг МТ пациента 1 раз в 3–4 недели. Поддерживающая
+        доза – 0,4–0,6 г/кг МТ пациента 1 раз в 3–4 недели. Целевой уровень IgG не
+        менее 7 г/л (более 10 г/л при бронхоэктазах или ди
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ВВИГ в стартовой дозе 0,4–0,8 г/кг МТ пациента 1 раз в 3–4 недели.
+          Поддерживающая доза – 0,4–0,6 г/кг МТ пациента 1 раз в 3–4 недели. Целевой
+          уровень IgG не менее 7 г/л, при наличии бронхоэктазов или диарейного синдрома
+          – более 10 г/л.
+    - drug_name: Иммуноглобулин человека для подкожного введения (ПКИГ)
+      active_substance: null
+      drug_group: null
+      dose_text: Начало введения через 1 неделю после последнего ВВИГ. Доза 0,1 г/кг
+        МТ в неделю (0,4 г/кг в месяц). Возможно повышение дозы до 0,2 г/кг МТ в неделю
+        при неэффективности терапии. Введение еженедельно ам
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ПКИГ, раствор 165 мг/мл или 200 мг/мл. Начало введения выполняется
+          через 1 неделю после последнего введения ВВИГ. Доза 0,1 г/кг МТ в неделю
+          (0,4 г/кг в месяц). Возможно повышение дозы до 0,2 г/кг МТ в неделю при
+          неэффективности терапии.
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Контроль эффективности терапии ПКИГ выполняется 1 раз в 3 месяца.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль эффективности терапии ПКИГ выполняется 1 раз в 3 месяца.
+  hospitalization: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: отделение дневного пребывания ОЗ
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: отделение дневного пребывания ОЗ
+  - text: стационар
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: стационар
+  - text: на дому
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: на дому
+  - text: Проведение медицинской реабилитации для пациентов с ПИД, направленной на
+      восстановление нормальной жизнедеятельности.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Проведение медицинской реабилитации для пациентов с ПИД, направленной
+        на восстановление нормальной жизнедеятельности.
+  - text: Выполнение стандартной иммунограммы (определение субпопуляций лимфоцитов
+      CD3+, CD3+CD4+, CD3+CD8+, CD19+) по медицинским показаниям в организациях здравоохранения
+      областного и республиканского уровней.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Выполнение стандартной иммунограммы (определение субпопуляций лимфоцитов
+        CD3+, CD3+CD4+, CD3+CD8+, CD19+) по медицинским показаниям в организациях
+        здравоохранения областного и республиканского уровней
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: pid_other_significant_defects_eczema
+  name: Иммунодефициты, связанные с другими значительными дефектами (для лечения экземы)
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - D82
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: четыре и более отита за год
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: четыре и более отита за год
+    - text: два и более синусита средней и тяжелой степени за год
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: два и более синусита средней и тяжелой степени за год
+    - text: две и более пневмонии за год
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: две и более пневмонии за год
+    - text: двухмесячная антибиотикотерапия с недостаточным эффектом или необходимостью
+        внутривенного введения антибактериальных ЛП
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: двухмесячная антибиотикотерапия с недостаточным эффектом или необходимостью
+          внутривенного введения антибактериальных ЛП
+    - text: рецидивирующие кожные абсцессы
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: рецидивирующие кожные абсцессы
+    - text: две и более тяжелые инфекции, включая септицемию
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: две и более тяжелые инфекции, включая септицемию
+    - text: рецидивирующий кандидоз ротовой полости или иной грибковой инфекции
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: рецидивирующий кандидоз ротовой полости или иной грибковой инфекции
+    - text: длительная или рецидивирующая диарея
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: длительная или рецидивирующая диарея
+    - text: инфекции, вызванные оппортунистической флорой
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: инфекции, вызванные оппортунистической флорой
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Сбор анамнеза
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими исследованиями являются: 15.1. клинические:
+        сбор анамнеза: социальный (семейный); аллергологический; фармакологический;
+        трансфузионный; прививочный; перенесенных заболеваний и хирургических вмешательств'
+  - name: Антропометрия
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими исследованиями являются: 15.1. клинические:
+        ... антропометрия'
+  - name: Медицинский осмотр
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими исследованиями являются: 15.1. клинические:
+        ... медицинский осмотр, измерение МТ, температуры тела, оценка размеров периферических
+        лимфатических узлов (далее – ЛУ), печени, селезенки, диуреза, стула, частоты
+        сердечных сокращений, частоты дыхания, измерение артериального давления'
+  - name: Консультации врачей-специалистов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими исследованиями являются: 15.1. клинические:
+        ... консультации врачей-специалистов по профилю сопутствующей патологии'
+  conditional_exams: []
+  treatment:
+    non_drug: []
+    drug_groups: []
+    drugs:
+    - drug_name: Иммуноглобулин человека для внутривенного введения (ВВИГ)
+      active_substance: null
+      drug_group: null
+      dose_text: Стартовая доза 0,4–0,8 г/кг МТ пациента 1 раз в 3–4 недели. Поддерживающая
+        доза – 0,4–0,6 г/кг МТ пациента 1 раз в 3–4 недели. Целевой уровень IgG не
+        менее 7 г/л, при бронхоэктазах или диарейном синдр
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Относительными медицинскими показаниями для длительной заместительной
+          терапии ВВИГ, раствор 50 мг/мл или 100 мг/мл... являются следующие нозологические
+          формы ПИД по МКБ-10: ... D82.8 Иммунодефицит, связанный с другими значительными
+          дефектами'
+    - drug_name: Иммуноглобулин человека для подкожного введения (ПКИГ)
+      active_substance: null
+      drug_group: null
+      dose_text: Начало введения через 1 неделю после последнего введения ВВИГ. Доза
+        0,1 г/кг МТ в неделю (0,4 г/кг в месяц). Возможно повышение дозы до 0,2 г/кг
+        МТ в неделю при неэффективности терапии.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Относительными медицинскими показаниями для длительной заместительной
+          терапии... ПКИГ, раствор 165 мг/мл или 200 мг/мл, являются следующие нозологические
+          формы ПИД по МКБ-10: ... D82.8 Иммунодефицит, связанный с другими значительными
+          дефектами'
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Контроль эффективности терапии ПКИГ выполняется 1 раз в 3 месяца.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль эффективности терапии ПКИГ выполняется 1 раз в 3 месяца.
+  hospitalization: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: в условиях отделения дневного пребывания
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: в условиях отделения дневного пребывания
+  - text: на дому
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: на дому
+  - text: Проведение медицинской реабилитации для пациентов с первичными иммунодефицитами.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Проведение медицинской реабилитации для пациентов с первичными иммунодефицитами.
+  - text: Выполнение стандартной иммунограммы в организациях здравоохранения областного
+      и республиканского уровней.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Выполнение стандартной иммунограммы в организациях здравоохранения областного
+        и республиканского уровней.
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: protein_energy_malnutrition
+  name: Белково-энергетическая недостаточность
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - E43
+  - E44.0
+  - E44.1
+  - E45
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: ПИД у близких родственников или признаки, указывающие на потенциальный
+        ПИД
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ПИД у близких родственников или признаки, указывающие на потенциальный
+          ПИД
+    - text: смерть близких родственников в младенческом возрасте от ПИД или невыясненных
+        причин
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: смерть близких родственников в младенческом возрасте от ПИД или невыясненных
+          причин
+    - text: близкородственные браки родителей (известные или подозреваемые)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: близкородственные браки родителей (известные или подозреваемые)
+    - text: аутоиммунные, онкологические или онкогематологические заболевания у близких
+        родственников
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: аутоиммунные, онкологические или онкогематологические заболевания у
+          близких родственников
+    - text: недостаточный набор веса в грудном возрасте, гипотрофия
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: недостаточный набор веса в грудном возрасте, гипотрофия
+    - text: задержка физического развития ребенка
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: задержка физического развития ребенка
+    - text: осложнения вакцинации живыми вакцинами
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: осложнения вакцинации живыми вакцинами
+    - text: аплазия или гипоплазия тимуса (по результатам УЗИ или рентгенологическим
+        признакам)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: аплазия или гипоплазия тимуса (по результатам УЗИ или рентгенологическим
+          признакам)
+    - text: аутоиммунные заболевания (аутоиммунные цитопении, системные заболевания
+        соединительной ткани)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: аутоиммунные заболевания (аутоиммунные цитопении, системные заболевания
+          соединительной ткани)
+    - text: поздняя аномальная смена зубов, аномалии развития зубочелюстной системы
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: поздняя аномальная смена зубов, аномалии развития зубочелюстной системы
+    - text: стойкая лимфаденопатия с вовлечением трех и более групп ЛУ
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: стойкая лимфаденопатия с вовлечением трех и более групп ЛУ
+    - text: отсутствие реакции лимфоидной ткани на воспалительный процесс
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: отсутствие реакции лимфоидной ткани на воспалительный процесс
+    - text: злокачественные новообразования лимфоидной ткани
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: злокачественные новообразования лимфоидной ткани
+    - text: спленомегалия неуточненная
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: спленомегалия неуточненная
+    - text: трудно поддающиеся терапии заболевания органов дыхания (бронхоэктазия,
+        гангрена легкого, абсцесс легкого, абсцесс средостения)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: трудно поддающиеся терапии заболевания органов дыхания (бронхоэктазия,
+          гангрена легкого, абсцесс легкого, абсцесс средостения)
+    - text: экзема, дерматит (тяжелой степени, трудно поддающиеся традиционному лечению)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: экзема, дерматит (тяжелой степени, трудно поддающиеся традиционному
+          лечению)
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Общий анализ крови (ОАК)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'общий анализ крови (далее – ОАК): эритроциты; гемоглобин; гематокрит;
+        тромбоциты (с подсчетом в окрашенном мазке по методу Фонио); лейкоциты и лейкоцитарная
+        формула (с подсчетом абсолютного числа нейтрофилов и лимфоцитов); скорость
+        оседания эритроцитов;'
+  - name: Общий анализ мочи (ОАМ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ мочи (далее – ОАМ);
+  - name: Биохимическое исследование крови (БИК)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'биохимическое исследование крови (далее – БИК): общий билирубин; креатинин;
+        мочевина; С-реактивный белок (далее – ЦРБ), ферритин, лактатдегидрогеназы
+        (далее – ЛДГ), аланинаминотрансфераза (далее – АлАТ) и аспартатаминотрансферазы
+        (далее – АсАТ), щелочной фосфатазы (далее – ЩФ), антистрептолизин-О (далее
+        – АСЛ-О), амилаза, общий белок, сывороточное железо, глюкоза.'
+  - name: Копрологическое исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 12
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: копрологическое исследование;
+  - name: Исследование кала на скрытую кровь
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 12
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование кала на скрытую кровь;
+  - name: ФГДС
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ФГДС);
+  - name: Определение концентрации сывороточных Ig классов А, М, G (при наличии атопии
+      – Ig класса Е)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение концентрации сывороточных Ig классов А, М, G, при наличии
+        атопии – Ig класса Е;
+  - name: Определение секреторного IgA в кале и слюне
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение секреторного IgA в кале и слюне.
+  - name: Сбор анамнеза (социальный, аллергологический, фармакологический, трансфузионный,
+      прививочный, перенесенных заболеваний и хирургических вмешательств)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими исследованиями являются: клинические:
+        сбор анамнеза: социальный (семейный); аллергологический; фармакологический;
+        трансфузионный; прививочный; перенесенных заболеваний и хирургических вмешательств;'
+  - name: Антропометрия
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими исследованиями являются: клинические:
+        [...] антропометрия;'
+  - name: Медицинский осмотр (измерение МТ, температуры, оценка ЛУ, печени, селезенки,
+      диуреза, стула, ЧСС, ЧД, АД)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими исследованиями являются: клинические:
+        [...] медицинский осмотр, измерение МТ, температуры тела, оценка размеров
+        периферических лимфатических узлов, печени, селезенки, диуреза, стула, ЧСС,
+        ЧД, АД;'
+  - name: Консультации врачей-специалистов по профилю сопутствующей патологии
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими исследованиями являются: клинические:
+        [...] консультации врачей-специалистов по профилю сопутствующей патологии;'
+  conditional_exams:
+  - name: Детальное обследование нутритивного статуса (анализ фактического питания,
+      оценка тканевого состава тела, оценка лабораторных показателей, физикальный
+      медицинский осмотр)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Пациентам с выявленными нутритивными нарушениями при скрининге с помощью
+        шкал либо в результате антропометрии рекомендуется более детальное обследование
+        нутритивного статуса: анализ фактического питания, оценка тканевого состава
+        тела, оценка лабораторных показателей, а также детальный физикальный медицинский
+        осмотр на предмет выявления нутритивно–метаболических нарушений.'
+  - name: Проба Кумбса
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 12
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: проба Кумбса (при проведении заместительной терапии ВВИГ);
+  - name: УЗИ ОБП (органов брюшной полости)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 12
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗИ ОБП;
+  - name: Определение специфического IgЕ
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение специфического IgЕ при клинических и (или) лабораторных признаках
+        атопии;
+  - name: Стандартная иммунограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: стандартная иммунограмма;
+  - name: Вирусологическое обследование (ПЦР на ВЭБ, ЦМВ, ВИЧ, ВПГ 1-го и 2-го типа,
+      парвовирус В19, вирусы гепатитов В и С)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'вирусологическое обследование: выявление ДНК ВЭБ, ЦМВ, ВИЧ, ВПГ 1-го
+        и 2-го типа, парвовируса В19, вирусов гепатитов В и С методом ПЦР в реальном
+        времени;'
+  - name: Изосерологическое определение титра изогемагглютининов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: изосерологическое определение титра изогемагглютининов;
+  - name: Определение маркеров аутоиммунных заболеваний (АНА, антител к МПО, анти-дсДНК
+      IgG)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'определение маркеров аутоиммунных заболеваний: определение АНА, антител
+        к МПО, анти-дсДНК IgG;'
+  - name: Определение маркеров аутоиммунных гепатитов (AMA-M2, анти-LKM-1)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'маркеров аутоиммунных гепатитов: AMA-M2, анти-LKM-1;'
+  - name: Определение маркеров АФС (анти-β2-ГП классов IgM и IgG, АКЛ классов IgM
+      и IgG, определение ВА)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'маркеров АФС: анти-β2-ГП классов IgM и IgG, АКЛ классов IgM и IgG, определение
+        ВА;'
+  - name: Определение маркеров болезни Крона (ASCA классов IgА и IgG)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'определение маркеров болезни Крона: ASCA классов IgА и IgG;'
+  - name: Определение маркеров целиакии (anti-DPG классов IgA и IgG, anti-tTg классов
+      IgA и IgG)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'маркеров целиакии: anti-DPG классов IgA и IgG, anti-tTg классов IgA
+        и IgG;'
+  treatment:
+    non_drug:
+    - text: Санация полости рта (для D80.5, в рамках медицинского наблюдения)
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Санация полости рта (для D80.5, в рамках медицинского наблюдения)
+    - text: 'Трансплантация гемопоэтических стволовых клеток (ТГСК) при определенных
+        нозологических формах ПИД (МКБ-10: D76, D81.0, D81.1, D81.3, D81.6, D81.7,
+        D84.8)'
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Трансплантация гемопоэтических стволовых клеток (ТГСК) при определенных
+          нозологических формах ПИД (МКБ-10: D76, D81.0, D81.1, D81.3, D81.6, D81.7,
+          D84.8)'
+    - text: 'Трансплантация гемопоэтических стволовых клеток (ТГСК) при наличии HLA-совместимого
+        донора для определенных нозологических форм ПИД (МКБ-10: D89.8, D72.8, D80.5,
+        D81.8, D82.0, D82.4, D82.9, D84.8)'
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Трансплантация гемопоэтических стволовых клеток (ТГСК) при наличии
+          HLA-совместимого донора для определенных нозологических форм ПИД (МКБ-10:
+          D89.8, D72.8, D80.5, D81.8, D82.0, D82.4, D82.9, D84.8)'
+    drug_groups: []
+    drugs:
+    - drug_name: Иммуноглобулин человека для внутривенного введения (ВВИГ)
+      active_substance: null
+      drug_group: null
+      dose_text: Стартовая доза 0,4–0,8 г/кг МТ 1 раз в 3–4 недели. Поддерживающая
+        доза 0,4–0,6 г/кг МТ 1 раз в 3–4 недели. Целевой уровень IgG не менее 7 г/л
+        (более 10 г/л при бронхоэктазах или диарейном синдроме).
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Медицинскими показаниями для пожизненной заместительной терапии ЛП
+          иммуноглобулина человека для внутривенного введения (далее – ВВИГ), раствор
+          50 мг/мл или 100 мг/мл, на регулярной основе...
+    - drug_name: Иммуноглобулин человека для подкожного введения (ПКИГ)
+      active_substance: null
+      drug_group: null
+      dose_text: Начало введения через 1 неделю после последнего введения ВВИГ. Доза
+        0,1 г/кг МТ в неделю (0,4 г/кг в месяц). Возможно повышение дозы до 0,2 г/кг
+        МТ в неделю при неэффективности терапии.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: '...или ЛП иммуноглобулина человека для подкожного введения (далее
+          – ПКИГ), раствор 165 мг/мл или 200 мг/мл, на регулярной основе являются
+          следующие нозологические формы ПИД по МКБ-10:'
+    - drug_name: Прочие ЛП по решению врачебного консилиума (в т.ч. off-label)
+      active_substance: null
+      drug_group: null
+      dose_text: Согласно приложению 6 (подробности не указаны в данном тексте)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ЛП, назначаемые по решению врачебного консилиума (в том числе off-lable)
+          для лечения пациентов с ПИД, установлены согласно приложению 6.
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Проведение врачебных консультаций врачей-специалистов по профилю сопутствующей
+      патологии при наличии соответствующих жалоб, клинических проявлений и (или)
+      изменений при обследовании (гастроэнтеролог, пульмонолог, оториноларинголог,
+      стоматолог детский, детский онколог-гематолог, ревматолог, фтизиатр, инфекционист)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Проведение врачебных консультаций врачей-специалистов по профилю сопутствующей
+        патологии при наличии соответствующих жалоб, клинических проявлений и (или)
+        изменений при обследовании (гастроэнтеролог, '
+  - text: Наблюдение у врача – аллерголога-иммунолога Центра 1 раз в год (при необходимости
+      1 раз в 3 месяца), бессрочно (для D80.0, D80.1, D83)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Наблюдение у врача – аллерголога-иммунолога Центра 1 раз в год (при необходимости
+        1 раз в 3 месяца), бессрочно (для D80.0, D80.1, D83)
+  - text: Наблюдение у врача – педиатра участкового (врача общей практики) 1 раз в
+      3 месяца, бессрочно (для D80.5)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Наблюдение у врача – педиатра участкового (врача общей практики) 1 раз
+        в 3 месяца, бессрочно (для D80.5)
+  - text: Наблюдение у врача – аллерголога-иммунолога ОЗ областного уровня 1 раз в
+      год, бессрочно (для D80.5)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Наблюдение у врача – аллерголога-иммунолога ОЗ областного уровня 1 раз
+        в год, бессрочно (для D80.5)
+  - text: Медицинское наблюдение врачами-специалистами по профилю соответствующей
+      патологии (для D80.5)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение врачами-специалистами по профилю соответствующей
+        патологии (для D80.5)
+  - text: Контроль эффективности заместительной терапии ПКИГ выполняется 1 раз в 3
+      месяца.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль эффективности заместительной терапии ПКИГ выполняется 1 раз
+        в 3 месяца.
+  - text: Решение о длительности заместительной терапии принимается индивидуально
+      для каждого пациента.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Решение о длительности заместительной терапии принимается индивидуально
+        для каждого пациента.
+  hospitalization: []
+  routing:
+  - text: Первичная диагностика ПИД в амбулаторных условиях врачами-педиатрами, врачами
+      – педиатрами участковыми, врачами общей практики и иными врачами-специалистами
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Первичная диагностика ПИД в амбулаторных условиях врачами-педиатрами,
+        врачами – педиатрами участковыми, врачами общей практики и иными врачами-специалистами
+  - text: При подозрении на ПИД пациент направляется на врачебную консультацию к врачу
+      – аллергологу-иммунологу
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При подозрении на ПИД пациент направляется на врачебную консультацию
+        к врачу – аллергологу-иммунологу
+  - text: Госпитализация пациента по медицинским показаниям по направлению врачей-специалистов
+      для подтверждения диагноза ПИД и лечения его осложнений и (или) проявлений в
+      ОЗ, оказывающих медицинскую помощь детскому населению, соответствующих профилю
+      осложнений и (или) проявлений
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация пациента по медицинским показаниям по направлению врачей-специалистов
+        для подтверждения диагноза ПИД и лечения его осложнений и (или) проявлений
+        в ОЗ, оказывающих медицинскую помощь дет
+  - text: Отделение дневного пребывания (для сложных диагностических/лечебных мероприятий,
+      подбора заместительной терапии, не требующих круглосуточного наблюдения)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Отделение дневного пребывания (для сложных диагностических/лечебных мероприятий,
+        подбора заместительной терапии, не требующих круглосуточного наблюдения)
+  - text: Амбулаторные условия (для лечения ПИД и сопутствующих патологий)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторные условия (для лечения ПИД и сопутствующих патологий)
+  - text: Домашние условия (для введения ПКИГ после обучения пациента или его законных
+      представителей)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Домашние условия (для введения ПКИГ после обучения пациента или его законных
+        представителей)
+  red_flags:
+  - text: ПИД или признаки, указывающие на потенциальный ПИД у близких родственников
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ПИД у близких родственников или признаки, указывающие на потенциальный
+        ПИД;
+  - text: Смерть близких родственников в младенческом возрасте от ПИД или невыясненных
+      причин
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: смерть близких родственников в младенческом возрасте от ПИД или невыясненных
+        причин;
+  - text: Осложнения вакцинации живыми вакцинами
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: осложнения вакцинации живыми вакцинами;
+  - text: Недостаточный набор веса в грудном возрасте, гипотрофия
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: недостаточный набор веса в грудном возрасте, гипотрофия;
+  - text: Задержка физического развития ребенка
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: задержка физического развития ребенка;
+  - text: Трудно поддающиеся терапии заболевания органов дыхания (бронхоэктазия, гангрена
+      легкого, абсцесс легкого, абсцесс средостения)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: трудно поддающееся терапии заболевания органов дыхания (шифры по Международной
+        статистической классификации болезней и проблем, связанных со здоровьем, Десятого
+        пересмотра (далее – МКБ-10) – J47 Бронхоэктазия, J85.0 Гангрена и некроз легкого,
+        J85.2 Абсцесс легкого без пневмонии, J85.3 Абсцесс средостения);
+  - text: Экзема, дерматит тяжелой степени, трудно поддающиеся традиционному лечению
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: экзема, дерматит (тяжелой степени, трудно поддающиеся традиционному лечению);
+  - text: Рецидивирующая лихорадка
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: рецидивирующая лихорадка;
+  - text: Необъяснимые бронхоэктазы, пневматоцеле, интерстициальное поражение легких,
+      саркоидоз
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: необъяснимые бронхоэктазы, пневматоцеле, интерстициальное поражение легких,
+        саркоидоз;
+  - text: Системный васкулит
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_диагностика_лечение_пациентов_с_первичными_иммунодефицитами_
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: системный васкулит;
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:44.291828+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T17:02:47.833564+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=7
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:44.305055+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[agranulocytosis_neutropenia].required_exams[0]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[agranulocytosis_neutropenia].required_exams[3]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[agranulocytosis_neutropenia].treatment.drugs[0]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[agranulocytosis_neutropenia].treatment.drugs[1]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[hemophagocytic_lymphohistiocytosis].treatment.drugs[0]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[hemophagocytic_lymphohistiocytosis].treatment.drugs[1]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[pid_other_significant_defects_eczema].required_exams[0]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[pid_other_significant_defects_eczema].required_exams[1]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[pid_other_significant_defects_eczema].required_exams[3]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[pid_other_significant_defects_eczema].treatment.drugs[0]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[pid_other_significant_defects_eczema].treatment.drugs[1]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[protein_energy_malnutrition].required_exams[8]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[protein_energy_malnutrition].required_exams[9]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[protein_energy_malnutrition].required_exams[11]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[protein_energy_malnutrition].treatment.drugs[0]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[protein_energy_malnutrition].treatment.drugs[1]
+  validated_at: '2026-07-20T17:02:47.911067+00:00'

@@ -1,6 +1,6 @@
 protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Оказание медицинской помощи женщинам с послеродовыми кровотечениями в стационарных
@@ -20,16 +20,15 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - adult
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: оказание_медицинской_помощи_женщинам_с_послеродо
-  name: Оказание медицинской помощи женщинам с послеродовыми кровотечениями в стационарных
-    условиях
+- condition_id: postpartum_hemorrhage
+  name: Послеродовые кровотечения
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -38,177 +37,12 @@ conditions:
   - O72.1
   - O72.2
   - O72.3
-  - B24
-  - D64.9
-  - O26.9
-  - O30
-  - O43.2
-  - O88.2
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria:
-    required:
-    - text: '[criteria] 18. Проводить определение локализации ПРК (из матки, шейки
-        матки, влагалища, (стр. 5)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[criteria] 18. Проводить определение локализации ПРК (из матки, шейки
-          матки, влагалища, (стр. 5)'
-    - text: '[criteria] 22. Критериями определения объема кровопотери при физиологических
-        родах (стр. 5)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[criteria] 22. Критериями определения объема кровопотери при физиологических
-          родах (стр. 5)'
-    - text: острая массивная кровопотеря согласно критериям, указанным в пункте 24
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: острая массивная кровопотеря согласно критериям, указанным в пункте
-          24
-    - text: '[criteria] 23. Критериями определения объема кровопотери при КС являются:
-        (стр. 5)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[criteria] 23. Критериями определения объема кровопотери при КС являются:
-          (стр. 5)'
-    - text: острая массивная кровопотеря согласно критериям, указанным в пункте 24
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: острая массивная кровопотеря согласно критериям, указанным в пункте
-          24
-    - text: '[criteria] 26. Визуальное определение кровопотери проводится на основании
-        зрительной (стр. 5)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[criteria] 26. Визуальное определение кровопотери проводится на основании
-          зрительной (стр. 5)'
-    - text: оценки кровопотери, к которому надо прибавить 30 %. Визуальное определение
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: оценки кровопотери, к которому надо прибавить 30 %. Визуальное определение
-    - text: '[criteria] 66. Оценка факторов и определение уровня риска развития ПРК
-        учитываются (стр. 11)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[criteria] 66. Оценка факторов и определение уровня риска развития
-          ПРК учитываются (стр. 11)'
-    optional: []
-    exclusion: []
+  diagnostic_criteria: null
   required_exams:
-  - name: ЭКГ
+  - name: Ультразвуковое исследование органов малого таза и брюшной полости
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -222,41 +56,20 @@ conditions:
       protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
       document_url: null
       local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-      page_start: null
+      page_start: 5
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "е – Et CO2), ЧСС, сатурация \nкислорода, ЭКГ с ST, почасовой диурез,\
-        \ по возможности – биспектральный индекс \n(далее – BIS),"
-  - name: ОАК
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "ено ранее; \nобщий анализ крови (далее – ОАК): уровень гемоглобина (далее\
-        \ – Hb), гематокрита \n(далее – Ht), эритроциты, тром"
+      quote: Для установления причины ПРК по медицинским показаниям выполняется ультразвуковое
+        исследование (далее – УЗИ) органов малого таза и брюшной полости.
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] 14. К медицинской профилактике ПРК при родоразрешении путем
-        КС относится: (стр. 4)'
+    - text: ведение родов с установленным венозным доступом (диаметр катетера по шкале
+        Гейдж (далее – G), обычно используемой для измерения наружного диаметра трубчатых
+        (инъекционных, биопсийных) игл, – не менее 16 G)
       source_ref:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
         document_url: null
@@ -267,9 +80,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 14. К медицинской профилактике ПРК при родоразрешении
-          путем КС относится: (стр. 4)'
-    - text: формирование операционной бригады для выполнения КС осуществляют с учетом
+        quote: 'ведение родов с установленным венозным доступом (диаметр катетера
+          по шкале Гейдж (далее – G), обычно используемой для измерения наружного
+          диаметра трубчатых (инъекционных, биопсийных) игл, – не менее '
+    - text: пережатие пуповины не ранее первой минуты после рождения ребенка, если
+        состояние ребенка удовлетворительное и нет сомнений по поводу целостности
+        пуповины
       source_ref:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
         document_url: null
@@ -280,9 +96,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: формирование операционной бригады для выполнения КС осуществляют с
-          учетом
-    - text: назначение окситоцина 5–10 МЕ на 19 мл раствора натрия хлорида 0,9 %
+        quote: пережатие пуповины не ранее первой минуты после рождения ребенка, если
+          состояние ребенка удовлетворительное и нет сомнений по поводу целостности
+          пуповины
+    - text: с целью предупреждения задержки отделившегося последа в полости матки
+        – контролируемые тракции за пуповину или применение наружных методов выделения
+        последа
       source_ref:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
         document_url: null
@@ -293,9 +112,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: назначение окситоцина 5–10 МЕ на 19 мл раствора натрия хлорида 0,9
-          %
-    - text: внутривенно по инфузомату со скоростью инфузии 6,0–12,0 мл/час или окситоцина
+        quote: с целью предупреждения задержки отделившегося последа в полости матки
+          – контролируемые тракции за пуповину или применение наружных методов выделения
+          последа
+    - text: оценку тонуса матки после родов
       source_ref:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
         document_url: null
@@ -306,41 +126,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: внутривенно по инфузомату со скоростью инфузии 6,0–12,0 мл/час или
-          окситоцина
-    - text: 5–10 МЕ на 500 мл раствора натрия хлорида 0,9 % внутривенно со скоростью
-        инфузии
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 5–10 МЕ на 500 мл раствора натрия хлорида 0,9 % внутривенно со скоростью
-          инфузии
-    - text: 40–60 капель в минуту или окситоцина 5 МЕ внутривенно медленно после рождения
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 40–60 капель в минуту или окситоцина 5 МЕ внутривенно медленно после
-          рождения
+        quote: оценку тонуса матки после родов
     drug_groups: []
     drugs:
-    - drug_name: карбетоцина
+    - drug_name: Окситоцин
       active_substance: null
       drug_group: null
-      dose_text: 1 мл
+      dose_text: 5 МЕ на 19 мл раствора натрия хлорида 0,9 % внутривенно по инфузомату
+        со скоростью 6,0–12,0 мл/час или 5 МЕ на 500 мл раствора натрия хлорида 0,9
+        % внутривенно со скоростью 40–60 капель в минуту или 1
       frequency_text: null
       duration_text: null
       route: null
@@ -352,17 +146,22 @@ conditions:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
         document_url: null
         local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-        page_start: null
+        page_start: 3
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: карбетоцина 1 мл сразу после рождения плода внутривенно м
-    - drug_name: метилэргометрина
+        quote: 'назначение утеротоников всем женщинам в третьем периоде родов: окситоцина
+          5 МЕ на 19 мл раствора NaCl 0,9 % в/в по инфузомату со скоростью 6,0–12,0
+          мл/час или 5 МЕ на 500 мл раствора NaCl 0,9 % в/в со скоростью 40–60 капель
+          в минуту или 10 МЕ в/м сразу после рождения последа'
+    - drug_name: Карбетоцин
       active_substance: null
       drug_group: null
-      dose_text: 0,2 мг
+      dose_text: 1 мл внутривенно медленно сразу после рождения последа (не применять
+        повторно) по решению врачебного консилиума (у женщин среднего и высокого риска
+        развития ПРК).
       frequency_text: null
       duration_text: null
       route: null
@@ -374,17 +173,21 @@ conditions:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
         document_url: null
         local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-        page_start: null
+        page_start: 3
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: 'метилэргометрина 0,2 мг в 1 мл внутривенно медленно сразу после '
-    - drug_name: скоростью
+        quote: карбетоцина 1 мл сразу после рождения последа внутривенно медленно
+          (не следует применять карбетоцин повторно) по решению врачебного консилиума
+          (у женщин среднего и высокого риска развития ПРК)
+    - drug_name: Метилэргометрин
       active_substance: null
       drug_group: null
-      dose_text: 1,0 мл
+      dose_text: 0,2 мг в 1 мл внутривенно медленно или внутримышечно сразу после
+        рождения последа у женщин среднего и высокого риска развития ПРК с учетом
+        медицинских противопоказаний при артериальной гипертензии, пр
       frequency_text: null
       duration_text: null
       route: null
@@ -396,17 +199,20 @@ conditions:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
         document_url: null
         local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-        page_start: null
+        page_start: 3
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "скоростью 1,0 мл/мин и дальнейшая инфузия 2 мг/кг \nв час"
-    - drug_name: кровопотере
+        quote: назначение метилэргометрина 0,2 мг в 1 мл внутривенно медленно или
+          внутримышечно сразу после рождения последа у женщин среднего и высокого
+          риска развития ПРК с учетом медицинских противопоказаний
+    - drug_name: Транексамовая кислота
       active_substance: null
       drug_group: null
-      dose_text: 1000 мл
+      dose_text: 15–20 мг/кг со скоростью 1,0 мл/мин и дальнейшая инфузия 2 мг/кг
+        в час до остановки ПРК (женщинам с высоким уровнем риска развития ПРК).
       frequency_text: null
       duration_text: null
       route: null
@@ -418,190 +224,24 @@ conditions:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
         document_url: null
         local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-        page_start: null
+        page_start: 4
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: кровопотере 1000 мл и более после родов через естественные р
-    - drug_name: достигла
-      active_substance: null
-      drug_group: null
-      dose_text: 1500 мл
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "достигла 1500 мл и более – производят \nнадвлагалищную амп"
-    - drug_name: апреля
-      active_substance: null
-      drug_group: null
-      dose_text: 2022 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: апреля 2022 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: менее
-      active_substance: null
-      drug_group: null
-      dose_text: 5 мл
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "менее 5 мл/кг (менее \n500,0 мл крови)"
-    - drug_name: более
-      active_substance: null
-      drug_group: null
-      dose_text: 500 мл
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: более 500 мл во время родов через естественные родовы
+        quote: применение транексамовой кислоты внутривенно женщинам с высоким уровнем
+          риска развития ПРК 15–20 мг/кг со скоростью 1,0 мл/мин и дальнейшая инфузия
+          2 мг/кг в час до остановки ПРК
     procedures: []
     surgery: []
     source_refs: []
-  follow_up:
-  - text: контроль
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: контроль
-  - text: через 1 мес
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: через 1 мес
+  follow_up: []
   hospitalization: []
-  routing: []
-  red_flags:
-  - text: "ка \nвенозных \nтромбоэмболических \nосложнений \nу женщин \nво \nвремя\
-      \ \nбеременности, родов, в послеродовом периоде и у их детей» (прилагается);\
-      \ \nклини"
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
     source_ref:
       protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
       document_url: null
@@ -612,56 +252,25 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: "ка \nвенозных \nтромбоэмболических \nосложнений \nу женщин \nво \nвремя\
-        \ \nбеременности, родов, в послеродовом периоде и у их детей» (прилагается);\
-        \ \nклини"
-  - text: "лопатии \nвследствие эмболии амниотической жидкостью, преждевременной отслойки\
-      \ нормально \nрасположенной плаценты, тяжелой преэклампсии.\n\n[other] 6."
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "лопатии \nвследствие эмболии амниотической жидкостью, преждевременной\
-        \ отслойки нормально \nрасположенной плаценты, тяжелой преэклампсии.\n\n[other]\
-        \ 6."
+      quote: госпитализация
+  red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми
-    document_url: null
-    local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_с_послеродовыми_кровотечениями_в_стационарных_условиях_пост_МЗ_01042022_24.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Оказание медицинской помощи женщинам с послеродовыми кровотечениями в стационарных
-      условиях
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:03.857217+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T15:15:28.883536+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:03.864294+00:00'
+  validated_at: '2026-07-20T15:15:28.888279+00:00'

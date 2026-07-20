@@ -1,9 +1,9 @@
 protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение дет население с болезнью Крона
+  title: Диагностика и лечение болезни Крона у детей
   url: null
   local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
   document_sha256: null
@@ -19,15 +19,15 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_лечение_дет_население_с_болезнью_кро
-  name: Диагностика лечение дет население с болезнью Крона
+- condition_id: crohn_disease
+  name: Болезнь Крона
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -36,15 +36,12 @@ conditions:
   - K50.1
   - K50.8
   - K50.9
-  - C90.0
-  - K04.7
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[classification] 14. При сложностях в постановке диагноза БК можно ориентироваться
-        на признаки (стр. 7)'
+    - text: длительная хроническая диарея (более 6 недель) чаще без примеси крови
       logic_group: null
       operator: unknown
       values: []
@@ -61,9 +58,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 14. При сложностях в постановке диагноза БК можно
-          ориентироваться на признаки (стр. 7)'
-    - text: Диагноз БК может быть установлен при наличии одного основного и одного
+        quote: длительная хроническая диарея (более 6 недель) чаще без примеси крови
+    - text: абдоминальная боль упорного характера с четкой локализацией
       logic_group: null
       operator: unknown
       values: []
@@ -80,9 +76,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Диагноз БК может быть установлен при наличии одного основного и одного
-    - text: '[classification] 15. Дифференциальный диагноз БК проводят с язвенным
-        колитом, острыми (стр. 7)'
+        quote: абдоминальная боль упорного характера с четкой локализацией
+    - text: потеря массы тела, значительный дефицит массы тела, отставание в росте
       logic_group: null
       operator: unknown
       values: []
@@ -99,9 +94,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 15. Дифференциальный диагноз БК проводят с язвенным
-          колитом, острыми (стр. 7)'
-    - text: '[classification] 16. Формулировка диагноза БК включает: (стр. 7)'
+        quote: потеря массы тела, значительный дефицит массы тела, отставание в росте
+    - text: гематохезия
       logic_group: null
       operator: unknown
       values: []
@@ -118,9 +112,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 16. Формулировка диагноза БК включает: (стр. 7)'
-    - text: 16.1. диагноз в соответствии с Парижской педиатрической классификацией
-        БК
+        quote: гематохезия
+    - text: длительная лихорадка неясного генеза
       logic_group: null
       operator: unknown
       values: []
@@ -137,9 +130,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 16.1. диагноз в соответствии с Парижской педиатрической классификацией
-          БК
-    - text: '[classification] 16. Формулировка диагноза БК включает: (стр. 7)'
+        quote: длительная лихорадка неясного генеза
+    - text: длительная анемия (чаще железодефицитная)
       logic_group: null
       operator: unknown
       values: []
@@ -156,8 +148,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 16. Формулировка диагноза БК включает: (стр. 7)'
-    - text: '| № п/п | Критерий | Градации |'
+        quote: длительная анемия (чаще железодефицитная)
+    - text: перианальные осложнения (хронические анальные трещины, парапроктит, свищи
+        прямой кишки)
       logic_group: null
       operator: unknown
       values: []
@@ -174,8 +167,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '| № п/п | Критерий | Градации |'
-    - text: difficile) не менее чем в 3 отдельных порциях стула с определением
+        quote: перианальные осложнения (хронические анальные трещины, парапроктит,
+          свищи прямой кишки)
+    - text: Острое течение (менее 6 месяцев от начала заболевания)
       logic_group: null
       operator: unknown
       values: []
@@ -192,11 +186,137 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: difficile) не менее чем в 3 отдельных порциях стула с определением
+        quote: Острое течение (менее 6 месяцев от начала заболевания)
+    - text: Хроническое непрерывное течение (отсутствие более чем 6-месячных периодов
+        ремиссии на фоне адекватной терапии)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хроническое непрерывное течение (отсутствие более чем 6-месячных периодов
+          ремиссии на фоне адекватной терапии)
+    - text: Хроническое рецидивирующее течение (наличие более чем 6-месячных периодов
+        ремиссии)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хроническое рецидивирующее течение (наличие более чем 6-месячных периодов
+          ремиссии)
+    - text: Стероидорезистентность (сохранение активности заболевания, несмотря на
+        пероральный прием стандартной дозы СК в течение 7–14 дней)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Стероидорезистентность (сохранение активности заболевания, несмотря
+          на пероральный прием стандартной дозы СК в течение 7–14 дней)
+    - text: Стероидозависимость (увеличение степени клинической активности БК на фоне
+        снижения дозы СК; возобновление симптомов БК в течение 3 месяцев после полной
+        отмены СК; терапию СК не удается прекратить в течение 14–16 недель и более)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Стероидозависимость (увеличение степени клинической активности БК на
+          фоне снижения дозы СК; возобновление симптомов БК в течение 3 месяцев после
+          полной отмены СК; терапию СК не удается прекратить в те
+    - text: Рефрактерность к иммунодепрессантам (азатиоприн, меркаптопурин) или антиметаболитам
+        (метотрексат) (сохраняется активность заболевания или развивается обострение,
+        несмотря на прием ЛП в адекватной дозе в течение не менее 3 месяцев)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Рефрактерность к иммунодепрессантам (азатиоприн, меркаптопурин) или
+          антиметаболитам (метотрексат) (сохраняется активность заболевания или развивается
+          обострение, несмотря на прием ЛП в адекватной дозе
+    - text: Рефрактерность к ГИБП (нет снижения активности заболевания или достижения
+        клинической ремиссии к 12–14 неделям лекарственной терапии или после достижения
+        ответа на лечение в дальнейшем наблюдается ухудшение состояния пациента)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Рефрактерность к ГИБП (нет снижения активности заболевания или достижения
+          клинической ремиссии к 12–14 неделям лекарственной терапии или после достижения
+          ответа на лечение в дальнейшем наблюдается уху
     optional: []
     exclusion: []
   required_exams:
-  - name: ОАК
+  - name: Общий анализ крови
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -210,15 +330,14 @@ conditions:
       protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
       document_url: null
       local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-      page_start: null
+      page_start: 3
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "ледования: \nобщий анализ крови (далее – ОАК); \nобщий анализ мочи (далее\
-        \ – ОАМ); \nбиохимический \nанализ \nкрови \n(далее – \nБА"
-  - name: УЗИ
+      quote: общий анализ крови (далее – ОАК);
+  - name: Общий анализ мочи
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -232,15 +351,14 @@ conditions:
       protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
       document_url: null
       local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-      page_start: null
+      page_start: 3
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: ": \nультразвуковое исследование (далее – УЗИ) органов брюшной полости\
-        \ (далее – \nОБП); \nтрансабдоминальное УЗИ кишечника; \nко"
-  - name: ЭГДС
+      quote: общий анализ мочи (далее – ОАМ);
+  - name: Биохимический анализ крови
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -254,15 +372,16 @@ conditions:
       protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
       document_url: null
       local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-      page_start: null
+      page_start: 3
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "а; \nэзофагогастродуоденоскопия (далее – ЭГДС) с биопсией из пищевода,\
-        \ желудка \nи двенадцатиперстной кишки; \nУЗИ сердца; \nэле"
-  - name: ЭКГ
+      quote: биохимический анализ крови (далее – БАК) с определением билирубина, аспартатаминотрансферазы
+        (далее – АсАТ), аланинаминотрансферазы (далее – АлАТ), щелочной фосфатазы,
+        гамма-глютамилтранспептидазы, общего
+  - name: Серологический скрининг на целиакию
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -276,106 +395,554 @@ conditions:
       protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
       document_url: null
       local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-      page_start: null
+      page_start: 3
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "И сердца; \nэлектрокардиограмма (далее – ЭКГ);\n\n[diagnostics] 10.\
-        \ Обязательные лабораторные и инструментальные диагностическ"
-  conditional_exams: []
+      quote: серологический скрининг на целиакию (уровень антител к диамидированному
+        глиадину / глиадину IgG, антител к тканевой трансглютаминазе классов IgA)
+        (выполняется в областных (г. Минск) и республиканских организациях
+  - name: Иммунограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: иммунограмма (выполняется в областных (г. Минск) и республиканских организациях
+        здравоохранения);
+  - name: Молекулярно-биологическое исследование крови на ДНК ЦМВ и вирус Эпштейна-Барр
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: молекулярно-биологическое исследование крови для обнаружения ДНК цитомегаловируса
+        (далее – ЦМВ) и к вирусу Эпштейна-Барр;
+  - name: Уровень фекального кальпротектина
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: уровень фекального кальпротектина;
+  - name: Копрологическое исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: копрологическое исследование;
+  - name: Бактериологическое исследование мазка из прямой кишки и/или кала на патогенную
+      кишечную флору и Clostridioides difficile
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: бактериологическое исследование мазка из прямой кишки и (или) бактериологическое
+        исследование кала на патогенную кишечную флору и Clostridioides difficile
+        (далее – Cl. difficile) не менее чем в 3 отдельных порциях
+  - name: Анализ кала на яйца гельминтов, лямблиоз, амебиаз
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: анализ кала на яйца гельминтов, лямблиоз, амебиаз;
+  - name: Ультразвуковое исследование органов брюшной полости
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ультразвуковое исследование (далее – УЗИ) органов брюшной полости (далее
+        – ОБП);
+  - name: Трансабдоминальное УЗИ кишечника
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: трансабдоминальное УЗИ кишечника;
+  - name: Колоноилеоскопия с множественной биопсией
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: колоноилеоскопия с множественной биопсией (не менее 2 фрагментов из каждого
+        осмотренного отдела кишечника; биоптаты берутся как из измененных, так и из
+        эндоскопически нормальных участков; фрагменты из
+  - name: Эзофагогастродуоденоскопия с биопсией
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: эзофагогастродуоденоскопия (далее – ЭГДС) с биопсией из пищевода, желудка
+        и двенадцатиперстной кишки;
+  - name: УЗИ сердца
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗИ сердца;
+  - name: Электрокардиограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: электрокардиограмма (далее – ЭКГ);
+  conditional_exams:
+  - name: Анализ кала на токсины Cl. difficile
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: анализ кала на токсины Cl. difficile (при первичном обращении или при
+        атипичном (тяжелом) течении рецидива);
+  - name: Ректосигмоскопия с множественной биопсией
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при высокой активности колита и тяжелом состоянии пациента для первичного
+        установления диагноза допускается проведение ректосигмоскопии с множественной
+        биопсией, колоноилеоскопия откладывается
+  - name: Определение группы крови по системам АВ0 и резус
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение группы крови по системам АВ0 и резус;
+  - name: Исследование показателей гемостаза
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'исследование показателей гемостаза: определение активированного частичного
+        тромбопластинового времени, протромбинового времени с расчетом международного
+        нормализованного отношения, определение концентрации'
+  - name: Обнаружение антител к вирусу иммунодефицита человека
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: обнаружение антител к вирусу иммунодефицита человека;
+  - name: Определение в кале антигенов Campylobacter и Escherichia coli O157:H7
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение в кале антигенов Campylobacter и Escherichia coli O157:H7
+        (при первичном обращении или при атипичном (тяжелом) течении рецидива),
+  - name: Определение в кале антигенов Yersinia enterocolitica и/или анализ крови
+      на антитела
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение в кале антигенов Yersinia enterocolitica и (или) анализ крови
+        на антитела к Yersinia enterocolitica (при первичном обращении в случае поражения
+        тонкой кишки);
+  - name: Определение концентраций антител к цитоплазме нейтрофилов (p-ANCA) и антител
+      к сахаромицетам (ASCA)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение концентраций антител к цитоплазме нейтрофилов (p-ANCA) и
+        антител к сахаромицетам (ASCA) (при трудностях в дифференциальной диагностике
+        с язвенным колитом) (выполняется в областных
+  - name: Определение уровня общего IgE и специфических IgE к пищевым аллергенам
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение уровня общего IgE и специфических IgE к пищевым аллергенам
+        (выполняется в областных (г. Минск) и республиканских организациях здравоохранения);
+  - name: Проба Манту, или диаскинтест, или квантифероновый тест
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: проба Манту, или диаскинтест, или квантифероновый тест (при дифференциальной
+        диагностике с туберкулезом, перед началом лечения генно-инженерными биологическими
+        ЛП (далее – ГИБП), а также ежегодно
+  - name: Определение уровня общего 25-гидроксивитамина D
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение уровня общего 25-гидроксивитамина D;
+  - name: Определение уровня альфа-1 гликопротеина
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение уровня альфа-1 гликопротеина;
   treatment:
-    non_drug:
-    - text: '[treatment] 3. Для целей настоящего клинического протокола используются
-        основные термины (стр. 2)'
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 3. Для целей настоящего клинического протокола используются
-          основные термины (стр. 2)'
-    - text: «Об обращении лекарственных средств», Законом Республики Беларусь от 19
-        ноября
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: «Об обращении лекарственных средств», Законом Республики Беларусь от
-          19 ноября
-    - text: '1993 г. № 2570-XII «О правах ребенка», а также следующий термин и его
-        определение:'
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '1993 г. № 2570-XII «О правах ребенка», а также следующий термин и
-          его определение:'
-    - text: болезнь Крона (далее – БК) – хроническое, рецидивирующее заболевание неясной
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: болезнь Крона (далее – БК) – хроническое, рецидивирующее заболевание
-          неясной
-    - text: этиологии, характеризующееся трансмуральным, сегментарным воспалением
-        стенки
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: этиологии, характеризующееся трансмуральным, сегментарным воспалением
-          стенки
-    - text: тонкой и (или) толстой кишки или всего желудочно-кишечного тракта (далее
-        – ЖКТ)
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: тонкой и (или) толстой кишки или всего желудочно-кишечного тракта (далее
-          – ЖКТ)
+    non_drug: []
     drug_groups: []
     drugs:
-    - drug_name: июля
+    - drug_name: Преднизолон
       active_substance: null
       drug_group: null
-      dose_text: 2006 г
+      dose_text: Таблетки 5 мг, перорально 1 мг/кг 1–2 раза в сутки (макс. 40 мг/сутки),
+        при недостаточном эффекте до 1,5 мг/кг (макс. 60 мг/сутки). При отсутствии
+        эффекта от перорального применения СК в течение неско
       frequency_text: null
       duration_text: null
       route: null
@@ -387,17 +954,21 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: июля 2006 г
-    - drug_name: ноября
+        quote: преднизолон, таблетки 5 мг, перорально 1 мг/кг 1–2 раза в сутки (максимальная
+          доза 40 мг/сутки), при недостаточном эффекте доза может быть увеличена до
+          1,5 мг/кг (максимальная доза 60 мг/сутки)
+    - drug_name: Метилпреднизолон
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: Таблетки 4 мг, 8 мг, 16 мг и 32 мг (эквивалентно преднизолону 5 мг=4
+        мг метилпреднизолона). Стерильный порошок (лиофилизат) для инъекций 40 мг,
+        125 мг, 250 мг, 500 мг, 1000 мг в/в (эквивалентно предни
       frequency_text: null
       duration_text: null
       route: null
@@ -409,17 +980,21 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "ноября \n1993 г"
-    - drug_name: таблетки
+        quote: в эквивалентной дозе (5 мг преднизолона соответствует 4 мг метилпреднизолона)
+          может быть назначен метилпреднизолон, таблетки 4, 8, 16 и 32 мг. Метилпреднизолон,
+          стерильный порошок для инъекций, в/в в эквивалентных дозах.
+    - drug_name: Месалазин
       active_substance: null
       drug_group: null
-      dose_text: 5 мг
+      dose_text: Суппозитории ректальные 250 мг, 500 мг, суспензия ректальная 4 г/60
+        мл. Доза 25 мг/кг (до 1 г/сутки). При поражении дистальных отделов толстой
+        кишки, по решению врачебного консилиума. Суппозитории при
       frequency_text: null
       duration_text: null
       route: null
@@ -431,216 +1006,22 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-        page_start: null
+        page_start: 10
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: 'таблетки 5 мг, перорально 1 мг/кг 1–2 раза в сутки в '
-    - drug_name: доза
-      active_substance: null
-      drug_group: null
-      dose_text: 40 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'доза 40 мг/сутки), при недостаточном эффекте доза '
-    - drug_name: соответствует
-      active_substance: null
-      drug_group: null
-      dose_text: 4 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "соответствует 4 мг метилпреднизолона) \nможет быть назначен "
-    - drug_name: инъекций
-      active_substance: null
-      drug_group: null
-      dose_text: 40 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "инъекций 40 мг,  \n125 мг, 250 мг, 500 мг, 1000 мг – вв"
-    - drug_name: преднизолон
-      active_substance: null
-      drug_group: null
-      dose_text: 30 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: преднизолон 30 мг в/в соответствует метилпреднизолону 25 м
-    - drug_name: ректальные
-      active_substance: null
-      drug_group: null
-      dose_text: 250 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "ректальные 250 мг, суппозитории ректальные 500 мг, \nсуспе"
-    - drug_name: ректальная
-      active_substance: null
-      drug_group: null
-      dose_text: 4 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ректальная 4 г/60 мл во флаконах 60 мл – в дозе 25 мг/
-    - drug_name: апреля
-      active_substance: null
-      drug_group: null
-      dose_text: 2024 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: апреля 2024 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
+        quote: месалазин, суппозитории ректальные 250 мг, суппозитории ректальные
+          500 мг, суспензия ректальная 4 г/60 мл во флаконах 60 мл – в дозе 25 мг/кг
+          (до 1 г/сутки). Ректальная терапия месалазином... назначается по решению
+          врачебного консилиума
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: контроль
+  - text: После резекции кишки эндоскопическая оценка должна быть проведена через
+      6–12 месяцев с целью выявления послеоперационного рецидива.
     timing: null
     required_if: []
     expected_actions: []
@@ -654,8 +1035,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
-  - text: контроль
+      quote: После резекции кишки эндоскопическая оценка должна быть проведена через
+        6–12 месяцев с целью выявления послеоперационного рецидива.
+  - text: При наличии сопутствующего первичного склерозирующего холангита пациентам
+      старше 12 лет колоноилеоскопия проводится 1–2 раза в год, пациентам до 12 лет
+      периодичность обследования устанавливается в индивидуальном порядке с учетом
+      факторов риска.
     timing: null
     required_if: []
     expected_actions: []
@@ -669,11 +1054,66 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
+      quote: При наличии сопутствующего первичного склерозирующего холангита пациентам
+        старше 12 лет колоноилеоскопия проводится 1–2 раза в год, пациентам до 12
+        лет периодичность обследования устанавливается в инд
+  - text: 'Контрольная эндоскопия показана при: пересмотре схемы лечения, оптимизации/интенсификации
+      лечения ГИБП, дифференциальной диагностике при наличии симптомов, не связанных
+      напрямую с признаками воспаления, контроле заживления слизистой при клинической
+      ремиссии.'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Контрольная эндоскопия показана при: пересмотре схемы лечения, оптимизации/интенсификации
+        лечения ГИБП, дифференциальной диагностике при наличии симптомов, не связанных
+        напрямую с признаками воспалени'
+  - text: Ежегодное проведение пробы Манту, диаскинтеста или квантиферонового теста
+      пациентам, получающим лечение генно-инженерными биологическими ЛП.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Ежегодное проведение пробы Манту, диаскинтеста или квантиферонового теста
+        пациентам, получающим лечение генно-инженерными биологическими ЛП.
+  - text: По достижении ремиссии проводится дальнейшая поддерживающая лекарственная
+      терапия.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: По достижении ремиссии проводится дальнейшая поддерживающая лекарственная
+        терапия.
   hospitalization: []
   routing:
-  - text: '[routing] 25. Основные профилактические мероприятия при БК направлены на:
-      (стр. 12)'
+  - text: амбулаторно
     timing: null
     required_if: []
     source_ref:
@@ -686,35 +1126,58 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 25. Основные профилактические мероприятия при БК направлены
-        на: (стр. 12)'
-  red_flags: []
+      quote: амбулаторно
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags:
+  - text: Перед проведением капсульной эндоскопии необходимо исключить стриктуру или
+      сужение кишечника.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: перед проведением капсульной эндоскопии необходимо исключить стриктуру
+        или сужение кишечника;
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: gastroenterologiya_кп_диагностика_лечение_дет_население_с_болезнью_крона_пост_мз
-    document_url: null
-    local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика лечение дет население с болезнью Крона
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:28.427845+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T15:51:18.989835+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:28.437899+00:00'
+  validated_at: '2026-07-20T15:51:19.013985+00:00'

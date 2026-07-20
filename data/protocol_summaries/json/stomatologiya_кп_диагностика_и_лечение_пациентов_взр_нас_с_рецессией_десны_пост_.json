@@ -1,7 +1,7 @@
 {
   "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "Диагностика и лечение пациентов взрослое население с рецессией десны",
@@ -32,11 +32,15 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_и_лечение_пациентов_взрослое_населен",
-      "name": "Диагностика и лечение пациентов взрослое население с рецессией десны",
+      "condition_id": "gingival_recession",
+      "name": "рецессия десны",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
+        "K06.0",
+        "K06.00",
+        "K06.01",
+        "K07.9",
         "B24"
       ],
       "condition_applicability": null,
@@ -45,7 +49,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[criteria] 5. Признаками и критериями, определяющими рецессию десны, являются: (стр. 5)",
+            "text": "Жалобы на эстетический недостаток улыбки",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -62,11 +66,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 5. Признаками и критериями, определяющими рецессию десны, являются: (стр. 5)"
+              "quote": "Жалобы на эстетический недостаток улыбки"
             }
           },
           {
-            "text": "критерии рецессии десны: сохранение целостности зубодесневого прикрепления,",
+            "text": "Отсутствие кровоточивости при десневом зондировании",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -83,11 +87,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "критерии рецессии десны: сохранение целостности зубодесневого прикрепления,"
+              "quote": "Отсутствие кровоточивости при десневом зондировании"
             }
           },
           {
-            "text": "КЛАССИФИКАЦИЯ, ПРИЗНАКИ И КРИТЕРИИ РЕЦЕССИИ ДЕСНЫ",
+            "text": "Отсутствие признаков воспаления десны",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -104,11 +108,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "КЛАССИФИКАЦИЯ, ПРИЗНАКИ И КРИТЕРИИ РЕЦЕССИИ ДЕСНЫ"
+              "quote": "Отсутствие признаков воспаления десны"
             }
           },
           {
-            "text": "а также определение медицинских показаний к лечению, выбор метода лечения и тактики",
+            "text": "Сглаживание десневого края",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -125,19 +129,430 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "а также определение медицинских показаний к лечению, выбор метода лечения и тактики"
+              "quote": "Сглаживание десневого края"
+            }
+          },
+          {
+            "text": "Сохранение целостности зубодесневого прикрепления",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Сохранение целостности зубодесневого прикрепления"
+            }
+          },
+          {
+            "text": "Глубина десневого зондирования 3 мм и менее",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Глубина десневого зондирования 3 мм и менее"
+            }
+          },
+          {
+            "text": "Отсутствие рентгенологических изменений в периодонте и межальвеолярной кости",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Отсутствие рентгенологических изменений в периодонте и межальвеолярной кости"
+            }
+          },
+          {
+            "text": "Индексная оценка IR > 3 %",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Индексная оценка IR > 3 %"
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
-      "conditional_exams": [],
+      "required_exams": [
+        {
+          "name": "Зондирование десневых карманов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "глубина десневого зондирования 3 мм и менее"
+          }
+        },
+        {
+          "name": "Рентгенография зубов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "отсутствие рентгенологических изменений в периодонте и межальвеолярной кости в области зуба с рецессией десны"
+          }
+        },
+        {
+          "name": "Индексная оценка IR",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "индексная оценка (IR > 3 %)"
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Индекс зубного налета (PLI)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятия (по медицинским показаниям) являются: клинические мероприятия: индекс зубного налета – PLI (Silness, Loe)"
+          }
+        },
+        {
+          "name": "Индекс кровоточивости десны (ВОЗ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятия (по медицинским показаниям) являются: клинические мероприятия: ... индекс кровоточивости десны (ВОЗ)"
+          }
+        },
+        {
+          "name": "Вакуумная проба на стойкость капилляров десны (В.И.Кулаженко)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятия (по медицинским показаниям) являются: клинические мероприятия: ... вакуумная проба на стойкость капилляров десны (В.И.Кулаженко)"
+          }
+        },
+        {
+          "name": "Индекс периферического кровообращения десны (Л.Н.Дедова)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятия (по медицинским показаниям) являются: клинические мероприятия: ... индекс периферического кровообращения десны (Л.Н.Дедова)"
+          }
+        },
+        {
+          "name": "Прицельная внутриротовая контактная рентгенография зубов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятия (по медицинским показаниям) являются: ... инструментальные диагностические исследования (лучевые методы исследования): прицельная внутриротовая контактная рентгенография зубов"
+          }
+        },
+        {
+          "name": "Ортопантомография челюстей",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятия (по медицинским показаниям) являются: ... инструментальные диагностические исследования (лучевые методы исследования): ... ортопантомография челюстей"
+          }
+        },
+        {
+          "name": "Конусно-лучевая компьютерная томография челюстно-лицевой области",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятия (по медицинским показаниям) являются: ... инструментальные диагностические исследования (лучевые методы исследования): ... конусно-лучевая компьютерная томография челюстно-лицевой области"
+          }
+        },
+        {
+          "name": "Консультация врача-рентгенолога",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятия (по медицинским показаниям) являются: ... консультация врача-специалиста (врача-рентгенолога, врача-стоматолога-ортопеда)"
+          }
+        },
+        {
+          "name": "Консультация врача-стоматолога-ортопеда",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятия (по медицинским показаниям) являются: ... консультация врача-специалиста (врача-рентгенолога, врача-стоматолога-ортопеда)"
+          }
+        },
+        {
+          "name": "Фотографирование зубных рядов для оценки изменения десневого контура",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятия (по медицинским показаниям) являются: ... фотографирование для оценки изменения десневого контура: зубные ряды в окклюзии (фас, правая половина, левая половина, верхний зубной ряд, нижний зубной ряд)."
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 1. Настоящий клинический протокол определяет общие требования к объему (стр. 4)",
+            "text": "Своевременная диагностика и лечение зубочелюстных аномалий",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
               "document_url": null,
@@ -148,11 +563,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 1. Настоящий клинический протокол определяет общие требования к объему (стр. 4)"
+              "quote": "Своевременная диагностика и лечение зубочелюстных аномалий"
             }
           },
           {
-            "text": "оказания медицинской помощи на терапевтическом, ортодонтическом и хирургическом",
+            "text": "Своевременная диагностика и лечение нарушений архитектоники мягких тканей полости рта",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
               "document_url": null,
@@ -163,11 +578,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "оказания медицинской помощи на терапевтическом, ортодонтическом и хирургическом"
+              "quote": "Своевременная диагностика и лечение нарушений архитектоники мягких тканей полости рта"
             }
           },
           {
-            "text": "стоматологических приемах в амбулаторных условиях пациентам (взрослое население)",
+            "text": "Своевременная диагностика и лечение болезней периодонта",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
               "document_url": null,
@@ -178,11 +593,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "стоматологических приемах в амбулаторных условиях пациентам (взрослое население)"
+              "quote": "Своевременная диагностика и лечение болезней периодонта"
             }
           },
           {
-            "text": "с рецессией десны (шифр по Международной статистической классификации болезней",
+            "text": "Своевременная диагностика и лечение кариеса зубов",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
               "document_url": null,
@@ -193,11 +608,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "с рецессией десны (шифр по Международной статистической классификации болезней"
+              "quote": "Своевременная диагностика и лечение кариеса зубов"
             }
           },
           {
-            "text": "и проблем, связанных со здоровьем, десятого пересмотра – К06.0 Рецессия десны:",
+            "text": "Медицинская профилактика травмы тканей десны при проведении стоматологических манипуляций",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
               "document_url": null,
@@ -208,11 +623,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "и проблем, связанных со здоровьем, десятого пересмотра – К06.0 Рецессия десны:"
+              "quote": "Медицинская профилактика травмы тканей десны при проведении стоматологических манипуляций"
             }
           },
           {
-            "text": "К06.00 Рецессия десны локализованная",
+            "text": "Медицинская профилактика парафункций",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
               "document_url": null,
@@ -223,17 +638,167 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "К06.00 Рецессия десны локализованная"
+              "quote": "Медицинская профилактика парафункций"
+            }
+          },
+          {
+            "text": "Регулярное механическое удаление зубного налета с помощью гигиенических средств",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Регулярное механическое удаление зубного налета с помощью гигиенических средств"
+            }
+          },
+          {
+            "text": "Профессиональное удаление зубных отложений",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Профессиональное удаление зубных отложений"
+            }
+          },
+          {
+            "text": "Транскраниальная (центральная) электроаналгезия или электросон, или мезодиэнцефальная модуляция (10–15 процедур ежедневно)",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Транскраниальная (центральная) электроаналгезия или электросон, или мезодиэнцефальная модуляция (10–15 процедур ежедневно)"
+            }
+          },
+          {
+            "text": "Магнитотерапия местная (магнитофорные аппликаторы, магнитная капа) (20–30 процедур ежедневно)",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Магнитотерапия местная (магнитофорные аппликаторы, магнитная капа) (20–30 процедур ежедневно)"
+            }
+          },
+          {
+            "text": "Магнитолазеротерапия (5–10 процедур ежедневно)",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Магнитолазеротерапия (5–10 процедур ежедневно)"
+            }
+          },
+          {
+            "text": "Гигиенические мероприятия (мотивация и обучение гигиене полости рта, профессиональное удаление зубных отложений до показателей гигиенического индекса OHI-S < 0,3–0,6 балла).",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Гигиенические мероприятия (мотивация и обучение гигиене полости рта, профессиональное удаление зубных отложений до показателей гигиенического индекса OHI-S < 0,3–0,6 балла)."
+            }
+          },
+          {
+            "text": "Устранение местных неблагоприятных факторов, способствующих развитию рецессии десны.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Устранение местных неблагоприятных факторов, способствующих развитию рецессии десны."
+            }
+          },
+          {
+            "text": "Хирургическое лечение: вестибулопластика для профилактики прогрессирования рецессии десны; мукогингивальные операции с использованием коронарно смещаемого, латерально смещаемого лоскутов, с применением десневых и (или) соединительнотканных аутотрансплантатов или имплантационных материалов.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Хирургическое лечение: вестибулопластика для профилактики прогрессирования рецессии десны; мукогингивальные операции с использованием коронарно смещаемого, латерально смещаемого лоскутов, с применение"
+            }
+          },
+          {
+            "text": "Ортодонтическое лечение для улучшения положения зубов, зубных рядов и прикуса с применением съемных и несъемных ортодонтических аппаратов.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ортодонтическое лечение для улучшения положения зубов, зубных рядов и прикуса с применением съемных и несъемных ортодонтических аппаратов."
+            }
+          },
+          {
+            "text": "Транскраниальная (центральная) электроаналгезия или электросон, или мезодиэнцефальная модуляция (10–15 процедур ежедневно).",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Транскраниальная (центральная) электроаналгезия или электросон, или мезодиэнцефальная модуляция (10–15 процедур ежедневно)."
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "картриджах",
+            "drug_name": "Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1,7 мл",
+            "dose_text": "Раствор для местного и наружного применения 0,5 мг/мл. 5–10 мл раствора наносят на пораженную поверхность 2–3 раза в сутки (на тампоне или путем орошения) или для полосканий (смешивать с равным количе",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -245,20 +810,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 117,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "картриджах\n1,7 мл (1,8 мл), в ампулах\n2 мл"
+              "quote": "Хлоргексидин Раствор для местного и наружного применения 0,5 мг/мл Лекарственное средство применяется в виде орошений, полосканий и аппликаций – 5–10 мл раствора наносят на пораженную поверхность слизистой оболочки"
             }
           },
           {
-            "drug_name": "применения",
+            "drug_name": "Лидокаин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,5 мг",
+            "dose_text": "Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну, или путем смазывания ватным тамп",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -270,20 +835,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 8,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "применения 0,5 мг/мл | Лекарственное средство применяется"
+              "quote": "Лидокаин Спрей для местного применения 100 мг/мл во флаконах 50 мл Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну."
             }
           },
           {
-            "drug_name": "раствор",
+            "drug_name": "Лидокаин/Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2,5 мг",
+            "dose_text": "Анестезирующий гель в шприцах 12,5 г. Для аппликационной анестезии слизистой оболочки полости рта, в т. ч. перед инъекционной анестезией.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -295,20 +860,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 8,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "раствор 2,5 мг/мл (раствор 30 мг/мл разводят водой в с"
+              "quote": "Лидокаин/Хлоргексидин Анестезирующий гель в шприцах 12,5 г Для аппликационной анестезии слизистой оболочки полости рта, в т. ч. перед инъекционной анестезией."
             }
           },
           {
-            "drug_name": "шприцах",
+            "drug_name": "Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "12,5 г",
+            "dose_text": "Раствор для местного и наружного применения 0,5 мг/мл. В виде орошений, полосканий и аппликаций – 5–10 мл раствора наносят на пораженную поверхность слизистой оболочки полости рта или на десну с экспо",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -320,20 +885,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "шприцах 12,5 г | Для аппликационной анестезии слизистой"
+              "quote": "Раствор для местного и наружного применения 0,5 мг/мл. ... в виде орошений, полосканий и аппликаций – 5–10 мл раствора наносят на пораженную поверхность слизистой оболочки полости рта или на десну с экспозицией 1–3 мин 2–3 раза в сутки"
             }
           },
           {
-            "drug_name": "января",
+            "drug_name": "Бензилдиметил- миристоиламино- пропиламмоний",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2023 г",
+            "dose_text": "Раствор для наружного (местного) применения 0,01 % водного раствора. Рекомендуется полоскание полости рта 10–15 мл лекарственного средства 3–4 раза в сутки в течение 3–5 дней.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -345,20 +910,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "января 2023 г"
+              "quote": "Раствор для наружного (местного) применения 0,01 % водного раствора. Рекомендуется полоскание полости рта 10–15 мл лекарственного средства 3–4 раза в сутки в течение 3–5 дней."
             }
           },
           {
-            "drug_name": "июня",
+            "drug_name": "Повидон йод",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1993 г",
+            "dose_text": "Раствор для местного и наружного применения 10 %. Наносится на поверхность слизистой оболочки полости рта или десны смазыванием, в виде марлевых или ватных тампонов необходимое количество раз, экспози",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -370,20 +935,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июня \n1993 г"
+              "quote": "Раствор для местного и наружного применения 10 %. Раствор наносится на поверхность слизистой оболочки полости рта или десны смазыванием, в виде марлевых или ватных тампонов необходимое количество раз, экспозиция не менее 2 мин."
             }
           },
           {
-            "drug_name": "октября",
+            "drug_name": "Перекись водорода",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2011 г",
+            "dose_text": "Раствор для наружного применения 30 мг/мл. Для полоскания полости рта, нанесения на слизистую оболочку полости рта, десну используется раствор 2,5 мг/мл (раствор 30 мг/мл разводят водой в соотношении ",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -395,20 +960,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "октября 2011 г"
+              "quote": "Раствор для наружного применения 30 мг/мл. Для полоскания полости рта, нанесения на слизистую оболочку полости рта, десну используется раствор 2,5 мг/мл (раствор 30 мг/мл разводят водой в соотношении 1:11)."
             }
           },
           {
-            "drug_name": "марта",
+            "drug_name": "Полигексаметиленбигуанид гидрохлорид/Феноксиэтанол",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2023 г",
+            "dose_text": "Раствор для наружного и местного применения 20 %. Используется для полоскания полости рта 2–3 раза в день, после еды в течение 15–30 сек. На одно полоскание необходимо 15–20 мл.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -420,13 +985,163 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "марта 2023 г"
+              "quote": "Раствор для наружного и местного применения 20 %. Используется для полоскания полости рта 2–3 раза в день, после еды в течение 15–30 сек. На одно полоскание необходимо 15–20 мл лекарственного средства"
+            }
+          },
+          {
+            "drug_name": "Калия перманганат",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Порошок для приготовления раствора для местного и наружного применения. Местно, в виде водного раствора для полоскания полости рта 0,01–0,02–0,1 % раствор 4–5 раз в день в течении 3–5 дней. На одно по",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Порошок для приготовления раствора для местного и наружного применения. Местно, в виде водного раствора для полоскания полости рта 0,01–0,02–0,1 % раствор 4–5 раз в день в течении 3–5 дней. На одно полоскание необходимо 15–20 мл"
+            }
+          },
+          {
+            "drug_name": "Йод",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Раствор спиртовой 5 % для наружного применения. Применяется наружно. Раствором йода смачивают ватный тампон, который используют для обработки операционного поля.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Йод Раствор спиртовой 5 % для наружного применения Применяется наружно. Раствором йода смачивают ватный тампон, который используют для обработки операционного поля"
+            }
+          },
+          {
+            "drug_name": "Лизоцим/Пиридоксин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Таблетки для рассасывания. Применяется местно. Разовую дозу врач-специалист назначает индивидуально, учитывая состояние области нанесения лекарственного средства и общее состояние пациента.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лизоцим/Пиридоксин Таблетки для рассасывания Лекарственное средство применяется местно. Разовую дозу врач-специалист назначает индивидуально, учитывая состояние области нанесения лекарственного средства и общее состояние пациента"
+            }
+          },
+          {
+            "drug_name": "Лидокаин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Спрей для местного применения 100 мг/мл. Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну. Можно также наносить путем смазывания смоченным ва",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": 8,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Спрей для местного применения 100 мг/мл ... Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну."
+            }
+          },
+          {
+            "drug_name": "Лидокаин/Хлоргексидин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Анестезирующий гель в шприцах 12,5 г. Для аппликационной анестезии слизистой оболочки полости рта, в т. ч. перед инъекционной анестезией. Разовую дозу врач-специалист назначает индивидуально.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": 8,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Анестезирующий гель в шприцах 12,5 г. Для аппликационной анестезии слизистой оболочки полости рта, в т. ч. перед инъекционной анестезией. Разовую дозу врач-специалист назначает индивидуально"
+            }
+          },
+          {
+            "drug_name": "Артикаин/Эпинефрин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Раствор для инъекций (40 мг + 0,005 мг)/мл, (40 мг + 0,006 мг)/мл, (40 мг + 0,010 мг)/мл, (40 мг + 0,012 мг)/мл. Для инъекционного применения в полости рта в ткани, где отсутствует воспаление. Взрослы",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": 8,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Раствор для инъекций (40 мг + 0,005 мг)/мл... Лекарственное средство предназначен для инъекционного применения в полости рта и может вводиться только в ткани, где отсутствует воспаление. При выполнении одной лечебной процедуры взрослым можно вводить артикаин в дозе до 7 мг на 1 кг массы тела."
             }
           }
         ],
@@ -434,45 +1149,143 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
+      "follow_up": [
+        {
+          "text": "Поддерживающее лечение у врача-стоматолога-терапевта.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Поддерживающее лечение у врача-стоматолога-терапевта."
+          }
+        },
+        {
+          "text": "Избирательный подход к пациентам с рецессией десны с определением их в дифференцированную группу (основа поддерживающей терапии).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Избирательный подход к пациентам с рецессией десны с определением их в дифференцированную группу (основа поддерживающей терапии)."
+          }
+        },
+        {
+          "text": "Контроль прироста зубного налета.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Контроль прироста зубного налета."
+          }
+        },
+        {
+          "text": "Повторная оценка состояния тканей периодонта.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Повторная оценка состояния тканей периодонта."
+          }
+        }
+      ],
       "hospitalization": [],
-      "routing": [],
+      "routing": [
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        }
+      ],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_рецессией_десны_пост_МЗ_11.01.2023_4.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика и лечение пациентов взрослое население с рецессией десны"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:50.703543+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T18:04:15.112869+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-06-23T19:15:50.708424+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[gingival_recession].treatment.drugs[3]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[gingival_recession].treatment.drugs[11]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[gingival_recession].treatment.drugs[12]"
+      }
+    ],
+    "validated_at": "2026-07-20T18:04:15.127702+00:00"
   }
 }

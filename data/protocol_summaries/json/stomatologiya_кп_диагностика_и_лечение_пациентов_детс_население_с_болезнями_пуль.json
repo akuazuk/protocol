@@ -1,10 +1,10 @@
 {
   "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика и лечение пациентов детс население с болезнями пульпы",
+    "title": "Диагностика и лечение пациентов детского населения с болезнями пульпы",
     "url": null,
     "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,12 +32,18 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_и_лечение_пациентов_детс_население_с",
-      "name": "Диагностика и лечение пациентов детс население с болезнями пульпы",
+      "condition_id": "pulp_diseases",
+      "name": "Болезни пульпы",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "B24"
+        "K04.00",
+        "K04.01",
+        "K04.02",
+        "K04.03",
+        "K04.04",
+        "K04.05",
+        "K04.1"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -45,7 +51,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "КЛАССИФИКАЦИЯ, ПРИЗНАКИ И КРИТЕРИИ БОЛЕЗНЕЙ ПУЛЬПЫ",
+            "text": "гиперемия пульпы: быстро проходящие болевые ощущения от раздражителей, самопроизвольные боли отсутствуют.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -62,11 +68,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "КЛАССИФИКАЦИЯ, ПРИЗНАКИ И КРИТЕРИИ БОЛЕЗНЕЙ ПУЛЬПЫ"
+              "quote": "гиперемия пульпы: быстро проходящие болевые ощущения от раздражителей, самопроизвольные боли отсутствуют."
             }
           },
           {
-            "text": "[diagnostics] 5. Признаки и критерии, определяющие болезни пульпы: (стр. 3)",
+            "text": "острый пульпит: впервые появившиеся боли до 2 суток, часто ночные, от температурных раздражителей; глубокая кариозная полость, болезненное зондирование в точках, полость зуба не вскрыта, перкуссия безболезненна, снижение порога возбудимости пульпы.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -83,11 +89,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 5. Признаки и критерии, определяющие болезни пульпы: (стр. 3)"
+              "quote": "острый пульпит: впервые появившиеся боли до 2 суток, часто ночные, от температурных раздражителей; глубокая кариозная полость, болезненное зондирование в точках, полость зуба не вскрыта, перкуссия без"
             }
           },
           {
-            "text": "[diagnostics] 5. Признаки и критерии, определяющие болезни пульпы: (стр. 3)",
+            "text": "гнойный пульпит: самопроизвольная боль пульсирующего характера, иррадиирующая, резко возрастающая при приеме горячей пищи; резко болезненное зондирование дна, возможно вскрытие полости зуба с гноем, перкуссия может быть болезненной, порог электровозбудимости снижен.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -104,11 +110,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 5. Признаки и критерии, определяющие болезни пульпы: (стр. 3)"
+              "quote": "гнойный пульпит: самопроизвольная боль пульсирующего характера, иррадиирующая, резко возрастающая при приеме горячей пищи; резко болезненное зондирование дна, возможно вскрытие полости зуба с гноем, п"
             }
           },
           {
-            "text": "[diagnostics] 5. Признаки и критерии, определяющие болезни пульпы: (стр. 4)",
+            "text": "хронический пульпит: протекает бессимптомно, иногда ноющие боли, боли при приеме горячей или твердой пищи; может выявляться глубокая кариозная полость с пигментированным дентином.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -125,11 +131,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 5. Признаки и критерии, определяющие болезни пульпы: (стр. 4)"
+              "quote": "хронический пульпит: протекает бессимптомно, иногда ноющие боли, боли при приеме горячей или твердой пищи; может выявляться глубокая кариозная полость с пигментированным дентином."
             }
           },
           {
-            "text": "определение степени выраженности, определение медицинских показаний к лечению,",
+            "text": "гиперпластический пульпит: в раскрытой полости зуба определяется кровоточащая грануляционная ткань, боли при приеме пищи, расширение периодонтальной щели.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -146,19 +152,338 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "определение степени выраженности, определение медицинских показаний к лечению,"
+              "quote": "гиперпластический пульпит: в раскрытой полости зуба определяется кровоточащая грануляционная ткань, боли при приеме пищи, расширение периодонтальной щели."
+            }
+          },
+          {
+            "text": "хронический язвенный пульпит: отсутствие реакции на поверхностное зондирование, боль при глубоком зондировании, резко снижена электровозбудимость пульпы, рентгенологически выявляется расширение периодонтальной щели, иногда с разряжением костной ткани.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "хронический язвенный пульпит: отсутствие реакции на поверхностное зондирование, боль при глубоком зондировании, резко снижена электровозбудимость пульпы, рентгенологически выявляется расширение период"
+            }
+          },
+          {
+            "text": "некроз пульпы: полость зуба открыта, заполнена темным распадом с неприятным запахом, отсутствие реакции на поверхностное зондирование, сильная, но быстропроходящая боль при глубоком зондировании, снижена электровозбудимость, расширение периодонтальной щели с диффузным разрежением костной ткани на рентгенограмме.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "некроз пульпы: полость зуба открыта, заполнена темным распадом с неприятным запахом, отсутствие реакции на поверхностное зондирование, сильная, но быстропроходящая боль при глубоком зондировании, сниж"
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
-      "conditional_exams": [],
+      "required_exams": [
+        {
+          "name": "Медицинский осмотр",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При медицинском осмотре определяется глубокая кариозная полость, зондирование болезненно в одной или нескольких точках, полость зуба не вскрыта, перкуссия безболезненна."
+          }
+        },
+        {
+          "name": "Зондирование",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "зондирование болезненно в одной или нескольких точках, полость зуба не вскрыта... зондирование дна резко болезненно... При зондировании отмечается отсутствие реакции, глубокое зондирование вызывает боль."
+          }
+        },
+        {
+          "name": "Перкуссия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "перкуссия безболезненна. ... перкуссия может быть болезненной"
+          }
+        },
+        {
+          "name": "Электродиагностика",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При проведении электродиагностики определяется снижение порога возбудимости, рентгенологических изменений не выявляется; ... порог электровозбудимости снижен; ... Электровозбудимость пульпы резко снижена."
+          }
+        },
+        {
+          "name": "Рентгенография",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "рентгенологических изменений не выявляется; ... рентгенологически выявляется расширение периодонтальной щели, иногда с разряжением костной ткани; ... На рентгенограмме определяется расширение периодонтальной щели."
+          }
+        },
+        {
+          "name": "Сбор анамнеза",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "сбор анамнеза"
+          }
+        },
+        {
+          "name": "Осмотр полости рта",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "осмотр полости рта с помощью дополнительных инструментов, пальпация, перкуссия, оценка состояния твердых тканей зубов, зубных рядов, пломб, протезов и ортодонтических аппаратов..."
+          }
+        },
+        {
+          "name": "Индексная оценка стоматологического здоровья",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "индексная оценка стоматологического здоровья: индекс интенсивности кариеса зубов – КПУ, гигиенический индекс Green, Vermillion – OHI-S или индекс зубного налета Silness, Loe – PLI..."
+          }
+        },
+        {
+          "name": "Прицельная внутриротовая контактная рентгенография",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "инструментальные диагностические исследования (лучевые методы исследования): прицельная внутриротовая контактная рентгенография"
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Электроодонтометрия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "физический метод исследования: электроодонтометрия"
+          }
+        },
+        {
+          "name": "Лучевые методы исследования челюстно-лицевой области",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ортопантомография челюстей, конусно-лучевая компьютерная томография челюстно-лицевой области с применением программы для локальной зоны (детям с хроническим пульпитом в возрасте 6 лет и старше)"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 11. Планирование (стр. 5)",
+            "text": "Консервативные методы (прямая и непрямая пульпотерапия)",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
               "document_url": null,
@@ -169,11 +494,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 11. Планирование (стр. 5)"
+              "quote": "Консервативные методы (прямая и непрямая пульпотерапия)"
             }
           },
           {
-            "text": "мероприятия, направленные на сохранение жизнеспособности пульпы, обеспечение",
+            "text": "Хирургические методы (пульпотомия и пульпэктомия)",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
               "document_url": null,
@@ -184,11 +509,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "мероприятия, направленные на сохранение жизнеспособности пульпы, обеспечение"
+              "quote": "Хирургические методы (пульпотомия и пульпэктомия)"
             }
           },
           {
-            "text": "за счет зоны роста в постоянных зубах с незаконченным",
+            "text": "Восстановление коронки зуба",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
               "document_url": null,
@@ -199,11 +524,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "за счет зоны роста в постоянных зубах с незаконченным"
+              "quote": "Восстановление коронки зуба"
             }
           },
           {
-            "text": "формированием корней (апексогенез) и обеспечение физиологической резорбции корней",
+            "text": "Реставрация зубов с применением компомеров, гиомеров, композиционных материалов",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
               "document_url": null,
@@ -214,11 +539,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "формированием корней (апексогенез) и обеспечение физиологической резорбции корней"
+              "quote": "Реставрация зубов с применением компомеров, гиомеров, композиционных материалов"
             }
           },
           {
-            "text": "консервативные методы (прямая и непрямая пульпотерапия)",
+            "text": "Изготовление искусственных коронок",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
               "document_url": null,
@@ -229,32 +554,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "консервативные методы (прямая и непрямая пульпотерапия)"
-            }
-          },
-          {
-            "text": "хирургические методы (пульпотомия и пульпэктомия)",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "хирургические методы (пульпотомия и пульпэктомия)"
+              "quote": "Изготовление искусственных коронок"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "шприцах",
+            "drug_name": "Лидокаин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "12,5 г",
+            "dose_text": "Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну. Лекарственное средство можно наносить путем смазывания смоченным в лекарственном средстве в",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -266,20 +576,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 8,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "шприцах 12,5 г"
+              "quote": "Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну."
             }
           },
           {
-            "drug_name": "превышать",
+            "drug_name": "Лидокаин/Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2,9 мг",
+            "dose_text": "Для детей в возрасте от 2 до 11 лет максимально допустимая доза лидокаина гидрохлорида не должна превышать 2,9 мг/кг. Разовую дозу врач-специалист назначает индивидуально.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -291,20 +601,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 8,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "превышать 2,9 мг/кг"
+              "quote": "Анестезирующий гель в шприцах 12,5 г; анестезирующий гель в шприцах 8,5 г. Для аппликационной анестезии... Для детей в возрасте от 2 до 11 лет максимально допустимая доза лидокаина гидрохлорида не должна превышать 2,9 мг/кг."
             }
           },
           {
-            "drug_name": "ампулах",
+            "drug_name": "Артикаин/Эпинефрин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2 мл",
+            "dose_text": "Доза лекарственного средства не должна превышать 7 мг артикаина на 1 кг массы тела. Разовую дозу врач-специалист назначает индивидуально.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -316,163 +626,13 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 9,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ампулах 2 мл \n(картриджах 1,7 мл)"
-            }
-          },
-          {
-            "drug_name": "картриджах",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1,7 мл",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "картриджах 1,7 мл"
-            }
-          },
-          {
-            "drug_name": "применения",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "100 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "применения 100 мг/мл во флаконах 50 мл | Одну порцию (1–3"
-            }
-          },
-          {
-            "drug_name": "ноября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2022 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "ноября 2022 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          },
-          {
-            "drug_name": "марта",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2023 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "марта 2023 г"
+              "quote": "Раствор для инъекций (40 мг + 0,006 мг)/1 мл... Разовую дозу врач-специалист назначает индивидуально... доза лекарственного средства не должна превышать 7 мг артикаина на 1 кг массы тела."
             }
           }
         ],
@@ -480,45 +640,133 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
+      "follow_up": [
+        {
+          "text": "Медицинское наблюдение",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинское наблюдение"
+          }
+        }
+      ],
       "hospitalization": [],
       "routing": [],
-      "red_flags": [],
+      "red_flags": [
+        {
+          "text": "Самопроизвольная боль пульсирующего характера, иррадиирующая, резко возрастающая при приеме горячей пищи (при гнойном пульпите).",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "для гнойного пульпита характерна самопроизвольная боль пульсирующего характера, иррадиирующая, резко возрастающая при приеме горячей пищи"
+          }
+        },
+        {
+          "text": "Полость зуба открыта, заполнена темным распадом с неприятным запахом, реакция на поверхностное зондирование отсутствует (при некрозе пульпы).",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "при некрозе пульпы полость зуба открыта, заполнена темным распадом с неприятным запахом, реакция на поверхностное зондирование отсутствует"
+          }
+        },
+        {
+          "text": "Противопоказан детям до 2 лет.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Противопоказан детям до 2 лет. Предназначен для детей с 2 лет."
+          }
+        },
+        {
+          "text": "Использование у детей до года не изучалось.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Использование у детей до года не изучалось"
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_пуль",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_пульпы_пост_МЗ_30.11.2022_112.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика и лечение пациентов детс население с болезнями пульпы"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:51.184733+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T18:05:47.916600+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:51.188439+00:00"
+    "validated_at": "2026-07-20T18:05:47.924291+00:00"
   }
 }

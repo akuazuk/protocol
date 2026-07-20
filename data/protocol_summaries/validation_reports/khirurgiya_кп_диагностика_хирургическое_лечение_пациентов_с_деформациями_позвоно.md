@@ -1,6 +1,10 @@
 # Validation: khirurgiya_кп_диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоно
 
-- **status:** valid
-- **validated_at:** 2026-06-23T19:16:26.632042+00:00
-- **review_status:** not_reviewed
-- **extraction_status:** auto_extracted
+- **status:** needs_human_review
+- **validated_at:** 2026-07-20T16:22:10.175400+00:00
+- **review_status:** needs_review
+- **extraction_status:** llm_extracted
+
+## Warnings
+- `duplicate_exam` conditions[spinal_deformities_scoliosis].required_exams[11]: Дублирующееся обследование
+- `duplicate_exam` conditions[spinal_deformities_scoliosis].required_exams[12]: Дублирующееся обследование

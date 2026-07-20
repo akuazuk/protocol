@@ -1,6 +1,6 @@
 protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абраз
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Диагностика и лечение пациентов взрослое население с сошлифовыванием абразивным
@@ -27,20 +27,23 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов_взрослое_населен
-  name: Диагностика и лечение пациентов взрослое население с сошлифовыванием абразивным
-    износом зубов
+- condition_id: tooth_abrasion_and_erosion
+  name: Сошлифовывание (абразивный износ) зубов
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B24
+  - K03.10
+  - K03.11
+  - K03.12
+  - K03.13
+  - K03.19
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: зубов, а также определение медицинских показаний к лечению, выбор метода
-        лечения
+    - text: Выявление факторов, влияющих на возникновение и развитие сошлифовывания
+        зубов
       logic_group: null
       operator: unknown
       values: []
@@ -57,337 +60,72 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: зубов, а также определение медицинских показаний к лечению, выбор метода
-          лечения
+        quote: Выявление факторов, влияющих на возникновение и развитие сошлифовывания
+          зубов
+    - text: Определение медицинских показаний к лечению, выбор метода лечения и тактики
+        врача-специалиста
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абраз
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абразивным_износом_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Определение медицинских показаний к лечению, выбор метода лечения и
+          тактики врача-специалиста
+    - text: Дифференциальная диагностика сошлифовывания зубов
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абраз
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абразивным_износом_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Дифференциальная диагностика сошлифовывания зубов
     optional: []
     exclusion: []
   required_exams: []
   conditional_exams: []
-  treatment:
-    non_drug:
-    - text: ЛЕЧЕНИЕ СОШЛИФОВЫВАНИЯ (АБРАЗИВНОГО ИЗНОСА) ЗУБОВ
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абраз
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абразивным_износом_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ЛЕЧЕНИЕ СОШЛИФОВЫВАНИЯ (АБРАЗИВНОГО ИЗНОСА) ЗУБОВ
-    - text: '[treatment] 8. Общими принципами лечения и медицинской профилактики сошлифовывания
-        (стр. 5)'
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абраз
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абразивным_износом_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 8. Общими принципами лечения и медицинской профилактики
-          сошлифовывания (стр. 5)'
-    - text: восстановление анатомической и функциональной целостности зуба
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абраз
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абразивным_износом_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: восстановление анатомической и функциональной целостности зуба
-    - text: предупреждение развития патологических процессов и осложнений.
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абраз
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абразивным_износом_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: предупреждение развития патологических процессов и осложнений.
-    - text: '[treatment] 10. Ортопедическое (стр. 5)'
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абраз
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абразивным_износом_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 10. Ортопедическое (стр. 5)'
-    - text: 'пациентов с сошлифовыванием постоянных зубов включает:'
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абраз
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абразивным_износом_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'пациентов с сошлифовыванием постоянных зубов включает:'
-    drug_groups: []
-    drugs:
-    - drug_name: применения
-      active_substance: null
-      drug_group: null
-      dose_text: 100 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абраз
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абразивным_износом_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "применения 100 мг/мл во \nфлаконах 50 мл \nОдну порцию (1–3"
-    - drug_name: шприцах
-      active_substance: null
-      drug_group: null
-      dose_text: 12,5 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абраз
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абразивным_износом_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "шприцах 12,5 г \nДля аппликационной анестезии слизистой \n"
-    - drug_name: картриджах
-      active_substance: null
-      drug_group: null
-      dose_text: 1,7 мл
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абраз
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абразивным_износом_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "картриджах \n1,7 мл (1,8 мл), в ампулах \n2 мл"
-    - drug_name: соответствует
-      active_substance: null
-      drug_group: null
-      dose_text: 12,5 мл
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абраз
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абразивным_износом_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "соответствует \n12,5 мл раствора для инъекций) \nНациональный пра"
-    - drug_name: января
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абраз
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абразивным_износом_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: января 2023 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абраз
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абразивным_износом_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абраз
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абразивным_износом_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: марта
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абраз
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абразивным_износом_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: марта 2023 г
-    - drug_name: углом
-      active_substance: null
-      drug_group: null
-      dose_text: 45 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абраз
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абразивным_износом_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: углом 45 градусов, определяются как дефекты V-форм
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up:
-  - text: через 6 мес
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абраз
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абразивным_износом_зубов_пост_МЗ_11.01.2023_4.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: через 6 мес
+  treatment: null
+  follow_up: []
   hospitalization: []
   routing: []
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абраз
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_сошлифовыванием_абразивным_износом_зубов_пост_МЗ_11.01.2023_4.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов взрослое население с сошлифовыванием абразивным
-      износом зубов
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:50.744019+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T17:56:25.373199+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:50.747798+00:00'
+  validated_at: '2026-07-20T17:56:25.373478+00:00'

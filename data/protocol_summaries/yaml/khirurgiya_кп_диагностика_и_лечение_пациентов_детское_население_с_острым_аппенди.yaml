@@ -1,9 +1,9 @@
 protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов (детское население) с острым аппендицитом
+  title: Диагностика и лечение пациентов с острым аппендицитом
   url: null
   local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов (детское
     население) с острым аппендицитом_18.05.2021_№50.pdf
@@ -20,15 +20,432 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов
-  name: Диагностика и лечение пациентов
+- condition_id: acute_appendicitis
+  name: Острый аппендицит
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - K35
+  - K35.0
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams:
+  - name: Ректальное исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительные диагностические мероприятия в приемном отделении (по
+        медицинским показаниям): 11.1. ректальное исследование'
+  - name: Определение параметров кислотно-основного состояния (КОС)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'клинико-лабораторные исследования: определение параметров кислотно-основного
+        состояния (далее – КОС)'
+  - name: Биохимическое исследование содержания глюкозы в венозной крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'клинико-лабораторные исследования: биохимическое исследование содержания
+        глюкозы в венозной крови'
+  - name: УЗИ органов брюшной полости и забрюшинного пространства
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'инструментальные исследования: ультразвуковое исследование (далее –
+        УЗИ) органов брюшной полости и забрюшинного пространства'
+  - name: Обзорная рентгенография органов брюшной и грудной полостей
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'инструментальные исследования: обзорная рентгенография органов брюшной
+        и грудной полостей'
+  - name: Консультация врача-акушера-гинеколога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультации врачей-специалистов (врача-акушера-гинеколога)
+  - name: Консультация врача-уролога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультации врачей-специалистов (врача-уролога)
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: acute_appendicitis_peritoneal_abscess
+  name: Острый аппендицит с перитонеальным абсцессом
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - K35.1
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams:
+  - name: Ректальное исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 11.1. ректальное исследование;
+  - name: Определение параметров кислотно-основного состояния (КОС)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение параметров кислотно-основного состояния (далее – КОС);
+  - name: Биохимическое исследование содержания глюкозы в венозной крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: биохимическое исследование содержания глюкозы в венозной крови;
+  - name: УЗИ органов брюшной полости и забрюшинного пространства
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ультразвуковое исследование (далее – УЗИ) органов брюшной полости и забрюшинного
+        пространства;
+  - name: Обзорная рентгенография органов брюшной и грудной полостей
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: обзорная рентгенография органов брюшной и грудной полостей;
+  - name: Консультация врача-акушера-гинеколога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультации врачей-специалистов (врача-акушера-гинеколога, врача-уролога).
+  - name: Консультация врача-уролога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультации врачей-специалистов (врача-акушера-гинеколога, врача-уролога).
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: peritonitis
+  name: Перитонит
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -36,31 +453,216 @@ conditions:
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria:
-    required:
-    - text: определение параметров кислотно-основного состояния (далее – КОС)
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
-          (детское население) с острым аппендицитом_18.05.2021_№50.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: определение параметров кислотно-основного состояния (далее – КОС)
-    optional: []
-    exclusion: []
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams:
+  - name: Ректальное исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ректальное исследование
+  - name: Определение параметров кислотно-основного состояния (КОС)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение параметров кислотно-основного состояния (далее – КОС)
+  - name: Биохимическое исследование содержания глюкозы в венозной крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: биохимическое исследование содержания глюкозы в венозной крови
+  - name: Ультразвуковое исследование (УЗИ) органов брюшной полости и забрюшинного
+      пространства
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ультразвуковое исследование (далее – УЗИ) органов брюшной полости и забрюшинного
+        пространства
+  - name: Обзорная рентгенография органов брюшной и грудной полостей
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: обзорная рентгенография органов брюшной и грудной полостей
+  - name: Консультация врача-акушера-гинеколога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультации врачей-специалистов (врача-акушера-гинеколога, врача-уролога)
+  - name: Консультация врача-уролога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультации врачей-специалистов (врача-акушера-гинеколога, врача-уролога)
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: paralytic_ileus
+  name: Паралитический илеус
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - K56.0
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
   required_exams:
-  - name: УЗИ
+  - name: Общий анализ крови
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -75,18 +677,328 @@ conditions:
       document_url: null
       local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
         (детское население) с острым аппендицитом_18.05.2021_№50.pdf
-      page_start: null
+      page_start: 5
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "ультразвуковое \nисследование \n(далее – \nУЗИ) \nорганов \nбрюшной\
-        \ \nполости \nи забрюшинного пространства; \nобзорная рентгеногра"
-  conditional_exams: []
+      quote: Общий ан. крови 1
+  - name: Консультация детского хирурга
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Консультация детского хирурга
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Общий ан. мочи 1
+  - name: Определение группы крови, резус-фактора
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Определение группы крови, резус-фактора 1
+  - name: Пальцевое ректальное исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Пальцевое ректальное исследование
+  - name: 'Биохимическое исследование крови: электролиты (К, Na, Cl, Са)'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Биохимическое исследование крови: электролиты (К, Na, Cl, Са) 1'
+  - name: Обзорная R-грамма брюшной полости
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обзорная R-грамма брюшной полости 1
+  - name: УЗИ органов брюшной полости
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗИ органов брюшной полости
+  conditional_exams:
+  - name: Ректальное исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 11.1. ректальное исследование;
+  - name: Определение параметров кислотно-основного состояния (КОС)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: '11.2. клинико-лабораторные исследования: определение параметров кислотно-основного
+        состояния (далее – КОС);'
+  - name: Биохимическое исследование содержания глюкозы в венозной крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 11.2. биохимическое исследование содержания глюкозы в венозной крови;
+  - name: Ультразвуковое исследование (УЗИ) органов брюшной полости и забрюшинного
+      пространства
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: '11.3. инструментальные исследования: ультразвуковое исследование (далее
+        – УЗИ) органов брюшной полости и забрюшинного пространства;'
+  - name: Обзорная рентгенография органов брюшной и грудной полостей
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 11.3. обзорная рентгенография органов брюшной и грудной полостей;
+  - name: Консультация врача-акушера-гинеколога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 11.4. консультации врачей-специалистов (врача-акушера-гинеколога, врача-уролога).
+  - name: Консультация врача-уролога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 11.4. консультации врачей-специалистов (врача-акушера-гинеколога, врача-уролога).
   treatment:
     non_drug:
-    - text: Премедикация (0,1 % р-р атропина + 1 % р-р дифенгидрамина) в/м
+    - text: Зондовая декомпрессия желудка
       source_ref:
         protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
         document_url: null
@@ -98,8 +1010,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Премедикация (0,1 % р-р атропина + 1 % р-р дифенгидрамина) в/м
-    - text: 'Обезболивание в течение 2–3 дней (по показ.): детям до 2-х лет 50 %'
+        quote: Зондовая декомпрессия желудка
+    - text: Паравертебральная блокада 0,25 % р-ром прокаина в возрастной дозировке
       source_ref:
         protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
         document_url: null
@@ -111,9 +1023,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Обезболивание в течение 2–3 дней (по показ.): детям до 2-х лет 50
-          %'
-    - text: р-р метамизола + 1 % р-р дифенгидрамина в/м в возрастной дозировке
+        quote: Паравертебральная блокада 0,25 % р-ром прокаина в возрастной дозировке
+    - text: Сифонная клизма
       source_ref:
         protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
         document_url: null
@@ -125,8 +1036,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: р-р метамизола + 1 % р-р дифенгидрамина в/м в возрастной дозировке
-    - text: 2-х лет – 1 % р-р морфина п/к или 2 % р-р тримеперидина в/м, п/к, или
+        quote: Сифонная клизма
+    - text: При отсутствии эффекта – лапаротомия, адгезиолизис
       source_ref:
         protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
         document_url: null
@@ -138,8 +1049,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 2-х лет – 1 % р-р морфина п/к или 2 % р-р тримеперидина в/м, п/к, или
-    - text: 'Антибактериальная терапия (по показ.): цефалоспорины 3–4-го'
+        quote: При отсутствии эффекта – лапаротомия, адгезиолизис
+    - text: Лапароскопия брюшной полости, адгезиолизис
       source_ref:
         protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
         document_url: null
@@ -151,26 +1062,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Антибактериальная терапия (по показ.): цефалоспорины 3–4-го'
-    - text: поколения (цефотаксим 50–100 мг/кг/сут. в/м, в/в 2–3 р/сут.) +
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
-          (детское население) с острым аппендицитом_18.05.2021_№50.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: поколения (цефотаксим 50–100 мг/кг/сут. в/м, в/в 2–3 р/сут.) +
+        quote: Лапароскопия брюшной полости, адгезиолизис
     drug_groups: []
     drugs:
-    - drug_name: дозе
+    - drug_name: Инфузионная терапия (0,9 % р-р натрия хлорида + 5 % р-р декстрозы
+        + сбалансированный электролитный р-р + производные гид
       active_substance: null
       drug_group: null
-      dose_text: 2 мкг
+      dose_text: по показ.
       frequency_text: null
       duration_text: null
       route: null
@@ -183,17 +1082,19 @@ conditions:
         document_url: null
         local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
           (детское население) с острым аппендицитом_18.05.2021_№50.pdf
-        page_start: null
+        page_start: 5
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: дозе 2 мкг/кг в/м или в/в
-    - drug_name: июня
+        quote: 'Инфузионная терапия: 0,9 % р-р натрия хлорида + 5 % р-р декстрозы
+          + сбалансированный электролитный р-р + производные гидроксиэтилкрахмала
+          (по показ.)'
+    - drug_name: Прокаин
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: 0,25 % р-ром в возрастной дозировке
       frequency_text: null
       duration_text: null
       route: null
@@ -206,41 +1107,18 @@ conditions:
         document_url: null
         local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
           (детское население) с острым аппендицитом_18.05.2021_№50.pdf
-        page_start: null
+        page_start: 5
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
-          (детское население) с острым аппендицитом_18.05.2021_№50.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
+        quote: Паравертебральная блокада 0,25 % р-ром прокаина в возрастной дозировке
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: динамическом наблюден
+  - text: 14 дней Восстановление здоровья
     timing: null
     required_if: []
     expected_actions: []
@@ -255,8 +1133,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: динамическом наблюден
-  - text: динамического наблюден
+      quote: 14 дней Восстановление здоровья
+  - text: 10 дней Восстановление здоровья»;
     timing: null
     required_if: []
     expected_actions: []
@@ -271,53 +1149,840 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: динамического наблюден
-  - text: контроль
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
-        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: контроль
+      quote: 10 дней Восстановление здоровья»;
   hospitalization: []
-  routing: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: перевод ребенка в ДХО ОУ
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: перевод ребенка в ДХО ОУ
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
-    document_url: null
-    local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов (детское
-      население) с острым аппендицитом_18.05.2021_№50.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов (детское население) с острым аппендицитом
+  source_refs: []
+- condition_id: intestinal_invagination
+  name: Инвагинация кишечника
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - K56.1
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams:
+  - name: Общий анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Общий ан. крови
+  - name: Консультация детского хирурга
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Консультация детского хирурга
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Общий ан. мочи
+  - name: Определение группы крови, резус-фактора
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Определение группы крови, резус-фактора
+  - name: Пальцевое ректальное исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Пальцевое ректальное исследование
+  - name: 'Биохимическое исследование крови: электролиты (К, Na, Cl, Са)'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Биохимическое исследование крови: электролиты (К, Na, Cl, Са)'
+  - name: Обзорная R-грамма брюшной полости
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обзорная R-грамма брюшной полости
+  - name: УЗИ органов брюшной полости
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗИ органов брюшной полости
+  conditional_exams: []
+  treatment:
+    non_drug:
+    - text: Зондовая декомпрессия желудка
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+          (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Зондовая декомпрессия желудка
+    - text: Паравертебральная блокада 0,25 % р-ром прокаина в возрастной дозировке
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+          (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Паравертебральная блокада 0,25 % р-ром прокаина в возрастной дозировке
+    - text: Сифонная клизма
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+          (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Сифонная клизма
+    - text: При отсутствии эффекта – лапаротомия, адгезиолизис
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+          (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При отсутствии эффекта – лапаротомия, адгезиолизис
+    - text: При отсутствии эффекта – перевод ребенка в ДХО ОУ
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+          (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При отсутствии эффекта – перевод ребенка в ДХО ОУ
+    - text: Лапароскопия брюшной полости, адгезиолизис
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+          (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Лапароскопия брюшной полости, адгезиолизис
+    drug_groups: []
+    drugs:
+    - drug_name: 0,25 % р-р прокаина
+      active_substance: null
+      drug_group: null
+      dose_text: в возрастной дозировке
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+          (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Паравертебральная блокада 0,25 % р-ром прокаина в возрастной дозировке
+    - drug_name: 0,9 % р-р натрия хлорида
+      active_substance: null
+      drug_group: null
+      dose_text: по показ.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+          (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Инфузионная терапия: 0,9 % р-р натрия хлорида + 5 % р-р декстрозы
+          + сбалансированный электролитный р-р + производные гидроксиэтилкрахмала
+          (по показ.)'
+    - drug_name: 5 % р-р декстрозы
+      active_substance: null
+      drug_group: null
+      dose_text: по показ.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+          (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Инфузионная терапия: 0,9 % р-р натрия хлорида + 5 % р-р декстрозы
+          + сбалансированный электролитный р-р + производные гидроксиэтилкрахмала
+          (по показ.)'
+    - drug_name: Сбалансированный электролитный р-р
+      active_substance: null
+      drug_group: null
+      dose_text: по показ.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+          (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Инфузионная терапия: 0,9 % р-р натрия хлорида + 5 % р-р декстрозы
+          + сбалансированный электролитный р-р + производные гидроксиэтилкрахмала
+          (по показ.)'
+    - drug_name: Производные гидроксиэтилкрахмала
+      active_substance: null
+      drug_group: null
+      dose_text: по показ.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+          (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Инфузионная терапия: 0,9 % р-р натрия хлорида + 5 % р-р декстрозы
+          + сбалансированный электролитный р-р + производные гидроксиэтилкрахмала
+          (по показ.)'
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: 14 дней Восстановление здоровья
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 14 дней Восстановление здоровья
+  - text: 10 дней Восстановление здоровья
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 10 дней Восстановление здоровья
+  hospitalization: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: intestinal_adhesions_obstruction
+  name: Кишечные сращения [спайки] с непроходимостью
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - K91.3
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams:
+  - name: Ректальное исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 11.1. ректальное исследование;
+  - name: Определение параметров кислотно-основного состояния (КОС)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: '11.2. клинико-лабораторные исследования: определение параметров кислотно-основного
+        состояния (далее – КОС);'
+  - name: Биохимическое исследование содержания глюкозы в венозной крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: биохимическое исследование содержания глюкозы в венозной крови;
+  - name: Ультразвуковое исследование (УЗИ) органов брюшной полости и забрюшинного
+      пространства
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: '11.3. инструментальные исследования: ультразвуковое исследование (далее
+        – УЗИ) органов брюшной полости и забрюшинного пространства;'
+  - name: Обзорная рентгенография органов брюшной и грудной полостей
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: обзорная рентгенография органов брюшной и грудной полостей;
+  - name: Консультация врача-акушера-гинеколога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 11.4. консультации врачей-специалистов (врача-акушера-гинеколога, врача-уролога).
+  - name: Консультация врача-уролога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 11.4. консультации врачей-специалистов (врача-акушера-гинеколога, врача-уролога).
+  treatment:
+    non_drug: []
+    drug_groups: []
+    drugs:
+    - drug_name: Тримеперидин
+      active_substance: null
+      drug_group: null
+      dose_text: 2 % р-р в/м, п/к в возрастной дозировке
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+          (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+        page_start: 1
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 2 % р-р тримеперидина в/м, п/к в возрастной дозировке
+    - drug_name: Фентанил
+      active_substance: null
+      drug_group: null
+      dose_text: в разовой дозе 2 мкг/кг в/м или в/в 1–2 дня
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+          (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+        page_start: 1
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: фентанил в разовой дозе 2 мкг/кг в/м или в/в 1–2 дня
+    - drug_name: Имипенем
+      active_substance: null
+      drug_group: null
+      dose_text: в/в детям от 3 мес. – до 12 лет и с массой тела менее 40 кг – 15
+        мг/кг, детям старше 12 лет – по 0,25–1 г 4 раза/сут
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+          (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+        page_start: 1
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: имипенем (в/в детям от 3 мес. – до 12 лет и с массой тела менее 40
+          кг – 15 мг/кг, детям старше 12 лет – по 0,25–1 г 4 раза/сут)
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_детское_население_с_острым_аппенди
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов
+        (детское население) с острым аппендицитом_18.05.2021_№50.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:36.516596+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T16:16:58.245142+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=6
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:36.518514+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[intestinal_invagination].required_exams[0]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[intestinal_invagination].required_exams[1]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[intestinal_invagination].required_exams[2]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[intestinal_invagination].required_exams[3]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[intestinal_invagination].required_exams[4]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[intestinal_invagination].required_exams[5]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[intestinal_invagination].required_exams[6]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[intestinal_invagination].required_exams[7]
+  validated_at: '2026-07-20T16:16:58.265089+00:00'

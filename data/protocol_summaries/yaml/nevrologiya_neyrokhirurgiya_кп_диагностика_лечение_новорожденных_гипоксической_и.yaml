@@ -1,6 +1,6 @@
 protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Диагностика лечение новорожденных гипоксической ишемической энцефалопатией
@@ -19,25 +19,26 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_лечение_новорожденных_гипоксической_
-  name: Диагностика лечение новорожденных гипоксической ишемической энцефалопатией
+- condition_id: hypoxic_ischemic_encephalopathy_newborn
+  name: Гипоксическая ишемическая энцефалопатия новорожденного
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B24
+  - P91.0
+  - P91.6
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[criteria] 13. Критериями группы «А» являются: (стр. 3)'
+    - text: Оценка по шкале Апгар <5 на 10 минуте жизни
       logic_group: null
       operator: unknown
       values: []
@@ -54,8 +55,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[criteria] 13. Критериями группы «А» являются: (стр. 3)'
-    - text: '[criteria] 14. Критериями группы «В» являются: (стр. 4)'
+        quote: Оценка по шкале Апгар <5 на 10 минуте жизни
+    - text: Сохраняющаяся потребность в искусственной вентиляции легких на 10 минуте
+        жизни
       logic_group: null
       operator: unknown
       values: []
@@ -72,8 +74,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[criteria] 14. Критериями группы «В» являются: (стр. 4)'
-    - text: '[criteria] 13. Критериями группы «А» являются: (стр. 3)'
+        quote: Сохраняющаяся потребность в искусственной вентиляции легких на 10 минуте
+          жизни
+    - text: рН <7.0 в первом анализе крови в первые 60 минут жизни
       logic_group: null
       operator: unknown
       values: []
@@ -90,8 +93,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[criteria] 13. Критериями группы «А» являются: (стр. 3)'
-    - text: '[criteria] 14. Критериями группы «В» являются: (стр. 4)'
+        quote: рН <7.0 в первом анализе крови в первые 60 минут жизни
+    - text: Дефицит оснований (ВЕ) >16 ммоль/л в первом анализе крови в первые 60
+        минут жизни
       logic_group: null
       operator: unknown
       values: []
@@ -108,9 +112,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[criteria] 14. Критериями группы «В» являются: (стр. 4)'
-    - text: '[diagnostics] 15. Критерии группы «С» определяются по результатам тридцатиминутного
-        (стр. 4)'
+        quote: Дефицит оснований (ВЕ) >16 ммоль/л в первом анализе крови в первые
+          60 минут жизни
+    - text: Клиническое проявление судорог
       logic_group: null
       operator: unknown
       values: []
@@ -127,10 +131,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 15. Критерии группы «С» определяются по результатам
-          тридцатиминутного (стр. 4)'
-    - text: для новорожденных сразу после выявления по одному критерию из групп «А»
-        и «В».
+        quote: Клиническое проявление судорог
+    - text: Мышечная гипотония и гипорефлексия
       logic_group: null
       operator: unknown
       values: []
@@ -147,9 +149,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: для новорожденных сразу после выявления по одному критерию из групп
-          «А» и «В».
-    - text: протекания заболевания в определенной стадии)
+        quote: Мышечная гипотония и гипорефлексия
+    - text: Выраженный гипертонус и гиперрефлексия
       logic_group: null
       operator: unknown
       values: []
@@ -166,8 +167,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: протекания заболевания в определенной стадии)
-    - text: реклассификация диагноза (выделение ведущего неврологического синдрома
+        quote: Выраженный гипертонус и гиперрефлексия
+    - text: Нарушения зрачкового рефлекса (сужен/расширен и не реагирует на свет/затемнение,
+        слабая реакция)
       logic_group: null
       operator: unknown
       values: []
@@ -184,15 +186,365 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: реклассификация диагноза (выделение ведущего неврологического синдрома
+        quote: Нарушения зрачкового рефлекса (сужен/расширен и не реагирует на свет/затемнение,
+          слабая реакция)
+    - text: 'аЭЭГ: верхний край зубцов кривой >10 мкВ, нижний край зубцов <5 мкВ,
+        кривая может прерываться пиками или сериями пиков >25 мкВ'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'аЭЭГ: верхний край зубцов кривой >10 мкВ, нижний край зубцов <5 мкВ,
+          кривая может прерываться пиками или сериями пиков >25 мкВ'
+    - text: 'аЭЭГ: верхний край зубцов <10 мкВ, кривая прерывается и периодически
+        выглядит изолинией и/или прерывается сериями пиков <10 мкВ'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'аЭЭГ: верхний край зубцов <10 мкВ, кривая прерывается и периодически
+          выглядит изолинией и/или прерывается сериями пиков <10 мкВ'
+    - text: 'аЭЭГ: сплошные серии пиков с вольтажом >25 мкВ'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'аЭЭГ: сплошные серии пиков с вольтажом >25 мкВ'
+    - text: 'аЭЭГ: изолиния с вольтажом <5 мкВ'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'аЭЭГ: изолиния с вольтажом <5 мкВ'
+    - text: 'Шкала Sarnat: Уровень сознания (гипервозбудимость, летаргическое состояние,
+        ступор)'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Шкала Sarnat: Уровень сознания (гипервозбудимость, летаргическое состояние,
+          ступор)'
+    - text: 'Шкала Sarnat: Сосательный рефлекс (слабый или отсутствует)'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Шкала Sarnat: Сосательный рефлекс (слабый или отсутствует)'
+    - text: 'Шкала Sarnat: Рефлекс Моро (выраженный, слабый, отсутствует)'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Шкала Sarnat: Рефлекс Моро (выраженный, слабый, отсутствует)'
+    - text: 'Шкала Sarnat: Мышечный тонус (нормальный, гипотония, атония)'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Шкала Sarnat: Мышечный тонус (нормальный, гипотония, атония)'
     optional: []
     exclusion: []
-  required_exams: []
-  conditional_exams: []
+  required_exams:
+  - name: Кислотно-основное состояние и газы крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Оценка начинает проводиться в родильном зале (операционной) сразу при
+        получении первого результата кислотно-основного состояния и газов крови.
+  - name: Контроль температуры тела (ректальной)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: В течение 30 минут после рождения начинается контроль температуры тела
+        и (или) ректальной (центральной) температуры с фиксацией каждые 15 минут.
+        Глубина введения датчика в прямую кишку – 5 см.
+  conditional_exams:
+  - name: аЭЭГ (амплитудно-интегрированная электроэнцефалография)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Критерии группы «С» определяются по результатам тридцатиминутного мониторинга
+        аЭЭГ. Медпоказанием для терапевтической гипотермии является наличие одного
+        из следующих показателей аЭЭГ.
+  - name: Амплитудо-интегрированная электроэнцефалограмма (аЭЭГ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими исследованиями являются: амплитудо-интегрированная
+        электроэнцефалограмма (далее – аЭЭГ)'
+  - name: Компьютерная томография или магнитно-резонансная томография головного мозга
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими исследованиями являются: компьютерная
+        томография или магнитно-резонансная томография головного мозга'
+  - name: Консультация врача-офтальмолога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими исследованиями являются: консультация
+        врача-офтальмолога, врача-нейрохирурга'
+  - name: Консультация врача-нейрохирурга
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими исследованиями являются: консультация
+        врача-офтальмолога, врача-нейрохирурга'
+  - name: Определение концентрации 25(ОН)D в сыворотке крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими исследованиями являются: определение
+        концентрации 25(ОН)D в сыворотке крови.'
+  - name: Эхокардиография
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Для выбора дальнейшей тактики коррекции гемодинамических нарушений выполняется
+        эхокардиография (при возможности выполнения).
   treatment:
     non_drug:
-    - text: '[treatment] 5. Оказание специализированной медицинской помощи новорожденным
-        с ГИЭ (стр. 2)'
+    - text: Пассивная и/или аппаратная терапевтическая гипотермия
       source_ref:
         protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
         document_url: null
@@ -203,10 +555,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 5. Оказание специализированной медицинской помощи новорожденным
-          с ГИЭ (стр. 2)'
-    - text: осуществляется в организациях здравоохранения, имеющих в своей структуре
-        отделение
+        quote: Пассивная и/или аппаратная терапевтическая гипотермия
+    - text: Начало проведения пассивной терапевтической гипотермии при наличии признаков
+        групп А и В, а также при отсутствии возможности оценить критерии группы С.
       source_ref:
         protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
         document_url: null
@@ -217,9 +568,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: осуществляется в организациях здравоохранения, имеющих в своей структуре
-          отделение
-    - text: анестезиологии и реанимации с палатами интенсивной терапии для новорожденных,
+        quote: Начало проведения пассивной терапевтической гипотермии при наличии
+          признаков групп А и В, а также при отсутствии возможности оценить критерии
+          группы С.
+    - text: Выключение источника лучистого тепла и обогрева в транспортном инкубаторе
+        при пассивной терапевтической гипотермии.
       source_ref:
         protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
         document_url: null
@@ -230,9 +583,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: анестезиологии и реанимации с палатами интенсивной терапии для новорожденных,
-    - text: специализированное неврологическое отделение для детей или неврологические
-        койки
+        quote: Выключение источника лучистого тепла и обогрева в транспортном инкубаторе
+          при пассивной терапевтической гипотермии.
+    - text: Контроль температуры тела (ректальной на 5 см) каждые 15 минут в течение
+        30 минут после рождения при пассивной гипотермии.
       source_ref:
         protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
         document_url: null
@@ -243,9 +597,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: специализированное неврологическое отделение для детей или неврологические
-          койки
-    - text: в составе педиатрического отделения.
+        quote: Контроль температуры тела (ректальной на 5 см) каждые 15 минут в течение
+          30 минут после рождения при пассивной гипотермии.
+    - text: Контролируемое согревание после окончания пассивной и/или аппаратной терапевтической
+        гипотермии.
       source_ref:
         protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
         document_url: null
@@ -256,25 +611,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: в составе педиатрического отделения.
-    - text: Оказание высокотехнологичной медицинской помощи новорожденным с ГИЭ
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Оказание высокотехнологичной медицинской помощи новорожденным с ГИЭ
+        quote: Контролируемое согревание после окончания пассивной и/или аппаратной
+          терапевтической гипотермии.
     drug_groups: []
     drugs:
-    - drug_name: введением
+    - drug_name: Противосудорожные ЛП
       active_substance: null
       drug_group: null
-      dose_text: 10 мл
+      dose_text: Назначается при электрографических приступах
       frequency_text: null
       duration_text: null
       route: null
@@ -286,17 +630,18 @@ conditions:
         protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
         document_url: null
         local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: введением 10 мл/кг 0,9 % раствора хлорида натрия
-    - drug_name: октября
+        quote: При выявлении на аЭЭГ электрографических приступов (без клинических
+          проявлений) ... назначается противосудорожное лечение.
+    - drug_name: Седативные ЛП
       active_substance: null
       drug_group: null
-      dose_text: 2024 г
+      dose_text: Дополнительно, перед проведением аЭЭГ
       frequency_text: null
       duration_text: null
       route: null
@@ -308,17 +653,17 @@ conditions:
         protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
         document_url: null
         local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-        page_start: null
+        page_start: 4
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: октября 2024 г
-    - drug_name: июня
+        quote: аЭЭГ проводится до введения противосудорожных и седативных ЛП.
+    - drug_name: Натрия хлорид 0,9 %
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: 10 мл/кг внутривенно
       frequency_text: null
       duration_text: null
       route: null
@@ -330,17 +675,18 @@ conditions:
         protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
         document_url: null
         local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-        page_start: null
+        page_start: 5
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: ноября
+        quote: При необходимости коррекция может быть проведена внутривенным введением
+          10 мл/кг 0,9 % раствора хлорида натрия.
+    - drug_name: Вазоактивные лекарственные препараты
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: Увеличение доз при инотропной поддержке
       frequency_text: null
       duration_text: null
       route: null
@@ -352,120 +698,299 @@ conditions:
         protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
         document_url: null
         local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-        page_start: null
+        page_start: 5
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: ноября 1993 г
-    - drug_name: апреля
-      active_substance: null
-      drug_group: null
-      dose_text: 2022 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: апреля 2022 г
-    - drug_name: введения
-      active_substance: null
-      drug_group: null
-      dose_text: 200 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "введения \n200 мг/мл) 50–100 мг/кг в сутки 10–15"
+        quote: Если новорожденный получает инотропную поддержку, возможно увеличение
+          доз вазоактивных ЛП.
     procedures: []
     surgery: []
     source_refs: []
-  follow_up:
-  - text: контроль
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
-      document_url: null
-      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: контроль
-  - text: контроль
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
-      document_url: null
-      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: контроль
+  follow_up: []
   hospitalization: []
-  routing: []
-  red_flags: []
+  routing:
+  - text: Госпитализация (средняя длительность 17–21 койко-дней)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация (средняя длительность 17–21 койко-дней)
+  - text: Госпитализация в отделения анестезиологии и реанимации с палатами интенсивной
+      терапии для новорожденных, или специализированные неврологические отделения/койки.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация в отделения анестезиологии и реанимации с палатами интенсивной
+        терапии для новорожденных, или специализированные неврологические отделения/койки.
+  - text: Госпитализация в организации здравоохранения областного или республиканского
+      уровней для оказания высокотехнологичной медицинской помощи (аппаратная терапевтическая
+      гипотермия).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация в организации здравоохранения областного или республиканского
+        уровней для оказания высокотехнологичной медицинской помощи (аппаратная терапевтическая
+        гипотермия).
+  - text: Проведение терапевтической гипотермии противопоказано при наличии определенных
+      медицинских состояний.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Проведение терапевтической гипотермии противопоказано при наличии определенных
+        медицинских состояний.
+  - text: Терапевтическая гипотермия должна быть экстренно прекращена при развитии
+      жизнеугрожающих осложнений.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Терапевтическая гипотермия должна быть экстренно прекращена при развитии
+        жизнеугрожающих осложнений.
+  red_flags:
+  - text: Электро-клинические судороги
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При появлении электро-клинических судорог новорожденным медицинская помощь
+        оказывается в соответствии с клиническим протоколом «Оказание медицинской
+        помощи в неонатологии».
+  - text: Электрографические приступы на аЭЭГ (без клинических проявлений)
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При выявлении на аЭЭГ электрографических приступов (без клинических проявлений)
+        в виде повторяющихся показателей амплитудой ≥2 мкВ от пика до пика и продолжительностью
+        30–60 секунд в час назначается противосудорожное лечение.
+  - text: Возникновение судорог на фоне согревания
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При возникновении судорог на фоне согревания начинается противосудорожная
+        терапия, согревание продолжается со скоростью, указанной в части первой настоящего
+        пункта.
+  - text: Системная гипотензия на фоне согревания
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При согревании происходит периферическая вазодилатация, что может привести
+        к системной гипотензии.
+  - text: Масса тела при рождении менее 1800 г.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: масса тела при рождении менее 1800 г.
+  - text: Гестационный возраст менее 35 недель.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: гестационный возраст менее 35 недель
+  - text: Возраст новорожденного на момент принятия решения о проведении терапевтической
+      гипотермии более шести часов.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: возраст новорожденного на момент принятия решения о проведении пассивной
+        и (или) аппаратной терапевтической гипотермии более шести часов
+  - text: Пороки развития, требующие немедленного хирургического вмешательства.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: пороки развития, требующие немедленного хирургического вмешательства
+  - text: Тяжелые врожденные пороки развития, несовместимые с жизнью.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: тяжелые врожденные пороки развития, несовместимые с жизнью
+  - text: Выявление при обследовании внутричерепного кровоизлияния (субарахноидального,
+      паренхиматозного, перивентрикулярного кровоизлияния III–IV степени).
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: выявление при обследовании внутричерепного кровоизлияния (субарахноидального,
+        паренхиматозного, перивентрикулярного кровоизлияния III–IV степени)
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_новорожденных_гипоксической_и
-    document_url: null
-    local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика лечение новорожденных гипоксической ишемической энцефалопатией
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:42.699982+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T16:44:53.337374+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:42.703723+00:00'
+  validated_at: '2026-07-20T16:44:53.344391+00:00'

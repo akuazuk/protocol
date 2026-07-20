@@ -1,10 +1,10 @@
 {
   "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика лечение пациентов кардиологическими заболеваниями детское население",
+    "title": "Диагностика и лечение пациентов с кардиологическими заболеваниями у детей",
     "url": null,
     "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,8 +32,8 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_лечение_пациентов_кардиологическими_",
-      "name": "Диагностика лечение пациентов кардиологическими заболеваниями детское население",
+      "condition_id": "arterialnaya_gipertenziya",
+      "name": "Артериальная гипертензия",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
@@ -56,7 +56,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[classification] 13. Диагноз АГ устанавливает врач – детский кардиоревматолог. При первичном (стр. 5)",
+            "text": "Определение группы риска у детей в возрасте >12 лет по критериям стратификации риска.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -73,11 +73,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 13. Диагноз АГ устанавливает врач – детский кардиоревматолог. При первичном (стр. 5)"
+              "quote": "Определение группы риска у детей в возрасте >12 лет по критериям стратификации риска."
             }
           },
           {
-            "text": "обращении к другим врачам-специалистам для подтверждения диагноза пациент должен",
+            "text": "Группа низкого риска: нет факторов риска и нет поражения органов-мишеней.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -94,11 +94,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "обращении к другим врачам-специалистам для подтверждения диагноза пациент должен"
+              "quote": "Группа низкого риска: нет факторов риска и нет поражения органов-мишеней."
             }
           },
           {
-            "text": "[classification] 24. Диагноз миокардита устанавливает врач – детский кардиоревматолог. При (стр. 10)",
+            "text": "Группа высокого риска: >3 дополнительных факторов риска сердечно-сосудистых заболеваний и (или) поражения органов-мишеней и (или) сопутствующие состояния.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -115,11 +115,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 24. Диагноз миокардита устанавливает врач – детский кардиоревматолог. При (стр. 10)"
+              "quote": "Группа высокого риска: >3 дополнительных факторов риска сердечно-сосудистых заболеваний и (или) поражения органов-мишеней и (или) сопутствующие состояния."
             }
           },
           {
-            "text": "первичном обращении к другим врачам-специалистам для подтверждения диагноза",
+            "text": "Все пациенты с АГ II степени относятся к группе высокого риска.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -136,11 +136,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "первичном обращении к другим врачам-специалистам для подтверждения диагноза"
+              "quote": "Все пациенты с АГ II степени относятся к группе высокого риска."
             }
           },
           {
-            "text": "[classification] 38. Диагноз КМП устанавливает врач – детский кардиоревматолог. При первичном (стр. 5)",
+            "text": "АГ I степени: средние уровни САД и (или) ДАД из трех измерений >95-го перцентиля, но не более чем на 5 мм рт.ст. выше 99-го перцентиля.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -157,11 +157,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 38. Диагноз КМП устанавливает врач – детский кардиоревматолог. При первичном (стр. 5)"
+              "quote": "АГ I степени: средние уровни САД и (или) ДАД из трех измерений >95-го перцентиля, но не более чем на 5 мм рт.ст. выше 99-го перцентиля."
             }
           },
           {
-            "text": "обращении к другим врачам-специалистам для подтверждения диагноза пациент должен",
+            "text": "АГ II степени (тяжелая): средние уровни САД и (или) ДАД из трех измерений более чем на 5 мм рт.ст. выше 99-го перцентиля.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -178,49 +178,7 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "обращении к другим врачам-специалистам для подтверждения диагноза пациент должен"
-            }
-          },
-          {
-            "text": "[classification] 49. Диагноз СВТ устанавливает врач – детский кардиоревматолог. При первичном (стр. 5)",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[classification] 49. Диагноз СВТ устанавливает врач – детский кардиоревматолог. При первичном (стр. 5)"
-            }
-          },
-          {
-            "text": "обращении к другим врачам-специалистам для подтверждения диагноза пациент должен",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "обращении к другим врачам-специалистам для подтверждения диагноза пациент должен"
+              "quote": "АГ II степени (тяжелая): средние уровни САД и (или) ДАД из трех измерений более чем на 5 мм рт.ст. выше 99-го перцентиля."
             }
           }
         ],
@@ -229,7 +187,7 @@
       },
       "required_exams": [
         {
-          "name": "ОАК",
+          "name": "Клиническое обследование пациента",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -244,17 +202,17 @@
             "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
             "document_url": null,
             "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
-            "page_start": null,
+            "page_start": 5,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "общий клинический анализ крови (далее – ОАК) с исследованием скорости оседания \nэритроцитов (далее – СОЭ); \nбиохимический"
+            "quote": "клиническое обследование пациента (жалобы, анамнез заболевания, анамнез жизни, генеалогический анамнез, объективное обследование);"
           }
         },
         {
-          "name": "ЭКГ",
+          "name": "Общий клинический анализ крови (ОАК) с СОЭ",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -269,17 +227,17 @@
             "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
             "document_url": null,
             "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
-            "page_start": null,
+            "page_start": 5,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "диагноза; \nэлектрокардиография (далее – ЭКГ) – 1 раз в 6 месяцев и при изменении характера \nтечения заболевания; \nэхокардио"
+            "quote": "общий клинический анализ крови (далее – ОАК) с исследованием скорости оседания эритроцитов (далее – СОЭ);"
           }
         },
         {
-          "name": "УЗИ",
+          "name": "Биохимический анализ крови (БАК)",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -294,21 +252,297 @@
             "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
             "document_url": null,
             "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
-            "page_start": null,
+            "page_start": 5,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "; \nультразвуковое исследование (далее – УЗИ) органов брюшной полости и почек – при \nпостановке диагноза, далее – 1 раз в го"
+            "quote": "биохимический анализ крови (БАК) с уровнями АЛТ, АСТ, ЛДГ, билирубина, мочевой кислоты, мочевины, креатинина, глюкозы, общего белка, ТГ, ХС, ХС-ЛПНП, ХС-ЛПВП, калия, магния, натрия – при установлении диагноза."
+          }
+        },
+        {
+          "name": "Общий анализ мочи (ОАМ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "общий анализ мочи (далее – ОАМ) – при установлении диагноза, изменении характера течения заболевания;"
+          }
+        },
+        {
+          "name": "Аускультативный метод измерения АД",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "аускультативный метод измерения АД – при каждом посещении;"
+          }
+        },
+        {
+          "name": "Измерения АД на верхних и нижних конечностях",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "измерения АД на верхних и нижних конечностях – при постановке диагноза;"
+          }
+        },
+        {
+          "name": "Электрокардиография (ЭКГ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "электрокардиография (далее – ЭКГ) – 1 раз в 6 месяцев и при изменении характера течения заболевания;"
+          }
+        },
+        {
+          "name": "Эхокардиография (ЭхоКГ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "эхокардиография (далее – ЭхоКГ) – при постановке диагноза, далее – 1 раз в год, чаще – по медицинским показаниям;"
+          }
+        },
+        {
+          "name": "Ультразвуковое исследование (УЗИ) органов брюшной полости и почек",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ультразвуковое исследование (далее – УЗИ) органов брюшной полости и почек – при постановке диагноза, далее – 1 раз в год, чаще – по медицинским показаниям;"
+          }
+        },
+        {
+          "name": "Консультация врача-офтальмолога с осмотром сосудов глазного дна",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "консультация врача-офтальмолога с осмотром сосудов глазного дна – 1 раз в 6 месяцев;"
+          }
+        },
+        {
+          "name": "Консультация врача – детского кардиоревматолога",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "консультация врача – детского кардиоревматолога – первые 6 месяцев после установления диагноза – 1 раз в месяц, затем 1 раз в 3 месяца до достижения целевого уровня АД, далее – 1 раз в 6 месяцев."
+          }
+        },
+        {
+          "name": "Суточное мониторирование артериального давления (СМАД)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "СМАД – при постановке диагноза, при подборе антигипертензивной терапии и при изменении характера течения заболевания;"
           }
         }
       ],
-      "conditional_exams": [],
+      "conditional_exams": [
+        {
+          "name": "Дополнительные анализы мочи",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "при подозрении на ренальный генез АГ – анализ мочи по Нечипоренко, Аддису-Каковскому, проба Зимницкого, определение уровня белка в суточной моче;"
+          }
+        },
+        {
+          "name": "СМАД (Суточное мониторирование артериального давления)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "перед началом медикаментозного лечения желательно проведение СМАД. Если при СМАД обнаружено, что индекс времени (далее – ИВ) АГ в дневное или ночное время >50 %, это служит медицинским показанием к назначению лекарственной терапии."
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 3. Для целей настоящего клинического протокола используются основные термины (стр. 2)",
+            "text": "Снижение избыточной массы тела",
             "source_ref": {
               "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
               "document_url": null,
@@ -319,11 +553,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 3. Для целей настоящего клинического протокола используются основные термины (стр. 2)"
+              "quote": "Снижение избыточной массы тела"
             }
           },
           {
-            "text": "и их определения в значениях, установленных Законом Республики Беларусь",
+            "text": "Оптимизация физической нагрузки",
             "source_ref": {
               "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
               "document_url": null,
@@ -334,11 +568,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "и их определения в значениях, установленных Законом Республики Беларусь"
+              "quote": "Оптимизация физической нагрузки"
             }
           },
           {
-            "text": "«Об обращении лекарственных средств», Законом Республики Беларусь от 19 ноября",
+            "text": "Отказ от курения, алкоголя, энергетических напитков",
             "source_ref": {
               "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
               "document_url": null,
@@ -349,11 +583,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "«Об обращении лекарственных средств», Законом Республики Беларусь от 19 ноября"
+              "quote": "Отказ от курения, алкоголя, энергетических напитков"
             }
           },
           {
-            "text": "[treatment] 4. Первичную (стр. 3)",
+            "text": "Рационализация питания",
             "source_ref": {
               "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
               "document_url": null,
@@ -364,11 +598,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 4. Первичную (стр. 3)"
+              "quote": "Рационализация питания"
             }
           },
           {
-            "text": "заболеваниями осуществляют врачи-педиатры, врачи общей практики, другие врачи-",
+            "text": "Снижение психоэмоционального напряжения",
             "source_ref": {
               "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
               "document_url": null,
@@ -379,32 +613,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "заболеваниями осуществляют врачи-педиатры, врачи общей практики, другие врачи-"
-            }
-          },
-          {
-            "text": "кардиологического заболевания пациент направляется на врачебную консультацию к",
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "кардиологического заболевания пациент направляется на врачебную консультацию к"
+              "quote": "Снижение психоэмоционального напряжения"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "июля",
+            "drug_name": "Каптоприл*",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2006 г",
+            "dose_text": "Начальная доза: 0,3 мг/кг массы тела в сутки с титрованием до максимальной – 3 мг/кг в сутки, разделенной на 3 приема. Для детей с нарушением функции почек, недоношенных, новорожденных и грудных детей",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -416,20 +635,20 @@
               "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
               "document_url": null,
               "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июля 2006 г"
+              "quote": "каптоприл*, таблетки 25 мг, 50 мг, внутрь; рекомендованная начальная доза – 0,3 мг/кг массы тела в сутки с титрованием дозы до максимальной – 3 мг/кг в сутки, разделенной на 3 приема."
             }
           },
           {
-            "drug_name": "ноября",
+            "drug_name": "Эналаприл**",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1993 г",
+            "dose_text": "Детям старше 6 лет: начальная доза 2,5 мг (при массе 20-50 кг) или 5 мг (при массе >50 кг) 1 раз в сутки. Максимальная 20 мг (при массе 20-50 кг) или 40 мг (при массе >50 кг) в сутки. Не применяется у",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -441,20 +660,20 @@
               "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
               "document_url": null,
               "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ноября \n1993 г"
+              "quote": "эналаприл**, таблетки 5 мг, 10 мг и 20 мг, внутрь. Детям старше 6 лет рекомендуемая начальная доза составляет 2,5 мг для пациентов с массой тела от 20 до 50 кг и 5 мг для пациентов с массой тела >50 кг 1 раз в сутки."
             }
           },
           {
-            "drug_name": "таблетки",
+            "drug_name": "Лизиноприл*",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "25 мг",
+            "dose_text": "Детям старше 6 лет: начальная доза 2,5 мг (при весе 20-50 кг) или 5 мг (при весе >50 кг). Доза подбирается индивидуально до максимальной суточной 20 мг. Принимать 1 раз в сутки. Не применяется у детей",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -466,163 +685,13 @@
               "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
               "document_url": null,
               "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "таблетки 25 мг, 50 мг, внутрь"
-            }
-          },
-          {
-            "drug_name": "менее",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "30 мл",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "менее 30 мл/мин/1,73 м2"
-            }
-          },
-          {
-            "drug_name": "максимальной",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "20 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "максимальной 20 мг в сутки для пациентов с массой тела от 2"
-            }
-          },
-          {
-            "drug_name": "составляет",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2,5 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "составляет 2,5 мг у детей с весом от 20 до 50 кг и 5 мг дл"
-            }
-          },
-          {
-            "drug_name": "февраля",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2025 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "февраля 2025 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня 1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября \n2011 г"
+              "quote": "лизиноприл*, таблетки 5 мг, 10 мг и 20 мг, внутрь. Применяется у детей старше 6 лет; рекомендуемая начальная доза составляет 2,5 мг у детей с весом от 20 до 50 кг и 5 мг для пациентов с массой тела более 50 кг."
             }
           }
         ],
@@ -632,7 +701,7 @@
       },
       "follow_up": [
         {
-          "text": "контроль",
+          "text": "ЭКГ: 1 раз в 6 месяцев и при изменении характера течения заболевания.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -646,11 +715,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
+            "quote": "ЭКГ: 1 раз в 6 месяцев и при изменении характера течения заболевания."
           }
         },
         {
-          "text": "Контроль",
+          "text": "ЭхоКГ: 1 раз в год, чаще по медицинским показаниям.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -664,48 +733,2928 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Контроль"
+            "quote": "ЭхоКГ: 1 раз в год, чаще по медицинским показаниям."
+          }
+        },
+        {
+          "text": "УЗИ органов брюшной полости и почек: 1 раз в год, чаще по медицинским показаниям.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "УЗИ органов брюшной полости и почек: 1 раз в год, чаще по медицинским показаниям."
+          }
+        },
+        {
+          "text": "Консультация врача-офтальмолога: 1 раз в 6 месяцев.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Консультация врача-офтальмолога: 1 раз в 6 месяцев."
+          }
+        },
+        {
+          "text": "Консультация врача – детского кардиоревматолога: первые 6 месяцев – 1 раз в месяц, затем 1 раз в 3 месяца до достижения целевого уровня АД, далее – 1 раз в 6 месяцев.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Консультация врача – детского кардиоревматолога: первые 6 месяцев – 1 раз в месяц, затем 1 раз в 3 месяца до достижения целевого уровня АД, далее – 1 раз в 6 месяцев."
+          }
+        },
+        {
+          "text": "ОАК, БАК, ОАМ: при изменении характера течения заболевания.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ОАК, БАК, ОАМ: при изменении характера течения заболевания."
+          }
+        },
+        {
+          "text": "СМАД: при подборе антигипертензивной терапии и при изменении характера течения заболевания.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "СМАД: при подборе антигипертензивной терапии и при изменении характера течения заболевания."
+          }
+        },
+        {
+          "text": "Оценка эффективности антигипертензивного лечения проводится через 8–12 недель от начала лечения.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Оценка эффективности антигипертензивного лечения проводится через 8–12 недель от начала лечения."
           }
         }
       ],
       "hospitalization": [],
-      "routing": [],
+      "routing": [
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        },
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        },
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Гипертонический криз",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "медицинская профилактика гипертонических кризов;"
+          }
+        },
+        {
+          "text": "Летальность",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "цель лечения АГ – достижение устойчивой нормализации АД для снижения риска развития ранних сердечно-сосудистых заболеваний и летальности"
+          }
+        },
+        {
+          "text": "Поражение органов-мишеней",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "медицинская профилактика поражения органов-мишеней или обратное развитие имеющихся в них изменений;"
+          }
+        }
+      ],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "miokardit",
+      "name": "Миокардит",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "I40",
+        "I40.0",
+        "I40.1",
+        "I40.8",
+        "I40.9",
+        "I41",
+        "I41.0",
+        "I41.1",
+        "I41.2",
+        "I41.8",
+        "I51.4"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": {
+        "required": [
+          {
+            "text": "АГ I степень: САД и (или) ДАД из трех измерений >95-го перцентиля, но <=99-го перцентиля не более чем на 5 мм рт.ст.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "АГ I степень: САД и (или) ДАД из трех измерений >95-го перцентиля, но <=99-го перцентиля не более чем на 5 мм рт.ст."
+            }
+          },
+          {
+            "text": "АГ II степень (тяжелая): САД и (или) ДАД из трех измерений >99-го перцентиля более чем на 5 мм рт.ст.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "АГ II степень (тяжелая): САД и (или) ДАД из трех измерений >99-го перцентиля более чем на 5 мм рт.ст."
+            }
+          },
+          {
+            "text": "Медицинское показание к лекарственной терапии: ИВ АГ в дневное или ночное время >50 % по СМАД.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Медицинское показание к лекарственной терапии: ИВ АГ в дневное или ночное время >50 % по СМАД."
+            }
+          }
+        ],
+        "optional": [],
+        "exclusion": []
+      },
+      "required_exams": [],
+      "conditional_exams": [
+        {
+          "name": "СМАД (Суточное мониторирование артериального давления)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "перед началом медикаментозного лечения желательно проведение СМАД."
+          }
+        }
+      ],
+      "treatment": {
+        "non_drug": [
+          {
+            "text": "Немедикаментозное лечение и наблюдение: снижение избыточной массы тела, оптимизация физической нагрузки, отказ от курения, алкоголя, энергетических напитков, рационализация питания, снижение психоэмоционального напряжения.",
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Немедикаментозное лечение и наблюдение: снижение избыточной массы тела, оптимизация физической нагрузки, отказ от курения, алкоголя, энергетических напитков, рационализация питания, снижение психоэмоц"
+            }
+          }
+        ],
+        "drug_groups": [],
+        "drugs": [
+          {
+            "drug_name": "Каптоприл",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Начальная доза – 0,3 мг/кг массы тела в сутки с титрованием до 3 мг/кг в сутки (3 приема). У детей с нарушением функции почек, недоношенных, новорожденных и грудных – 0,15 мг/кг.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "каптоприл*, таблетки 25 мг, 50 мг, внутрь; рекомендованная начальная доза – 0,3 мг/кг массы тела в сутки с титрованием дозы до максимальной – 3 мг/кг в сутки, разделенной на 3 приема; у детей с нарушением функции почек, недоношенных детей, новорожденных и грудных детей начальная доза – 0,15 мг/кг массы тела;"
+            }
+          },
+          {
+            "drug_name": "Эналаприл",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Детям >6 лет: начальная доза 2,5 мг (20-50 кг) или 5 мг (>50 кг) 1 раз в сутки. Максимальная 20 мг (20-50 кг) или 40 мг (>50 кг) в сутки. Не применяется при СКФ <30 мл/мин/1,73 м2.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "эналаприл**, таблетки 5 мг, 10 мг и 20 мг, внутрь. Не применяется у детей с СКФ менее 30 мл/мин/1,73 м2. Детям старше 6 лет рекомендуемая начальная доза составляет 2,5 мг для пациентов с массой тела от 20 до 50 кг и 5 мг для пациентов с массой тела >50 кг 1 раз в сутки."
+            }
+          },
+          {
+            "drug_name": "Лизиноприл",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Детям >6 лет: начальная доза 2,5 мг (20-50 кг) или 5 мг (>50 кг) 1 раз в сутки. Максимальная суточная доза – 20 мг. Не применяется при СКФ <30 мл/мин/1,73 м2 или детям младше 6 лет.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": 8,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Применяется у детей старше 6 лет; рекомендуемая начальная доза составляет 2,5 мг у детей с весом от 20 до 50 кг и 5 мг для пациентов с массой тела более 50 кг; доза должна подбираться индивидуально до максимальной суточной – 20 мг;"
+            }
+          }
+        ],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [
+        {
+          "text": "Оценка эффективности антигипертензивного лечения проводится через 8–12 недель от начала лечения.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Оценка эффективности антигипертензивного лечения проводится через 8–12 недель от начала лечения."
+          }
+        },
+        {
+          "text": "После 3 месяцев непрерывного лечения возможно постепенное снижение дозы ЛП вплоть до полной его отмены с продолжением немедикаментозного лечения при стабильно нормальном АД.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "После 3 месяцев непрерывного лечения возможно постепенное снижение дозы ЛП вплоть до полной его отмены с продолжением немедикаментозного лечения при стабильно нормальном АД."
+          }
+        },
+        {
+          "text": "Контроль эффективности немедикаментозного лечения осуществляется 1 раз в 3 месяца.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Контроль эффективности немедикаментозного лечения осуществляется 1 раз в 3 месяца."
+          }
+        }
+      ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "Первичная медицинская помощь пациентам с кардиологическими заболеваниями осуществляется врачами-педиатрами, врачами общей практики в амбулаторных условиях.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Первичная медицинская помощь пациентам с кардиологическими заболеваниями осуществляется врачами-педиатрами, врачами общей практики в амбулаторных условиях."
+          }
+        },
+        {
+          "text": "При подозрении на кардиологическое заболевание пациент направляется к детскому кардиоревматологу или кардиологу.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При подозрении на кардиологическое заболевание пациент направляется к детскому кардиоревматологу или кардиологу."
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "АГ II степени (тяжелая)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "II степень (тяжелая) – средние уровни САД и (или) ДАД из трех измерений >99-го перцентиля для соответствующего возраста, пола и роста более чем на 5 мм рт.ст."
+          }
+        }
+      ],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "kardiomiopatiya",
+      "name": "Кардиомиопатия",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "I42",
+        "I42.0",
+        "I42.1",
+        "I42.2",
+        "I42.3",
+        "I42.4",
+        "I42.5",
+        "I42.6",
+        "I42.7",
+        "I42.8",
+        "I42.9"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": {
+        "required": [
+          {
+            "text": "I степень АГ: средние уровни САД и (или) ДАД из трех измерений >95-го перцентиля, но <=99-го перцентиля не более чем на 5 мм рт.ст.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "I степень АГ: средние уровни САД и (или) ДАД из трех измерений >95-го перцентиля, но <=99-го перцентиля не более чем на 5 мм рт.ст."
+            }
+          },
+          {
+            "text": "II степень АГ (тяжелая): средние уровни САД и (или) ДАД из трех измерений >99-го перцентиля более чем на 5 мм рт.ст.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "II степень АГ (тяжелая): средние уровни САД и (или) ДАД из трех измерений >99-го перцентиля более чем на 5 мм рт.ст."
+            }
+          },
+          {
+            "text": "Индекс времени АГ в дневное или ночное время >50 %: медицинское показание к назначению лекарственной терапии.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Индекс времени АГ в дневное или ночное время >50 %: медицинское показание к назначению лекарственной терапии."
+            }
+          }
+        ],
+        "optional": [],
+        "exclusion": []
+      },
+      "required_exams": [],
+      "conditional_exams": [
+        {
+          "name": "Суточное мониторирование артериального давления (СМАД)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "перед началом медикаментозного лечения желательно проведение СМАД. Если при СМАД обнаружено, что индекс времени АГ в дневное или ночное время >50 %, это служит медицинским показанием к назначению лекарственной терапии."
+          }
+        }
+      ],
+      "treatment": {
+        "non_drug": [
+          {
+            "text": "При выявлении у ребенка высокого нормального АД или АГ I степени без дополнительных факторов риска (при неэффективности 6–12 месяцев): немедикаментозное лечение и наблюдение, направленные на снижение избыточной массы тела, оптимизацию физической нагрузки, отказ от курения, алкоголя, энергетических напитков, рационализацию питания, снижение психоэмоционального напряжения.",
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При выявлении у ребенка высокого нормального АД или АГ I степени без дополнительных факторов риска (при неэффективности 6–12 месяцев): немедикаментозное лечение и наблюдение, направленные на снижение "
+            }
+          }
+        ],
+        "drug_groups": [],
+        "drugs": [
+          {
+            "drug_name": "Каптоприл",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Таблетки 25 мг, 50 мг, внутрь. Начальная доза: 0,3 мг/кг массы тела в сутки с титрованием до максимальной 3 мг/кг в сутки, разделенной на 3 приема. У детей с нарушением функции почек, недоношенных, но",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "каптоприл*, таблетки 25 мг, 50 мг, внутрь; рекомендованная начальная доза – 0,3 мг/кг массы тела в сутки с титрованием дозы до максимальной – 3 мг/кг в сутки, разделенной на 3 приема; у детей с нарушением функции почек, недоношенных детей, новорожденных и грудных детей начальная доза – 0,15 мг/кг массы тела; снижение АД проводят в течение 2–3 суток, но без выраженных колебаний его уровня; при стаб"
+            }
+          },
+          {
+            "drug_name": "Эналаприл",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Таблетки 5 мг, 10 мг и 20 мг, внутрь. Не применяется у детей с СКФ менее 30 мл/мин/1,73 м2. Детям старше 6 лет: начальная доза 2,5 мг (20-50 кг) или 5 мг (>50 кг) 1 раз в сутки. Максимальная 20 мг/сут",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "эналаприл**, таблетки 5 мг, 10 мг и 20 мг, внутрь. Не применяется у детей с СКФ менее 30 мл/мин/1,73 м2. Детям старше 6 лет рекомендуемая начальная доза составляет 2,5 мг для пациентов с массой тела от 20 до 50 кг и 5 мг для пациентов с массой тела >50 кг 1 раз в сутки. Дозу следует корректировать в зависимости от потребностей до максимальной 20 мг в сутки для пациентов с массой тела от 20 до 50 к"
+            }
+          },
+          {
+            "drug_name": "Лизиноприл",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Таблетки 5 мг, 10 мг и 20 мг, внутрь. Не применяется у детей младше 6 лет или с СКФ менее 30 мл/мин/1,73 м2. Детям старше 6 лет: начальная доза 2,5 мг (20-50 кг) или 5 мг (>50 кг). Доза подбирается ин",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": 8,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "лизиноприл*, таблетки 5 мг, 10 мг и 20 мг, внутрь. У детей со сниженной функцией почек необходимо назначать меньшую начальную дозу или увеличивать интервалы между повышением дозы. Не применяется у детей младше 6 лет или у детей с СКФ менее 30 мл/мин/1,73 м2. Применяется у детей старше 6 лет; рекомендуемая начальная доза составляет 2,5 мг у детей с весом от 20 до 50 кг и 5 мг для пациентов с массой"
+            }
+          }
+        ],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [
+        {
+          "text": "Оценка эффективности антигипертензивного лечения проводится через 8–12 недель от начала лечения.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Оценка эффективности антигипертензивного лечения проводится через 8–12 недель от начала лечения."
+          }
+        },
+        {
+          "text": "При адекватно подобранной терапии и стабильно нормальном АД после 3 месяцев непрерывного лечения возможно постепенное снижение дозы ЛП вплоть до полной его отмены с продолжением немедикаментозного лечения.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При адекватно подобранной терапии и стабильно нормальном АД после 3 месяцев непрерывного лечения возможно постепенное снижение дозы ЛП вплоть до полной его отмены с продолжением немедикаментозного леч"
+          }
+        },
+        {
+          "text": "Контроль эффективности немедикаментозного лечения осуществляется 1 раз в 3 месяца.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Контроль эффективности немедикаментозного лечения осуществляется 1 раз в 3 месяца."
+          }
+        }
+      ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "Первичная медицинская помощь пациентам с кардиологическими заболеваниями осуществляется врачами-педиатрами, врачами общей практики, другими врачами-специалистами в амбулаторных условиях.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Первичная медицинская помощь пациентам с кардиологическими заболеваниями осуществляется врачами-педиатрами, врачами общей практики, другими врачами-специалистами в амбулаторных условиях."
+          }
+        },
+        {
+          "text": "В случае подозрения на наличие кардиологического заболевания пациент направляется на врачебную консультацию к врачу – детскому кардиоревматологу, врачу-кардиологу в организацию здравоохранения, оказывающую медицинскую помощь детскому населению (амбулаторно).",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "В случае подозрения на наличие кардиологического заболевания пациент направляется на врачебную консультацию к врачу – детскому кардиоревматологу, врачу-кардиологу в организацию здравоохранения, оказыв"
+          }
+        }
+      ],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
+      "source_refs": []
+    },
+    {
+      "condition_id": "nadzheludochkovaya_tahikardiya",
+      "name": "Наджелудочковая тахикардия",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "I47.1",
+        "I48",
+        "I48.0",
+        "I48.1",
+        "I48.2",
+        "I48.3",
+        "I48.4",
+        "I48.9"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": {
+        "required": [
+          {
+            "text": "Артериальная гипертензия (АГ) – состояние, при котором средний уровень САД и (или) ДАД, рассчитанный на основании трех отдельных измерений, больше или равен значению 95-го перцентиля кривой распределения АД в популяции для соответствующего возраста, пола и роста, а у детей старше 16 лет АД >140/90 мм рт.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Артериальная гипертензия (АГ) – состояние, при котором средний уровень САД и (или) ДАД, рассчитанный на основании трех отдельных измерений, больше или равен значению 95-го перцентиля кривой распределе"
+            }
+          },
+          {
+            "text": "I степень АГ – средние уровни САД и (или) ДАД из трех измерений >95-го перцентиля для возраста, пола и роста, при условии, что они >99-го перцентиля не более чем на 5 мм рт.ст.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "I степень АГ – средние уровни САД и (или) ДАД из трех измерений >95-го перцентиля для возраста, пола и роста, при условии, что они >99-го перцентиля не более чем на 5 мм рт.ст."
+            }
+          },
+          {
+            "text": "II степень (тяжелая) АГ – средние уровни САД и (или) ДАД из трех измерений >99-го перцентиля для возраста, пола и роста более чем на 5 мм рт.ст.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "II степень (тяжелая) АГ – средние уровни САД и (или) ДАД из трех измерений >99-го перцентиля для возраста, пола и роста более чем на 5 мм рт.ст."
+            }
+          }
+        ],
+        "optional": [],
+        "exclusion": []
+      },
+      "required_exams": [
         {
-          "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика лечение пациентов кардиологическими заболеваниями детское население"
+          "name": "Общий анализ крови с исследованием СОЭ (амбулаторно)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ОАК с исследованием СОЭ – при установлении диагноза, при изменении характера течения заболевания"
+          }
+        },
+        {
+          "name": "Биохимический анализ крови (АЛТ, АСТ, ЛДГ, КФК, билирубин, мочевина, креатинин, глюкоза, общий белок, СРБ, калий, натрий) (амбулаторно)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "БАК с исследованием уровней АЛТ, АСТ, ЛДГ, КФК, общего билирубина, мочевины, креатинина, глюкозы, общего белка, СРБ, калия, натрия – 1 раз в 6 месяцев и при установлении диагноза, изменении характера течения заболевания"
+          }
+        },
+        {
+          "name": "Общий анализ мочи (амбулаторно)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ОАМ – при установлении диагноза, изменении характера течения заболевания"
+          }
+        },
+        {
+          "name": "Электрокардиография (амбулаторно)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ЭКГ – при постановке диагноза, далее – 1 раз в 3 месяца и при изменении характера течения заболевания"
+          }
+        },
+        {
+          "name": "Холтеровское мониторирование ЭКГ (амбулаторно)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ХМ-ЭКГ – при постановке диагноза, далее – 1 раз в 12 месяцев и при изменении характера течения заболевания, чаще – по медицинским показаниям"
+          }
+        },
+        {
+          "name": "Эхокардиография (амбулаторно)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ЭхоКГ – при постановке диагноза, далее – 1 раз в 6 месяцев и при изменении характера течения заболевания, чаще – по медицинским показаниям"
+          }
+        },
+        {
+          "name": "УЗИ органов брюшной полости (амбулаторно)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "УЗИ органов брюшной полости – при постановке диагноза, далее 1 раз в 12 месяцев и при изменении характера течения заболевания"
+          }
+        },
+        {
+          "name": "Рентгенография органов грудной полости",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "РОГП – 1 раз в 12 месяцев (при отсутствии медицинских показаний для спиральной компьютерной томографии легких)"
+          }
+        },
+        {
+          "name": "Консультация детского кардиоревматолога (амбулаторно)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "консультация врача – детского кардиоревматолога – первые 6 месяцев после установления диагноза – 1 раз в месяц, затем – 1 раз в 3 месяца."
+          }
+        },
+        {
+          "name": "Общий анализ крови с исследованием СОЭ (стационар)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ОАК с исследованием СОЭ – 1 раз в 5–7 дней, при верификации диагноза, чаще – по медицинским показаниям"
+          }
+        },
+        {
+          "name": "Биохимический анализ крови (АЛТ, АСТ, ЛДГ, КФК, КФК-МВ, билирубин, мочевина, креатинин, глюкоза, общий белок, СРБ, калий, натрий) (стационар)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "БАК с исследованием уровней АЛТ, АСТ, ЛДГ, КФК, КФК-МВ, общего билирубина, мочевины, креатинина, глюкозы, общего белка, СРБ, калия, натрия – 1 раз в 5–7 дней; при верификации диагноза, чаще – по медицинским показаниям"
+          }
+        },
+        {
+          "name": "Коагулограмма (АЧТВ, ПВ, МНО, ТВ, РФМК, фибриноген)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "коагулограмма с определением АЧТВ, ПВ, МНО, ТВ, РФМК, фибриногена – 1 раз в 10–14 дней, чаще – по медицинским показаниям"
+          }
+        },
+        {
+          "name": "Общий анализ мочи (стационар)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ОАМ – 1 раз в 7–10 дней"
+          }
+        },
+        {
+          "name": "Электрокардиография (стационар)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ЭКГ – при установлении диагноза, при изменении характера течения заболевания, чаще – по медицинским показаниям"
+          }
+        },
+        {
+          "name": "Холтеровское мониторирование ЭКГ (стационар)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ХМ-ЭКГ пациентам с аритмией, патологическими изменениями по данным ЭКГ"
+          }
+        },
+        {
+          "name": "Эхокардиография (стационар)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 19,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ЭхоКГ – при установлении диагноза, при изменении характера течения заболевания (в отсутствие отрицательной динамики со стороны сердечно-сосудистой системы, исследование не дублируется, если было выполнено на амбулаторном этапе)"
+          }
         }
-      ]
+      ],
+      "conditional_exams": [
+        {
+          "name": "Суточное мониторирование артериального давления (СМАД)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "перед началом медикаментозного лечения желательно проведение СМАД. Если при СМАД обнаружено, что индекс времени АГ в дневное или ночное время >50 %, это служит медицинским показанием к назначению лекарственной терапии."
+          }
+        }
+      ],
+      "treatment": {
+        "non_drug": [
+          {
+            "text": "Снижение избыточной массы тела.",
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Снижение избыточной массы тела."
+            }
+          },
+          {
+            "text": "Оптимизация физической нагрузки.",
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Оптимизация физической нагрузки."
+            }
+          },
+          {
+            "text": "Отказ от курения, алкоголя, энергетических напитков.",
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Отказ от курения, алкоголя, энергетических напитков."
+            }
+          },
+          {
+            "text": "Рационализация питания.",
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Рационализация питания."
+            }
+          },
+          {
+            "text": "Снижение психоэмоционального напряжения.",
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Снижение психоэмоционального напряжения."
+            }
+          }
+        ],
+        "drug_groups": [],
+        "drugs": [
+          {
+            "drug_name": "Каптоприл",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Таблетки 25 мг, 50 мг, внутрь. Начальная доза – 0,3 мг/кг массы тела в сутки с титрованием дозы до максимальной 3 мг/кг в сутки, разделенной на 3 приема. У детей с нарушением функции почек, недоношенн",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "каптоприл*, таблетки 25 мг, 50 мг, внутрь; рекомендованная начальная доза – 0,3 мг/кг массы тела в сутки с титрованием дозы до максимальной – 3 мг/кг в сутки, разделенной на 3 приема; у детей с нарушением функции почек, недоношенных детей, новорожденных и грудных детей начальная доза – 0,15 мг/кг массы тела;"
+            }
+          },
+          {
+            "drug_name": "Эналаприл",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Таблетки 5 мг, 10 мг, 20 мг, внутрь. Детям старше 6 лет: начальная доза 2,5 мг (20-50 кг) или 5 мг (>50 кг) 1 раз в сутки. Максимальная 20 мг/сут (20-50 кг) или 40 мг/сут (>50 кг).",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "эналаприл**, таблетки 5 мг, 10 мг и 20 мг, внутрь. Детям старше 6 лет рекомендуемая начальная доза составляет 2,5 мг для пациентов с массой тела от 20 до 50 кг и 5 мг для пациентов с массой тела >50 кг 1 раз в сутки. Дозу следует корректировать в зависимости от потребностей до максимальной 20 мг в сутки для пациентов с массой тела от 20 до 50 кг и 40 мг для пациентов с массой тела >50 кг;"
+            }
+          },
+          {
+            "drug_name": "Лизиноприл",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Таблетки 5 мг, 10 мг, 20 мг, внутрь. Детям старше 6 лет: начальная доза 2,5 мг (20-50 кг) или 5 мг (>50 кг) 1 раз в сутки. Максимальная суточная доза – 20 мг. Принимается 1 раз в сутки длительно, под ",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": 8,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "лизиноприл*, таблетки 5 мг, 10 мг и 20 мг, внутрь. Применяется у детей старше 6 лет; рекомендуемая начальная доза составляет 2,5 мг у детей с весом от 20 до 50 кг и 5 мг для пациентов с массой тела более 50 кг; доза должна подбираться индивидуально до максимальной суточной – 20 мг; принимается 1 раз в сутки в одно и то же время независимо от приема пищи, длительно, под контролем АД;"
+            }
+          },
+          {
+            "drug_name": "Амоксициллин + клавулановая кислота",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Порошок для внутривенного введения: для детей до 12 лет: в дозе 25 мг + 5 мг/кг 3 раза в сутки; для детей старше 12 лет: по 1 г 3 раза в сутки; курс – 7–10 дней.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": 12,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "порошок для приготовления раствора для внутривенного введения ... для детей до 12 лет: в дозе 25 мг + 5 мг/кг 3 раза в сутки; для детей старше 12 лет: по 1 г 3 раза в сутки; курс – 7–10 дней"
+            }
+          },
+          {
+            "drug_name": "Амоксициллин + клавулановая кислота",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Порошок для суспензии внутрь: детям с массой тела >40 кг: разовая доза 500/125 мг 3 раза в сутки. Дети с массой тела <40 кг: от 20/5 мг на 1 кг массы тела в сутки до 60/15 мг на 1 кг массы тела в сутк",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": 12,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "порошок для приготовления суспензии для приема внутрь ... детям с массой тела >40 кг: разовая доза 500/125 мг 3 раза в сутки. Дети с массой тела <40 кг: от 20/5 мг на 1 кг массы тела в сутки до 60/15 мг"
+            }
+          },
+          {
+            "drug_name": "Азитромицин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Лиофилизат для инфузий: 10 мг/кг/сут в первый день в/венно, 1 раз в сутки, максимальная суточная доза – 500 мг; 5 мг/кг/сутки в последующие дни в/венно, 1 раз в сутки, максимальная суточная доза – 250",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": 12,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "лиофилизат (порошок) для приготовления раствора для инфузий 500 мг, 10 мг/кг/ сут в первый день, в/венно, 1 раз в сутки, максимальная суточная доза – 500 мг, 5 мг/кг/сутки в последующие дни в/венно, 1 раз в сутки"
+            }
+          },
+          {
+            "drug_name": "Азитромицин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Порошок для суспензии внутрь: детям исходя из массы тела: 10–14 кг – 100 мг, 15–24 кг – 200 мг, 25–34 кг – 300 мг, 35–44 кг – 400 мг, >45 кг – 500 мг внутрь 1 раз в сутки, курс – 5–7 дней.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": 12,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "порошок для приготовления суспензии для приема внутрь ... Детям дозируют исходя из массы тела: 10–14 кг – 100 мг, 15–24 кг – 200 мг, 25–34 кг – 300 мг, 35–44 кг – 400 мг, >45 кг – 500 мг внутрь 1 раз в сутки"
+            }
+          },
+          {
+            "drug_name": "Левофлоксацин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Раствор для инфузий: детям от 6 мес. до 5 лет – 16–20 мг/кг/сут в/венно 2 раза в сутки; детям от 5 до 17 лет – 8–10 мг/кг/сут в/венно 1 раз в сутки, максимальная суточная доза – 500 мг; курс – от 10–1",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": 12,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "раствор для инфузий 5 мг/мл – детям в возрасте от 6 мес. до 5 лет – 16–20 мг/кг/сут в/венно 2 раза в сутки; детям в возрасте от 5 до 17 лет – 8–10 мг/кг/сут в/венно 1 раз в сутки, максимальная суточная доза – 500 мг"
+            }
+          },
+          {
+            "drug_name": "Доксициклин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Таблетки/капсулы (детям старше 8/12 лет): с массой тела <50 кг – 4 мг/кг/сут в первый день, внутрь, в 2 приема, 2 мг/кг в последующие дни, 1–2 раза в сутки; с массой тела >50 кг – 200 мг в первый день",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": 12,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "таблетки диспергируемые 100 мг (детям в возрасте старше 8 лет), капсулы 100 мг (для детей старше 12 лет), детям с массой тела <50 кг – 4 мг/кг/сут в первый день, внутрь, в 2 приема, 2 мг/кг в последующие дни"
+            }
+          }
+        ],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [
+        {
+          "text": "Оценка эффективности антигипертензивного лечения через 8–12 недель от начала лечения.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Оценка эффективности антигипертензивного лечения через 8–12 недель от начала лечения."
+          }
+        },
+        {
+          "text": "Контроль эффективности немедикаментозного лечения 1 раз в 3 месяца.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Контроль эффективности немедикаментозного лечения 1 раз в 3 месяца."
+          }
+        },
+        {
+          "text": "После 3 месяцев непрерывного лечения и при стабильно нормальном АД возможно постепенное снижение дозы ЛП вплоть до полной отмены с продолжением немедикаментозного лечения.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "После 3 месяцев непрерывного лечения и при стабильно нормальном АД возможно постепенное снижение дозы ЛП вплоть до полной отмены с продолжением немедикаментозного лечения."
+          }
+        },
+        {
+          "text": "При длительном приеме лекарственных препаратов (ЛП) – контроль АД.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При длительном приеме лекарственных препаратов (ЛП) – контроль АД."
+          }
+        }
+      ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "Амбулаторно (первичная медицинская помощь).",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Амбулаторно (первичная медицинская помощь)."
+          }
+        },
+        {
+          "text": "При подозрении на кардиологическое заболевание пациент направляется к врачу – детскому кардиоревматологу, врачу-кардиологу.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При подозрении на кардиологическое заболевание пациент направляется к врачу – детскому кардиоревматологу, врачу-кардиологу."
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Эналаприл не применяется у детей с СКФ менее 30 мл/мин/1,73 м2.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Не применяется у детей с СКФ менее 30 мл/мин/1,73 м2."
+          }
+        },
+        {
+          "text": "Лизиноприл не применяется у детей младше 6 лет или с СКФ менее 30 мл/мин/1,73 м2.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Не применяется у детей младше 6 лет или у детей с СКФ менее 30 мл/мин/1,73 м2."
+          }
+        }
+      ],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "zheludochkovaya_tahikardiya",
+      "name": "Желудочковая тахикардия",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "I47.0",
+        "I47.2",
+        "I47.9",
+        "I49.0"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": {
+        "required": [
+          {
+            "text": "Для постановки диагноза проводится комплекс мероприятий, включающий клиническое обследование, обязательные и дополнительные лабораторные и инструментальные исследования, консультации врачей-специалистов.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Для постановки диагноза проводится комплекс мероприятий, включающий клиническое обследование, обязательные и дополнительные лабораторные и инструментальные исследования, консультации врачей-специалист"
+            }
+          },
+          {
+            "text": "I степень АГ: средние уровни САД и (или) ДАД из трех измерений >95-го перцентиля (для возраста, пола, роста), но >99-го не более чем на 5 мм рт.ст.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "I степень АГ: средние уровни САД и (или) ДАД из трех измерений >95-го перцентиля (для возраста, пола, роста), но >99-го не более чем на 5 мм рт.ст."
+            }
+          },
+          {
+            "text": "II степень АГ (тяжелая): средние уровни САД и (или) ДАД из трех измерений >99-го перцентиля (для возраста, пола, роста) более чем на 5 мм рт.ст.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "II степень АГ (тяжелая): средние уровни САД и (или) ДАД из трех измерений >99-го перцентиля (для возраста, пола, роста) более чем на 5 мм рт.ст."
+            }
+          },
+          {
+            "text": "Степень АГ устанавливается по более высокому значению САД или ДАД, если они попадают в разные категории.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Степень АГ устанавливается по более высокому значению САД или ДАД, если они попадают в разные категории."
+            }
+          }
+        ],
+        "optional": [],
+        "exclusion": []
+      },
+      "required_exams": [
+        {
+          "name": "Клиническое обследование пациента",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "клиническое обследование пациента (жалобы, анамнез заболевания, анамнез жизни, генеалогический анамнез, объективное обследование)"
+          }
+        },
+        {
+          "name": "Общий клинический анализ крови (ОАК) с исследованием СОЭ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ОАК с исследованием СОЭ – при установлении диагноза, при изменении характера течения заболевания (при обострении, при подозрении на развитие осложнений)"
+          }
+        },
+        {
+          "name": "Биохимический анализ крови (БАК)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "БАК с исследованием уровней АЛТ, АСТ, ЛДГ, КФК, КФК-МВ, общего билирубина, мочевины, креатинина, глюкозы, общего белка, СРБ, калия, натрия – при установлении диагноза, изменении характера течения заболевания"
+          }
+        },
+        {
+          "name": "Общий анализ мочи (ОАМ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ОАМ – при установлении диагноза"
+          }
+        },
+        {
+          "name": "Электрокардиография (ЭКГ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ЭКГ – при установлении диагноза, далее – 1 раз в 3 месяца и при изменении характера течения заболевания"
+          }
+        },
+        {
+          "name": "Эхокардиография (ЭхоКГ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ЭхоКГ – при установлении диагноза, далее – 1 раз в 6 месяцев и при изменении характера течения заболевания"
+          }
+        },
+        {
+          "name": "Рентгенография органов грудной полости (РОГП)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "РОГП – при установлении диагноза; первые 6 месяцев после диагноза – 1 раз в месяц, затем – 1 раз в 3 месяца до купирования симптомов СН, далее – 1 раз в 6 месяцев."
+          }
+        },
+        {
+          "name": "Ультразвуковое исследование (УЗИ) органов брюшной полости",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "УЗИ органов брюшной полости – при постановке диагноза, далее 1 раз в 12 месяцев и при изменении характера течения заболевания"
+          }
+        },
+        {
+          "name": "Коагулограмма (АЧТВ, ПВ, МНО, ТВ, РФМК, фибриногена)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "коагулограмма с определением АЧТВ, ПВ, МНО, ТВ, РФМК, фибриногена – 1 раз в 10–14 дней, чаще – по медицинским показаниям;"
+          }
+        },
+        {
+          "name": "Консультация врача – детского кардиоревматолога",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "консультация врача – детского кардиоревматолога – первые 6 месяцев после установления диагноза – 1 раз в месяц, затем – 1 раз в 3 месяца."
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Холтеровское мониторирование ЭКГ (ХМ-ЭКГ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 11,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ХМ-ЭКГ – пациентам с аритмией, патологическими изменениями по данным ЭКГ;"
+          }
+        },
+        {
+          "name": "СМАД (Суточное мониторирование артериального давления)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "перед началом медикаментозного лечения желательно проведение СМАД. Если ИВ АГ в дневное или ночное время >50 %, это служит мед. показанием к назначению лекарственной терапии."
+          }
+        }
+      ],
+      "treatment": {
+        "non_drug": [
+          {
+            "text": "Рекомендуется немедикаментозное лечение (снижение избыточной массы тела, оптимизация физической нагрузки, отказ от курения/алкоголя/энергетических напитков, рационализация питания, снижение психоэмоционального напряжения) при высоком нормальном АД.",
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Рекомендуется немедикаментозное лечение (снижение избыточной массы тела, оптимизация физической нагрузки, отказ от курения/алкоголя/энергетических напитков, рационализация питания, снижение психоэмоци"
+            }
+          },
+          {
+            "text": "При АГ I степени без дополнительных факторов риска сердечно-сосудистых заболеваний, лекарственная терапия назначается при неэффективности немедикаментозного лечения в течение 6–12 месяцев.",
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При АГ I степени без дополнительных факторов риска сердечно-сосудистых заболеваний, лекарственная терапия назначается при неэффективности немедикаментозного лечения в течение 6–12 месяцев."
+            }
+          },
+          {
+            "text": "При АГ I степени с дополнительными факторами риска, хронических болезнях почек, сахарном диабете или АГ II степени, лекарственная терапия назначается одновременно с немедикаментозным лечением.",
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При АГ I степени с дополнительными факторами риска, хронических болезнях почек, сахарном диабете или АГ II степени, лекарственная терапия назначается одновременно с немедикаментозным лечением."
+            }
+          }
+        ],
+        "drug_groups": [],
+        "drugs": [
+          {
+            "drug_name": "Каптоприл",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Таблетки 25 мг, 50 мг, внутрь. Рекомендованная начальная доза – 0,3 мг/кг массы тела в сутки с титрованием дозы до максимальной – 3 мг/кг в сутки, разделенной на 3 приема. У детей с нарушением функции",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "каптоприл*, таблетки 25, 50 мг, внутрь. Нач. доза – 0,3 мг/кг/сут с титрованием до 3 мг/кг/сут (3 приема). У детей с нарушением функции почек, недоношенных, новорожденных – нач. доза 0,15 мг/кг/сут."
+            }
+          },
+          {
+            "drug_name": "Эналаприл",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Таблетки 5 мг, 10 мг и 20 мг, внутрь. Детям старше 6 лет рекомендуемая начальная доза составляет 2,5 мг для пациентов с массой тела от 20 до 50 кг и 5 мг для пациентов с массой тела >50 кг 1 раз в сут",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "эналаприл**, таблетки 5, 10, 20 мг, внутрь. Детям старше 6 лет рекомендованная нач. доза 2,5 мг (20-50 кг) и 5 мг (>50 кг) 1 раз/сут. Дозу корректировать до max 20 мг (20-50 кг) и 40 мг (>50 кг). Не для СКФ < 30."
+            }
+          },
+          {
+            "drug_name": "Лизиноприл",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Таблетки 5 мг, 10 мг и 20 мг, внутрь. Применяется у детей старше 6 лет; рекомендуемая начальная доза составляет 2,5 мг у детей с весом от 20 до 50 кг и 5 мг для пациентов с массой тела более 50 кг; до",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": 8,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "лизиноприл*, таблетки 5, 10, 20 мг, внутрь. Детям старше 6 лет: рекомендованная нач. доза 2,5 мг (20-50 кг) и 5 мг (>50 кг). Доза подбирается инд. до max суточной – 20 мг, 1 раз/сут. Не для детей <6 лет или СКФ <30."
+            }
+          },
+          {
+            "drug_name": "Амоксициллин + клавулановая кислота",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Перорально: детям до 6 лет или <25 кг предпочтительно порошок для суспензии. Детям с массой тела >40 кг: разовая доза 500/125 мг 3 раза в сутки. Детям с массой тела <40 кг: от 20/5 мг/кг/сут до 60/15 ",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": 12,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "амоксициллин + клавулановая кислота: порошок для приготовления раствора для внутривенного введения 500 мг/100 мг; 1000 мг/200 мг: для детей до 12 лет: в дозе 25 мг + 5 мг/кг 3 раза в сутки; для детей старше 12 лет: по 1 г 3 раза в сутки; курс – 7–10 дней;"
+            }
+          },
+          {
+            "drug_name": "Азитромицин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "В/венно: 10 мг/кг/сут в первый день (макс 500 мг), 5 мг/кг/сут в последующие дни (макс 250 мг), 1 раз в сутки. Переход на пероральную терапию через 1–2 дня после нормализации температуры. Перорально: ",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": 12,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "азитромицин***: лиофилизат (порошок) для приготовления раствора для инфузий 500 мг, 10 мг/кг/сут в первый день, в/венно, 1 раз в сутки, максимальная суточная доза – 500 мг, 5 мг/кг/сутки в последующие дни в/венно, 1 раз в сутки, максимальная суточная доза – 250 мг"
+            }
+          },
+          {
+            "drug_name": "Левофлоксацин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Раствор для инфузий 5 мг/мл. Детям в возрасте от 6 мес. до 5 лет: 16–20 мг/кг/сут в/венно 2 раза в сутки. Детям в возрасте от 5 до 17 лет: 8–10 мг/кг/сут в/венно 1 раз в сутки, максимальная суточная д",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": 12,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "левофлоксацин****, раствор для инфузий 5 мг/мл – детям в возрасте от 6 мес. до 5 лет – 16–20 мг/кг/сут в/венно 2 раза в сутки; детям в возрасте от 5 до 17 лет – 8–10 мг/кг/сут в/венно 1 раз в сутки, максимальная суточная доза – 500 мг"
+            }
+          },
+          {
+            "drug_name": "Доксициклин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Таблетки диспергируемые 100 мг (детям >8 лет), капсулы 100 мг (детям >12 лет). Детям с массой тела <50 кг: 4 мг/кг/сут в первый день внутрь в 2 приема, далее 2 мг/кг в последующие дни 1–2 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+              "page_start": 13,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "доксициклин, таблетки диспергируемые 100 мг (детям в возрасте старше 8 лет), капсулы 100 мг (для детей старше 12 лет), детям с массой тела <50 кг – 4 мг/кг/сут в первый день, внутрь, в 2 приема"
+            }
+          }
+        ],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [
+        {
+          "text": "Биохимический анализ крови: далее – 1 раз в 6 месяцев.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Биохимический анализ крови: далее – 1 раз в 6 месяцев."
+          }
+        },
+        {
+          "text": "ЭКГ: далее – 1 раз в 3 месяца и при изменении характера течения заболевания.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ЭКГ: далее – 1 раз в 3 месяца и при изменении характера течения заболевания."
+          }
+        },
+        {
+          "text": "ЭхоКГ: далее – 1 раз в 6 месяцев и при изменении характера течения заболевания.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ЭхоКГ: далее – 1 раз в 6 месяцев и при изменении характера течения заболевания."
+          }
+        },
+        {
+          "text": "Рентгенография органов грудной полости: первые 6 месяцев после установления диагноза – 1 раз в месяц, затем – 1 раз в 3 месяца до купирования симптомов сердечной недостаточности, далее – 1 раз в 6 месяцев.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Рентгенография органов грудной полости: первые 6 месяцев после установления диагноза – 1 раз в месяц, затем – 1 раз в 3 месяца до купирования симптомов сердечной недостаточности, далее – 1 раз в 6 мес"
+          }
+        },
+        {
+          "text": "Холтеровское мониторирование ЭКГ: далее – 1 раз в 12 месяцев и при изменении характера течения заболевания, чаще – по медицинским показаниям (в амбулаторных условиях).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Холтеровское мониторирование ЭКГ: далее – 1 раз в 12 месяцев и при изменении характера течения заболевания, чаще – по медицинским показаниям (в амбулаторных условиях)."
+          }
+        },
+        {
+          "text": "УЗИ органов брюшной полости: далее 1 раз в 12 месяцев и при изменении характера течения заболевания (в амбулаторных условиях).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "УЗИ органов брюшной полости: далее 1 раз в 12 месяцев и при изменении характера течения заболевания (в амбулаторных условиях)."
+          }
+        },
+        {
+          "text": "Консультация врача – детского кардиоревматолога: первые 6 месяцев после установления диагноза – 1 раз в месяц, затем – 1 раз в 3 месяца.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Консультация врача – детского кардиоревматолога: первые 6 месяцев после установления диагноза – 1 раз в месяц, затем – 1 раз в 3 месяца."
+          }
+        },
+        {
+          "text": "Оценка эффективности антигипертензивного лечения проводится через 8–12 недель от начала лечения.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Оценка эффективности антигипертензивного лечения проводится через 8–12 недель от начала лечения."
+          }
+        }
+      ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "Возможна диагностика и медицинское наблюдение в амбулаторных и стационарных условиях.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Возможна диагностика и медицинское наблюдение в амбулаторных и стационарных условиях."
+          }
+        },
+        {
+          "text": "Первичная медицинская помощь пациентам с кардиологическими заболеваниями осуществляется в амбулаторных условиях врачами-педиатрами, врачами общей практики или другими врачами-специалистами.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Первичная медицинская помощь пациентам с кардиологическими заболеваниями осуществляется в амбулаторных условиях врачами-педиатрами, врачами общей практики или другими врачами-специалистами."
+          }
+        },
+        {
+          "text": "При подозрении на кардиологическое заболевание пациент направляется на врачебную консультацию к врачу – детскому кардиоревматологу или врачу-кардиологу в специализированную организацию здравоохранения.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При подозрении на кардиологическое заболевание пациент направляется на врачебную консультацию к врачу – детскому кардиоревматологу или врачу-кардиологу в специализированную организацию здравоохранения"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Не применять эналаприл у детей с СКФ менее 30 мл/мин/1,73 м2.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Не применяется у детей с СКФ менее 30 мл/мин/1,73 м2."
+          }
+        },
+        {
+          "text": "У детей со сниженной функцией почек (при приеме иАПФ) необходимо назначать меньшую начальную дозу или увеличивать интервалы между повышением дозы.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "У детей со сниженной функцией почек необходимо назначать меньшую начальную дозу или увеличивать интервалы между повышением дозы."
+          }
+        },
+        {
+          "text": "Не применять лизиноприл у детей младше 6 лет или с СКФ менее 30 мл/мин/1,73 м2.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_кардиологиче",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_кардиологическими_заболеваниями_д-нас_пост_МЗ_2025_17.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Не применяется у детей младше 6 лет или у детей с СКФ менее 30 мл/мин/1,73 м2."
+          }
+        }
+      ],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:15.368638+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T15:27:23.612900+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=5"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-06-23T19:15:15.379640+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[kardiomiopatiya].treatment.drugs[0]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[kardiomiopatiya].treatment.drugs[1]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[kardiomiopatiya].treatment.drugs[2]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[nadzheludochkovaya_tahikardiya].treatment.drugs[0]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[nadzheludochkovaya_tahikardiya].treatment.drugs[1]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[nadzheludochkovaya_tahikardiya].treatment.drugs[2]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[nadzheludochkovaya_tahikardiya].treatment.drugs[4]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[nadzheludochkovaya_tahikardiya].treatment.drugs[6]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[zheludochkovaya_tahikardiya].required_exams[0]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[zheludochkovaya_tahikardiya].required_exams[2]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[zheludochkovaya_tahikardiya].required_exams[3]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[zheludochkovaya_tahikardiya].required_exams[4]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[zheludochkovaya_tahikardiya].required_exams[5]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[zheludochkovaya_tahikardiya].required_exams[9]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[zheludochkovaya_tahikardiya].treatment.drugs[0]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[zheludochkovaya_tahikardiya].treatment.drugs[1]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[zheludochkovaya_tahikardiya].treatment.drugs[2]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[zheludochkovaya_tahikardiya].treatment.drugs[3]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[zheludochkovaya_tahikardiya].treatment.drugs[4]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[zheludochkovaya_tahikardiya].treatment.drugs[5]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[zheludochkovaya_tahikardiya].treatment.drugs[6]"
+      }
+    ],
+    "validated_at": "2026-07-20T15:27:23.703245+00:00"
   }
 }

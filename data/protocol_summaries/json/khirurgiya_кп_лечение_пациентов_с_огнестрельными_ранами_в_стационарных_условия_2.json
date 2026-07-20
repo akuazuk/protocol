@@ -1,10 +1,10 @@
 {
   "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Лечение пациентов с огнестрельными ранами в стационарных условия .1",
+    "title": "Лечение пациентов с огнестрельными ранами в стационарных условиях",
     "url": null,
     "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными ранами в стационарных условия 22.02.2018 № 19.1.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,8 +32,8 @@
   },
   "conditions": [
     {
-      "condition_id": "лечение_пациентов_с_огнестрельными_ранами_в_стац",
-      "name": "Лечение пациентов с огнестрельными ранами в стационарных условия .1",
+      "condition_id": "gunshot_wounds",
+      "name": "Огнестрельные ранения",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
@@ -44,107 +44,22 @@
         "S61",
         "S71",
         "S81",
-        "S91"
+        "S91",
+        "T01",
+        "T01.0",
+        "T01.1",
+        "T01.2"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
-      "diagnostic_criteria": {
-        "required": [
-          {
-            "text": "[classification] 9. Клинический диагноз у пациентов с огнестрельными ранениями отражает (стр. 3)",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными ранами в стационарных условия 22.02.2018 № 19.1.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[classification] 9. Клинический диагноз у пациентов с огнестрельными ранениями отражает (стр. 3)"
-            }
-          },
-          {
-            "text": "полостям, количество и локализацию повреждений. Примеры клинических диагнозов:",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными ранами в стационарных условия 22.02.2018 № 19.1.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "полостям, количество и локализацию повреждений. Примеры клинических диагнозов:"
-            }
-          },
-          {
-            "text": "[classification] 9. Клинический диагноз у пациентов с огнестрельными ранениями отражает (стр. 3)",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными ранами в стационарных условия 22.02.2018 № 19.1.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[classification] 9. Клинический диагноз у пациентов с огнестрельными ранениями отражает (стр. 3)"
-            }
-          },
-          {
-            "text": "полостям, количество и локализацию повреждений. Примеры клинических диагнозов:",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными ранами в стационарных условия 22.02.2018 № 19.1.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "полостям, количество и локализацию повреждений. Примеры клинических диагнозов:"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
+      "diagnostic_criteria": null,
       "required_exams": [],
       "conditional_exams": [],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] ПОСТАНОВЛЕНИЕ МИНИСТЕРСТВА ЗДРАВООХРАНЕНИЯ (стр. 1)",
+            "text": "Первичная хирургическая обработка раны: хирургическое вмешательство для предупреждения инфекционных осложнений путем удаления нежизнеспособных тканей и создания благоприятных условий для заживления раны.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
               "document_url": null,
@@ -155,11 +70,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] ПОСТАНОВЛЕНИЕ МИНИСТЕРСТВА ЗДРАВООХРАНЕНИЯ (стр. 1)"
+              "quote": "Первичная хирургическая обработка раны: хирургическое вмешательство для предупреждения инфекционных осложнений путем удаления нежизнеспособных тканей и создания благоприятных условий для заживления ра"
             }
           },
           {
-            "text": "Об утверждении клинического протокола",
+            "text": "Повторная первичная хирургическая обработка: повторное хирургическое вмешательство для профилактики развития раневой инфекции.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
               "document_url": null,
@@ -170,11 +85,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Об утверждении клинического протокола"
+              "quote": "Повторная первичная хирургическая обработка: повторное хирургическое вмешательство для профилактики развития раневой инфекции."
             }
           },
           {
-            "text": "«Лечение пациентов с огнестрельными",
+            "text": "Вторичная хирургическая обработка раны: хирургическое вмешательство для лечения развившихся в ране инфекционных осложнений.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
               "document_url": null,
@@ -185,11 +100,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "«Лечение пациентов с огнестрельными"
+              "quote": "Вторичная хирургическая обработка раны: хирургическое вмешательство для лечения развившихся в ране инфекционных осложнений."
             }
           },
           {
-            "text": "ранами в стационарных условиях»",
+            "text": "Повторная вторичная хирургическая обработка: повторное хирургическое вмешательство для лечения развившейся раневой инфекции.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
               "document_url": null,
@@ -200,11 +115,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ранами в стационарных условиях»"
+              "quote": "Повторная вторичная хирургическая обработка: повторное хирургическое вмешательство для лечения развившейся раневой инфекции."
             }
           },
           {
-            "text": "На основании абзаца седьмого части первой статьи 1 Закона Республики Беларусь от",
+            "text": "Первичный шов: накладывается на края огнестрельной раны в завершении первичной хирургической обработки.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
               "document_url": null,
@@ -215,11 +130,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "На основании абзаца седьмого части первой статьи 1 Закона Республики Беларусь от"
+              "quote": "Первичный шов: накладывается на края огнестрельной раны в завершении первичной хирургической обработки."
             }
           },
           {
-            "text": "Министерстве здравоохранения Республики Беларусь, утвержденного постановлением",
+            "text": "Первично-отсроченный шов: накладывается на края огнестрельной раны до появления грануляционной ткани.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
               "document_url": null,
@@ -230,17 +145,167 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Министерстве здравоохранения Республики Беларусь, утвержденного постановлением"
+              "quote": "Первично-отсроченный шов: накладывается на края огнестрельной раны до появления грануляционной ткани."
+            }
+          },
+          {
+            "text": "Ранний вторичный шов: накладывается после появления грануляционной ткани в ране при возможности сведения ее краев без натяжения.",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными ранами в стационарных условия 22.02.2018 № 19.1.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ранний вторичный шов: накладывается после появления грануляционной ткани в ране при возможности сведения ее краев без натяжения."
+            }
+          },
+          {
+            "text": "Поздний вторичный шов: накладывается на края раны после иссечения рубцовой ткани.",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными ранами в стационарных условия 22.02.2018 № 19.1.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Поздний вторичный шов: накладывается на края раны после иссечения рубцовой ткани."
+            }
+          },
+          {
+            "text": "Основные задачи лечения огнестрельных ран: максимально возможное удаление некротизированных тканей; создание благоприятных условий для сохранения жизнеспособности тканей в зоне вторичного некроза.",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными ранами в стационарных условия 22.02.2018 № 19.1.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Основные задачи лечения огнестрельных ран: максимально возможное удаление некротизированных тканей; создание благоприятных условий для сохранения жизнеспособности тканей в зоне вторичного некроза."
+            }
+          },
+          {
+            "text": "Полную ревизию огнестрельного раневого канала выполняют в условиях операционной.",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными ранами в стационарных условия 22.02.2018 № 19.1.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Полную ревизию огнестрельного раневого канала выполняют в условиях операционной."
+            }
+          },
+          {
+            "text": "Для адекватной ревизии огнестрельной раны не рекомендуется выполнять хирургическую обработку под местной инфильтрационной анестезией.",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными ранами в стационарных условия 22.02.2018 № 19.1.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Для адекватной ревизии огнестрельной раны не рекомендуется выполнять хирургическую обработку под местной инфильтрационной анестезией."
+            }
+          },
+          {
+            "text": "У детей первичную (вторичную) хирургическую обработку огнестрельной раны выполняют только под общей анестезией.",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными ранами в стационарных условия 22.02.2018 № 19.1.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "У детей первичную (вторичную) хирургическую обработку огнестрельной раны выполняют только под общей анестезией."
+            }
+          },
+          {
+            "text": "Основным способом лечения огнестрельных ран является выполнение хирургической обработки.",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными ранами в стационарных условия 22.02.2018 № 19.1.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Основным способом лечения огнестрельных ран является выполнение хирургической обработки."
+            }
+          },
+          {
+            "text": "Первичная хирургическая обработка показана при наличии огнестрельной раны с выраженными зонами первичного и вторичного некроза, которые не могут самостоятельно освободиться от некротизированных тканей, при отсутствии признаков раневой инфекции.",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными ранами в стационарных условия 22.02.2018 № 19.1.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Первичная хирургическая обработка показана при наличии огнестрельной раны с выраженными зонами первичного и вторичного некроза, которые не могут самостоятельно освободиться от некротизированных тканей"
+            }
+          },
+          {
+            "text": "Первичную хирургическую обработку не выполняют при: множественных мелких поверхностных слепых осколочных ранах; сквозных пулевых/осколочных ранах без кровотечения/напряженных гематом; слепых осколочных ранах мягких тканей спины/ягодиц без кровотечения; поверхностных касательных ранах.",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными ранами в стационарных условия 22.02.2018 № 19.1.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Первичную хирургическую обработку не выполняют при: множественных мелких поверхностных слепых осколочных ранах; сквозных пулевых/осколочных ранах без кровотечения/напряженных гематом; слепых осколочны"
+            }
+          },
+          {
+            "text": "В случаях, когда ПХО не выполняется, проводят туалет раны: обработка кожи вокруг раны, промывание раствором антисептических средств, дренирование раневого канала, асептическая повязка.",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными ранами в стационарных условия 22.02.2018 № 19.1.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "В случаях, когда ПХО не выполняется, проводят туалет раны: обработка кожи вокруг раны, промывание раствором антисептических средств, дренирование раневого канала, асептическая повязка."
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "февраля",
+            "drug_name": "Антибактериальные лекарственные средства широкого спектра действия",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2018 г",
+            "dose_text": "назначают при отсрочке хирургической обработки",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -252,88 +317,13 @@
               "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными ранами в стационарных условия 22.02.2018 № 19.1.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "февраля 2018 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными ранами в стационарных условия 22.02.2018 № 19.1.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня 1993 года «О здравоохранении» в редакции Закон"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными ранами в стационарных условия 22.02.2018 № 19.1.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          },
-          {
-            "drug_name": "августа",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными ранами в стационарных условия 22.02.2018 № 19.1.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "августа 2011 г"
+              "quote": "При поступлении значительного количества пациентов с огнестрельными ранениями в случаях, не требующих проведения экстренных хирургических вмешательств, начало выполнения хирургической обработки может быть отсрочено до 12 часов. При этом накладывают асептическую повязку, назначают антибактериальные лекарственные средства широкого спектра действия."
             }
           }
         ],
@@ -343,43 +333,49 @@
       },
       "follow_up": [],
       "hospitalization": [],
-      "routing": [],
+      "routing": [
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными ранами в стационарных условия 22.02.2018 № 19.1.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        }
+      ],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_ранами_в_стационарных_условия_2",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными ранами в стационарных условия 22.02.2018 № 19.1.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Лечение пациентов с огнестрельными ранами в стационарных условия .1"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:36.846514+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T16:23:12.158175+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:36.848577+00:00"
+    "validated_at": "2026-07-20T16:23:12.159136+00:00"
   }
 }

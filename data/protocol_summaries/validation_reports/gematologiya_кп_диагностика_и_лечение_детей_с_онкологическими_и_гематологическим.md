@@ -1,9 +1,15 @@
 # Validation: gematologiya_кп_диагностика_и_лечение_детей_с_онкологическими_и_гематологическим
 
 - **status:** needs_human_review
-- **validated_at:** 2026-06-23T19:16:26.620748+00:00
-- **review_status:** not_reviewed
-- **extraction_status:** auto_extracted
+- **validated_at:** 2026-07-20T15:41:59.384359+00:00
+- **review_status:** needs_review
+- **extraction_status:** llm_extracted
 
 ## Warnings
-- `required_exam_level` conditions[p53_кп_диагностика_и_лечение_детей_с_онкологическими_и_г].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_drug` conditions[protein_energy_malnutrition].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[protein_energy_malnutrition].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[protein_energy_malnutrition].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[protein_energy_malnutrition].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[aplastic_anemias].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[aplastic_anemias].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[aplastic_anemias].treatment.drugs[5]: Дублирующийся препарат

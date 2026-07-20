@@ -1,9 +1,63 @@
 # Validation: allergologiya_immunologiya_кп_диагностика_и_лечение_детей_с_онкологическими_и_ге
 
 - **status:** needs_human_review
-- **validated_at:** 2026-06-23T19:16:26.607316+00:00
-- **review_status:** not_reviewed
-- **extraction_status:** auto_extracted
+- **validated_at:** 2026-07-20T15:36:45.213220+00:00
+- **review_status:** needs_review
+- **extraction_status:** llm_extracted
 
 ## Warnings
-- `required_exam_level` conditions[p53_кп_диагностика_и_лечение_детей_с_онкологическими_и_г].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_drug` conditions[zlokachestvennye_novoobrazovaniya].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[ostryy_limfoblastnyy_leykoz].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[ostryy_limfoblastnyy_leykoz].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[ostryy_limfoblastnyy_leykoz].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[ostryy_limfoblastnyy_leykoz].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[ostryy_limfoblastnyy_leykoz].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[ostryy_limfoblastnyy_leykoz].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[ostryy_limfoblastnyy_leykoz].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[aplasticheskie_anemii].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[aplasticheskie_anemii].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[aplasticheskie_anemii].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[aplasticheskie_anemii].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[aplasticheskie_anemii].treatment.drugs[11]: Дублирующийся препарат
+- `duplicate_drug` conditions[aplasticheskie_anemii].treatment.drugs[12]: Дублирующийся препарат
+- `duplicate_drug` conditions[aplasticheskie_anemii].treatment.drugs[13]: Дублирующийся препарат
+- `duplicate_drug` conditions[aplasticheskie_anemii].treatment.drugs[14]: Дублирующийся препарат
+- `duplicate_drug` conditions[aplasticheskie_anemii].treatment.drugs[15]: Дублирующийся препарат
+- `duplicate_drug` conditions[aplasticheskie_anemii].treatment.drugs[16]: Дублирующийся препарат
+- `duplicate_drug` conditions[aplasticheskie_anemii].treatment.drugs[17]: Дублирующийся препарат
+- `duplicate_drug` conditions[aplasticheskie_anemii].treatment.drugs[18]: Дублирующийся препарат
+- `duplicate_drug` conditions[aplasticheskie_anemii].treatment.drugs[19]: Дублирующийся препарат
+- `duplicate_drug` conditions[aplasticheskie_anemii].treatment.drugs[20]: Дублирующийся препарат
+- `duplicate_drug` conditions[aplasticheskie_anemii].treatment.drugs[21]: Дублирующийся препарат
+- `duplicate_drug` conditions[aplasticheskie_anemii].treatment.drugs[22]: Дублирующийся препарат
+- `duplicate_drug` conditions[aplasticheskie_anemii].treatment.drugs[23]: Дублирующийся препарат
+- `duplicate_drug` conditions[post_tgsk_sostoyaniya].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[post_tgsk_sostoyaniya].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[post_tgsk_sostoyaniya].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[post_tgsk_sostoyaniya].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[post_tgsk_sostoyaniya].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[post_tgsk_sostoyaniya].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[post_tgsk_sostoyaniya].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[post_tgsk_sostoyaniya].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[post_tgsk_sostoyaniya].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[post_tgsk_sostoyaniya].treatment.drugs[11]: Дублирующийся препарат
+- `duplicate_drug` conditions[post_tgsk_sostoyaniya].treatment.drugs[12]: Дублирующийся препарат
+- `duplicate_drug` conditions[post_tgsk_sostoyaniya].treatment.drugs[13]: Дублирующийся препарат
+- `duplicate_drug` conditions[post_tgsk_sostoyaniya].treatment.drugs[14]: Дублирующийся препарат
+- `duplicate_drug` conditions[post_tgsk_sostoyaniya].treatment.drugs[15]: Дублирующийся препарат
+- `duplicate_drug` conditions[post_tgsk_sostoyaniya].treatment.drugs[16]: Дублирующийся препарат
+- `duplicate_drug` conditions[post_tgsk_sostoyaniya].treatment.drugs[17]: Дублирующийся препарат
+- `duplicate_drug` conditions[post_tgsk_sostoyaniya].treatment.drugs[18]: Дублирующийся препарат
+- `duplicate_drug` conditions[post_tgsk_sostoyaniya].treatment.drugs[19]: Дублирующийся препарат
+- `duplicate_drug` conditions[post_tgsk_sostoyaniya].treatment.drugs[20]: Дублирующийся препарат
+- `duplicate_drug` conditions[post_tgsk_sostoyaniya].treatment.drugs[21]: Дублирующийся препарат
+- `duplicate_exam` conditions[belkovo_energeticheskaya_nedostatochnost].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[belkovo_energeticheskaya_nedostatochnost].required_exams[4]: Дублирующееся обследование
+- `duplicate_exam` conditions[belkovo_energeticheskaya_nedostatochnost].required_exams[5]: Дублирующееся обследование
+- `duplicate_exam` conditions[belkovo_energeticheskaya_nedostatochnost].required_exams[6]: Дублирующееся обследование
+- `duplicate_exam` conditions[belkovo_energeticheskaya_nedostatochnost].required_exams[7]: Дублирующееся обследование
+- `duplicate_exam` conditions[belkovo_energeticheskaya_nedostatochnost].required_exams[12]: Дублирующееся обследование
+- `duplicate_drug` conditions[belkovo_energeticheskaya_nedostatochnost].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[belkovo_energeticheskaya_nedostatochnost].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[belkovo_energeticheskaya_nedostatochnost].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[belkovo_energeticheskaya_nedostatochnost].treatment.drugs[3]: Дублирующийся препарат

@@ -1,24 +1,23 @@
 protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_
-summary_version: '1.0'
-extraction_status: auto_extracted
-review_status: not_reviewed
+summary_version: '2.0'
+extraction_status: llm_extracted
+review_status: needs_review
 source:
-  title: КП Диагностика и лечение пациентов детс население со стоматитом и родственными
-    поражениями пост МЗ 30.11.2022 112
-  url: https://minzdrav.gov.by/upload/dadvfiles/CProtokol/КП_Диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_родственными_поражениями_пост_МЗ_30.11.2022_112.pdf
+  title: Диагностика и лечение пациентов детского населения со стоматитом и родственными
+    поражениями
+  url: null
   local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_родственными_поражениями_пост_МЗ_30.11.2022_112.pdf
-  document_sha256: 4e32c8352f8ebe8fd07052a7602e95178acabc14db61a40a84c647b95691353b
-  approval_date: '2022-11-30'
-  approval_number: '112'
+  document_sha256: null
+  approval_date: null
+  approval_number: null
   valid_from: null
   valid_to: null
-  document_year: 2022
+  document_year: null
   pages_total: null
 rubric:
-  name: Стоматология
+  name: Stomatologiya
   slug: stomatologiya
-  specialty_slugs:
-  - stomatologiya
+  specialty_slugs: []
 applicability:
   population:
   - child
@@ -28,47 +27,403 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: кп_диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_родств
-  name: КП Диагностика и лечение пациентов детс население со стоматитом и родственными
-    поражениями пост МЗ 30.11.2022 112
+- condition_id: stomatitis_and_related_lesions
+  name: Стоматит и родственные поражения
   synonyms: []
   abbreviations: []
-  icd10_codes: []
+  icd10_codes:
+  - K12
+  - K12.00
+  - K12.01
+  - K12.02
+  - K12.03
+  - K12.04
   condition_applicability: null
   diagnosis_structure: null
-  clinical_criteria:
+  clinical_criteria: null
+  diagnostic_criteria:
     required:
-    - text: соответствие протоколу «КП Диагностика и лечение пациентов детс население
-        со стоматитом и родственными п»
+    - text: Рецидивирующие (малые) афты (афтозный стоматит)
       logic_group: null
-      operator: present
+      operator: unknown
       values: []
       numeric_value: null
       unit: null
-      evidence_targets:
-      - diagnosis
+      evidence_targets: []
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_
         document_url: null
-        local_path: null
-        page_start: 1
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_родственными_поражениями_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
         page_end: null
-        section_title: Протокол
+        section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: КП Диагностика и лечение пациентов детс население со стоматитом и родственными
-          поражениями пост МЗ 30.11.2022 112
+        quote: Рецидивирующие (малые) афты (афтозный стоматит)
+    - text: Герпетиформный стоматит (герпетиформная сыпь)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_родственными_поражениями_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Герпетиформный стоматит (герпетиформная сыпь)
     optional: []
     exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
+  required_exams:
+  - name: Сбор анамнеза
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_родственными_поражениями_пост_МЗ_30.11.2022_112.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: сбор анамнеза, выявление факторов, вызвавших повреждение слизистой оболочки
+        полости рта, характера и длительности воздействия травмирующего агента, а
+        также определение медицинских показаний к лечению, выбор метода лечения и
+        тактики врача-специалиста;
   conditional_exams: []
-  treatment: null
+  treatment:
+    non_drug:
+    - text: Полоскание полости рта 10–15 мл лекарственного средства 3–4 раза в сутки.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_родственными_поражениями_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Полоскание полости рта 10–15 мл лекарственного средства 3–4 раза в
+          сутки.
+    - text: Местное применение марлевых или ватных тампонов, смоченных раствором лекарственного
+        средства, в случае невозможности полоскания.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_родственными_поражениями_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Местное применение марлевых или ватных тампонов, смоченных раствором
+          лекарственного средства, в случае невозможности полоскания.
+    - text: Приготовление раствора гидрокарбоната натрия (2 г порошка на 100 мл кипяченой
+        воды) для однократного полоскания (орошения) полости рта в объеме 30–50 мл
+        для нейтрализации кислоты.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_родственными_поражениями_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Приготовление раствора гидрокарбоната натрия (2 г порошка на 100 мл
+          кипяченой воды) для однократного полоскания (орошения) полости рта в объеме
+          30–50 мл для нейтрализации кислоты.
+    - text: Применение 9% раствора уксусной кислоты для промывания (орошения) полости
+        рта при нейтрализации щелочи.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_родственными_поражениями_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Применение 9% раствора уксусной кислоты для промывания (орошения) полости
+          рта при нейтрализации щелочи.
+    drug_groups: []
+    drugs:
+    - drug_name: Хлоргексидин
+      active_substance: null
+      drug_group: null
+      dose_text: Раствор для наружного (местного) применения 0,5 мг/мл. Неразведенный
+        раствор применяется в виде орошений, полосканий и аппликаций – 5–10 мл раствора
+        наносят на пораженную поверхность слизистой оболочк
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_родственными_поражениями_пост_МЗ_30.11.2022_112.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Неразведенный раствор применяется в виде орошений, полосканий и аппликаций
+          – 5–10 мл раствора наносят на пораженную поверхность слизистой оболочки
+          полости рта или на десну с экспозицией 1–3 мин 2–3 раза в сутки (на тампоне
+          или путем орошения).
+    - drug_name: Бензилдиметил-миристоиламино-пропиламмоний
+      active_substance: null
+      drug_group: null
+      dose_text: Раствор для наружного (местного) применения 0,01 % водного раствора.
+        Орошение (полоскание) полости рта перед и после удаления зубных отложений.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_родственными_поражениями_пост_МЗ_30.11.2022_112.pdf
+        page_start: 72
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Орошение (полоскание) полости рта перед и после удаления зубных отложений.
+    - drug_name: Трипсин кристаллический
+      active_substance: null
+      drug_group: null
+      dose_text: 'Местно. На изъязвленную или некротизированную слизистую оболочку
+        полости рта или десны накладывают смоченную салфетку раствором трипсина (готовят
+        непосредственно перед применением: 10 мг трипсина раст'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_родственными_поражениями_пост_МЗ_30.11.2022_112.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Местно. На изъязвленную или некротизированную слизистую оболочку полости
+          рта или десны накладывают смоченную салфетку раствором трипсина (готовят
+          непосредственно перед применением: 10 мг трипсина растворяют в 10 мл стерильного
+          физиологического раствора).'
+    - drug_name: Химотрипсин
+      active_substance: null
+      drug_group: null
+      dose_text: 'Местно. На гнойные поверхности слизистой оболочки полости рта или
+        десны с некротизированными тканями накладывается смоченная салфетка раствором
+        10 мг химотрипсина в 10 мл стерильного физиологического '
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_родственными_поражениями_пост_МЗ_30.11.2022_112.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Местно. На гнойные поверхности слизистой оболочки полости рта или десны
+          с некротизированными тканями накладывается смоченная салфетка раствором
+          10 мг химотрипсина в 10 мл стерильного физиологического раствора. Количество
+          процедур – до 10
+    - drug_name: Лидокаин
+      active_substance: null
+      drug_group: null
+      dose_text: Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на
+        слизистую оболочку полости рта или десну. Лекарственное средство можно наносить
+        путем смазывания смоченным в средстве ватным тампоном
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_родственными_поражениями_пост_МЗ_30.11.2022_112.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на
+          слизистую оболочку полости рта или десну. Лекарственное средство можно наносить
+          путем смазывания смоченным в средстве ватным тампоном
+    - drug_name: Лидокаин/Хлоргексидин
+      active_substance: null
+      drug_group: null
+      dose_text: Для аппликационной анестезии слизистой оболочки полости рта, а также
+        перед инъекционной анестезией. У детей до 2 лет применение противопоказано.
+        Предназначен для детей с 2 лет. Для детей в возрасте от
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_родственными_поражениями_пост_МЗ_30.11.2022_112.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Для аппликационной анестезии слизистой оболочки полости рта, а также
+          перед инъекционной анестезией. У детей до 2 лет применение противопоказано.
+          Предназначен для детей с 2 лет. Для детей в возрасте от 2 до 11 лет максимально
+          допустимая доза лидокаина гидрохлорида не должна превышать 2,9 мг/кг.
+    - drug_name: Ацикловир
+      active_substance: null
+      drug_group: null
+      dose_text: Внутрь, детям с 2 лет назначается в лечебной дозе 200 мг (1 таблетка)
+        5 раз в сутки. До 2 лет – в дозе 5–10 мг/кг/сутки. Курс лечения составляет
+        5–7 дней
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_родственными_поражениями_пост_МЗ_30.11.2022_112.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Внутрь, детям с 2 лет назначается в лечебной дозе 200 мг (1 таблетка)
+          5 раз в сутки. До 2 лет – в дозе 5–10 мг/кг/сутки. Курс лечения составляет
+          5–7 дней
+    - drug_name: Ацикловир
+      active_substance: null
+      drug_group: null
+      dose_text: Применение у детей до 12 лет не рекомендовано. Мазь наносится на
+        пораженные участки кожи лица тонким слоем каждые 4 часа. Количество процедур
+        индивидуально
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_родственными_поражениями_пост_МЗ_30.11.2022_112.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Применение у детей до 12 лет не рекомендовано. Мазь наносится на пораженные
+          участки кожи лица тонким слоем каждые 4 часа. Количество процедур индивидуально
+    - drug_name: Хлоргексидин
+      active_substance: null
+      drug_group: null
+      dose_text: Неразведенный раствор применяется в виде орошений, полосканий и аппликаций
+        – 5–10 мл раствора наносят на пораженную поверхность
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_родственными_поражениями_пост_МЗ_30.11.2022_112.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Неразведенный раствор применяется в виде орошений, полосканий и аппликаций
+          – 5–10 мл раствора наносят на пораженную поверхность
+    procedures: []
+    surgery: []
+    source_refs: []
   follow_up: []
   hospitalization: []
   routing: []
-  red_flags: []
+  red_flags:
+  - text: Применение Лидокаина/Хлоргексидина противопоказано у детей до 2 лет.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_родственными_поражениями_пост_МЗ_30.11.2022_112.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: У детей до 2 лет применение противопоказано.
   contraindications: []
   complications: []
   kz_checklist: null
@@ -77,18 +432,23 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-05-31T18:30:13.988348+00:00'
-  extractor: builder.heuristic_v2
-  extractor_version: '2.0'
-  source_document_sha256: 4e32c8352f8ebe8fd07052a7602e95178acabc14db61a40a84c647b95691353b
+  extracted_at: '2026-07-01T22:27:43.017933+00:00'
+  extractor: llm_extractor
+  extractor_version: '1.0'
+  source_document_sha256: null
   notes:
-  - aggregated from 24 protocol_cards, 79 chunks
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: needs_human_review
   errors: []
   warnings:
   - level: warning
-    code: missing_icd10
-    message: Нет icd10_codes у condition
-    path: conditions[кп_диагностика_и_лечение_пациентов_детс_население_со_стоматитом_и_родств]
-  validated_at: '2026-05-31T18:30:13.988364+00:00'
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[stomatitis_and_related_lesions].treatment.drugs[7]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[stomatitis_and_related_lesions].treatment.drugs[8]
+  validated_at: '2026-07-01T22:27:43.022931+00:00'

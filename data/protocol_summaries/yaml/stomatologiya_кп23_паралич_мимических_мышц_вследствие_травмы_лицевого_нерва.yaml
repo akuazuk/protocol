@@ -1,9 +1,9 @@
 protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: паралич мимических мышц вследствие травмы лицевого нерва
+  title: Паралич мимических мышц вследствие травмы лицевого нерва
   url: null
   local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
   document_sha256: null
@@ -26,24 +26,25 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: паралич_мимических_мышц_вследствие_травмы_лицево
-  name: паралич мимических мышц вследствие травмы лицевого нерва
+- condition_id: mimic_muscle_paralysis_facial_nerve_trauma
+  name: Паралич мимических мышц вследствие травмы лицевого нерва
   synonyms: []
   abbreviations: []
   icd10_codes:
+  - T90.3
   - K01.1
   - K04.5
   - K04.7
   - K06.2
   - K07.9
   - K12.2
+  - B20.0
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[classification] 11. Для постановки или подтверждения диагноза осуществляются:
-        (стр. 4)'
+    - text: Птоз, эктропион нижнего века, лагофтальм
       logic_group: null
       operator: unknown
       values: []
@@ -60,10 +61,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 11. Для постановки или подтверждения диагноза осуществляются:
-          (стр. 4)'
-    - text: '[diagnostics] 18. Критерии эффективности лечения пациентов с параличом
-        мимических мышц: (стр. 6)'
+        quote: Птоз, эктропион нижнего века, лагофтальм
+    - text: Опущение и асимметрия углов рта
       logic_group: null
       operator: unknown
       values: []
@@ -80,16 +79,131 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 18. Критерии эффективности лечения пациентов с параличом
-          мимических мышц: (стр. 6)'
+        quote: Опущение и асимметрия углов рта
+    - text: Нарушение смыкания губ
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Нарушение смыкания губ
+    - text: Опущение и асимметрия крыльев носа
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Опущение и асимметрия крыльев носа
+    - text: Сглаженность мимических морщин и естественных складок кожи лица на стороне
+        поражения
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Сглаженность мимических морщин и естественных складок кожи лица на
+          стороне поражения
+    - text: Отсутствие движения мимических мышц
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Отсутствие движения мимических мышц
     optional: []
     exclusion: []
-  required_exams: []
+  required_exams:
+  - name: Миография
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: миография
+  - name: Электромиография
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: электромиография
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] 1. Настоящий клинический протокол определяет общие требования
-        к объему (стр. 3)'
+    - text: В период лечения следует придерживаться умеренной интенсивности физических
+        нагрузок
       source_ref:
         protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
         document_url: null
@@ -100,83 +214,16 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 1. Настоящий клинический протокол определяет общие требования
-          к объему (стр. 3)'
-    - text: оказания челюстно-лицевой и стоматологической хирургической медицинской
-        помощи
-      source_ref:
-        protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: оказания челюстно-лицевой и стоматологической хирургической медицинской
-          помощи
-    - text: пациентам (взрослое население) с параличом мимических мышц лица вследствие
-        травмы
-      source_ref:
-        protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: пациентам (взрослое население) с параличом мимических мышц лица вследствие
-          травмы
-    - text: лицевого нерва (шифр по Международной статистической классификации болезней
-      source_ref:
-        protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: лицевого нерва (шифр по Международной статистической классификации
-          болезней
-    - text: и проблем, связанных со здоровьем, десятого пересмотра – T90.3 Последствия
-        травмы
-      source_ref:
-        protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: и проблем, связанных со здоровьем, десятого пересмотра – T90.3 Последствия
-          травмы
-    - text: Национальный правовой Интернет-портал Республики Беларусь, 05.05.2026,
-        11-3/44805
-      source_ref:
-        protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Национальный правовой Интернет-портал Республики Беларусь, 05.05.2026,
-          11-3/44805
+        quote: В период лечения следует придерживаться умеренной интенсивности физических
+          нагрузок
     drug_groups: []
     drugs:
-    - drug_name: течение
+    - drug_name: Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 1 г
+      dose_text: Раствор для наружного (местного) применения 0,5 мг/мл. Применяется
+        местно для инстилляции и ирригации ран в полости рта и лунок удаленных зубов
+        – 5–10 мл 2–3 раза в сутки. Раствор для полоскания полос
       frequency_text: null
       duration_text: null
       route: null
@@ -188,17 +235,20 @@ conditions:
         protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: течение 1 года
-    - drug_name: картриджах
+        quote: Хлоргексидин Раствор для наружного (местного) применения 0,5 мг/мл
+          Применяется местно для инстилляции и ирригации ран в полости рта и лунок
+          удаленных зубов – 5–10 мл раствора 2–3 раза в сутки.
+    - drug_name: Перекись водорода
       active_substance: null
       drug_group: null
-      dose_text: 1,7 мл
+      dose_text: Раствор для наружного применения 30 мг/мл во флаконах. Применяется
+        местно для инстилляции и ирригации ран в полости рта и лунок удаленных зубов.
       frequency_text: null
       duration_text: null
       route: null
@@ -210,245 +260,99 @@ conditions:
         protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "картриджах 1,7 мл \n(1,8 мл), в ампулах 2 мл"
-    - drug_name: инъекций
-      active_substance: null
-      drug_group: null
-      dose_text: 10 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "инъекций 10 мг/мл \nв ампулах 5 мл"
-    - drug_name: превышать
-      active_substance: null
-      drug_group: null
-      dose_text: 300 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "превышать 300 мг \n  \n \n \nНациональный правовой Интернет-портал\
-          \ Ре"
-    - drug_name: марта
-      active_substance: null
-      drug_group: null
-      dose_text: 2026 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: марта 2026 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июня 1993 г
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "октября \n2011 г"
-    - drug_name: выше
-      active_substance: null
-      drug_group: null
-      dose_text: 30 мл
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "выше 30 мл/мин коррекция \nдозы не требуется"
-    - drug_name: таблетке
-      active_substance: null
-      drug_group: null
-      dose_text: 500 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "таблетке 500 мг + 125 мг \n3 раза в сутки или по 1 таблет"
-    - drug_name: введения
-      active_substance: null
-      drug_group: null
-      dose_text: 1000 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "введения \n1000 мг"
-    - drug_name: дозе
-      active_substance: null
-      drug_group: null
-      dose_text: 2 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "дозе 2 г при весе пациента \nменьше 120 кг или 3 г"
+        quote: Перекись водорода Раствор для наружного применения 30 мг/мл во флаконах
+          Применяется местно для инстилляции и ирригации ран в полости рта и лунок
+          удаленных зубов.
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Коррекция контуров лица
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Коррекция контуров лица
+  - text: Устранение или уменьшение птоза, эктропиона век, лагофтальма
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Устранение или уменьшение птоза, эктропиона век, лагофтальма
+  - text: Восстановление или улучшение смыкания губ
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Восстановление или улучшение смыкания губ
+  - text: Отсутствие гнойно-воспалительных осложнений
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Отсутствие гнойно-воспалительных осложнений
   hospitalization: []
   routing: []
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_кп23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/КП23_паралич_мимических_мышц_вследствие_травмы_лицевого_нерва.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: паралич мимических мышц вследствие травмы лицевого нерва
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:49.263937+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T18:24:06.616774+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:49.269820+00:00'
+  validated_at: '2026-07-20T18:24:06.619215+00:00'

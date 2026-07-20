@@ -1,10 +1,9 @@
 protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов взрослое население с ретенированными и импактными
-    зубами
+  title: Диагностика и лечение ретенированных и импактных зубов
   url: null
   local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
   document_sha256: null
@@ -27,20 +26,21 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов_взрослое_населен
-  name: Диагностика и лечение пациентов взрослое население с ретенированными и импактными
-    зубами
+- condition_id: retained_impacted_teeth
+  name: Ретенированные и импактные зубы
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B24
+  - K01
+  - K01.0
+  - K01.1
+  - K07.9
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[criteria] 5. Признаками и критериями, определяющими ретенированные и
-        импактные зубы, (стр. 5)'
+    - text: данные анамнеза
       logic_group: null
       operator: unknown
       values: []
@@ -57,10 +57,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[criteria] 5. Признаками и критериями, определяющими ретенированные
-          и импактные зубы, (стр. 5)'
-    - text: зубов, определение медицинских показаний к лечению, выбор метода лечения
-        и тактики
+        quote: данные анамнеза
+    - text: жалобы пациента
       logic_group: null
       operator: unknown
       values: []
@@ -77,16 +75,35 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: зубов, определение медицинских показаний к лечению, выбор метода лечения
-          и тактики
+        quote: жалобы пациента
     optional: []
     exclusion: []
-  required_exams: []
+  required_exams:
+  - name: Медицинские осмотры врачом-стоматологом
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: регулярные (раз в полгода) медицинские осмотры врачом-стоматологом
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] 1. Настоящий клинический протокол определяет общие требования
-        к объему (стр. 4)'
+    - text: Своевременное лечение и предупреждение кариеса зубов
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
         document_url: null
@@ -97,9 +114,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 1. Настоящий клинический протокол определяет общие требования
-          к объему (стр. 4)'
-    - text: оказания медицинской помощи на терапевтическом и хирургическом стоматологических
+        quote: Своевременное лечение и предупреждение кариеса зубов
+    - text: Медицинская профилактика дефицита места в зубном ряду путем регуляции
+        роста челюстей
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
         document_url: null
@@ -110,8 +127,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: оказания медицинской помощи на терапевтическом и хирургическом стоматологических
-    - text: приемах в амбулаторных условиях пациентам (взрослое население) с ретенированными
+        quote: Медицинская профилактика дефицита места в зубном ряду путем регуляции
+          роста челюстей
+    - text: Коррекция других факторов риска, имеющих отношение к стоматологическому
+        здоровью
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
         document_url: null
@@ -122,9 +141,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: приемах в амбулаторных условиях пациентам (взрослое население) с ретенированными
-    - text: и импактными зубами (шифр по Международной статистической классификации
-        болезней
+        quote: Коррекция других факторов риска, имеющих отношение к стоматологическому
+          здоровью
+    - text: Мотивация и обучение гигиене полости рта, рекомендации по выбору методов,
+        предметов и средств индивидуальной гигиены полости рта (с использованием лечебно-профилактических
+        зубных паст)
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
         document_url: null
@@ -135,9 +156,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: и импактными зубами (шифр по Международной статистической классификации
-          болезней
-    - text: и проблем, связанных со здоровьем, десятого пересмотра – К01 Ретенированные
+        quote: Мотивация и обучение гигиене полости рта, рекомендации по выбору методов,
+          предметов и средств индивидуальной гигиены полости рта (с использованием
+          лечебно-профилактических зубных паст)
+    - text: Профессиональное удаление зубных отложений (до показателей гигиенического
+        индекса OHI-S < 0,3–0,6 балла)
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
         document_url: null
@@ -148,8 +171,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: и проблем, связанных со здоровьем, десятого пересмотра – К01 Ретенированные
-    - text: 'и импактные зубы: К01.0 Ретенированные зубы'
+        quote: Профессиональное удаление зубных отложений (до показателей гигиенического
+          индекса OHI-S < 0,3–0,6 балла)
+    - text: Применение фторсодержащих реминерализирующих препаратов
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
         document_url: null
@@ -160,13 +184,51 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'и импактные зубы: К01.0 Ретенированные зубы'
+        quote: Применение фторсодержащих реминерализирующих препаратов
+    - text: Иссечение десневого «капюшона»
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Иссечение десневого «капюшона»
+    - text: Создание условий для ретракции ретенированного и импактного зуба
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Создание условий для ретракции ретенированного и импактного зуба
+    - text: Удаление ретенированного и импактного зуба (при невозможности ретракции)
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Удаление ретенированного и импактного зуба (при невозможности ретракции)
     drug_groups: []
     drugs:
-    - drug_name: применения
+    - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: 100 мг
+      dose_text: Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию
+        (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку
+        полости рта или десну. Лекарственное средство можно так
       frequency_text: null
       duration_text: null
       route: null
@@ -178,17 +240,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "применения 100 мг/мл во \nфлаконах 50 мл \nОдну порцию (1–3"
-    - drug_name: шприцах
+        quote: Лидокаин. Спрей для местного применения 100 мг/мл во флаконах 50 мл.
+          Одну порцию (1–3 нажатия) аэрозоля наносят на слизистую оболочку полости
+          рта или десну. Наносится также путем смазывания смоченным ватным тампоном.
+    - drug_name: Лидокаин/Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 12,5 г
+      dose_text: Анестезирующий гель в шприцах 12,5 г. Для аппликационной анестезии
+        слизистой оболочки полости рта, в том числе, перед инъекционной анестезией.
+        Разовую дозу врач-специалист назначает индивидуально, учи
       frequency_text: null
       duration_text: null
       route: null
@@ -200,17 +266,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "шприцах 12,5 г \nДля аппликационной анестезии слизистой \n"
-    - drug_name: картриджах
+        quote: Лидокаин/Хлоргексидин. Анестезирующий гель в шприцах 12,5 г. Для аппликационной
+          анестезии слизистой полости рта. Разовая доза индивидуальна, учитывая состояние
+          области нанесения и общее состояние пациента.
+    - drug_name: Артикаин/Эпинефрин
       active_substance: null
       drug_group: null
-      dose_text: 1,7 мл
+      dose_text: 'Раствор для инъекций (40 мг + 0,005 мг)/мл в картриджах 1,7 мл (1,8
+        мл), в ампулах 2 мл; раствор для инъекций (40 мг + 0,006 мг)/мл в картриджах
+        1,7 мл (в ампулах 2 мл); раствор для инъекций (40 мг + '
       frequency_text: null
       duration_text: null
       route: null
@@ -222,132 +292,22 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: 'картриджах
-
-          1,7 мл (1,8 мл), в ампулах
-
-          2 мл'
-    - drug_name: соответствует
-      active_substance: null
-      drug_group: null
-      dose_text: 12,5 мл
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "соответствует \n12,5 мл раствора для инъекций) \n 31\n\n[treatment]"
-    - drug_name: января
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: января 2023 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: марта
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: марта 2023 г
+        quote: Артикаин/Эпинефрин. Раствор для инъекций. Для инъекционного применения
+          в полости рта (без воспаления). Взрослым до 7 мг/кг массы тела. Отмечено,
+          что пациенты хорошо переносили дозы до 500 мг (12,5 мл).
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: "через \n6 \nмес"
+  - text: Медицинское наблюдение за результатами лечения путем проведения медицинских
+      осмотров врачом-стоматологом-терапевтом через 6 месяцев после завершения терапевтического
+      лечения.
     timing: null
     required_if: []
     expected_actions: []
@@ -361,37 +321,60 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: "через \n6 \nмес"
+      quote: Медицинское наблюдение за результатами лечения путем проведения медицинских
+        осмотров врачом-стоматологом-терапевтом через 6 месяцев после завершения терапевтического
+        лечения.
+  - text: Последующее медицинское наблюдение за состоянием зубов и зубных протезов
+      (при их наличии) 2 раза в год (каждые 6 месяцев).
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Последующее медицинское наблюдение за состоянием зубов и зубных протезов
+        (при их наличии) 2 раза в год (каждые 6 месяцев).
   hospitalization: []
-  routing: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов взрослое население с ретенированными и
-      импактными зубами
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:50.668128+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T18:04:53.854529+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:50.671237+00:00'
+  validated_at: '2026-07-20T18:04:53.857057+00:00'

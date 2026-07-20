@@ -1,10 +1,9 @@
 protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов взрослое население с аномалиями формы и размеров
-    зубов
+  title: Диагностика и лечение пациентов с аномалиями формы и размеров зубов
   url: null
   local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
   document_sha256: null
@@ -27,19 +26,29 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов_взрослое_населен
-  name: Диагностика и лечение пациентов взрослое население с аномалиями формы и размеров
-    зубов
+- condition_id: anomalies_tooth_form_size
+  name: Аномалии формы и размеров зубов
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B24
+  - K00.2
+  - K00.20
+  - K00.21
+  - K00.22
+  - K00.23
+  - K00.24
+  - K00.25
+  - K00.26
+  - K00.27
+  - K00.28
+  - K00.29
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: ВИДЫ, ПРИЗНАКИ И КРИТЕРИИ АНОМАЛИЙ ФОРМЫ И РАЗМЕРОВ ЗУБОВ
+    - text: 'Микродентия: уменьшение размеров одного или нескольких зубов, чаще у
+        женщин, форма конуса'
       logic_group: null
       operator: unknown
       values: []
@@ -56,9 +65,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: ВИДЫ, ПРИЗНАКИ И КРИТЕРИИ АНОМАЛИЙ ФОРМЫ И РАЗМЕРОВ ЗУБОВ
-    - text: '[diagnostics] 4. Виды, признаки и критерии аномалий формы и размеров
-        зубов: (стр. 4)'
+        quote: 'Микродентия: уменьшение размеров одного или нескольких зубов, чаще
+          у женщин, форма конуса'
+    - text: 'Макродентия: увеличение размера одного или нескольких зубов, большая
+        коронка, сужающийся корень'
       logic_group: null
       operator: unknown
       values: []
@@ -75,10 +85,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 4. Виды, признаки и критерии аномалий формы и размеров
-          зубов: (стр. 4)'
-    - text: '[diagnostics] 4. Виды, признаки и критерии аномалий формы и размеров
-        зубов: (стр. 5)'
+        quote: 'Макродентия: увеличение размера одного или нескольких зубов, большая
+          коронка, сужающийся корень'
+    - text: 'Сращение: два полностью сформировавшихся соседних зуба соединяются цементом,
+        бывает тотальным или частичным'
       logic_group: null
       operator: unknown
       values: []
@@ -95,10 +105,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 4. Виды, признаки и критерии аномалий формы и размеров
-          зубов: (стр. 5)'
-    - text: '[diagnostics] 4. Виды, признаки и критерии аномалий формы и размеров
-        зубов: (стр. 5)'
+        quote: 'Сращение: два полностью сформировавшихся соседних зуба соединяются
+          цементом, бывает тотальным или частичным'
+    - text: 'Слияние: образование структуры из двух зубов в результате слияния двух
+        зубных зачатков, может быть на протяжении всей длины или только корней (геминация)'
       logic_group: null
       operator: unknown
       values: []
@@ -115,9 +125,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 4. Виды, признаки и критерии аномалий формы и размеров
-          зубов: (стр. 5)'
-    - text: выявление факторов, приведших к возникновению заболевания, а также определение
+        quote: 'Слияние: образование структуры из двух зубов в результате слияния
+          двух зубных зачатков, может быть на протяжении всей длины или только корней
+          (геминация)'
+    - text: 'Раздвоение: разделение одного зубного зачатка на два, количество зубов
+        нормальное, раздвоенный зуб имеет размеры, превышающие нормальные'
       logic_group: null
       operator: unknown
       values: []
@@ -134,16 +146,119 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: выявление факторов, приведших к возникновению заболевания, а также
-          определение
+        quote: 'Раздвоение: разделение одного зубного зачатка на два, количество зубов
+          нормальное, раздвоенный зуб имеет размеры, превышающие нормальные'
+    - text: 'Выпячивание зубов (дентальная эвагинация): дополнительный бугорок, выступающий
+        из коронки зуба, состоит из эмали и дентина'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Выпячивание зубов (дентальная эвагинация): дополнительный бугорок,
+          выступающий из коронки зуба, состоит из эмали и дентина'
+    - text: 'Инвагинированный зуб («зуб в зубе»): впадение эмали внутрь зубной коронки'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Инвагинированный зуб («зуб в зубе»): впадение эмали внутрь зубной
+          коронки'
+    - text: 'Аномальные бугорки и эмалевые жемчужины: избыточное образование тканей
+        зуба, обычно округлой формы, 1-4 мм'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Аномальные бугорки и эмалевые жемчужины: избыточное образование тканей
+          зуба, обычно округлой формы, 1-4 мм'
+    - text: 'Тауродонтизм: увеличенная полость зуба, основание пульпы смещается ближе
+        к верхушке, сужение на уровне цементно-эмалевого соединения отсутствует'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Тауродонтизм: увеличенная полость зуба, основание пульпы смещается
+          ближе к верхушке, сужение на уровне цементно-эмалевого соединения отсутствует'
     optional: []
     exclusion: []
-  required_exams: []
+  required_exams:
+  - name: Медицинский осмотр врачом-стоматологом-терапевтом
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение за результатами лечения рекомендовано осуществлять
+        путем проведения медицинских осмотров пациентов с аномалиями формы и размеров
+        зубов врачом-стоматологом-терапевтом через 6 месяцев после завершения терапевтического
+        лечения.
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] 8. Принципами лечения аномалий формы и размеров зубов являются:
-        (стр. 6)'
+    - text: Восстановление анатомической и функциональной целостности зуба и зубных
+        рядов.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
         document_url: null
@@ -154,10 +269,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 8. Принципами лечения аномалий формы и размеров зубов
-          являются: (стр. 6)'
-    - text: восстановление анатомической и функциональной целостности зуба и зубных
-        рядов
+        quote: Восстановление анатомической и функциональной целостности зуба и зубных
+          рядов.
+    - text: Предупреждение развития патологических процессов и осложнений.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
         document_url: null
@@ -168,9 +282,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: восстановление анатомической и функциональной целостности зуба и зубных
-          рядов
-    - text: предупреждение развития патологических процессов и осложнений.
+        quote: Предупреждение развития патологических процессов и осложнений.
+    - text: Гигиенические мероприятия (мотивация и обучение гигиене полости рта с
+        использованием лечебно-профилактических зубных паст).
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
         document_url: null
@@ -181,9 +295,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: предупреждение развития патологических процессов и осложнений.
-    - text: '[treatment] 10. Ортопедическое лечение пациентов с аномалиями формы и
-        размеров зубов (стр. 6)'
+        quote: Гигиенические мероприятия (мотивация и обучение гигиене полости рта
+          с использованием лечебно-профилактических зубных паст).
+    - text: Профессиональное удаление зубных отложений до показателей гигиенического
+        индекса OHI-S < 0,3–0,6 балла.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
         document_url: null
@@ -194,9 +309,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 10. Ортопедическое лечение пациентов с аномалиями формы
-          и размеров зубов (стр. 6)'
-    - text: '(проводится врачом-стоматологом-ортопедом) включает:'
+        quote: Профессиональное удаление зубных отложений до показателей гигиенического
+          индекса OHI-S < 0,3–0,6 балла.
+    - text: Препарирование с последующим пломбированием композиционными материалами,
+        компомерами или гиомерами.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
         document_url: null
@@ -207,9 +323,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '(проводится врачом-стоматологом-ортопедом) включает:'
-    - text: средств, применяемых при лечении пациентов (взрослое население) с аномалиями
-        формы
+        quote: Препарирование с последующим пломбированием композиционными материалами,
+          компомерами или гиомерами.
+    - text: Обезболивание по медицинским показаниям с использованием лекарственных
+        средств.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
         document_url: null
@@ -220,14 +337,145 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: средств, применяемых при лечении пациентов (взрослое население) с аномалиями
-          формы
+        quote: Обезболивание по медицинским показаниям с использованием лекарственных
+          средств.
+    - text: Препарирование под искусственные коронки, вкладки, виниры.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Препарирование под искусственные коронки, вкладки, виниры.
+    - text: Изготовление временных конструкций (исключение – препарированные зубы
+        под штампованные коронки).
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Изготовление временных конструкций (исключение – препарированные зубы
+          под штампованные коронки).
+    - text: Получение аналоговых или оптических (3D) оттисков.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Получение аналоговых или оптических (3D) оттисков.
+    - text: Определение и фиксация центрального соотношения челюстей или центральной
+        окклюзии при помощи восковых или пластмассовых базисов с окклюзионными валиками
+        или окклюзионных силиконовых материалов.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Определение и фиксация центрального соотношения челюстей или центральной
+          окклюзии при помощи восковых или пластмассовых базисов с окклюзионными валиками
+          или окклюзионных силиконовых материалов.
+    - text: Выбор цвета, размера и формы искусственных коронок, вкладок, виниров в
+        соответствии с имеющимися зубами и индивидуальными особенностями пациента.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выбор цвета, размера и формы искусственных коронок, вкладок, виниров
+          в соответствии с имеющимися зубами и индивидуальными особенностями пациента.
+    - text: Наложение и припасовка каркаса коронки.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наложение и припасовка каркаса коронки.
+    - text: Наложение и припасовка готовой коронки, вкладки, винира.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наложение и припасовка готовой коронки, вкладки, винира.
+    - text: Фиксация коронки на временный материал (по медицинским показаниям).
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Фиксация коронки на временный материал (по медицинским показаниям).
+    - text: Фиксация коронки, вкладки, винира на постоянный материал.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Фиксация коронки, вкладки, винира на постоянный материал.
+    - text: Рекомендации по гигиеническому уходу за зубным протезом, правилам адаптации
+        и срокам замены конструкций.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Рекомендации по гигиеническому уходу за зубным протезом, правилам адаптации
+          и срокам замены конструкций.
     drug_groups: []
     drugs:
-    - drug_name: применения
+    - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: 100 мг
+      dose_text: Спрей 100 мг/мл. Одну порцию (1–3 нажатия) наносят на слизистую полости
+        рта или десну. Возможно нанесение смоченным ватным тампоном.
       frequency_text: null
       duration_text: null
       route: null
@@ -239,17 +487,20 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "применения \n100 мг/мл во флаконах 50 мл \nОдну порцию (1–3 "
-    - drug_name: шприцах
+        quote: Лидокаин. Спрей для местного применения 100 мг/мл во флаконах 50 мл.
+          Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую
+          оболочку полости рта или десну.
+    - drug_name: Лидокаин/Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 12,5 г
+      dose_text: Анестезирующий гель 12,5 г. Для аппликационной анестезии слизистой
+        оболочки полости рта. Разовая доза назначается индивидуально.
       frequency_text: null
       duration_text: null
       route: null
@@ -261,17 +512,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "шприцах 12,5 г \nДля аппликационной анестезии слизистой \n"
-    - drug_name: картриджах
+        quote: Лидокаин/Хлоргексидин. Анестезирующий гель в шприцах 12,5 г. Для аппликационной
+          анестезии слизистой оболочки полости рта, в том числе, перед инъекционной
+          анестезией. Разовую дозу врач-специалист назначает индивидуально...
+    - drug_name: Артикаин/Эпинефрин
       active_substance: null
       drug_group: null
-      dose_text: 1,7 мл
+      dose_text: Раствор для инъекций (40 мг + 0,005-0,012 мг)/мл. Вводится только
+        в ткани без воспаления. Максимальная доза артикаина до 7 мг/кг массы тела,
+        но не более 500 мг (12,5 мл) за процедуру.
       frequency_text: null
       duration_text: null
       route: null
@@ -283,128 +538,22 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "картриджах \n1,7 мл (1,8 мл), в ампулах 2 мл"
-    - drug_name: соответствует
-      active_substance: null
-      drug_group: null
-      dose_text: 12,5 мл
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "соответствует \n12,5 мл раствора для инъекций)\n\n[treatment] Лека"
-    - drug_name: января
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: января 2023 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: марта
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: марта 2023 г
+        quote: Артикаин/Эпинефрин. Раствор для инъекций. Лекарственное средство предназначено
+          для инъекционного применения в полости рта. При выполнении одной процедуры
+          взрослым можно вводить артикаин в дозе до 7 мг на 1 кг массы тела.
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: "через \n6 \nмес"
+  - text: Медицинское наблюдение за результатами лечения осуществлять путем проведения
+      медицинских осмотров врачом-стоматологом-терапевтом через 6 месяцев после завершения
+      терапевтического лечения.
     timing: null
     required_if: []
     expected_actions: []
@@ -418,37 +567,46 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: "через \n6 \nмес"
+      quote: Медицинское наблюдение за результатами лечения осуществлять путем проведения
+        медицинских осмотров врачом-стоматологом-терапевтом через 6 месяцев после
+        завершения терапевтического лечения.
+  - text: Последующее медицинское наблюдение за состоянием зубов и зубных протезов
+      (при их наличии) выполнять 2 раза в год (каждые 6 месяцев).
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Последующее медицинское наблюдение за состоянием зубов и зубных протезов
+        (при их наличии) выполнять 2 раза в год (каждые 6 месяцев).
   hospitalization: []
   routing: []
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_ра
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_аномалиями_формы_и_размеров_зубов_пост_МЗ_11.01.2023_4.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов взрослое население с аномалиями формы и
-      размеров зубов
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:49.748305+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T17:59:53.281670+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:49.752236+00:00'
+  validated_at: '2026-07-20T17:59:53.285049+00:00'

@@ -1,52 +1,6 @@
 # Validation: nevrologiya_neyrokhirurgiya_кп_лучевая_диагностика_заболеваний_головного_мозга_у
 
-- **status:** needs_human_review
-- **validated_at:** 2026-06-23T19:16:26.637337+00:00
-- **review_status:** not_reviewed
-- **extraction_status:** auto_extracted
-
-## Warnings
-- `required_exam_level` conditions[c71_0_кп_лучевая_диагностика_заболеваний_головного_мозга].required_exams[0]: required_exams содержит элемент не с level=required
-- `required_exam_level` conditions[c71_9_кп_лучевая_диагностика_заболеваний_головного_мозга].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[c71_9_кп_лучевая_диагностика_заболеваний_головного_мозга].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[d33_0_кп_лучевая_диагностика_заболеваний_головного_мозга].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[d33_0_кп_лучевая_диагностика_заболеваний_головного_мозга].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[d33_2_кп_лучевая_диагностика_заболеваний_головного_мозга].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[d33_2_кп_лучевая_диагностика_заболеваний_головного_мозга].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[g35_кп_лучевая_диагностика_заболеваний_головного_мозга_у].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[g35_кп_лучевая_диагностика_заболеваний_головного_мозга_у].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[g37_кп_лучевая_диагностика_заболеваний_головного_мозга_у].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[g37_кп_лучевая_диагностика_заболеваний_головного_мозга_у].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[g40_кп_лучевая_диагностика_заболеваний_головного_мозга_у].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[g40_кп_лучевая_диагностика_заболеваний_головного_мозга_у].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[g80_0_клинический_протокол_лучевая_диагностика_заболеван].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[g80_0_клинический_протокол_лучевая_диагностика_заболеван].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[g80_0_клинический_протокол_лучевая_диагностика_заболеван].required_exams[1]: required_exams содержит элемент не с level=required
-- `required_exam_level` conditions[g80_9_клинический_протокол_лучевая_диагностика_заболеван].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[g80_9_клинический_протокол_лучевая_диагностика_заболеван].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[g80_9_клинический_протокол_лучевая_диагностика_заболеван].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[g80_9_клинический_протокол_лучевая_диагностика_заболеван].required_exams[1]: Дублирующееся обследование
-- `required_exam_level` conditions[g81_0_клинический_протокол_лучевая_диагностика_заболеван].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[g81_0_клинический_протокол_лучевая_диагностика_заболеван].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[g81_0_клинический_протокол_лучевая_диагностика_заболеван].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[g81_0_клинический_протокол_лучевая_диагностика_заболеван].required_exams[1]: Дублирующееся обследование
-- `required_exam_level` conditions[g81_9_клинический_протокол_лучевая_диагностика_заболеван].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[g81_9_клинический_протокол_лучевая_диагностика_заболеван].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[g81_9_клинический_протокол_лучевая_диагностика_заболеван].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[g81_9_клинический_протокол_лучевая_диагностика_заболеван].required_exams[1]: Дублирующееся обследование
-- `required_exam_level` conditions[g82_0_клинический_протокол_лучевая_диагностика_заболеван].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[g82_0_клинический_протокол_лучевая_диагностика_заболеван].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[g82_0_клинический_протокол_лучевая_диагностика_заболеван].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[g82_0_клинический_протокол_лучевая_диагностика_заболеван].required_exams[1]: Дублирующееся обследование
-- `required_exam_level` conditions[g82_5_клинический_протокол_лучевая_диагностика_заболеван].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[g82_5_клинический_протокол_лучевая_диагностика_заболеван].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[g82_5_клинический_протокол_лучевая_диагностика_заболеван].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[g82_5_клинический_протокол_лучевая_диагностика_заболеван].required_exams[1]: Дублирующееся обследование
-- `required_exam_level` conditions[g91_0_клинический_протокол_лучевая_диагностика_заболеван].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[g91_0_клинический_протокол_лучевая_диагностика_заболеван].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[g91_0_клинический_протокол_лучевая_диагностика_заболеван].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[g91_0_клинический_протокол_лучевая_диагностика_заболеван].required_exams[1]: Дублирующееся обследование
-- `required_exam_level` conditions[g91_9_клинический_протокол_лучевая_диагностика_заболеван].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[g91_9_клинический_протокол_лучевая_диагностика_заболеван].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[g91_9_клинический_протокол_лучевая_диагностика_заболеван].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[g91_9_клинический_протокол_лучевая_диагностика_заболеван].required_exams[1]: Дублирующееся обследование
+- **status:** valid
+- **validated_at:** 2026-07-20T16:48:16.714484+00:00
+- **review_status:** needs_review
+- **extraction_status:** llm_extracted

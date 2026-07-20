@@ -1,7 +1,7 @@
 {
   "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "Диагностика и лечение пациентов детс население с острым гингивитом",
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,12 +32,13 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_и_лечение_пациентов_детс_население_с",
-      "name": "Диагностика и лечение пациентов детс население с острым гингивитом",
+      "condition_id": "acute_gingivitis",
+      "name": "Острый гингивит",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "B24"
+        "K05.0",
+        "A69.10"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -45,7 +46,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "КЛАССИФИКАЦИЯ, ПРИЗНАКИ И КРИТЕРИИ ОСТРОГО ГИНГИВИТА",
+            "text": "сохранение целостности зубодесневого прикрепления",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -62,11 +63,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "КЛАССИФИКАЦИЯ, ПРИЗНАКИ И КРИТЕРИИ ОСТРОГО ГИНГИВИТА"
+              "quote": "сохранение целостности зубодесневого прикрепления"
             }
           },
           {
-            "text": "[diagnostics] 6. Критерии острого гингивита: (стр. 4)",
+            "text": "глубина десневого зондирования 3 мм и менее",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -83,11 +84,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 6. Критерии острого гингивита: (стр. 4)"
+              "quote": "глубина десневого зондирования 3 мм и менее"
             }
           },
           {
-            "text": "а также определение медицинских показаний к лечению, выбор метода лечения и тактики",
+            "text": "отсутствие рентгенологических изменений в периодонте и межальвеолярной кости",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -104,19 +105,112 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "а также определение медицинских показаний к лечению, выбор метода лечения и тактики"
+              "quote": "отсутствие рентгенологических изменений в периодонте и межальвеолярной кости"
+            }
+          },
+          {
+            "text": "улучшение – улучшение показателей состояния тканей периодонта по сравнению с показателями после подготовительных мероприятий",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "улучшение – улучшение показателей состояния тканей периодонта по сравнению с показателями после подготовительных мероприятий"
+            }
+          },
+          {
+            "text": "ухудшение – состояние тканей периодонта, при котором параметры объективных тестов свидетельствуют об активности патологического процесса",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ухудшение – состояние тканей периодонта, при котором параметры объективных тестов свидетельствуют об активности патологического процесса"
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
+      "required_exams": [
+        {
+          "name": "Десневое зондирование",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "глубина десневого зондирования 3 мм и менее"
+          }
+        },
+        {
+          "name": "Рентгенологическое исследование",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "отсутствие рентгенологических изменений в периодонте и межальвеолярной кости"
+          }
+        }
+      ],
       "conditional_exams": [],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 12. Планирование комплексного лечения пациентов с острым гингивитом проводят (стр. 5)",
+            "text": "устранение местных неблагоприятных факторов развития острого гингивита",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
               "document_url": null,
@@ -127,11 +221,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 12. Планирование комплексного лечения пациентов с острым гингивитом проводят (стр. 5)"
+              "quote": "устранение местных неблагоприятных факторов развития острого гингивита"
             }
           },
           {
-            "text": "с учетом состояния стоматологического статуса и общего состояния здоровья и включает",
+            "text": "повторная оценка состояния тканей периодонта",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
               "document_url": null,
@@ -142,11 +236,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "с учетом состояния стоматологического статуса и общего состояния здоровья и включает"
+              "quote": "повторная оценка состояния тканей периодонта"
             }
           },
           {
-            "text": "предусматривают устранение местных неблагоприятных факторов развития острого",
+            "text": "поддерживающее лечение: регулярное механическое удаление зубного налета с помощью гигиенических средств",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
               "document_url": null,
@@ -157,11 +251,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "предусматривают устранение местных неблагоприятных факторов развития острого"
+              "quote": "поддерживающее лечение: регулярное механическое удаление зубного налета с помощью гигиенических средств"
             }
           },
           {
-            "text": "гингивита, повторную оценку состояния тканей периодонта, поддерживающее лечение.",
+            "text": "профессиональное удаление зубных отложений",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
               "document_url": null,
@@ -172,11 +266,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "гингивита, повторную оценку состояния тканей периодонта, поддерживающее лечение."
+              "quote": "профессиональное удаление зубных отложений"
             }
           },
           {
-            "text": "Основа поддерживающей терапии – регулярное механическое удаление зубного",
+            "text": "Орошение десен (гидротерапия, гидромассаж десен): 7–10 процедур 2 раза в день",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
               "document_url": null,
@@ -187,11 +281,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Основа поддерживающей терапии – регулярное механическое удаление зубного"
+              "quote": "Орошение десен (гидротерапия, гидромассаж десен): 7–10 процедур 2 раза в день"
             }
           },
           {
-            "text": "налета с помощью гигиенических средств, а также профессиональное удаление зубных",
+            "text": "Облучение короткими ультрафиолетовыми лучами (КУФ-облучение) очагов слизистой полости рта: 5–6 процедур через день",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
               "document_url": null,
@@ -202,17 +296,62 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "налета с помощью гигиенических средств, а также профессиональное удаление зубных"
+              "quote": "Облучение короткими ультрафиолетовыми лучами (КУФ-облучение) очагов слизистой полости рта: 5–6 процедур через день"
+            }
+          },
+          {
+            "text": "Лазерная (магнитолазерная) терапия: 5–6 процедур ежедневно",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лазерная (магнитолазерная) терапия: 5–6 процедур ежедневно"
+            }
+          },
+          {
+            "text": "Флюктуоризация: 6–8 процедур ежедневно",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Флюктуоризация: 6–8 процедур ежедневно"
+            }
+          },
+          {
+            "text": "Местная гипотермия: 3–4 процедуры ежедневно",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Местная гипотермия: 3–4 процедуры ежедневно"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "шприцах",
+            "drug_name": "Лидокаин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "12,5 г",
+            "dose_text": "Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну. Лекарственное средство можно наносить путем смазывания смоченным в лекарственном средстве в",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -224,20 +363,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "шприцах 12,5 г"
+              "quote": "Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну. Лекарственное средство можно наносить путем смазывания смоченным в лекарственном средстве ватным тампоном"
             }
           },
           {
-            "drug_name": "превышать",
+            "drug_name": "Лидокаин/Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2,9 мг",
+            "dose_text": "Для аппликационной анестезии слизистой оболочки полости рта, а также перед инъекционной анестезией. У детей до 2 лет применение противопоказано. Предназначен для детей с 2 лет. Для детей в возрасте от",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -249,20 +388,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "превышать 2,9 мг/кг"
+              "quote": "Для аппликационной анестезии слизистой оболочки полости рта. У детей до 2 лет применение противопоказано. Предназначен для детей с 2 лет."
             }
           },
           {
-            "drug_name": "ампулах",
+            "drug_name": "Артикаин/Эпинефрин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2 мл",
+            "dose_text": "Инъекционная анестезия тканей полости рта. Разовую дозу врач-специалист назначает индивидуально, учитывая состояние области нанесения лекарственного средства и общее состояние пациента. Необходимо исп",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -274,20 +413,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ампулах 2 мл \n(картриджах 1,7 мл)"
+              "quote": "Инъекционная анестезия тканей полости рта. Разовую дозу врач-специалист назначает индивидуально, учитывая состояние области нанесения лекарственного средства и общее состояние пациента."
             }
           },
           {
-            "drug_name": "картриджах",
+            "drug_name": "Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1,7 мл",
+            "dose_text": "Неразведенный раствор применяется в виде орошений, полосканий и аппликаций – 5–10 мл раствора наносят на пораженную поверхность слизистой оболочки полости рта или на десну с экспозицией 1–3 мин 2–3 ра",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -299,20 +438,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "картриджах 1,7 мл"
+              "quote": "Неразведенный раствор применяется в виде орошений, полосканий и аппликаций – 5–10 мл раствора наносят на пораженную поверхность слизистой оболочки полости рта или на десну с экспозицией 1–3 мин 2–3 раза в сутки"
             }
           },
           {
-            "drug_name": "применения",
+            "drug_name": "Бензилдиметил-аммония хлорид",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,5 мг",
+            "dose_text": "Рекомендуется полоскание полости рта 10–15 мл лекарственного средства 3–4 раза в сутки в течение 3–5 дней. В случае невозможности полоскания допускается местное применение марлевых или ватных тампонов",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -324,20 +463,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "применения \n0,5 мг/мл \nНеразведенный раствор применяется \n"
+              "quote": "Рекомендуется полоскание полости рта 10–15 мл лекарственного средства 3–4 раза в сутки в течение 3–5 дней. Опыт клинического применения у детей до 18 лет ограничен"
             }
           },
           {
-            "drug_name": "раствор",
+            "drug_name": "Перекись водорода",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "30 мг",
+            "dose_text": "Полоскание (обработка) полости рта. Для наружного применения используют раствор 30 мг/мл; для полоскания полости рта и горла, нанесения на слизистые оболочки – раствор 2,5 мг/мл (раствор 30 мг/мл разв",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -349,20 +488,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "раствор 30 мг/мл"
+              "quote": "Для полоскания полости рта и горла, нанесения на слизистые оболочки – раствор 2,5 мг/мл (раствор 30 мг/мл разводят водой в соотношении 1:11). Применяется у детей с 12 лет."
             }
           },
           {
-            "drug_name": "моногидрат",
+            "drug_name": "Биклотимол/Эноксолон/Лизоцима гидрохлорид",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "20,0 мг",
+            "dose_text": "Для детей старше 6 лет. Обработка слизистой оболочки полости рта. Медленно рассасывать до полного растворения по 1 таблетке каждые 4 часа (максимальная суточная доза – 4 таблетки) 5 дней",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -374,20 +513,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "моногидрат 20,0 мг / Ромашки \nаптечной цветков экстракт (1:"
+              "quote": "Для детей старше 6 лет. Медленно рассасывать до полного растворения по 1 таблетке каждые 4 часа (максимальная суточная доза – 4 таблетки) 5 дней"
             }
           },
           {
-            "drug_name": "ноября",
+            "drug_name": "Метронидазол/Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2022 г",
+            "dose_text": "Для детей старше 6 лет. Гель наносится на пораженные участки слизистой оболочки полости рта или десны тонким слоем 1–2 раза в сутки длительностью до 30 мин. Курс процедур – 7–10 дней",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -399,20 +538,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ноября 2022 г"
+              "quote": "Для детей старше 6 лет. Гель наносится на пораженные участки слизистой оболочки полости рта или десны тонким слоем 1–2 раза в сутки длительностью до 30 мин. Курс процедур – 7–10 дней"
             }
           },
           {
-            "drug_name": "июня",
+            "drug_name": "Лидокаина гидрохлорид моногидрат / Ромашки аптечной цветков экстракт",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1993 г",
+            "dose_text": "Для детей старше 12 лет. Полоску геля длиной 0,5 см наносят на пораженные участки слизистой оболочки полости рта или десны тонким слоем и осторожно втирают, кратность применения – 3 раза в сутки длите",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -424,20 +563,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июня \n1993 г"
+              "quote": "Для детей старше 12 лет. Полоску геля длиной 0,5 см наносят на пораженные участки слизистой оболочки полости рта или десны тонким слоем и осторожно втирают, кратность применения – 3 раза в сутки"
             }
           },
           {
-            "drug_name": "октября",
+            "drug_name": "Трипсин кристаллический",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2011 г",
+            "dose_text": "Местно.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -449,38 +588,13 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          },
-          {
-            "drug_name": "марта",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2023 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "марта 2023 г"
+              "quote": "Местно."
             }
           }
         ],
@@ -488,45 +602,211 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
+      "follow_up": [
+        {
+          "text": "Медицинское наблюдение при остром гингивите не требуется.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинское наблюдение при остром гингивите не требуется."
+          }
+        }
+      ],
       "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
+      "routing": [
+        {
+          "text": "Амбулаторно (у врача-стоматолога детского)",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Амбулаторно (у врача-стоматолога детского)"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Гингивостоматит, вызванный вирусом простого герпеса",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дифференциальная диагностика острого гингивита проводится с гингивостоматитом, вызванным вирусом простого герпеса..."
+          }
+        },
+        {
+          "text": "Острый некротизирующий язвенный гингивит",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дифференциальная диагностика острого гингивита проводится с острым некротизирующим язвенным гингивитом..."
+          }
+        },
+        {
+          "text": "Многоформная экссудативная эритема",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дифференциальная диагностика острого гингивита проводится с ... многоформной экссудативной эритемой..."
+          }
+        },
+        {
+          "text": "Поражения слизистой оболочки полости рта при вирусных заболеваниях (ветряная оспа, корь, краснуха, инфекционный мононуклеоз)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дифференциальная диагностика острого гингивита проводится с ... поражениями слизистой оболочки полости рта при вирусных заболеваниях (ветряная оспа, корь, краснуха, инфекционный мононуклеоз)"
+          }
+        },
+        {
+          "text": "Травматическое повреждение слизистой оболочки полости рта",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дифференциальная диагностика острого гингивита проводится с ... травматическим повреждением слизистой оболочки полости рта..."
+          }
+        },
+        {
+          "text": "Хронический гипертрофический гингивит (отечная форма)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дифференциальная диагностика острого гингивита проводится с ... хроническим гипертрофическим гингивитом (отечная форма)..."
+          }
+        },
+        {
+          "text": "Инфильтрация десны при остром лейкозе",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дифференциальная диагностика острого гингивита проводится с ... инфильтрацией десны при остром лейкозе."
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_острым_гингиви",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_острым_гингивитом_пост_МЗ_30.11.2022_112.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика и лечение пациентов детс население с острым гингивитом"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:51.493699+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T18:09:45.044198+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:51.499330+00:00"
+    "validated_at": "2026-07-20T18:09:45.052018+00:00"
   }
 }

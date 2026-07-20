@@ -1,6 +1,6 @@
 protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: диагностики и лечения интерстициальных легочных болезней
@@ -20,15 +20,15 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - adult
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностики_и_лечения_интерстициальных_легочных_
-  name: диагностики и лечения интерстициальных легочных болезней
+- condition_id: interstitial_lung_diseases
+  name: интерстициальные легочные болезни
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -37,16 +37,123 @@ conditions:
   - J84.1
   - J84.8
   - J84.9
-  - B24
-  - D65
-  - J06.9
-  - K04.5
-  - K04.7
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Гетерогенная группа болезней, объединенная рентгенологическим синдромом
+        двусторонней диссеминации.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и
+          лечения интерстициальных легочных болезней 05.07.2012 № 768.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Гетерогенная группа болезней, объединенная рентгенологическим синдромом
+          двусторонней диссеминации.
+    optional: []
+    exclusion: []
   required_exams:
+  - name: Общий анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
+        интерстициальных легочных болезней 05.07.2012 № 768.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Общий анализ крови
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
+        интерстициальных легочных болезней 05.07.2012 № 768.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Общий анализ мочи
+  - name: Спирография
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
+        интерстициальных легочных болезней 05.07.2012 № 768.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Спирография
+  - name: Рентгенография органов грудной полости
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
+        интерстициальных легочных болезней 05.07.2012 № 768.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Ренгенография органов грудной полости
   - name: ЭКГ
     aliases: []
     exam_type: unknown
@@ -62,15 +169,14 @@ conditions:
       document_url: null
       local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
         интерстициальных легочных болезней 05.07.2012 № 768.pdf
-      page_start: null
+      page_start: 7
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "Ренгенография органов \nгрудной полости \nЭКГ \n1-2 раза в год \n \n\
-        Мониторинг ФВД  \nИсследование газо-\nвого состава крови \nКТ г"
-  - name: КТ
+      quote: ЭКГ
+  - name: Исследование ФВД
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -85,19 +191,127 @@ conditions:
       document_url: null
       local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
         интерстициальных легочных болезней 05.07.2012 № 768.pdf
-      page_start: null
+      page_start: 7
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "Исследование газо-\nвого состава крови \nКТ грудной поло-\nсти  \n \n\
-        Оксигенотерапия при нарастаю-\nщей ДН; \nПреднизолон(метилп"
-  conditional_exams: []
+      quote: Исследование ФВД
+  conditional_exams:
+  - name: Мониторинг ФВД
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
+        интерстициальных легочных болезней 05.07.2012 № 768.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Мониторинг ФВД
+  - name: Исследование газового состава крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
+        интерстициальных легочных болезней 05.07.2012 № 768.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Исследование газового состава крови
+  - name: КТ грудной полости
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
+        интерстициальных легочных болезней 05.07.2012 № 768.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: КТ грудной полости
+  - name: Бронхоскопия
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
+        интерстициальных легочных болезней 05.07.2012 № 768.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Бронхоскопия
+  - name: Видеоторакоскопия
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
+        интерстициальных легочных болезней 05.07.2012 № 768.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Видеоторакоскопия* с целью морфологической верификации диагноза
   treatment:
     non_drug:
-    - text: несмотря на проводимое лечение, от момента клинического дебюта и до фатального
-        исхода про-
+    - text: Оксигенотерапия при нарастающей ДН
       source_ref:
         protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
         document_url: null
@@ -109,11 +323,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: несмотря на проводимое лечение, от момента клинического дебюта и до
-          фатального исхода про-
-    - text: ходит обычно около  4—5 лет. Примерно у 10% пациентов со временем может
-        развиться бронхогенная карцинома. Наиболее частой причиной смерти пациентов
-        является дыхательная недостаточность, как следствие прогрессирова-
+        quote: Оксигенотерапия при нарастающей ДН
+    - text: Дыхательная гимнастика
       source_ref:
         protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
         document_url: null
@@ -125,10 +336,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'ходит обычно около  4—5 лет. Примерно у 10% пациентов со временем
-          может развиться бронхогенная карцинома. Наиболее частой причиной смерти
-          пациентов является дыхательная недостаточность, как следствие '
-    - text: Симптоматическая терапия. Оксигенотерапия. Тренировка дыхательной муску-
+        quote: Дыхательная гимнастика
+    - text: Тренировка дыхательной мускулатуры
       source_ref:
         protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
         document_url: null
@@ -140,8 +349,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Симптоматическая терапия. Оксигенотерапия. Тренировка дыхательной муску-
-    - text: _______________________________________________
+        quote: Тренировка дыхательной мускулатуры
+    - text: Симптоматическая терапия.
       source_ref:
         protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
         document_url: null
@@ -153,8 +362,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: _______________________________________________
-    - text: 'Примечание: *- по решению консилиума'
+        quote: Симптоматическая терапия.
+    - text: Оксигенотерапия.
       source_ref:
         protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
         document_url: null
@@ -166,8 +375,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Примечание: *- по решению консилиума'
-    - text: '[other] Описание протокола (стр. 1)'
+        quote: Оксигенотерапия.
+    - text: Тренировка дыхательной мускулатуры.
       source_ref:
         protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
         document_url: null
@@ -179,13 +388,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[other] Описание протокола (стр. 1)'
+        quote: Тренировка дыхательной мускулатуры.
     drug_groups: []
     drugs:
-    - drug_name: пентоксифиллин
+    - drug_name: Преднизолон (метилпреднизолон)
       active_substance: null
       drug_group: null
-      dose_text: 0,2 г
+      dose_text: 1 мг/кг/сут внутрь с постепенным снижением суточной дозы
       frequency_text: null
       duration_text: null
       route: null
@@ -198,18 +407,235 @@ conditions:
         document_url: null
         local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и
           лечения интерстициальных легочных болезней 05.07.2012 № 768.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "пентоксифиллин 0,2 г 3 \nраза в сутки \nСимптоматическая терапи"
+        quote: Преднизолон(метилпреднизолон) 1 мг/кг/сут внутрь с постепенным снижением
+          суточной дозы.
+    - drug_name: Преднизолон (метилпреднизолон)
+      active_substance: null
+      drug_group: null
+      dose_text: в/в 120-500 мг/сут
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и
+          лечения интерстициальных легочных болезней 05.07.2012 № 768.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: преднизолон (метилпреднизолон) в/в 120-500 мг/сут до купирования симптомов
+          при тяжелом течении
+    - drug_name: Метилпреднизолон
+      active_substance: null
+      drug_group: null
+      dose_text: 1000мг/сут – 3сут в режиме пульс-терапии
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и
+          лечения интерстициальных легочных болезней 05.07.2012 № 768.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: метилпреднизолон 1000мг/сут – 3сут с постепенным снижением дозы и переходом
+          на пероральный прием.
+    - drug_name: Азатиоприн
+      active_substance: null
+      drug_group: null
+      dose_text: 1-1,5 мг/кг в 2 приема в сутки 10-12 недель с последующей поддерживающей
+        дозой - 0,5 мг/кг 1 раз в сутки.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и
+          лечения интерстициальных легочных болезней 05.07.2012 № 768.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Иммуносупрессоры: азатиоприн 1-1,5 мг/кг в 2 приема в сутки 10-12
+          недель с последующей поддерживающей дозой - 0,5 мг/кг 1 раз в сутки.'
+    - drug_name: Ацетилсалициловая кислота
+      active_substance: null
+      drug_group: null
+      dose_text: 50–100 мг 1 раз в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и
+          лечения интерстициальных легочных болезней 05.07.2012 № 768.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Дезагреганты: ацетилсалицило-вая кислота 50–100 мг 1 раз в сутки...'
+    - drug_name: Пентоксифиллин
+      active_substance: null
+      drug_group: null
+      dose_text: 0,2 г 3 раза в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и
+          лечения интерстициальных легочных болезней 05.07.2012 № 768.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: '...пентоксифиллин 0,2 г 3 раза в сутки'
+    - drug_name: Глюкокортикоиды
+      active_substance: null
+      drug_group: null
+      dose_text: null
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и
+          лечения интерстициальных легочных болезней 05.07.2012 № 768.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Используются противовоспалительные лекарственные средства (глюкокортикоиды,
+          цитостатики), дезагреганты, антиоксидантная терапия.
+    - drug_name: Цитостатики
+      active_substance: null
+      drug_group: null
+      dose_text: null
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и
+          лечения интерстициальных легочных болезней 05.07.2012 № 768.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Используются противовоспалительные лекарственные средства (глюкокортикоиды,
+          цитостатики), дезагреганты, антиоксидантная терапия.
+    - drug_name: Дезагреганты (общее)
+      active_substance: null
+      drug_group: null
+      dose_text: null
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и
+          лечения интерстициальных легочных болезней 05.07.2012 № 768.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Используются противовоспалительные лекарственные средства (глюкокортикоиды,
+          цитостатики), дезагреганты, антиоксидантная терапия.
+    - drug_name: Антиоксидантная терапия
+      active_substance: null
+      drug_group: null
+      dose_text: null
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и
+          лечения интерстициальных легочных болезней 05.07.2012 № 768.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Используются противовоспалительные лекарственные средства (глюкокортикоиды,
+          цитостатики), дезагреганты, антиоксидантная терапия.
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Контроль
+  - text: 'Общий анализ крови, общий анализ мочи, спирография, рентгенография органов
+      грудной полости, ЭКГ: 1-2 раза в год (амбулаторно)'
     timing: null
     required_if: []
     expected_actions: []
@@ -224,37 +650,249 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контроль
+      quote: 'Общий анализ крови, общий анализ мочи, спирография, рентгенография органов
+        грудной полости, ЭКГ: 1-2 раза в год (амбулаторно)'
+  - text: Мониторинг ФВД (по показаниям)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
+        интерстициальных легочных болезней 05.07.2012 № 768.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Мониторинг ФВД (по показаниям)
+  - text: 'Общий анализ крови, общий анализ мочи, рентгенография органов грудной полости,
+      исследование ФВД, КТ грудной полости, ЭКГ: 1-2 раза в процессе лечения (стационарно)'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
+        интерстициальных легочных болезней 05.07.2012 № 768.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Общий анализ крови, общий анализ мочи, рентгенография органов грудной
+        полости, исследование ФВД, КТ грудной полости, ЭКГ: 1-2 раза в процессе лечения
+        (стационарно)'
+  - text: Контроль клинических, рентгенологических и лабораторных данных при приеме
+      преднизолона
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
+        интерстициальных легочных болезней 05.07.2012 № 768.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль клинических, рентгенологических и лабораторных данных при приеме
+        преднизолона
+  - text: Продолжительность лечения определяется в зависимости от тяжести болезни
+      и ответа на терапию
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
+        интерстициальных легочных болезней 05.07.2012 № 768.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Продолжительность лечения определяется в зависимости от тяжести болезни
+        и ответа на терапию
   hospitalization: []
-  routing: []
-  red_flags: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
+        интерстициальных легочных болезней 05.07.2012 № 768.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
+        интерстициальных легочных болезней 05.07.2012 № 768.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  red_flags:
+  - text: Нарастающая дыхательная недостаточность (ДН)
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
+        интерстициальных легочных болезней 05.07.2012 № 768.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Оксигенотерапия при нарастающей ДН
+  - text: Тяжелое течение
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
+        интерстициальных легочных болезней 05.07.2012 № 768.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Преднизолон (метилпреднизолон) в/в 120-500 мг/сут до купирования симптомов
+        при тяжелом течении
+  - text: Высокая степень активности
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
+        интерстициальных легочных болезней 05.07.2012 № 768.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при высокой степени активности в режиме пульс-терапии – метилпреднизолон
+        1000мг/сут – 3сут
+  - text: Прогноз при ИЛБ в целом неблагоприятный; несмотря на проводимое лечение,
+      от момента клинического дебюта и до фатального исхода проходит обычно около
+      4—5 лет.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
+        интерстициальных легочных болезней 05.07.2012 № 768.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Прогноз при ИЛБ в целом неблагоприятный; несмотря на проводимое лечение,
+        от момента клинического дебюта и до фатального исхода проходит обычно около
+        4—5 лет.
+  - text: Примерно у 10% пациентов со временем может развиться бронхогенная карцинома.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
+        интерстициальных легочных болезней 05.07.2012 № 768.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Примерно у 10% пациентов со временем может развиться бронхогенная карцинома.
+  - text: Наиболее частой причиной смерти пациентов является дыхательная недостаточность,
+      как следствие прогрессирования болезни.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
+        интерстициальных легочных болезней 05.07.2012 № 768.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Наиболее частой причиной смерти пациентов является дыхательная недостаточность,
+        как следствие прогрессирования болезни.
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_интерстициальных_легочных_бол
-    document_url: null
-    local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения
-      интерстициальных легочных болезней 05.07.2012 № 768.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: диагностики и лечения интерстициальных легочных болезней
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:46.403615+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T17:34:52.107282+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:46.404991+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[interstitial_lung_diseases].treatment.drugs[1]
+  validated_at: '2026-07-20T17:34:52.117784+00:00'

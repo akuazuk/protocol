@@ -1,6 +1,6 @@
 protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Оказание медицинской помощи женщинам послеоперационным рубцом матки
@@ -19,15 +19,16 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - adult
+  - pregnant
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: оказание_медицинской_помощи_женщинам_послеоперац
-  name: Оказание медицинской помощи женщинам послеоперационным рубцом матки
+- condition_id: uterine_scar_postoperative
+  name: Послеоперационный рубец матки
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -40,8 +41,7 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: 4. Диагноз устанавливает врач-акушер-гинеколог. Вне беременности диагноз
-        «Другие нарушения мочеполовой системы после
+    - text: Наличие несостоятельного послеоперационного рубца матки
       logic_group: null
       operator: unknown
       values: []
@@ -58,12 +58,85 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 4. Диагноз устанавливает врач-акушер-гинеколог. Вне беременности диагноз
-          «Другие нарушения мочеполовой системы после
+        quote: Наличие несостоятельного послеоперационного рубца матки
+    - text: Наличие послеоперационного рубца матки в анамнезе
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие послеоперационного рубца матки в анамнезе
+    - text: Локальная болезненность при пальпации рубца матки
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Локальная болезненность при пальпации рубца матки
+    - text: Неравномерный критический дефект (истончение) рубца матки с признаками
+        деформации по УЗИ
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Неравномерный критический дефект (истончение) рубца матки с признаками
+          деформации по УЗИ
+    - text: Болезненность при надавливании трансвагинальным ультразвуковым датчиком
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Болезненность при надавливании трансвагинальным ультразвуковым датчиком
     optional: []
     exclusion: []
   required_exams:
-  - name: УЗИ
+  - name: Ручное обследование полости матки
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -77,19 +150,215 @@ conditions:
       protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
       document_url: null
       local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
-      page_start: null
+      page_start: 3
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "результатов обследования и (или) данных УЗИ (наличие \nдефекта (истончения)\
-        \ рубца матки по сравнению с интактным миометрием"
-  conditional_exams: []
+      quote: В раннем послеродовом периоде показано ручное обследование полости матки.
+  - name: Послеродовое ручное обследование полости матки
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Послеродовое ручное обследование полости матки
+  - name: Осмотр родовых путей
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: осмотр родовых путей
+  - name: Медицинское наблюдение за родильницей (пульс, АД, цвет кожи и слизистых,
+      размеры, положение и плотность матки, контроль количества выделений из половых
+      путей)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: медицинское наблюдение за родильницей (пульс, АД, цвет кожи и слизистых,
+        размеры, положение и плотность матки, контроль количества выделений из половых
+        путей) в родовом отделении
+  - name: УЗИ органов малого таза (с оценкой рубца матки)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗИ органов малого таза с оценкой состояния послеоперационного рубца
+        матки;
+  - name: Микроскопическое исследование отделяемого половых путей на флору
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: микроскопическое исследование отделяемого половых путей на флору;
+  - name: Консультация врача-терапевта (врача общей практики)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультация врача-терапевта (врача общей практики),
+  - name: УЗИ послеоперационного рубца матки
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'УЗИ послеоперационного рубца матки в сроки: в 11 недель 0 дней – 13
+        недель 6 дней беременности, 18–21 неделю беременности, 32–35 недель беременности,
+        37–38 недель беременности и по медицинским показаниям;'
+  conditional_exams:
+  - name: Исследование крови новорожденного прямой пробой Кумбса
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: в случае 0 (I) группы крови у беременной и иной групповой принадлежности
+        у отца ребенка исследование крови новорожденного прямой пробой Кумбса в первые
+        2 часа жизни
+  - name: Консультации иных врачей-специалистов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: иных врачей-специалистов по медицинским показаниям.
   treatment:
     non_drug:
-    - text: '[treatment] 1. Утвердить клинический протокол «Оказание медицинской помощи
-        женщинам (стр. 1)'
+    - text: Ушивание разрывов под местным или общим обезболиванием
       source_ref:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
         document_url: null
@@ -100,9 +369,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 1. Утвердить клинический протокол «Оказание медицинской
-          помощи женщинам (стр. 1)'
-    - text: с послеоперационным рубцом матки» (прилагается).
+        quote: Ушивание разрывов под местным или общим обезболиванием
+    - text: Прикладывание к груди в течение 30 минут после рождения
       source_ref:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
         document_url: null
@@ -113,8 +381,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: с послеоперационным рубцом матки» (прилагается).
-    - text: Гемостатики (Группа № 10). Ингибиторы фибринолиза (Группа
+        quote: Прикладывание к груди в течение 30 минут после рождения
+    - text: Лапаротомия
       source_ref:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
         document_url: null
@@ -125,8 +393,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Гемостатики (Группа № 10). Ингибиторы фибринолиза (Группа
-    - text: № 39). Лапаротомия. Кесарево сечение или извлечение плода
+        quote: Лапаротомия
+    - text: Кесарево сечение или извлечение плода из брюшной полости
       source_ref:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
         document_url: null
@@ -137,8 +405,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: № 39). Лапаротомия. Кесарево сечение или извлечение плода
-    - text: из брюшной полости. Ушивание разрыва матки. Ампутация матки при невозможности
+        quote: Кесарево сечение или извлечение плода из брюшной полости
+    - text: Ушивание разрыва матки
       source_ref:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
         document_url: null
@@ -149,8 +417,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: из брюшной полости. Ушивание разрыва матки. Ампутация матки при невозможности
-    - text: ушивания разрыва после остановки
+        quote: Ушивание разрыва матки
+    - text: Ампутация матки при невозможности ушивания разрыва после остановки кровотечения
+        и выведения больной из шока
       source_ref:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
         document_url: null
@@ -161,13 +430,87 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: ушивания разрыва после остановки
+        quote: Ампутация матки при невозможности ушивания разрыва после остановки
+          кровотечения и выведения больной из шока
+    - text: Экстирпация матки при разрыве, проходящем через шейку матки, и невозможности
+        его ушивания после остановки кровотечения и выведения больной из шока
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Экстирпация матки при разрыве, проходящем через шейку матки, и невозможности
+          его ушивания после остановки кровотечения и выведения больной из шока
+    - text: Экстирпация матки с трубами при наличии признаков воспалительного процесса
+        в органе
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Экстирпация матки с трубами при наличии признаков воспалительного процесса
+          в органе
+    - text: Гистологическое исследование операционного материала
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Гистологическое исследование операционного материала
+    - text: Коррекция индекса массы тела (норма 18,5–24,9 кг/м2) при прегравидарной
+        подготовке
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Коррекция индекса массы тела (норма 18,5–24,9 кг/м2) при прегравидарной
+          подготовке
+    - text: Родоразрешение через естественные родовые пути при одноплодной беременности,
+        затылочном предлежании плода, отсутствии признаков несостоятельного рубца
+        матки, отсутствии иных медицинских показаний к кесареву сечению, наличии одного
+        рубца матки после кесарева сечения в нижнем сегменте, наличии одного рубца
+        в теле матки после удаления миоматозного узла без вскрытия полости матки (ложе
+        должно быть ушито, а не коагулировано)
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Родоразрешение через естественные родовые пути при одноплодной беременности,
+          затылочном предлежании плода, отсутствии признаков несостоятельного рубца
+          матки, отсутствии иных медицинских показаний к ке
     drug_groups: []
     drugs:
-    - drug_name: июля
+    - drug_name: Гемостатики
       active_substance: null
       drug_group: null
-      dose_text: 2010 г
+      dose_text: Группа № 10
       frequency_text: null
       duration_text: null
       route: null
@@ -179,17 +522,17 @@ conditions:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
         document_url: null
         local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
-        page_start: null
+        page_start: 1
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: июля 2010 г
-    - drug_name: февраля
+        quote: Гемостатики (Группа № 10).
+    - drug_name: Ингибиторы фибринолиза
       active_substance: null
       drug_group: null
-      dose_text: 2018 г
+      dose_text: Группа № 39
       frequency_text: null
       duration_text: null
       route: null
@@ -201,17 +544,17 @@ conditions:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
         document_url: null
         local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
-        page_start: null
+        page_start: 1
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: февраля 2018 г
-    - drug_name: ноября
+        quote: Ингибиторы фибринолиза (Группа № 39).
+    - drug_name: Антибиотикопрофилактика
       active_substance: null
       drug_group: null
-      dose_text: 2024 г
+      dose_text: Группа № 12
       frequency_text: null
       duration_text: null
       route: null
@@ -223,17 +566,17 @@ conditions:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
         document_url: null
         local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
-        page_start: null
+        page_start: 1
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: ноября 2024 г
-    - drug_name: июня
+        quote: Антибиотикопрофилактика (Группа № 12).
+    - drug_name: Аналгетики
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: Группа № 31.1, 31.4
       frequency_text: null
       duration_text: null
       route: null
@@ -245,17 +588,17 @@ conditions:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
         document_url: null
         local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
-        page_start: null
+        page_start: 1
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
+        quote: Аналгетики (Группа № 31.1, 31.4).
+    - drug_name: Спазмолитики
       active_substance: null
       drug_group: null
-      dose_text: 2011 г
+      dose_text: Группа № 26
       frequency_text: null
       duration_text: null
       route: null
@@ -267,18 +610,42 @@ conditions:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
         document_url: null
         local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
-        page_start: null
+        page_start: 1
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "октября \n2011 г"
+        quote: Спазмолитики (Группа № 26).
+    - drug_name: Средства для профилактики маточного кровотечения
+      active_substance: null
+      drug_group: null
+      dose_text: Группа № 9.4
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+        page_start: 1
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Средства для профилактики маточного кровотечения (Группа № 9.4).
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: контроль
+  - text: 'Медицинское наблюдение за родильницей в родовом отделении в течение 6 часов:
+      двух часов после родов каждые 15 минут, в течение третьего часа – каждые 30
+      минут, далее – каждые 60 минут'
     timing: null
     required_if: []
     expected_actions: []
@@ -292,36 +659,198 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
+      quote: 'Медицинское наблюдение за родильницей в родовом отделении в течение
+        6 часов: двух часов после родов каждые 15 минут, в течение третьего часа –
+        каждые 30 минут, далее – каждые 60 минут'
+  - text: Медицинское наблюдение беременных с 20 недель беременности – 1 раз в 14
+      дней.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение беременных с 20 недель беременности – 1 раз в
+        14 дней.
+  - text: Медицинское наблюдение беременных после 30 недель беременности – 1 раз в
+      7–10 дней или по медицинским показаниям.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение беременных после 30 недель беременности – 1 раз
+        в 7–10 дней или по медицинским показаниям.
   hospitalization: []
-  routing: []
-  red_flags: []
+  routing:
+  - text: Госпитализация в организацию здравоохранения областного или республиканского
+      уровня при несостоятельном послеоперационном рубце матки
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация в организацию здравоохранения областного или республиканского
+        уровня при несостоятельном послеоперационном рубце матки
+  - text: Амбулаторная прегравидарная подготовка при отсутствии признаков несостоятельного
+      рубца матки
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторная прегравидарная подготовка при отсутствии признаков несостоятельного
+        рубца матки
+  - text: Госпитализация до 22 недель беременности в государственное учреждение «Республиканский
+      научно-практический центр «Мать и дитя» для решения вопроса о хирургическом
+      вмешательстве (при признаках несостоятельного рубца матки).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация до 22 недель беременности в государственное учреждение
+        «Республиканский научно-практический центр «Мать и дитя» для решения вопроса
+        о хирургическом вмешательстве (при признаках несостоя
+  - text: Срочная госпитализация после 22 недель беременности в организацию здравоохранения
+      областного уровня или в государственное учреждение «Республиканский научно-практический
+      центр «Мать и дитя» (при признаках несостоятельного рубца матки).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Срочная госпитализация после 22 недель беременности в организацию здравоохранения
+        областного уровня или в государственное учреждение «Республиканский научно-практический
+        центр «Мать и дитя» (при призн
+  - text: Дородовая госпитализация в 38–39 недель беременности.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Дородовая госпитализация в 38–39 недель беременности.
+  - text: Срочная госпитализация в акушерский стационар в случае несостоятельности
+      рубца на матке
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Срочная госпитализация в акушерский стационар в случае несостоятельности
+        рубца на матке
+  red_flags:
+  - text: Несостоятельный послеоперационный рубец матки
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При наличии несостоятельного послеоперационного рубца матки женщина госпитализируется
+        в организацию здравоохранения областного или республиканского уровня для диагностики
+        и лечения.
+  - text: Признаки несостоятельного послеоперационного рубца матки
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Медицинскими показаниями к госпитализации беременных при наличии признаков
+        несостоятельного послеоперационного рубца матки являются:'
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_послеоперационн
-    document_url: null
-    local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Оказание медицинской помощи женщинам послеоперационным рубцом матки
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:03.710202+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T15:17:27.933008+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:03.712415+00:00'
+  validated_at: '2026-07-20T15:17:27.947752+00:00'

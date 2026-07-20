@@ -1,7 +1,7 @@
 {
   "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "Диагностика и лечение пациентов детс население с синдромом прорезывания зубов",
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,12 +32,12 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_и_лечение_пациентов_детс_население_с",
-      "name": "Диагностика и лечение пациентов детс население с синдромом прорезывания зубов",
+      "condition_id": "teething_syndrome",
+      "name": "Синдром прорезывания зубов",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "B24"
+        "K00.7"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -45,7 +45,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[criteria] 5. Признаками и критериями, определяющими синдром прорезывания зубов, (стр. 3)",
+            "text": "Местные симптомы: отек и покраснение десны на месте будущего зуба, болезненность при пальпации.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -62,11 +62,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 5. Признаками и критериями, определяющими синдром прорезывания зубов, (стр. 3)"
+              "quote": "Местные симптомы: отек и покраснение десны на месте будущего зуба, болезненность при пальпации."
             }
           },
           {
-            "text": "воспалительные процессы и только при их отсутствии ставится диагноз «синдром",
+            "text": "Общие симптомы: беспокойство, раздражительность, плаксивость.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -83,11 +83,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "воспалительные процессы и только при их отсутствии ставится диагноз «синдром"
+              "quote": "Общие симптомы: беспокойство, раздражительность, плаксивость."
             }
           },
           {
-            "text": "ПРИЗНАКИ И КРИТЕРИИ СИНДРОМА ПРОРЕЗЫВАНИЯ ЗУБОВ",
+            "text": "Общие симптомы: сниженный аппетит или отказ от еды.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -104,19 +104,179 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ПРИЗНАКИ И КРИТЕРИИ СИНДРОМА ПРОРЕЗЫВАНИЯ ЗУБОВ"
+              "quote": "Общие симптомы: сниженный аппетит или отказ от еды."
+            }
+          },
+          {
+            "text": "Общие симптомы: обильное слюнотечение.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Общие симптомы: обильное слюнотечение."
+            }
+          },
+          {
+            "text": "Общие симптомы: субфебрильная температура (37,4–38,0 °С) в течение 1–2 дней.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Общие симптомы: субфебрильная температура (37,4–38,0 °С) в течение 1–2 дней."
+            }
+          },
+          {
+            "text": "Общие симптомы: неустойчивый стул, кашель на фоне повышенного слюноотделения.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Общие симптомы: неустойчивый стул, кашель на фоне повышенного слюноотделения."
+            }
+          },
+          {
+            "text": "Диагноз ставится только при отсутствии инфекционно-воспалительных процессов.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Диагноз ставится только при отсутствии инфекционно-воспалительных процессов."
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
+      "required_exams": [
+        {
+          "name": "Сбор жалоб и анамнеза",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "сбор жалоб и анамнеза (со стороны близких родственников), выявление симптомов, характерных для синдрома прорезывания зубов"
+          }
+        },
+        {
+          "name": "Выявление взаимосвязи с соматическим здоровьем",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "выявление взаимосвязи синдрома прорезывания зубов с соматическим здоровьем."
+          }
+        },
+        {
+          "name": "Дифференциальная диагностика",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "дифференциальная диагностика синдрома прорезывания зубов; Дифференциальную диагностику синдрома прорезывания зубов проводят с состоянием при острой респираторной вирусной инфекции."
+          }
+        }
+      ],
       "conditional_exams": [],
       "treatment": {
         "non_drug": [
           {
-            "text": "улучшение качества жизни ребенка",
+            "text": "Улучшение качества жизни ребенка",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
               "document_url": null,
@@ -127,11 +287,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "улучшение качества жизни ребенка"
+              "quote": "Улучшение качества жизни ребенка"
             }
           },
           {
-            "text": "[treatment] 10. Принципами лечения синдрома прорезывания зубов у детей являются: (стр. 4)",
+            "text": "Купирование воспаления десны",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
               "document_url": null,
@@ -142,11 +302,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 10. Принципами лечения синдрома прорезывания зубов у детей являются: (стр. 4)"
+              "quote": "Купирование воспаления десны"
             }
           },
           {
-            "text": "10.1. обязательные лечебные мероприятия:",
+            "text": "Мотивация родителей к регулярному уходу за полостью рта ребенка и рациональному питанию, исключению ночных кормлений сахаросодержащей пищей",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
               "document_url": null,
@@ -157,11 +317,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "10.1. обязательные лечебные мероприятия:"
+              "quote": "Мотивация родителей к регулярному уходу за полостью рта ребенка и рациональному питанию, исключению ночных кормлений сахаросодержащей пищей"
             }
           },
           {
-            "text": "и рациональному питанию, исключению ночных кормлений сахаросодержащей пищей",
+            "text": "Обучение гигиене полости рта с момента прорезывания первого зуба сначала силиконовым напальчником, после прорезывания верхних резцов – детской зубной щеткой с фторидсодержащей зубной пастой 1 000 ppm в количестве «рисовое зерно»",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
               "document_url": null,
@@ -172,11 +332,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "и рациональному питанию, исключению ночных кормлений сахаросодержащей пищей"
+              "quote": "Обучение гигиене полости рта с момента прорезывания первого зуба сначала силиконовым напальчником, после прорезывания верхних резцов – детской зубной щеткой с фторидсодержащей зубной пастой 1 000 ppm "
             }
           },
           {
-            "text": "обучение гигиене полости рта с момента прорезывания первого зуба сначала",
+            "text": "Симптоматическое лечение – массажное кольцо, охлажденные прорезыватели",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
               "document_url": null,
@@ -187,32 +347,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "обучение гигиене полости рта с момента прорезывания первого зуба сначала"
-            }
-          },
-          {
-            "text": "силиконовым напальчником, после прорезывания верхних резцов – детской зубной",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "силиконовым напальчником, после прорезывания верхних резцов – детской зубной"
+              "quote": "Симптоматическое лечение – массажное кольцо, охлажденные прорезыватели"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "применения",
+            "drug_name": "Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,5 мг",
+            "dose_text": "Раствор для наружного (местного) применения 0,5 мг/мл. Неразведенный раствор применяется в виде орошений, полосканий и аппликаций – 5–10 мл раствора наносят на пораженную поверхность слизистой оболочк",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -224,20 +369,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "применения 0,5 мг/мл \nНеразведенный раствор применяется в"
+              "quote": "Неразведенный раствор применяется в виде орошений, полосканий и аппликаций – 5–10 мл раствора наносят на пораженную поверхность слизистой оболочки полости рта или на десну с экспозицией 1–3 мин 2–3 раза в сутки."
             }
           },
           {
-            "drug_name": "заливают",
+            "drug_name": "Ромашки аптечной цветки",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "200 мл",
+            "dose_text": "Цельное сырье 40 г, 50 г и 100 г в пачке; обмолоченное сырье 50 г в пачке; порошок крупный 1,2 г и 1,5 г в фильтрах-пакетах. Местно и наружно детям старше 12 лет для полосканий (по 1/2–1 стакану насто",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -249,20 +394,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "заливают 200 мл кипящей \nводы, закрывают крышкой и наста"
+              "quote": "Местно и наружно детям старше 12 лет для полосканий (по 1/2–1 стакану настоя 3–5 раз в день), орошений, примочек. Применение у детей младше 12 лет (раствор наносить путем смазывания)."
             }
           },
           {
-            "drug_name": "тубах",
+            "drug_name": "Холина салицилат/Цеталкония хлорид",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "10 г",
+            "dose_text": "Гель стоматологический (87,1 мг + 0,1 мг)/г в тубах 10 г. Назначается детям старше 3 лет. Наносится на слизистую оболочку полости рта или десну тонким слоем 2–3 раза в сутки, длительность аппликации д",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -274,20 +419,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "тубах 10 г \nНазначается детям старше 3 лет"
+              "quote": "Назначается детям старше 3 лет. Наносится на слизистую оболочку полости рта или десну тонким слоем 2–3 раза в сутки, длительность аппликации до 2 мин."
             }
           },
           {
-            "drug_name": "шприцах",
+            "drug_name": "Лидокаин/Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "12,5 г",
+            "dose_text": "Анестезирующий гель в шприцах 12,5 г; анестезирующий гель в шприцах 8,5 г. Для аппликационной анестезии слизистой оболочки полости рта, а также перед инъекционной анестезией. У детей до 2 лет применен",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -299,188 +444,13 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "шприцах 12,5 г"
-            }
-          },
-          {
-            "drug_name": "превышать",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2,9 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "превышать 2,9 мг/кг"
-            }
-          },
-          {
-            "drug_name": "сырье",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "40 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "сырье 40 г, 50 г и 100 г в пачке"
-            }
-          },
-          {
-            "drug_name": "ноября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2022 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "ноября 2022 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          },
-          {
-            "drug_name": "марта",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2023 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "марта 2023 г"
-            }
-          },
-          {
-            "drug_name": "крупный",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1,2 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "крупный \n1,2 г и 1,5 г \nв фильтрах-пакетах \nпутем смазы"
+              "quote": "Для аппликационной анестезии слизистой оболочки полости рта, а также перед инъекционной анестезией. У детей до 2 лет применение противопоказано. Предназначен для детей с 2 лет."
             }
           }
         ],
@@ -491,42 +461,91 @@
       "follow_up": [],
       "hospitalization": [],
       "routing": [],
-      "red_flags": [],
+      "red_flags": [
+        {
+          "text": "Неспецифичность местных и общих симптомов, требующая исключения инфекционно-воспалительных процессов перед постановкой диагноза.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Местные и общие симптомы неспецифичны и встречаются при различных инфекциях и воспалительных заболеваниях. Необходимо исключить инфекционно-воспалительные процессы, и только при их отсутствии ставится диагноз «синдром прорезывания зубов»."
+          }
+        },
+        {
+          "text": "Применение Лидокаина/Хлоргексидина противопоказано у детей до 2 лет.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "У детей до 2 лет применение противопоказано."
+          }
+        },
+        {
+          "text": "Для детей в возрасте от 2 до 11 лет максимально допустимая доза лидокаина гидрохлорида не должна превышать 2,9 мг/кг.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Для детей в возрасте от 2 до 11 лет максимально допустимая доза лидокаина гидрохлорида не должна превышать 2,9 мг/кг."
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_синдромом_прор",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_синдромом_прорезывания_зубов_пост_МЗ_30.11.2022_112.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика и лечение пациентов детс население с синдромом прорезывания зубов"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:51.858444+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T18:08:04.833198+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:51.870931+00:00"
+    "validated_at": "2026-07-20T18:08:04.837258+00:00"
   }
 }

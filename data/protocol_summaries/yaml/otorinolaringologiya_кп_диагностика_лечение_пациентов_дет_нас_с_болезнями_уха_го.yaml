@@ -1,10 +1,10 @@
 protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение пациентов детское население с болезнями уха горла носа
-    46
+  title: Диагностика и лечение пациентов детского населения с болезнями уха, горла,
+    носа
   url: null
   local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
   document_sha256: null
@@ -20,100 +20,25 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_лечение_пациентов_детское_население_
-  name: Диагностика лечение пациентов детское население с болезнями уха горла носа
-    46
+- condition_id: benign_nasopharyngeal_neoplasm
+  name: Доброкачественное новообразование носоглотки
   synonyms: []
   abbreviations: []
   icd10_codes:
   - D10.6
-  - D14.1
-  - H60.4
-  - H68.1
-  - H69.0
-  - H70.1
-  - H90.0
-  - H90.1
-  - J35.0
-  - J35.1
-  - J35.2
-  - J38.2
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria:
-    required:
-    - text: '[classification] 10. Диагноз или обоснованное предположение о наличии
-        или угрозе развития (стр. 2)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
-        document_url: null
-        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 10. Диагноз или обоснованное предположение о наличии
-          или угрозе развития (стр. 2)'
-    - text: '[classification] 10. Диагноз или обоснованное предположение о наличии
-        или угрозе развития (стр. 2)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
-        document_url: null
-        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 10. Диагноз или обоснованное предположение о наличии
-          или угрозе развития (стр. 2)'
-    - text: '[classification] 10. Диагноз или обоснованное предположение о наличии
-        или угрозе развития (стр. 2)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
-        document_url: null
-        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 10. Диагноз или обоснованное предположение о наличии
-          или угрозе развития (стр. 2)'
-    optional: []
-    exclusion: []
+  diagnostic_criteria: null
   required_exams:
-  - name: МРТ
+  - name: Медицинская справка (форма 1 здр/у-10)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -127,15 +52,16 @@ conditions:
       protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
       document_url: null
       local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
-      page_start: null
+      page_start: 2
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "гнитно-резонансная \nтомография (далее – МРТ) \nоснования черепа. Консультация\
-        \ врача-онколога,\n\n[diagnostics] 3. Ежедневные п"
-  - name: КТ
+      quote: обязательно наличие медицинской справки о состоянии здоровья пациента
+        (форма 1 здр/у-10) с отметкой о профилактических прививках, отсутствии контакта
+        с пациентами, имеющими инфекционные заболевания
+  - name: Заключение врача-стоматолога
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -149,19 +75,84 @@ conditions:
       protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
       document_url: null
       local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
-      page_start: null
+      page_start: 2
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "й. \nФиброларингоскопия. \nТрахеоскопия. \nКТ шеи (гортани, трахеи).\
-        \ \nФункциональное тестирование \nлегких (спирография). \nМРТ"
-  conditional_exams: []
+      quote: заключение врача-стоматолога о санации полости рта и зубов.
+  conditional_exams:
+  - name: Магнитно-резонансная томография основания черепа
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: 1
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Плановое обследование на догоспитальном этапе4. Магнитно-резонансная
+        томография (далее – МРТ) основания черепа.
+  - name: Консультация врача-онколога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: 1
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Плановое обследование на догоспитальном этапе4. ... Консультация врача-онколога,
+  - name: Заключение врача-специалиста (при сопутствующих заболеваниях)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При наличии сопутствующего хронического заболевания у пациента представляют
+        заключение врача-специалиста соответствующего профиля об отсутствии противопоказаний
+        к плановому хирургическому вмешательству.
   treatment:
     non_drug:
-    - text: '[treatment] 7. При плановой госпитализации пациента для хирургического
-        вмешательства (стр. 2)'
+    - text: Обязательное патоморфологическое исследование всего удаленного материала
+        при хирургических вмешательствах.
       source_ref:
         protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
         document_url: null
@@ -172,10 +163,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 7. При плановой госпитализации пациента для хирургического
-          вмешательства (стр. 2)'
-    - text: обязательно наличие медицинской справки о состоянии здоровья пациента
-        (форма 1 здр/у-
+        quote: Обязательное патоморфологическое исследование всего удаленного материала
+          при хирургических вмешательствах.
+    - text: Хирургическое лечение проводится только в отделениях с рентгеноэндоваскулярными
+        хирургами, оснащенных КТ/МРТ с ангиографией и рентгеноперационной.
       source_ref:
         protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
         document_url: null
@@ -186,137 +177,51 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: обязательно наличие медицинской справки о состоянии здоровья пациента
-          (форма 1 здр/у-
-    - text: 10) с отметкой о профилактических прививках, отсутствии контакта с пациентами,
-      source_ref:
-        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
-        document_url: null
-        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 10) с отметкой о профилактических прививках, отсутствии контакта с
-          пациентами,
-    - text: имеющими инфекционные заболевания, заключение врача-стоматолога о санации
-        полости
-      source_ref:
-        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
-        document_url: null
-        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: имеющими инфекционные заболевания, заключение врача-стоматолога о санации
-          полости
-    - text: '[treatment] 8. При наличии сопутствующего хронического заболевания у
-        пациента представляют (стр. 2)'
-      source_ref:
-        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
-        document_url: null
-        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 8. При наличии сопутствующего хронического заболевания
-          у пациента представляют (стр. 2)'
-    - text: противопоказаний к плановому хирургическому вмешательству.
-      source_ref:
-        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
-        document_url: null
-        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: противопоказаний к плановому хирургическому вмешательству.
+        quote: Хирургическое лечение проводится только в отделениях с рентгеноэндоваскулярными
+          хирургами, оснащенных КТ/МРТ с ангиографией и рентгеноперационной.
     drug_groups: []
-    drugs:
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
-        document_url: null
-        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июня 1993 года «О здравоохранении» в редакции Закон
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
-        document_url: null
-        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: августа
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
-        document_url: null
-        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: августа 2011 г
+    drugs: []
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Диспансерное наблюдение за состоянием пациента с заболеваниями уха, горла,
+      носа вне обострения и после хирургического лечения осуществляют в порядке, установленном
+      Министерством здравоохранения Республики Беларусь.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диспансерное наблюдение за состоянием пациента с заболеваниями уха, горла,
+        носа вне обострения и после хирургического лечения осуществляют в порядке,
+        установленном Министерством здравоохранения Респуб
+  - text: После хирургического лечения – диспансерное наблюдение у врача-оториноларинголога.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: После хирургического лечения – диспансерное наблюдение у врача-оториноларинголога.
   hospitalization: []
   routing:
-  - text: '[routing] 9. В случае необходимости экстренной госпитализации пациента
-      диагностические (стр. 2)'
+  - text: госпитализация
     timing: null
     required_if: []
     source_ref:
@@ -329,9 +234,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 9. В случае необходимости экстренной госпитализации пациента
-        диагностические (стр. 2)'
-  - text: вмешательства в амбулаторных условиях не выполняют.
+      quote: госпитализация
+  - text: амбулаторно
     timing: null
     required_if: []
     source_ref:
@@ -344,8 +248,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: вмешательства в амбулаторных условиях не выполняют.
-  - text: '[routing] 5. Направление пациента для госпитализации и (стр. 1)'
+      quote: амбулаторно
+  - text: Направление для госпитализации и хирургического лечения в стационарных условиях
+      специализированного отделения республиканских организаций здравоохранения.
     timing: null
     required_if: []
     source_ref:
@@ -358,8 +263,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 5. Направление пациента для госпитализации и (стр. 1)'
-  - text: организации здравоохранения. Экстренная госпитализация в
+      quote: Направление для госпитализации и хирургического лечения в стационарных
+        условиях специализированного отделения республиканских организаций здравоохранения.
+  - text: Хирургическое вмешательство выполняют в амбулаторных условиях или в условиях
+      специализированного отделения организаций здравоохранения.
     timing: null
     required_if: []
     source_ref:
@@ -372,35 +279,667 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: организации здравоохранения. Экстренная госпитализация в
+      quote: Хирургическое вмешательство выполняют в амбулаторных условиях или в условиях
+        специализированного отделения организаций здравоохранения.
+  - text: В случае необходимости экстренной госпитализации пациента диагностические
+      вмешательства в амбулаторных условиях не выполняют.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: В случае необходимости экстренной госпитализации пациента диагностические
+        вмешательства в амбулаторных условиях не выполняют.
+  - text: При наличии медицинских показаний (синдром ночного апноэ, стойкое затрудненное
+      носовое дыхание и др.) – направление пациента для госпитализации и планового
+      хирургического вмешательства в стационарных условиях специализированного отделения
+      организации здравоохранения.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'При наличии медицинских показаний (синдром ночного апноэ, стойкое затрудненное
+        носовое дыхание и др.) – направление пациента для госпитализации и планового
+        хирургического вмешательства в стационарных '
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
-    document_url: null
-    local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика лечение пациентов детское население с болезнями уха горла носа
-      46
+  source_refs: []
+- condition_id: tonsil_adenoid_hypertrophy
+  name: Гипертрофия небных миндалин с гипертрофией глоточной миндалины
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - J35.2
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams:
+  - name: Плановое обследование на догоспитальном этапе
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: 64
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Плановое обследование на догоспитальном этапе4.
+  - name: Медицинская справка о состоянии здоровья (форма 1 здр/у-10)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: обязательно наличие медицинской справки о состоянии здоровья пациента
+        (форма 1 здр/у-10) с отметкой о профилактических прививках, отсутствии контакта
+        с пациентами, имеющими инфекционные заболевания
+  - name: Заключение врача-стоматолога
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: заключение врача-стоматолога о санации полости рта и зубов.
+  conditional_exams:
+  - name: Заключение врача-специалиста соответствующего профиля
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При наличии сопутствующего хронического заболевания у пациента представляют
+        заключение врача-специалиста соответствующего профиля об отсутствии противопоказаний
+        к плановому хирургическому вмешательству.
+  - name: Общий анализ крови развернутый
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'При необходимости госпитализации: ОАК развернутый...'
+  - name: Исследование уровня тромбоцитов в крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'При необходимости госпитализации: исследование уровня тромбоцитов в
+        крови...'
+  - name: Исследование времени свертывания нестабилизированной крови или рекальцификации
+      плазмы неактивированное
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'При необходимости госпитализации: исследование времени свертывания нестабилизированной
+        крови или рекальцификации плазмы неактивированное...'
+  - name: Коагулограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'При необходимости госпитализации: коагулограмма...'
+  - name: Биохимический анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'При необходимости госпитализации: биохимический анализ крови с исследованием
+        уровня общего белка, глобулиновых фракций, общего билирубина, мочевины, глюкозы,
+        креатинина, АЛТ, АСТ, калия, общего кальция, натрия, хлора'
+  - name: Определение основных групп крови (A, B, 0) и резус-принадлежности
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'При необходимости госпитализации: определение основных групп крови (A,
+        B, 0) и резус-принадлежности...'
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'При необходимости госпитализации: ОАМ...'
+  - name: Электрокардиография
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'При необходимости госпитализации: ЭКГ.'
+  - name: Видеориноскопия
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'При необходимости госпитализации: Видеориноскопия.'
+  - name: Рентгенография околоносовых пазух
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'При необходимости госпитализации: Рентгенография околоносовых пазух.'
+  - name: Импедансометрия
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'При необходимости госпитализации: Импедансометрия.'
+  treatment:
+    non_drug:
+    - text: Проведение периоперационной профилактики в хирургических отделениях при
+        выполнении хирургического вмешательства.
+      source_ref:
+        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+        document_url: null
+        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Проведение периоперационной профилактики в хирургических отделениях
+          при выполнении хирургического вмешательства.
+    - text: Хирургические вмешательства в амбулаторных условиях.
+      source_ref:
+        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+        document_url: null
+        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хирургические вмешательства в амбулаторных условиях.
+    - text: Патоморфологическое исследование всего удаленного материала при выполнении
+        хирургических вмешательств.
+      source_ref:
+        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+        document_url: null
+        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Патоморфологическое исследование всего удаленного материала при выполнении
+          хирургических вмешательств.
+    - text: Хирургическое лечение в стационарных условиях специализированного отделения.
+      source_ref:
+        protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+        document_url: null
+        local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хирургическое лечение в стационарных условиях специализированного отделения.
+    drug_groups: []
+    drugs: []
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Диспансерное наблюдение за состоянием пациента с заболеваниями уха, горла,
+      носа вне обострения и после хирургического лечения осуществляют в порядке, установленном
+      Министерством здравоохранения Республики Беларусь.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диспансерное наблюдение за состоянием пациента с заболеваниями уха, горла,
+        носа вне обострения и после хирургического лечения осуществляют в порядке,
+        установленном Министерством здравоохранения Респуб
+  - text: Диспансерное наблюдение у врача-оториноларинголога после хирургического
+      лечения.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диспансерное наблюдение у врача-оториноларинголога после хирургического
+        лечения.
+  - text: Консультации врача-иммунолога, врача-онколога, врача-фониатра, психолога,
+      врача-психотерапевта, врача-гастроэнтеролога, врача-инфекциониста, учителя-логопеда
+      (фонопеда) после хирургического лечения.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Консультации врача-иммунолога, врача-онколога, врача-фониатра, психолога,
+        врача-психотерапевта, врача-гастроэнтеролога, врача-инфекциониста, учителя-логопеда
+        (фонопеда) после хирургического лечения.
+  hospitalization: []
+  routing:
+  - text: Плановая госпитализация для хирургического вмешательства.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Плановая госпитализация для хирургического вмешательства.
+  - text: Хирургическое вмешательство выполняют в амбулаторных условиях или в условиях
+      специализированного отделения организаций здравоохранения.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Хирургическое вмешательство выполняют в амбулаторных условиях или в условиях
+        специализированного отделения организаций здравоохранения.
+  - text: Направление пациента для госпитализации и дальнейшего хирургического лечения
+      в стационарных условиях специализированного отделения городских, областных,
+      республиканских организаций здравоохранения.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Направление пациента для госпитализации и дальнейшего хирургического
+        лечения в стационарных условиях специализированного отделения городских, областных,
+        республиканских организаций здравоохранения.
+  - text: Хирургическое лечение осуществляется только в отделениях организаций здравоохранения,
+      имеющих врачей-рентгеноэндоваскулярных хирургов, опыт эндоваскулярного выключения
+      приводящих сосудов; КТ и МРТ с ангиографией, рентгеноперационную.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Хирургическое лечение осуществляется только в отделениях организаций
+        здравоохранения, имеющих врачей-рентгеноэндоваскулярных хирургов, опыт эндоваскулярного
+        выключения приводящих сосудов; КТ и МРТ с а
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: laryngeal_nodules
+  name: Узелки гортани
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - J38.2
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: otorinolaringologiya_кп_диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_го
+      document_url: null
+      local_path: minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_пациентов_дет_нас_с_болезнями_уха_горла_носа_25.05.2018_46.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:45.177882+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T16:58:49.029437+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=3
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:45.181836+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[tonsil_adenoid_hypertrophy].required_exams[2]
+  validated_at: '2026-07-20T16:58:49.034649+00:00'

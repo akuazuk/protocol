@@ -1,10 +1,10 @@
 {
   "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика и лечение пациентов детс население с болезнями языка",
+    "title": "Диагностика и лечение пациентов детского населения с болезнями языка",
     "url": null,
     "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,13 +32,16 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_и_лечение_пациентов_детс_население_с",
-      "name": "Диагностика и лечение пациентов детс население с болезнями языка",
+      "condition_id": "diseases_of_tongue",
+      "name": "Болезни языка",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "B24",
-        "D07"
+        "K14",
+        "K14.0",
+        "K14.01",
+        "K14.1",
+        "K14.5"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -46,7 +49,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[criteria] 4. Признаками и критериями, определяющими болезни языка, являются: (стр. 3)",
+            "text": "Травматическое изъязвление языка: разного размера и глубины, с приподнятыми краями, дном, покрытым бледно-желтым налетом; слизистая вокруг гиперемирована, отечна, возможна болезненность при пальпации и увеличение лимфоузлов при инфицировании.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -63,11 +66,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 4. Признаками и критериями, определяющими болезни языка, являются: (стр. 3)"
+              "quote": "Травматическое изъязвление языка: разного размера и глубины, с приподнятыми краями, дном, покрытым бледно-желтым налетом; слизистая вокруг гиперемирована, отечна, возможна болезненность при пальпации "
             }
           },
           {
-            "text": "[criteria] 4. Признаками и критериями, определяющими болезни языка, являются: (стр. 3)",
+            "text": "«Географический» язык: зона десквамации эпителия в форме кольца/полукольца на спинке и боковых поверхностях языка, увеличенные грибовидные сосочки на участках десквамации, участки кератоза образуют узкие беловатые полосы, мигрирующая форма, отсутствие эрозий, эпителизация.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -84,11 +87,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 4. Признаками и критериями, определяющими болезни языка, являются: (стр. 3)"
+              "quote": "«Географический» язык: зона десквамации эпителия в форме кольца/полукольца на спинке и боковых поверхностях языка, увеличенные грибовидные сосочки на участках десквамации, участки кератоза образуют уз"
             }
           },
           {
-            "text": "[criteria] 4. Признаками и критериями, определяющими болезни языка, являются: (стр. 4)",
+            "text": "Складчатость языка: сопровождается макроглоссией; складки симметрично продольные (форма листа) или поперечные (мозговая форма); на дне и боковых поверхностях складок – сосочки, характерные для нормальной слизистой; возможна десквамация эпителия, катаральное воспаление, кандидозный глоссит, запах изо рта.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -105,19 +108,271 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 4. Признаками и критериями, определяющими болезни языка, являются: (стр. 4)"
+              "quote": "Складчатость языка: сопровождается макроглоссией; складки симметрично продольные (форма листа) или поперечные (мозговая форма); на дне и боковых поверхностях складок – сосочки, характерные для нормаль"
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
-      "conditional_exams": [],
+      "required_exams": [
+        {
+          "name": "Сбор анамнеза и выявление травмирующих язык факторов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "сбор анамнеза и выявление травмирующих язык факторов"
+          }
+        },
+        {
+          "name": "Выявление взаимосвязи стоматологического и общего здоровья с болезнями языка",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "выявление взаимосвязи стоматологического и общего здоровья с болезнями языка"
+          }
+        },
+        {
+          "name": "Дифференциальная диагностика болезней языка",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "дифференциальная диагностика болезней языка"
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Общий (клинический) анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "лабораторные методы диагностики: общий (клинический) анализ крови"
+          }
+        },
+        {
+          "name": "Цитологическое исследование материала из очага поражения",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "цитологическое исследование материала из очага поражения"
+          }
+        },
+        {
+          "name": "Исследование кала на яйца гельминтов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "исследование кала на яйца гельминтов"
+          }
+        },
+        {
+          "name": "Консультация врача-педиатра",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "консультация врача-специалиста (врача-педиатра"
+          }
+        },
+        {
+          "name": "Консультация врача-эндокринолога",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "врача-эндокринолога"
+          }
+        },
+        {
+          "name": "Консультация врача-психотерапевта",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "врача-психотерапевта"
+          }
+        },
+        {
+          "name": "Консультация врача-аллерголога-иммунолога",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "врача-аллерголога-иммунолога)"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 10. Терапевтические (стр. 5)",
+            "text": "Своевременная диагностика и устранение факторов, приводящих к травме языка (нависающие края пломб, острые края зубов, элементы ортодонтических аппаратов), зубочелюстных аномалий, вредных привычек.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
               "document_url": null,
@@ -128,11 +383,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 10. Терапевтические (стр. 5)"
+              "quote": "Своевременная диагностика и устранение факторов, приводящих к травме языка (нависающие края пломб, острые края зубов, элементы ортодонтических аппаратов), зубочелюстных аномалий, вредных привычек."
             }
           },
           {
-            "text": "Разовую дозу врач-специалист назначает",
+            "text": "Регулярное механическое удаление зубного налета с помощью гигиенических средств, а также профессиональное удаление зубных отложений.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
               "document_url": null,
@@ -143,11 +398,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Разовую дозу врач-специалист назначает"
+              "quote": "Регулярное механическое удаление зубного налета с помощью гигиенических средств, а также профессиональное удаление зубных отложений."
             }
           },
           {
-            "text": "индивидуально, учитывая состояние области",
+            "text": "Выявление и контроль вредных привычек, санация полости рта, коррекция ортодонтических аппаратов.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
               "document_url": null,
@@ -158,11 +413,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "индивидуально, учитывая состояние области"
+              "quote": "Выявление и контроль вредных привычек, санация полости рта, коррекция ортодонтических аппаратов."
             }
           },
           {
-            "text": "нанесения лекарственного средства и общее",
+            "text": "Мотивация и обучение гигиене полости рта.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
               "document_url": null,
@@ -173,11 +428,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "нанесения лекарственного средства и общее"
+              "quote": "Мотивация и обучение гигиене полости рта."
             }
           },
           {
-            "text": "Национальный правовой Интернет-портал Республики Беларусь, 14.02.2023, 8/39442",
+            "text": "Лазеротерапия, 5–7 процедур ежедневно на очаги поражения.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
               "document_url": null,
@@ -188,11 +443,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Национальный правовой Интернет-портал Республики Беларусь, 14.02.2023, 8/39442"
+              "quote": "Лазеротерапия, 5–7 процедур ежедневно на очаги поражения."
             }
           },
           {
-            "text": "D08А Антисептики и дезинфицирующие средства",
+            "text": "мотивация пациента и обучение гигиене полости рта, уходу за языком",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
               "document_url": null,
@@ -203,17 +458,47 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "D08А Антисептики и дезинфицирующие средства"
+              "quote": "мотивация пациента и обучение гигиене полости рта, уходу за языком"
+            }
+          },
+          {
+            "text": "контроль эффективности гигиены полости рта детей старше 6 лет (контролируемая чистка зубов)",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "контроль эффективности гигиены полости рта детей старше 6 лет (контролируемая чистка зубов)"
+            }
+          },
+          {
+            "text": "устранение местных неблагоприятных факторов, способствующих развитию заболеваний языка",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "устранение местных неблагоприятных факторов, способствующих развитию заболеваний языка"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "применения",
+            "drug_name": "Лидокаин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,5 мг",
+            "dose_text": "Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну. Лекарственное средство можно нан",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -225,20 +510,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "применения \n0,5 мг/мл \nНеразведенный раствор применяется в"
+              "quote": "Спрей для местного применения 100 мг/мл. Одну порцию (1–3 нажатия) наносят на слизистую оболочку полости рта или десну. Можно наносить путем смазывания смоченным в средстве ватным тампоном."
             }
           },
           {
-            "drug_name": "шприцах",
+            "drug_name": "Лидокаин/Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "12,5 г",
+            "dose_text": "Анестезирующий гель в шприцах 12,5 г; анестезирующий гель в шприцах 8,5 г. Для аппликационной анестезии слизистой оболочки полости рта. Не применять у детей младше 2 лет. Для детей в возрасте от 2 до ",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -250,20 +535,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "шприцах 12,5 г"
+              "quote": "Анестезирующий гель. Для аппликационной анестезии слизистой оболочки полости рта. Не применять у детей младше 2 лет. Для детей 2-11 лет максимальная доза лидокаина не должна превышать 2,9 мг/кг."
             }
           },
           {
-            "drug_name": "превышать",
+            "drug_name": "Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2,9 мг",
+            "dose_text": "Раствор для местного и наружного применения 0,5 мг/мл. Неразведенный раствор применяется в виде орошений, полосканий и аппликаций – 5–10 мл раствора наносят на пораженную поверхность слизистой оболочк",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -275,20 +560,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "превышать 2,9 мг/кг"
+              "quote": "Раствор 0,5 мг/мл. Применяется в виде орошений, полосканий, аппликаций – 5–10 мл раствора на пораженную поверхность слизистой оболочки рта или десны с экспозицией 1–3 мин 2–3 раза в сутки."
             }
           },
           {
-            "drug_name": "ноября",
+            "drug_name": "Бензилдиметил-аммония хлорид",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2022 г",
+            "dose_text": "Раствор для наружного (местного) применения 0,1 мг/мл. Неразведенный раствор применяется в виде протираний – 5–10 мл раствора наносят на слизистую оболочку полости рта на пораженную поверхность с эксп",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -300,20 +585,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ноября 2022 г"
+              "quote": "Раствор 0,1 мг/мл. Применяется в виде протираний – 5–10 мл раствора на слизистую оболочку рта на пораженную поверхность с экспозицией 1–3 мин 2–3 раза в сутки (на тампоне, 3–5 дней)."
             }
           },
           {
-            "drug_name": "июня",
+            "drug_name": "Лидокаин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1993 г",
+            "dose_text": "Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну. Лекарственное средство можно нан",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -325,20 +610,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июня \n1993 г"
+              "quote": "Спрей 100 мг/мл. Одну порцию (1–3 нажатия) наносят на слизистую оболочку полости рта или десну. Можно наносить смоченным ватным тампоном."
             }
           },
           {
-            "drug_name": "октября",
+            "drug_name": "Лидокаин/Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2011 г",
+            "dose_text": "Анестезирующий гель в шприцах 12,5 г; анестезирующий гель в шприцах 8,5 г. Для аппликационной анестезии слизистой оболочки полости рта. Не применять у детей младше 2 лет. Для детей в возрасте от 2 до ",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -350,20 +635,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "октября 2011 г"
+              "quote": "Анестезирующий гель. Не применять у детей младше 2 лет. Для детей 2-11 лет макс. доза лидокаина не более 2,9 мг/кг. Разовую дозу назначает врач-специалист индивидуально."
             }
           },
           {
-            "drug_name": "марта",
+            "drug_name": "Трипсин кристаллический",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2023 г",
+            "dose_text": "Лиофилизат для приготовления раствора для инъекций и местного применения 10 мг во флаконах. Местно. На изъязвленную или некротизированную слизистую оболочку полости рта или десны накладывают смоченную",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -375,20 +660,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "марта 2023 г"
+              "quote": "Лиофилизат 10 мг во флаконах. Местно: на изъязвленную или некротизированную слизистую оболочку рта или десны накладывают салфетку раствором (10 мг в 10 мл физраствора)."
             }
           },
           {
-            "drug_name": "раствором",
+            "drug_name": "Химотрипсин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "10 мг",
+            "dose_text": "Лиофилизат для приготовления раствора для инъекций и местного применения 10 мг во флаконах. Местно. На гнойные поверхности слизистой оболочки полости рта или десны с некротизированными тканями наклады",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -400,20 +685,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "раствором 10 мг химотрипсина в 10 мл \nстерильного физиол"
+              "quote": "Лиофилизат 10 мг во флаконах. Местно: на гнойные поверхности слизистой оболочки рта или десны с некротизированными тканями накладывается смоченная салфетка раствором (10 мг в 10 мл физраствора)."
             }
           },
           {
-            "drug_name": "средства",
+            "drug_name": "Гиалуронидаза",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "7 Г",
+            "dose_text": "Порошок лиофилизированный для приготовления раствора для внутримышечного и подкожного введения",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -425,13 +710,13 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "средства \n7 Гиалуронидаза \nПорошок \nлиофилизированный"
+              "quote": "Порошок лиофилизированный для приготовления раствора для внутримышечного и подкожного введения"
             }
           }
         ],
@@ -439,82 +724,87 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [],
+      "red_flags": [
         {
-          "text": "контроль",
-          "timing": null,
-          "required_if": [],
+          "text": "Не применять Лидокаин/Хлоргексидин гель у детей младше 2 лет.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
           "expected_actions": [],
+          "cap_if_unhandled": null,
           "source_ref": {
             "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
             "document_url": null,
             "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
-            "page_start": null,
+            "page_start": 5,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
+            "quote": "Не применять у детей младше 2 лет."
           }
         },
         {
-          "text": "контроль",
-          "timing": null,
-          "required_if": [],
+          "text": "Не применять у детей младше 2 лет.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
           "expected_actions": [],
+          "cap_if_unhandled": null,
           "source_ref": {
             "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
             "document_url": null,
             "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
-            "page_start": null,
+            "page_start": 5,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
+            "quote": "Не применять у детей младше 2 лет."
           }
         }
       ],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_язык",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_языка_пост_МЗ_30.11.2022_112.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика и лечение пациентов детс население с болезнями языка"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:51.233394+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T17:57:56.208270+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-06-23T19:15:51.237170+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[diseases_of_tongue].treatment.drugs[4]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[diseases_of_tongue].treatment.drugs[5]"
+      }
+    ],
+    "validated_at": "2026-07-20T17:57:56.215475+00:00"
   }
 }

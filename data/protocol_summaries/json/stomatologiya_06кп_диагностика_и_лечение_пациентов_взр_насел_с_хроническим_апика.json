@@ -1,10 +1,10 @@
 {
   "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "06КП Диагностика и лечение пациентов взр насел с хроническим апикальным периодонтитом корневой кистой",
+    "title": "Диагностика и лечение пациентов с хроническим апикальным периодонтитом и корневой кистой",
     "url": null,
     "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
     "document_sha256": null,
@@ -32,14 +32,14 @@
   },
   "conditions": [
     {
-      "condition_id": "06кп_диагностика_и_лечение_пациентов_взр_насел_с",
-      "name": "06КП Диагностика и лечение пациентов взр насел с хроническим апикальным периодонтитом корневой кистой",
+      "condition_id": "chronic_apical_periodontitis_and_cyst",
+      "name": "Хронический апикальный периодонтит и корневая киста",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
         "K04.5",
-        "B24",
-        "K07.9"
+        "K04.7",
+        "K04.8"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -47,7 +47,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[diagnostics] 11. Для постановки диагноза осуществляются: (стр. 5)",
+            "text": "Постановка диагноза осуществляется на основании клинического обследования пациента, обязательных и дополнительных лабораторных и инструментальных исследований, а также консультаций врачей-специалистов.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -64,40 +64,496 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 11. Для постановки диагноза осуществляются: (стр. 5)"
-            }
-          },
-          {
-            "text": "[diagnostics] 15. Для постановки диагноза осуществляются: (стр. 5)",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[diagnostics] 15. Для постановки диагноза осуществляются: (стр. 5)"
+              "quote": "Постановка диагноза осуществляется на основании клинического обследования пациента, обязательных и дополнительных лабораторных и инструментальных исследований, а также консультаций врачей-специалистов"
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
-      "conditional_exams": [],
+      "required_exams": [
+        {
+          "name": "Клиническое обследование пациента: Сбор анамнеза",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Сбор анамнеза, установка причины развития заболевания; выявление жалоб (их характер и сроки появления), данных анамнеза заболевания, аллергический анамнез, наличие острых и хронических соматических заболеваний."
+          }
+        },
+        {
+          "name": "Клиническое обследование пациента: Внешний осмотр челюстно-лицевой области",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Внешний осмотр челюстно-лицевой области (конфигурация лица, кожные покровы)."
+          }
+        },
+        {
+          "name": "Клиническое обследование пациента: Пальпация лимфатических узлов, мышц, желез, сустава",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Пальпация регионарных лимфатических узлов, жевательных мышц, слюнных желез, височно-нижнечелюстного сустава."
+          }
+        },
+        {
+          "name": "Клиническое обследование пациента: Осмотр полости рта с оценкой зубных рядов, слизистой",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Осмотр полости рта с помощью дополнительных инструментов: оценка состояния зубных рядов, слизистой оболочки полости рта, наличие ее патологических изменений."
+          }
+        },
+        {
+          "name": "Клиническое обследование пациента: Перкуссия зубов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Перкуссия зубов."
+          }
+        },
+        {
+          "name": "Клиническое обследование пациента: Оценка степени подвижности зубов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Оценка степени подвижности зубов."
+          }
+        },
+        {
+          "name": "Клиническое обследование пациента: Наличие пародонтального(ых) кармана(ов)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Наличие пародонтального(ых) кармана(ов)."
+          }
+        },
+        {
+          "name": "Клиническое обследование пациента: Оценка окклюзионных контактов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Оценка окклюзионных контактов."
+          }
+        },
+        {
+          "name": "Клиническое обследование пациента: Наличие пломб, ортопедических конструкций",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Наличие пломб, ортопедических конструкций."
+          }
+        },
+        {
+          "name": "Патогистологическое исследование оболочки кисты",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "направление на патогистологическое исследование оболочки кисты"
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Прицельная внутриротовая контактная рентгенография",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "инструментальные диагностические исследования (по медицинским показаниям): лучевые методы исследования: прицельная внутриротовая контактная рентгенография."
+          }
+        },
+        {
+          "name": "Ортопантомография челюстей или конусно-лучевая компьютерная томография (КЛКТ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "инструментальные диагностические исследования (по медицинским показаниям): лучевые методы исследования: ортопантомография челюстей или конусно-лучевая компьютерная томография (далее – КЛКТ)."
+          }
+        },
+        {
+          "name": "Электроодонтодиагностика",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятиями в амбулаторных условиях, осуществляемыми по медицинским показаниям, являются: инструментальные диагностические исследования: электроодонтодиагностика."
+          }
+        },
+        {
+          "name": "Трепанбиопсия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятиями в амбулаторных условиях, осуществляемыми по медицинским показаниям, являются: инструментальные диагностические исследования: трепанбиопсия."
+          }
+        },
+        {
+          "name": "Общий анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятиями в амбулаторных условиях, осуществляемыми по медицинским показаниям, являются: лабораторные исследования: общий анализ крови."
+          }
+        },
+        {
+          "name": "Биохимический анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятиями в амбулаторных условиях, осуществляемыми по медицинским показаниям, являются: лабораторные исследования: биохимический анализ крови."
+          }
+        },
+        {
+          "name": "Коагулограмма",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятиями в амбулаторных условиях, осуществляемыми по медицинским показаниям, являются: лабораторные исследования: коагулограмма."
+          }
+        },
+        {
+          "name": "Общий анализ мочи",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятиями в амбулаторных условиях, осуществляемыми по медицинским показаниям, являются: лабораторные исследования: общий анализ мочи."
+          }
+        },
+        {
+          "name": "Консультация врача-специалиста (лучевой диагностики, клинической лабораторной диагностики, физиотерапевта, рефлексотерапевта, оториноларинголога и др.)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятиями в амбулаторных условиях... являются: консультация врача-специалиста (врача лучевой диагностики, врача клинической лабораторной диагностики, врача-физиотерапевта, врача-рефлексотерапевта, врача-оториноларинголога, других)."
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 1. Настоящий клинический протокол определяет общие требования к объему (стр. 3)",
+            "text": "Зубосохраняющие операции",
             "source_ref": {
               "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
               "document_url": null,
@@ -108,11 +564,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 1. Настоящий клинический протокол определяет общие требования к объему (стр. 3)"
+              "quote": "Зубосохраняющие операции"
             }
           },
           {
-            "text": "оказания стоматологической хирургической медицинской помощи в амбулаторных",
+            "text": "Цистэктомия",
             "source_ref": {
               "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
               "document_url": null,
@@ -123,11 +579,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "оказания стоматологической хирургической медицинской помощи в амбулаторных"
+              "quote": "Цистэктомия"
             }
           },
           {
-            "text": "и стационарных условиях пациентам (взрослое население) с хроническим апикальным",
+            "text": "Остеосинтез (при необходимости)",
             "source_ref": {
               "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
               "document_url": null,
@@ -138,11 +594,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "и стационарных условиях пациентам (взрослое население) с хроническим апикальным"
+              "quote": "Остеосинтез (при необходимости)"
             }
           },
           {
-            "text": "классификации болезней и проблем, связанных со здоровьем, десятого пересмотра – K04.5",
+            "text": "Раскрытие полости зуба, создание доступа к корневым каналам",
             "source_ref": {
               "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
               "document_url": null,
@@ -153,11 +609,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "классификации болезней и проблем, связанных со здоровьем, десятого пересмотра – K04.5"
+              "quote": "Раскрытие полости зуба, создание доступа к корневым каналам"
             }
           },
           {
-            "text": "Хронический апикальный периодонтит",
+            "text": "Первичное эндодонтическое лечение",
             "source_ref": {
               "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
               "document_url": null,
@@ -168,11 +624,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Хронический апикальный периодонтит"
+              "quote": "Первичное эндодонтическое лечение"
             }
           },
           {
-            "text": "К04.7 Периапикальный абсцесс без полости",
+            "text": "Повторное эндодонтическое лечение",
             "source_ref": {
               "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
               "document_url": null,
@@ -183,17 +639,167 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "К04.7 Периапикальный абсцесс без полости"
+              "quote": "Повторное эндодонтическое лечение"
+            }
+          },
+          {
+            "text": "Резекция верхушки корня зуба",
+            "source_ref": {
+              "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Резекция верхушки корня зуба"
+            }
+          },
+          {
+            "text": "Гемисекция",
+            "source_ref": {
+              "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Гемисекция"
+            }
+          },
+          {
+            "text": "Коронарорадикулярная сепарация",
+            "source_ref": {
+              "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Коронарорадикулярная сепарация"
+            }
+          },
+          {
+            "text": "Ампутация корня зуба",
+            "source_ref": {
+              "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ампутация корня зуба"
+            }
+          },
+          {
+            "text": "Операция удаления зуба (простое, сложное, атипичное)",
+            "source_ref": {
+              "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Операция удаления зуба (простое, сложное, атипичное)"
+            }
+          },
+          {
+            "text": "Эндодонтическое лечение зубов в кистозной полости с пломбированием корневых каналов (гуттаперчевыми штифтами методом латеральной конденсации с применением силера на основе фосфата кальция или цементом на основе фосфата кальция)",
+            "source_ref": {
+              "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Эндодонтическое лечение зубов в кистозной полости с пломбированием корневых каналов (гуттаперчевыми штифтами методом латеральной конденсации с применением силера на основе фосфата кальция или цементом"
+            }
+          },
+          {
+            "text": "Ретроградное пломбирование канала «причинного» зуба",
+            "source_ref": {
+              "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ретроградное пломбирование канала «причинного» зуба"
+            }
+          },
+          {
+            "text": "Цистэктомия с удалением зуба и заполнением костных полостей остеопластическим материалом",
+            "source_ref": {
+              "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Цистэктомия с удалением зуба и заполнением костных полостей остеопластическим материалом"
+            }
+          },
+          {
+            "text": "Цистэктомия с резекцией верхушек корней с заполнением костных дефектов остеопластическими материалами",
+            "source_ref": {
+              "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Цистэктомия с резекцией верхушек корней с заполнением костных дефектов остеопластическими материалами"
+            }
+          },
+          {
+            "text": "Цистотомия с введением в полость тампона с антисептическим ЛС",
+            "source_ref": {
+              "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Цистотомия с введением в полость тампона с антисептическим ЛС"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "капсулы",
+            "drug_name": "Амоксициллин/клавулановая кислота",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "250 мг",
+            "dose_text": "Внутривенно медленно по 1000 мг/200 мг 3 раза в сутки или по 1 таблетке 500 мг + 125 мг 3 раза/сутки, или по 1 таблетке 875 мг + 125 мг 2 раза/сутки. Дозу корректировать исходя из максимальной рекомен",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -205,20 +811,20 @@
               "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
-              "page_start": null,
+              "page_start": 9,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "капсулы 250 мг, капсулы 500 мг, таблетки, покрытые обо"
+              "quote": "Амоксициллин/клавулановая кислота. Дозу следует корректировать, исходя из максимальной рекомендуемой дозы амоксициллина. Пациентам с клиренсом креатинина выше 30 мл/мин коррекция дозы не требуется. Внутривенно медленно (1 г ЛС растворяется в 20,0 мл воды для инъекций) по 1000 мг/200 мг 3 раза в сутки. По 1 таблетке 500 мг + 125 мг 3 раза/сутки или по 1 таблетке 875 мг + 125 мг 2 раза/сутки."
             }
           },
           {
-            "drug_name": "июня",
+            "drug_name": "Артикаин/Эпинефрин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1993 г",
+            "dose_text": "Раствор для инъекций (40 мг + 0,005 мг)/мл. Длительность применения устанавливается индивидуально.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -230,20 +836,20 @@
               "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
-              "page_start": null,
+              "page_start": 12,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июня \n1993 г"
+              "quote": "Артикаин/Эпинефрин. Раствор для инъекций (40 мг + 0,005 мг)/мл. Длительность применения устанавливают индивидуально."
             }
           },
           {
-            "drug_name": "октября",
+            "drug_name": "Нимесулид",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2011 г",
+            "dose_text": "Внутрь после еды по 100 мг 2 раза в сутки. Максимальная длительность приема 15 суток.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -255,20 +861,20 @@
               "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
-              "page_start": null,
+              "page_start": 12,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "октября 2011 г"
+              "quote": "Нимесулид. Таблетки 100 мг; порошок (гранулы) для приготовления суспензии для приема внутрь (для внутреннего применения) 100 мг в пакетах. Внутрь после еды по 100 мг 2 раза в сутки. Максимальная длительность приема 15 суток."
             }
           },
           {
-            "drug_name": "декабря",
+            "drug_name": "Кеторолак",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2011 г",
+            "dose_text": "При внутримышечном или внутривенном введении разовая доза может варьировать от 30 мг до 60 мг.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -280,20 +886,20 @@
               "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
-              "page_start": null,
+              "page_start": 12,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "декабря 2011 г"
+              "quote": "Кеторолак. Раствор для внутривенного и внутримышечного введения 30 мг/мл в ампулах... При внутримышечном или внутривенном введении разовая доза может варьировать от 30 мг до 60 мг."
             }
           },
           {
-            "drug_name": "февраля",
+            "drug_name": "Амоксициллин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2008 г",
+            "dose_text": "2 г однократно за 30–60 минут до хирургического вмешательства",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -305,13 +911,138 @@
               "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "февраля 2008 г"
+              "quote": "амоксициллин (капсулы 250/500 мг, таблетки 500/1000 мг) 2 г однократно за 30–60 минут до хирургического вмешательства"
+            }
+          },
+          {
+            "drug_name": "Клиндамицин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "600 мг внутрь за 1 час до проведения хирургического вмешательства (при аллергии на пенициллины)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "клиндамицин (капсулы 300 мг, капсулы 150 мг) 600 мг внутрь за 1 час до проведения хирургического вмешательства"
+            }
+          },
+          {
+            "drug_name": "ЛС для местной анестезии",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "согласно приложению 2",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "проведение местной анестезии с применением ЛС согласно приложению 2"
+            }
+          },
+          {
+            "drug_name": "Антибактериальные ЛС",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "при возникновении инфекционных осложнений согласно приложению 1",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "антибактериальные ЛС при возникновении инфекционных осложнений согласно приложению 1"
+            }
+          },
+          {
+            "drug_name": "Нестероидные противовоспалительные ЛС",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "согласно приложению 4",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "с целью снижения болевого синдрома – нестероидные противовоспалительные ЛС согласно приложению 4"
+            }
+          },
+          {
+            "drug_name": "Антисептические ЛС",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "согласно приложению 3 (для цистотомии и перевязки)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "цистотомия с введением в полость тампона с антисептическим ЛС согласно приложению 3; перевязка послеоперационной раны с инстилляцией антисептическими ЛС согласно приложению 3"
             }
           }
         ],
@@ -319,13 +1050,12 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [
+      "follow_up": [
         {
-          "text": "[prevention] 23. Медицинское наблюдение в амбулаторных условиях пациентов с хроническим (стр. 10)",
+          "text": "Медицинское наблюдение осуществляется врачом-стоматологом-хирургом амбулаторно-поликлинической организации по месту жительства. Включает медицинский осмотр, выполнение лабораторных и инструментальных (лучевые методы исследования) исследований по медицинским показаниям. Периодичность – 1 раз в 6 месяцев.",
           "timing": null,
           "required_if": [],
+          "expected_actions": [],
           "source_ref": {
             "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
             "document_url": null,
@@ -336,11 +1066,50 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "[prevention] 23. Медицинское наблюдение в амбулаторных условиях пациентов с хроническим (стр. 10)"
+            "quote": "Медицинское наблюдение осуществляется врачом-стоматологом-хирургом амбулаторно-поликлинической организации по месту жительства. Включает медицинский осмотр, выполнение лабораторных и инструментальных "
           }
         },
         {
-          "text": "[prevention] 23. Медицинское наблюдение в амбулаторных условиях пациентов с хроническим (стр. 10)",
+          "text": "Снятие швов (на 7–10 сутки)",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Снятие швов (на 7–10 сутки)"
+          }
+        },
+        {
+          "text": "Перевязка послеоперационной раны",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Перевязка послеоперационной раны"
+          }
+        }
+      ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "амбулаторно",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -353,46 +1122,180 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "[prevention] 23. Медицинское наблюдение в амбулаторных условиях пациентов с хроническим (стр. 10)"
+            "quote": "амбулаторно"
+          }
+        },
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        },
+        {
+          "text": "Амбулаторно (при отсутствии сопутствующих заболеваний или при компенсированной соматической патологии)",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Амбулаторно (при отсутствии сопутствующих заболеваний или при компенсированной соматической патологии)"
+          }
+        },
+        {
+          "text": "Стационарно (при объемных корневых кистах с угрозой патологического перелома челюсти, необходимости использования дополнительных средств, декомпенсированной соматической патологии)",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Стационарно (при объемных корневых кистах с угрозой патологического перелома челюсти, необходимости использования дополнительных средств, декомпенсированной соматической патологии)"
+          }
+        },
+        {
+          "text": "Госпитализация в гнойное отделение челюстно-лицевой хирургии (при развитии осложнений)",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация в гнойное отделение челюстно-лицевой хирургии (при развитии осложнений)"
+          }
+        },
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
           }
         }
       ],
-      "red_flags": [],
+      "red_flags": [
+        {
+          "text": "Угроза патологического перелома челюсти",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "объемных корневых кистах с угрозой патологического перелома челюсти"
+          }
+        },
+        {
+          "text": "Декомпенсированная соматическая патология",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "наличии у пациента декомпенсированной соматической патологии"
+          }
+        },
+        {
+          "text": "Развитие осложнений",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При развитии осложнений пациенты подлежат госпитализации"
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "stomatologiya_06кп_диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апика",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/stomatologiya/06КП_Диагностика_и_лечение_пациентов_взр_насел_с_хроническим_апикальным_периодонтитом_корневой_кистой_пост_МЗ_02.05.2023_66.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "06КП Диагностика и лечение пациентов взр насел с хроническим апикальным периодонтитом корневой кистой"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:48.119117+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T17:37:23.411858+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:48.121744+00:00"
+    "validated_at": "2026-07-20T17:37:23.429602+00:00"
   }
 }

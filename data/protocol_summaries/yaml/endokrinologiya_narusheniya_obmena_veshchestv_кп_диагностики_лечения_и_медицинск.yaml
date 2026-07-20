@@ -1,9 +1,9 @@
 protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: диагностики лечения и медицинской реабилитации детского населения с избыточной
+  title: Диагностика, лечение и медицинская реабилитация детского населения с избыточной
     массой тела и ожирением
   url: null
   local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
@@ -22,35 +22,37 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностики_лечения_и_медицинской_реабилитации_д
-  name: диагностики лечения и медицинской реабилитации детского населения с избыточной
-    массой тела и ожирением
+- condition_id: obesity_and_excess_weight_children
+  name: Избыточная масса тела и ожирение у детей
   synonyms: []
   abbreviations: []
   icd10_codes:
+  - E65
+  - E66.0
+  - E66.1
+  - E66.2
+  - E66.8
+  - E66.9
   - E24
   - E29.0
   - R63.2
   - R63.5
   - F50
-  - F59
   - F50.2
-  - F50.3
-  - F50.4
-  - E66.9
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: биохимическое исследование крови с определением концентрации
+    - text: 'Нормальные значения глюкозы крови натощак: 3,3-6,1 ммоль/л (плазма),
+        3,3-5,5 ммоль/л (капиллярная).'
       logic_group: null
       operator: unknown
       values: []
@@ -69,8 +71,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: биохимическое исследование крови с определением концентрации
-    - text: ммоль/л в капиллярной крови расценивается как предварительный диагноз
+        quote: 'Нормальные значения глюкозы крови натощак: 3,3-6,1 ммоль/л (плазма),
+          3,3-5,5 ммоль/л (капиллярная).'
+    - text: 'Нарушение гликемии натощак: 6,1-7,0 ммоль/л (плазма), 5,6-6,1 ммоль/л
+        (капиллярная).'
       logic_group: null
       operator: unknown
       values: []
@@ -89,8 +93,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: ммоль/л в капиллярной крови расценивается как предварительный диагноз
-    - text: определение концентрации тиротропного гормона (далее - ТТГ), свободного
+        quote: 'Нарушение гликемии натощак: 6,1-7,0 ммоль/л (плазма), 5,6-6,1 ммоль/л
+          (капиллярная).'
+    - text: 'Предварительный диагноз «сахарный диабет»: глюкоза > 7,0 ммоль/л (плазма),
+        > 6,1 ммоль/л (капиллярная).'
       logic_group: null
       operator: unknown
       values: []
@@ -109,11 +115,34 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение концентрации тиротропного гормона (далее - ТТГ), свободного
+        quote: 'Предварительный диагноз «сахарный диабет»: глюкоза > 7,0 ммоль/л (плазма),
+          > 6,1 ммоль/л (капиллярная).'
+    - text: Дифференциальная диагностика проводится со всеми заболеваниями, симптомом
+        которых является ожирение.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
+        document_url: null
+        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
+          диагностики лечения и медицинской реабилитации детского населения с избыточной
+          массой тела и ожирением 01.06.2009_№532.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Дифференциальная диагностика проводится со всеми заболеваниями, симптомом
+          которых является ожирение.
     optional: []
     exclusion: []
   required_exams:
-  - name: УЗИ
+  - name: Биохимическое исследование крови (глюкоза, АсАТ, АлАТ, холестерин, триацилглицериды)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -129,15 +158,15 @@ conditions:
       local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
         диагностики лечения и медицинской реабилитации детского населения с избыточной
         массой тела и ожирением 01.06.2009_№532.pdf
-      page_start: null
+      page_start: 8
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "; \nультразвуковое исследование (далее - УЗИ) внутренних органов (печень,\
-        \ \nжелчный пузырь, поджелудочная железа, почки);  \nэ"
-  - name: ЭКГ
+      quote: биохимическое исследование крови с определением концентрации глюкозы,
+        АсАТ, АлАТ, холестерина, триацилглицеридов - 1 раз в год.
+  - name: УЗИ внутренних органов (печень, желчный пузырь, поджелудочная железа, почки)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -153,15 +182,15 @@ conditions:
       local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
         диагностики лечения и медицинской реабилитации детского населения с избыточной
         массой тела и ожирением 01.06.2009_№532.pdf
-      page_start: null
+      page_start: 8
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "почки);  \nэлектрокардиография (далее - ЭКГ) – 1 раз в год.\n\n[diagnostics]\
-        \ 7.7. Лабораторные и инструментальные методы для"
-  - name: КТ
+      quote: ультразвуковое исследование (далее - УЗИ) внутренних органов (печень,
+        желчный пузырь, поджелудочная железа, почки)
+  - name: Электрокардиография (ЭКГ)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -177,15 +206,14 @@ conditions:
       local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
         диагностики лечения и медицинской реабилитации детского населения с избыточной
         массой тела и ожирением 01.06.2009_№532.pdf
-      page_start: null
+      page_start: 8
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "; \nкомпьютерная \nтомография \n(далее \n- \nКТ) \nголовного \nмозга\
-        \ \nи \nнадпочечников, магнитно-ядерная резонансная томография ("
-  - name: МРТ
+      quote: электрокардиография (далее - ЭКГ) – 1 раз в год.
+  - name: Оценка динамики массы тела
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -201,18 +229,288 @@ conditions:
       local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
         диагностики лечения и медицинской реабилитации детского населения с избыточной
         массой тела и ожирением 01.06.2009_№532.pdf
-      page_start: null
+      page_start: 11
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "ядерная резонансная томография (далее - МРТ) \nголовного мозга (гипоталамо-гипофизарной\
-        \ области) с контрастированием, \nдвойн"
-  conditional_exams: []
+      quote: посещение врача каждые 4 недели дает возможность оценить выполнения рекомендаций,
+        динамику массы тела, изменение метаболических и нейроэндокринных параметров.
+  - name: Оценка метаболических и нейроэндокринных параметров
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
+        диагностики лечения и медицинской реабилитации детского населения с избыточной
+        массой тела и ожирением 01.06.2009_№532.pdf
+      page_start: 11
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: посещение врача каждые 4 недели дает возможность оценить выполнения рекомендаций,
+        динамику массы тела, изменение метаболических и нейроэндокринных параметров.
+  conditional_exams:
+  - name: Пероральный глюкозотолерантный тест
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
+        диагностики лечения и медицинской реабилитации детского населения с избыточной
+        массой тела и ожирением 01.06.2009_№532.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: пероральный глюкозотолерантный тест с 1,75 г глюкозы на кг массы тела,
+        но не более 75 г назначается при нарушенной гликемии натощак
+  - name: Определение концентрации ТТГ, Т4св. (для исключения гипотироза)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
+        диагностики лечения и медицинской реабилитации детского населения с избыточной
+        массой тела и ожирением 01.06.2009_№532.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение концентрации тиротропного гормона (далее - ТТГ), свободного
+        тироксина (далее - Т4св.) для исключения гипотироза – 1 раз в год
+  - name: УЗИ щитовидной железы
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
+        диагностики лечения и медицинской реабилитации детского населения с избыточной
+        массой тела и ожирением 01.06.2009_№532.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗИ щитовидной железы.
+  - name: Консультации узких специалистов (офтальмолог, невролог и др.)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
+        диагностики лечения и медицинской реабилитации детского населения с избыточной
+        массой тела и ожирением 01.06.2009_№532.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'консультации узких специалистов при всех нозологических формах кроме
+        Е65 и Е66.0: врача-офтальмолога (глазное дно); врача-невролога и др.'
+  - name: Биохимическое исследование крови (холестерин, триацилглицериды, ЛПНП, ЛПВП)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
+        диагностики лечения и медицинской реабилитации детского населения с избыточной
+        массой тела и ожирением 01.06.2009_№532.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: биохимическое исследование крови с определением концентрации холестерина,
+        триацилглицеридов, липопротеидов низкой плотности (далее - ЛПНП), липопротеидов
+        высокой плотности (далее - ЛПВП) - 1 раз в год
+  - name: Гормональные исследования (ИРИ и С-пептид)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
+        диагностики лечения и медицинской реабилитации детского населения с избыточной
+        массой тела и ожирением 01.06.2009_№532.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'гормональные исследования: определение концентрации иммуннореактивного
+        инсулина (далее - ИРИ) и С-пептида натощак и через 2 часа в ходе перорального
+        глюкозотолерантного теста'
+  - name: Определение концентрации половых гормонов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
+        диагностики лечения и медицинской реабилитации детского населения с избыточной
+        массой тела и ожирением 01.06.2009_№532.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Определение концентрации половых гормонов: эстрадиола, прогестерона,
+        тестостерона, ФСГ, ЛГ, пролактина у девочек при нарушении менструального цикла;
+        тестостерона, ФСГ, ЛГ, пролактина у мальчиков при нарушении пубертата.'
+  - name: УЗИ надпочечников, органов малого таза, молочных желез, яичек
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
+        диагностики лечения и медицинской реабилитации детского населения с избыточной
+        массой тела и ожирением 01.06.2009_№532.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗИ надпочечников, органов малого таза, молочных желез, яичек
+  - name: КТ головного мозга и надпочечников, МРТ головного мозга, ДРА
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
+        диагностики лечения и медицинской реабилитации детского населения с избыточной
+        массой тела и ожирением 01.06.2009_№532.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: компьютерная томография (далее - КТ) головного мозга и надпочечников,
+        магнитно-ядерная резонансная томография (далее - МРТ) головного мозга (гипоталамо-гипофизарной
+        области) с контрастированием, двойная рентгеновская абсорбциометрия (ДРА)
+        – по показаниям
+  - name: Консультации узких специалистов (офтальмолог, невролог, кардиолог, акушер-гинеколог,
+      нейрохирург, психотерапевт, генетик)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
+        диагностики лечения и медицинской реабилитации детского населения с избыточной
+        массой тела и ожирением 01.06.2009_№532.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Консультации узких специалистов (офтальмолог, невролог, кардиолог, акушер-гинеколог,
+        нейрохирург, психотерапевт, генетик) при нозологических формах, кроме Е65
+        и Е66.0.
   treatment:
     non_drug:
-    - text: ЛЕЧЕНИЕ ОЖИРЕНИЯ У ДЕТСКОГО НАСЕЛЕНИЯ РЕСПУБЛИКИ
+    - text: 'Раннее начало лечения: терапию начинают в возрасте 2 лет и старше при
+        наличии избыточной массы тела.'
       source_ref:
         protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
         document_url: null
@@ -225,9 +523,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: ЛЕЧЕНИЕ ОЖИРЕНИЯ У ДЕТСКОГО НАСЕЛЕНИЯ РЕСПУБЛИКИ
-    - text: '[treatment] 12. Лечение ожирения 1-2 степеней проводится врачом-педиатром
-        или (стр. 11)'
+        quote: 'Раннее начало лечения: терапию начинают в возрасте 2 лет и старше
+          при наличии избыточной массы тела.'
+    - text: Обязательное участие членов семьи в программе снижения массы тела ребенка
+        с семейным обучением.
       source_ref:
         protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
         document_url: null
@@ -240,9 +539,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 12. Лечение ожирения 1-2 степеней проводится врачом-педиатром
-          или (стр. 11)'
-    - text: врачом-эндокринологом районных организаций здравоохранения, ожирения
+        quote: Обязательное участие членов семьи в программе снижения массы тела ребенка
+          с семейным обучением.
+    - text: Обязательное обучение семьи мониторингу питания и физической активности
+        ребенка.
       source_ref:
         protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
         document_url: null
@@ -255,9 +555,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: врачом-эндокринологом районных организаций здравоохранения, ожирения
-    - text: республиканских организаций здравоохранения. Основными принципами лечения
-        первичного ожирения и избыточной
+        quote: Обязательное обучение семьи мониторингу питания и физической активности
+          ребенка.
+    - text: Разработка программы снижения массы тела с последовательными, ежедневными
+        изменениями в питании и физической активности (не более 2-3 специальных изменений
+        за консультацию).
       source_ref:
         protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
         document_url: null
@@ -270,9 +572,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: республиканских организаций здравоохранения. Основными принципами лечения
-          первичного ожирения и избыточной
-    - text: 'раннее начало лечения: терапию начинают в возрасте 2 лет и старше при'
+        quote: Разработка программы снижения массы тела с последовательными, ежедневными
+          изменениями в питании и физической активности (не более 2-3 специальных
+          изменений за консультацию).
+    - text: 'Цель лечения: снижение ИМТ ниже 90-й перцентили при обеспечении нормального
+        физического и полового развития ребенка.'
       source_ref:
         protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
         document_url: null
@@ -285,9 +589,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'раннее начало лечения: терапию начинают в возрасте 2 лет и старше
-          при'
-    - text: обязательное участие членов семьи в программе снижения массы тела
+        quote: 'Цель лечения: снижение ИМТ ниже 90-й перцентили при обеспечении нормального
+          физического и полового развития ребенка.'
+    - text: 'Диетотерапия: формирование гипокалорийного рациона питания, рекомендуется
+        ведение пищевого дневника.'
       source_ref:
         protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
         document_url: null
@@ -300,13 +605,184 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: обязательное участие членов семьи в программе снижения массы тела
+        quote: 'Диетотерапия: формирование гипокалорийного рациона питания, рекомендуется
+          ведение пищевого дневника.'
+    - text: Использование «диеты-светофора» с разделением продуктов на высоко-, средне-
+        и низкокалорийные.
+      source_ref:
+        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
+        document_url: null
+        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
+          диагностики лечения и медицинской реабилитации детского населения с избыточной
+          массой тела и ожирением 01.06.2009_№532.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Использование «диеты-светофора» с разделением продуктов на высоко-,
+          средне- и низкокалорийные.
+    - text: Продукты «зеленого света» можно употреблять без ограничений (овощи, грибы,
+        ягоды, зелень, отруби, соевые продукты).
+      source_ref:
+        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
+        document_url: null
+        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
+          диагностики лечения и медицинской реабилитации детского населения с избыточной
+          массой тела и ожирением 01.06.2009_№532.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Продукты «зеленого света» можно употреблять без ограничений (овощи,
+          грибы, ягоды, зелень, отруби, соевые продукты).
+    - text: Продукты «желтого света» можно употреблять с ограничением (постное мясо,
+        нежирная рыба, молочные продукты, яйца, крупы, бобовые, хлеб, макароны, картофель,
+        кукуруза, свекла, большинство фруктов).
+      source_ref:
+        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
+        document_url: null
+        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
+          диагностики лечения и медицинской реабилитации детского населения с избыточной
+          массой тела и ожирением 01.06.2009_№532.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Продукты «желтого света» можно употреблять с ограничением (постное
+          мясо, нежирная рыба, молочные продукты, яйца, крупы, бобовые, хлеб, макароны,
+          картофель, кукуруза, свекла, большинство фруктов).
+    - text: Избегать употребления продуктов «красного света» (жирное мясо/рыба, колбасные
+        изделия, икра, масло, сливки, майонез, орехи, семечки, чипсы, сладости, соки,
+        фаст-фуд).
+      source_ref:
+        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
+        document_url: null
+        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
+          диагностики лечения и медицинской реабилитации детского населения с избыточной
+          массой тела и ожирением 01.06.2009_№532.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Избегать употребления продуктов «красного света» (жирное мясо/рыба,
+          колбасные изделия, икра, масло, сливки, майонез, орехи, семечки, чипсы,
+          сладости, соки, фаст-фуд).
+    - text: 'На втором этапе: сначала на 8-10 дней назначать физиологическую диету
+        (БЖУ 1:1:4), затем переводить на лечебные рационы с ограничением калорийности
+        на 20-30% от возрастной нормы.'
+      source_ref:
+        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
+        document_url: null
+        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
+          диагностики лечения и медицинской реабилитации детского населения с избыточной
+          массой тела и ожирением 01.06.2009_№532.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'На втором этапе: сначала на 8-10 дней назначать физиологическую диету
+          (БЖУ 1:1:4), затем переводить на лечебные рационы с ограничением калорийности
+          на 20-30% от возрастной нормы.'
+    - text: 'Режим питания: не менее 5 приемов пищи (3 основных, 2-3 дополнительных).
+        Основная калорийность в первой половине дня. Ужин не позднее 19:00 (за 3-4
+        часа до сна), не более 20% суточного калоража.'
+      source_ref:
+        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
+        document_url: null
+        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
+          диагностики лечения и медицинской реабилитации детского населения с избыточной
+          массой тела и ожирением 01.06.2009_№532.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Режим питания: не менее 5 приемов пищи (3 основных, 2-3 дополнительных).
+          Основная калорийность в первой половине дня. Ужин не позднее 19:00 (за 3-4
+          часа до сна), не более 20% суточного калоража.'
+    - text: Исключаются или сводятся к минимуму продукты с высоким содержанием жиров.
+        Основу диеты составляют неусвояемые и медленноусвояемые углеводы.
+      source_ref:
+        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
+        document_url: null
+        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
+          диагностики лечения и медицинской реабилитации детского населения с избыточной
+          массой тела и ожирением 01.06.2009_№532.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Исключаются или сводятся к минимуму продукты с высоким содержанием
+          жиров. Основу диеты составляют неусвояемые и медленноусвояемые углеводы.
+    - text: 'Количество белка: для детей младше 14 лет – по возрастной потребности,
+        14-18 лет – превышать ее на 10%.'
+      source_ref:
+        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
+        document_url: null
+        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
+          диагностики лечения и медицинской реабилитации детского населения с избыточной
+          массой тела и ожирением 01.06.2009_№532.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Количество белка: для детей младше 14 лет – по возрастной потребности,
+          14-18 лет – превышать ее на 10%.'
+    - text: 'Белки животного происхождения: 60-70% от общего суточного количества
+        белка.'
+      source_ref:
+        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
+        document_url: null
+        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
+          диагностики лечения и медицинской реабилитации детского населения с избыточной
+          массой тела и ожирением 01.06.2009_№532.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Белки животного происхождения: 60-70% от общего суточного количества
+          белка.'
+    - text: 'Жиры в рационе: не более 25-30% суточной калорийности, насыщенные жиры
+        – не более 8-10%.'
+      source_ref:
+        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
+        document_url: null
+        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
+          диагностики лечения и медицинской реабилитации детского населения с избыточной
+          массой тела и ожирением 01.06.2009_№532.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Жиры в рационе: не более 25-30% суточной калорийности, насыщенные
+          жиры – не более 8-10%.'
     drug_groups: []
     drugs:
-    - drug_name: составляет
+    - drug_name: Метформина гидрохлорид
       active_substance: null
       drug_group: null
-      dose_text: "500 \nмг"
+      dose_text: Начальная доза 500 мг, с последующим увеличением дозы (по 500 мг
+        еженедельно) до 1-2 г в сутки в 2 приема внутрь. Максимальная суточная доза
+        до 2 г.
       frequency_text: null
       duration_text: null
       route: null
@@ -320,66 +796,22 @@ conditions:
         local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
           диагностики лечения и медицинской реабилитации детского населения с избыточной
           массой тела и ожирением 01.06.2009_№532.pdf
-        page_start: null
+        page_start: 13
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "составляет \n500 \nмг, \nпри \nнеобходимости, с последующим уве"
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
-          диагностики лечения и медицинской реабилитации детского населения с избыточной
-          массой тела и ожирением 01.06.2009_№532.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня 1993 года «О \nздравоохранении» в редакции Зако"
-    - drug_name: августа
-      active_substance: null
-      drug_group: null
-      dose_text: 2000 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
-          диагностики лечения и медицинской реабилитации детского населения с избыточной
-          массой тела и ожирением 01.06.2009_№532.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: августа 2000 г
+        quote: 'В лечении ожирения у детей старше 10 лет используется: метформина
+          гидрохлорид. Начальная доза препарата составляет 500 мг, при необходимости,
+          с последующим увеличением дозы (по 500 мг еженедельно) до 1-2 г в сутки
+          в 2 приема внутрь. Максимальная суточная доза до 2 г.'
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Контроль
+  - text: Посещение врача каждые 4 недели для оценки выполнения рекомендаций, динамики
+      массы тела, изменения метаболических и нейроэндокринных параметров.
     timing: null
     required_if: []
     expected_actions: []
@@ -395,11 +827,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контроль
+      quote: Посещение врача каждые 4 недели для оценки выполнения рекомендаций, динамики
+        массы тела, изменения метаболических и нейроэндокринных параметров.
   hospitalization: []
   routing:
-  - text: '[routing] 10. По направлению врача-эндокринолога республиканских организаций
-      (стр. 9)'
+  - text: амбулаторно
     timing: null
     required_if: []
     source_ref:
@@ -414,92 +846,46 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 10. По направлению врача-эндокринолога республиканских организаций
-        (стр. 9)'
-  - text: '[routing] 10. По направлению врача-эндокринолога республиканских организаций
-      (стр. 10)'
-    timing: null
-    required_if: []
+      quote: амбулаторно
+  red_flags:
+  - text: Предварительный диагноз «сахарный диабет» при уровне глюкозы крови выше
+      7,0 ммоль/л в плазме или 6,1 ммоль/л в капиллярной крови.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
     source_ref:
       protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
       document_url: null
       local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
         диагностики лечения и медицинской реабилитации детского населения с избыточной
         массой тела и ожирением 01.06.2009_№532.pdf
-      page_start: null
+      page_start: 8
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 10. По направлению врача-эндокринолога республиканских организаций
-        (стр. 10)'
-  - text: '[routing] 10. По направлению врача-эндокринолога республиканских организаций
-      (стр. 10)'
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
-      document_url: null
-      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
-        диагностики лечения и медицинской реабилитации детского населения с избыточной
-        массой тела и ожирением 01.06.2009_№532.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: '[routing] 10. По направлению врача-эндокринолога республиканских организаций
-        (стр. 10)'
-  - text: '[routing] 10. По направлению врача-эндокринолога республиканских организаций
-      (стр. 11)'
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
-      document_url: null
-      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
-        диагностики лечения и медицинской реабилитации детского населения с избыточной
-        массой тела и ожирением 01.06.2009_№532.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: '[routing] 10. По направлению врача-эндокринолога республиканских организаций
-        (стр. 11)'
-  red_flags: []
+      quote: уровень глюкозы крови выше 7,0 моль/л в плазме и больше 6,1 ммоль/л в
+        капиллярной крови расценивается как предварительный диагноз «сахарный диабет»
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_лечения_и_медицинск
-    document_url: null
-    local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
-      диагностики лечения и медицинской реабилитации детского населения с избыточной
-      массой тела и ожирением 01.06.2009_№532.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: диагностики лечения и медицинской реабилитации детского населения с избыточной
-      массой тела и ожирением
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:23.159637+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T15:27:21.907131+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:23.164785+00:00'
+  validated_at: '2026-07-20T15:27:21.913078+00:00'

@@ -1,6 +1,6 @@
 protocol_id: travmatologiya_ortopediya_протоколы_медицинской_реабилитации_детей_с_ортопедотра
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Протоколы медицинской реабилитации детей с ортопедотравматологической патологией
@@ -20,15 +20,15 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: протоколы_медицинской_реабилитации_детей_с_ортоп
-  name: Протоколы медицинской реабилитации детей с ортопедотравматологической патологией
+- condition_id: funnel_chest_deformity
+  name: воронкообразная деформация грудной клетки
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -41,7 +41,8 @@ conditions:
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] 1. Активная кинезотерапия (стр. 3)'
+    - text: Активная кинезотерапия, включающая утреннюю гигиеническую гимнастику и
+        комплекс лечебной гимнастики (исключить упражнения на разведение рук в стороны).
       source_ref:
         protocol_id: travmatologiya_ortopediya_протоколы_медицинской_реабилитации_детей_с_ортопедотра
         document_url: null
@@ -53,8 +54,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 1. Активная кинезотерапия (стр. 3)'
-    - text: '[treatment] 1.3. Игротерапия (с учетом (стр. 4)'
+        quote: Активная кинезотерапия, включающая утреннюю гигиеническую гимнастику
+          и комплекс лечебной гимнастики (исключить упражнения на разведение рук в
+          стороны).
+    - text: Комплекс лечебной гимнастики включает общеразвивающие, статические и динамические
+        дыхательные упражнения (глубокое диафрагмальное, парадоксальное), координацию
+        дыхательных упражнений с общеразвивающими, а также упражнения на координацию
+        и равновесие.
       source_ref:
         protocol_id: travmatologiya_ortopediya_протоколы_медицинской_реабилитации_детей_с_ортопедотра
         document_url: null
@@ -66,8 +72,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 1.3. Игротерапия (с учетом (стр. 4)'
-    - text: '[treatment] 1.6. Эрготерапия: (стр. 5)'
+        quote: Комплекс лечебной гимнастики включает общеразвивающие, статические
+          и динамические дыхательные упражнения (глубокое диафрагмальное, парадоксальное),
+          координацию дыхательных упражнений с общеразвивающим
+    - text: 'Специальные упражнения активной кинезотерапии: активные движения в суставах,
+        статическое удержание конечностей, тренировка осевой функции плеча и надплечья,
+        активные упражнения для стоп и кистей, упражнения на расслабление мышц позвоночника,
+        упражнения со снарядами и на снарядах.'
       source_ref:
         protocol_id: travmatologiya_ortopediya_протоколы_медицинской_реабилитации_детей_с_ортопедотра
         document_url: null
@@ -79,8 +90,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 1.6. Эрготерапия: (стр. 5)'
-    - text: '[treatment] 2. Пассивная кинезотерапия (стр. 5)'
+        quote: 'Специальные упражнения активной кинезотерапии: активные движения в
+          суставах, статическое удержание конечностей, тренировка осевой функции плеча
+          и надплечья, активные упражнения для стоп и кистей, упра'
+    - text: 'Игротерапия (с учетом двигательного режима): подвижные игры и игры с
+        элементами спорта без соревнования.'
       source_ref:
         protocol_id: travmatologiya_ortopediya_протоколы_медицинской_реабилитации_детей_с_ортопедотра
         document_url: null
@@ -92,8 +106,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 2. Пассивная кинезотерапия (стр. 5)'
-    - text: '[treatment] 4. Физиотерапия (стр. 6)'
+        quote: 'Игротерапия (с учетом двигательного режима): подвижные игры и игры
+          с элементами спорта без соревнования.'
+    - text: 'Эрготерапия: забавная и развлекательная трудотерапия, графомоторика,
+        обучение правильным стереотипам самообслуживания и передвижения адекватно
+        возрасту.'
       source_ref:
         protocol_id: travmatologiya_ortopediya_протоколы_медицинской_реабилитации_детей_с_ортопедотра
         document_url: null
@@ -105,8 +122,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 4. Физиотерапия (стр. 6)'
-    - text: '[treatment] 4.2. Грязелечение: (стр. 6)'
+        quote: 'Эрготерапия: забавная и развлекательная трудотерапия, графомоторика,
+          обучение правильным стереотипам самообслуживания и передвижения адекватно
+          возрасту.'
+    - text: 'Пассивная кинезотерапия: массаж (классический, рефлекторный - сегментарный,
+        точечный), гидромассаж, вибромассаж (не более 3-х видов на курс).'
       source_ref:
         protocol_id: travmatologiya_ortopediya_протоколы_медицинской_реабилитации_детей_с_ортопедотра
         document_url: null
@@ -118,37 +138,152 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 4.2. Грязелечение: (стр. 6)'
+        quote: 'Пассивная кинезотерапия: массаж (классический, рефлекторный - сегментарный,
+          точечный), гидромассаж, вибромассаж (не более 3-х видов на курс).'
+    - text: Физиотерапия назначается индивидуально с учетом общего состояния пациента,
+        патогенетической и саногенетической направленности процедуры и оснащения учреждения.
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_протоколы_медицинской_реабилитации_детей_с_ортопедотра
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/Протоколы медицинской
+          реабилитации детей с ортопедотравматологической патологией 18.02.2011 №172.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Физиотерапия назначается индивидуально с учетом общего состояния пациента,
+          патогенетической и саногенетической направленности процедуры и оснащения
+          учреждения.
+    - text: 'Физиотерапия включает грязелечение (паравертебрально, сегментарно: воротниковая
+        и др. зоны).'
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_протоколы_медицинской_реабилитации_детей_с_ортопедотра
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/Протоколы медицинской
+          реабилитации детей с ортопедотравматологической патологией 18.02.2011 №172.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Физиотерапия включает грязелечение (паравертебрально, сегментарно:
+          воротниковая и др. зоны).'
+    - text: 'Физиотерапия включает светолечение (сегментарно): ультрафиолетовое облучение,
+        инфракрасное воздействие, облучение поляризованным светом.'
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_протоколы_медицинской_реабилитации_детей_с_ортопедотра
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/Протоколы медицинской
+          реабилитации детей с ортопедотравматологической патологией 18.02.2011 №172.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Физиотерапия включает светолечение (сегментарно): ультрафиолетовое
+          облучение, инфракрасное воздействие, облучение поляризованным светом.'
+    - text: 'Физиотерапия включает электролечение: магнитотерапия, электрофорез, ультразвук,
+        электросон.'
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_протоколы_медицинской_реабилитации_детей_с_ортопедотра
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/Протоколы медицинской
+          реабилитации детей с ортопедотравматологической патологией 18.02.2011 №172.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Физиотерапия включает электролечение: магнитотерапия, электрофорез,
+          ультразвук, электросон.'
+    - text: 'Физиотерапия включает гидротерапию: душ (дождевой, циркулярный), ароматические,
+        хвойные и соляно-хвойные ванны.'
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_протоколы_медицинской_реабилитации_детей_с_ортопедотра
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/Протоколы медицинской
+          реабилитации детей с ортопедотравматологической патологией 18.02.2011 №172.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Физиотерапия включает гидротерапию: душ (дождевой, циркулярный), ароматические,
+          хвойные и соляно-хвойные ванны.'
+    - text: 'Рефлексотерапия: корпоральная акупунктура, ауриколопунктура, магнитопунктура,
+        лазеропунктура, электропунктура, вакуумпунктура, аппликации растительных компонентов
+        на биологически активные точки.'
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_протоколы_медицинской_реабилитации_детей_с_ортопедотра
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/Протоколы медицинской
+          реабилитации детей с ортопедотравматологической патологией 18.02.2011 №172.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Рефлексотерапия: корпоральная акупунктура, ауриколопунктура, магнитопунктура,
+          лазеропунктура, электропунктура, вакуумпунктура, аппликации растительных
+          компонентов на биологически активные точки.'
+    - text: 'Психотерапия (психолого-педагогическая коррекция): индивидуальная, направленная
+        на повышение эмоционально-волевой активации, активное включение в самообслуживание,
+        повышение самооценки, формирование взаимной заинтересованности в реабилитационном
+        процессе.'
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_протоколы_медицинской_реабилитации_детей_с_ортопедотра
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/Протоколы медицинской
+          реабилитации детей с ортопедотравматологической патологией 18.02.2011 №172.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Психотерапия (психолого-педагогическая коррекция): индивидуальная,
+          направленная на повышение эмоционально-волевой активации, активное включение
+          в самообслуживание, повышение самооценки, формирование в'
+    - text: 'Диетотерапия: Стол Б.'
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_протоколы_медицинской_реабилитации_детей_с_ортопедотра
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/Протоколы медицинской
+          реабилитации детей с ортопедотравматологической патологией 18.02.2011 №172.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Диетотерапия: Стол Б.'
+    - text: 'Диетотерапия: обогащение рациона минеральными солями, белками.'
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_протоколы_медицинской_реабилитации_детей_с_ортопедотра
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/Протоколы медицинской
+          реабилитации детей с ортопедотравматологической патологией 18.02.2011 №172.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Диетотерапия: обогащение рациона минеральными солями, белками.'
     drug_groups: []
-    drugs:
-    - drug_name: августа
-      active_substance: null
-      drug_group: null
-      dose_text: 2000 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_протоколы_медицинской_реабилитации_детей_с_ортопедотра
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/Протоколы медицинской
-          реабилитации детей с ортопедотравматологической патологией 18.02.2011 №172.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "августа \n2000 г"
+    drugs: []
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Контроль
+  - text: Курсы реабилитации проводятся 1-2 раза в год.
     timing: null
     required_if: []
     expected_actions: []
@@ -163,37 +298,60 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контроль
+      quote: Курсы реабилитации проводятся 1-2 раза в год.
+  - text: 'Критерии оценки эффективности медицинской реабилитации: стабилизация клинико-лабораторных
+      и функциональных показателей.'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_протоколы_медицинской_реабилитации_детей_с_ортопедотра
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/Протоколы медицинской
+        реабилитации детей с ортопедотравматологической патологией 18.02.2011 №172.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Критерии оценки эффективности медицинской реабилитации: стабилизация
+        клинико-лабораторных и функциональных показателей.'
   hospitalization: []
-  routing: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_протоколы_медицинской_реабилитации_детей_с_ортопедотра
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/Протоколы медицинской
+        реабилитации детей с ортопедотравматологической патологией 18.02.2011 №172.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: travmatologiya_ortopediya_протоколы_медицинской_реабилитации_детей_с_ортопедотра
-    document_url: null
-    local_path: minzdrav_protocols/travmatologiya-ortopediya/Протоколы медицинской
-      реабилитации детей с ортопедотравматологической патологией 18.02.2011 №172.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Протоколы медицинской реабилитации детей с ортопедотравматологической патологией
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:56.708773+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T18:08:57.260012+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:56.709261+00:00'
+  validated_at: '2026-07-20T18:08:57.260274+00:00'

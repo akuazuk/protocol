@@ -1,10 +1,10 @@
 {
   "protocol_id": "stomatologiya_кп11_периимплантит",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "периимплантит",
+    "title": "Периимплантит",
     "url": null,
     "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
     "document_sha256": null,
@@ -32,8 +32,8 @@
   },
   "conditions": [
     {
-      "condition_id": "периимплантит",
-      "name": "периимплантит",
+      "condition_id": "periimplantit",
+      "name": "Периимплантит",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
@@ -42,7 +42,8 @@
         "K04.7",
         "K06.2",
         "K07.9",
-        "K12.2"
+        "K12.2",
+        "K10.28"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -50,7 +51,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[classification] 11. Для постановки или подтверждения диагноза осуществляются: (стр. 4)",
+            "text": "Лейкоцитоз в периферической крови с увеличением палочкоядерных лейкоцитов",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -67,11 +68,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 11. Для постановки или подтверждения диагноза осуществляются: (стр. 4)"
+              "quote": "Лейкоцитоз в периферической крови с увеличением палочкоядерных лейкоцитов"
             }
           },
           {
-            "text": "[diagnostics] 18. Критерии эффективности лечения пациентов с периимплантитом: (стр. 6)",
+            "text": "Повышенная скорость оседания эритроцитов",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -88,19 +89,154 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 18. Критерии эффективности лечения пациентов с периимплантитом: (стр. 6)"
+              "quote": "Повышенная скорость оседания эритроцитов"
+            }
+          },
+          {
+            "text": "Болевой симптом (в том числе при пальпации) в области имплантата",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп11_периимплантит",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Болевой симптом (в том числе при пальпации) в области имплантата"
+            }
+          },
+          {
+            "text": "Острые воспалительные явления и выделение экссудата из костного кармана или ложа имплантата",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп11_периимплантит",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Острые воспалительные явления и выделение экссудата из костного кармана или ложа имплантата"
+            }
+          },
+          {
+            "text": "Подвижность дентального имплантата",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп11_периимплантит",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Подвижность дентального имплантата"
+            }
+          },
+          {
+            "text": "Рентгенологические признаки прогрессирования деструкции кости в зоне имплантата",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп11_периимплантит",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Рентгенологические признаки прогрессирования деструкции кости в зоне имплантата"
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
+      "required_exams": [
+        {
+          "name": "Клинический анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп11_периимплантит",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "может отмечаться лейкоцитоз в периферической крови с увеличением палочкоядерных лейкоцитов; повышенная скорость оседания эритроцитов."
+          }
+        },
+        {
+          "name": "Рентгенологическое исследование области имплантата",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп11_периимплантит",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "отсутствие контрольных рентгенологических признаков прогрессирования деструкции кости в зоне сохраненного имплантата."
+          }
+        }
+      ],
       "conditional_exams": [],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 1. Настоящий клинический протокол определяет общие требования к объему (стр. 3)",
+            "text": "Соблюдение умеренной интенсивности физических нагрузок в период лечения",
             "source_ref": {
               "protocol_id": "stomatologiya_кп11_периимплантит",
               "document_url": null,
@@ -111,92 +247,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 1. Настоящий клинический протокол определяет общие требования к объему (стр. 3)"
-            }
-          },
-          {
-            "text": "оказания стоматологической хирургической медицинской помощи пациентам (взрослое",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп11_периимплантит",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "оказания стоматологической хирургической медицинской помощи пациентам (взрослое"
-            }
-          },
-          {
-            "text": "население) с периимплантитом (шифр по Международной статистической классификации",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп11_периимплантит",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "население) с периимплантитом (шифр по Международной статистической классификации"
-            }
-          },
-          {
-            "text": "[treatment] 5. Допускается включение в схему лечения ЛП по медицинским показаниям, (стр. 3)",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп11_периимплантит",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 5. Допускается включение в схему лечения ЛП по медицинским показаниям, (стр. 3)"
-            }
-          },
-          {
-            "text": "вкладышами) и общей характеристикой ЛП (off-label), дополнительно указываются",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп11_периимплантит",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "вкладышами) и общей характеристикой ЛП (off-label), дополнительно указываются"
-            }
-          },
-          {
-            "text": "особые условия назначения, способ применения, доза, длительность и кратность приема.",
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп11_периимплантит",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "особые условия назначения, способ применения, доза, длительность и кратность приема."
+              "quote": "Соблюдение умеренной интенсивности физических нагрузок в период лечения"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "картриджах",
+            "drug_name": "Артикаин/Эпинефрин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1,7 мл",
+            "dose_text": "до 7 мг на 1 кг массы тела при выполнении одной лечебной процедуры",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -208,20 +269,20 @@
               "protocol_id": "stomatologiya_кп11_периимплантит",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "картриджах 1,7 мл \n(1,8 мл), в ампулах 2 мл"
+              "quote": "При выполнении одной лечебной процедуры взрослым можно вводить артикаин в дозе до 7 мг на 1 кг массы тела"
             }
           },
           {
-            "drug_name": "инъекций",
+            "drug_name": "Лидокаин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "10 мг",
+            "dose_text": "Режим дозирования устанавливают индивидуально, в зависимости от вида анестезии и места введения, размера анестезируемого участка, возраста пациента. Максимальная доза для взрослых не должна превышать ",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -233,20 +294,20 @@
               "protocol_id": "stomatologiya_кп11_периимплантит",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "инъекций 10 мг/мл \nв ампулах 5 мл"
+              "quote": "Режим дозирования устанавливают индивидуально, в зависимости от вида анестезии и места введения, размера анестезируемого участка, возраста пациента. Максимальная доза для взрослых не должна превышать 300 мг"
             }
           },
           {
-            "drug_name": "превышать",
+            "drug_name": "Амоксициллин/Клавулановая кислота",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "300 мг",
+            "dose_text": "по 1 таб. 500 мг + 125 мг 3 раза в сутки или по 1 таб. 875 мг + 125 мг 2 раза в сутки. Минимальный курс 5 дней, не более 14 суток без пересмотра.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -258,20 +319,20 @@
               "protocol_id": "stomatologiya_кп11_периимплантит",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "превышать 300 мг \n  \n  \nПриложение 2 \nк клиническому протоколу \n"
+              "quote": "Взрослые по 1 таб. 500 мг + 125 мг 3 р/сут или 875 мг + 125 мг 2 р/сут. Минимальный курс 5 дней, не более 14 суток без пересмотра клинической ситуации."
             }
           },
           {
-            "drug_name": "выше",
+            "drug_name": "Цефалексин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "30 мл",
+            "dose_text": "500 мг каждые 8 часов или 1 г каждые 12 часов. Максимальная суточная доза – 4 г. Курс 7–14 дней, при стрептококке группы А – 10 дней.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -283,20 +344,20 @@
               "protocol_id": "stomatologiya_кп11_периимплантит",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "выше 30 мл/мин коррекция \nдозы не требуется"
+              "quote": "Для большинства инфекций: 500 мг каждые 8 ч или 1 г каждые 12 ч. Макс. суточная доза – 4 г. Курс 7–14 дней. При инф., вызванных бета-гемол. стрептококком группы А, мин. курс 10 дней."
             }
           },
           {
-            "drug_name": "Капсулы",
+            "drug_name": "Кларитромицин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "250 мг",
+            "dose_text": "250 мг 2 раза в сутки, в тяжелых случаях 500 мг 2 раза в сутки. Курс 7–14 дней.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -308,20 +369,20 @@
               "protocol_id": "stomatologiya_кп11_периимплантит",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
-              "page_start": null,
+              "page_start": 8,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Капсулы 250 мг"
+              "quote": "Обычная доза составляет 250 мг 2 раза в сутки, в тяжелых случаях 500 мг 2 раза в сутки (внутрь, независимо от приема пищи). Длительность лечения зависит от медицинских показаний (7–14 дней)."
             }
           },
           {
-            "drug_name": "высвобождением",
+            "drug_name": "Метронидазол",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "500 мг",
+            "dose_text": "250 мг 2 раза в сутки, в тяжелых случаях 500 мг 2 раза в сутки. Курс 7–14 дней.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -333,20 +394,20 @@
               "protocol_id": "stomatologiya_кп11_периимплантит",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
-              "page_start": null,
+              "page_start": 8,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "высвобождением 500 мг \nОбычная доза составляет 250 мг 2 раза \nв"
+              "quote": "Обычная доза составляет 250 мг 2 раза в сутки, в тяжелых случаях 500 мг 2 раза в сутки (внутрь, независимо от приема пищи). Длительность лечения зависит от медицинских показаний (7–14 дней)"
             }
           },
           {
-            "drug_name": "случаях",
+            "drug_name": "Ибупрофен",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "500 мг",
+            "dose_text": "внутрь по 200 мг 3–4 раза в сутки, можно увеличить до 400 мг 3 раза в сутки. Суточную дозу уменьшают до 600–800 мг. Максимальная суточная доза 1200 мг. Не чаще, чем через 4 ч.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -358,20 +419,20 @@
               "protocol_id": "stomatologiya_кп11_периимплантит",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
-              "page_start": null,
+              "page_start": 8,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "случаях 500 мг 2 раза \nв сутки (внутрь, независимо от п"
+              "quote": "Внутрь по 200 мг 3–4 р/сут, можно до 400 мг 3 р/сут для быстрого эффекта. Макс. суточная доза 1200 мг. Повторная доза не чаще, чем через 4 ч."
             }
           },
           {
-            "drug_name": "менее",
+            "drug_name": "Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "30 мл",
+            "dose_text": "местно для инстилляции и ирригации ран 5–10 мл раствора 2–3 раза в сутки; для полоскания полости рта 2–3 раза в сутки (смешивать с равным количеством воды).",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -383,20 +444,20 @@
               "protocol_id": "stomatologiya_кп11_периимплантит",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
-              "page_start": null,
+              "page_start": 9,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "менее 30 мл/мин\n\n[treatment] 3"
+              "quote": "Местно для инстилляции/ирригации ран в полости рта – 5–10 мл 2–3 р/сут. Для полоскания полости рта 2–3 р/сут (смешивать с равным количеством воды)."
             }
           },
           {
-            "drug_name": "Таблетки",
+            "drug_name": "Перекись водорода",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "250 мг",
+            "dose_text": "местно для инстилляции и ирригации ран 2,5 мг/мл (30 мг/мл разводят водой 1:11) по 3–5 мл раствора.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -408,20 +469,20 @@
               "protocol_id": "stomatologiya_кп11_периимплантит",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
-              "page_start": null,
+              "page_start": 9,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Таблетки 250 мг \nОбычная доза составляет 250 мг 2 раза \nв"
+              "quote": "Местно для инстилляции и ирригации ран 2,5 мг/мл (30 мг/мл разводят водой 1:11) по 3–5 мл раствора при перевязках, оперативных вмешательствах."
             }
           },
           {
-            "drug_name": "составляет",
+            "drug_name": "Калия перманганат",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1200 мг",
+            "dose_text": "местно для инстилляции и ирригации ран 5–10 мл 0,01–0,02–0,1 % водного раствора 2–3 раза в сутки.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -433,63 +494,13 @@
               "protocol_id": "stomatologiya_кп11_периимплантит",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
-              "page_start": null,
+              "page_start": 9,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "составляет \n1200 мг"
-            }
-          },
-          {
-            "drug_name": "применения",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "0,5 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп11_периимплантит",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "применения 0,5 мг/мл \nПрименяется местно для инстилляции "
-            }
-          },
-          {
-            "drug_name": "раствор",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2,5 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп11_периимплантит",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "раствор 2,5 мг/мл (раствор \n30 мг/мл разводят водой в "
+              "quote": "Используется местно для инстилляции и ирригации ран в полости рта и лунок удаленных зубов – 5–10 мл 0,01–0,02–0,1 % водного раствора 2–3 раза в сутки."
             }
           }
         ],
@@ -499,7 +510,7 @@
       },
       "follow_up": [
         {
-          "text": "контроль",
+          "text": "Контрольные рентгенологические исследования для оценки деструкции кости в зоне имплантата",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -513,48 +524,106 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
+            "quote": "Контрольные рентгенологические исследования для оценки деструкции кости в зоне имплантата"
+          }
+        },
+        {
+          "text": "Медицинское наблюдение врачом-стоматологом-хирургом 1 раз в месяц в течение первых 3 месяцев после лечения.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп11_периимплантит",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинское наблюдение врачом-стоматологом-хирургом 1 раз в месяц в течение первых 3 месяцев после лечения."
           }
         }
       ],
       "hospitalization": [],
-      "routing": [],
+      "routing": [
+        {
+          "text": "Амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп11_периимплантит",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Амбулаторно"
+          }
+        },
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп11_периимплантит",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        },
+        {
+          "text": "Госпитализация в стационарные условия показана при отягощенном анамнезе на ЛП для местной анестезии, тяжелой общесоматической патологии в стадии декомпенсации или при развитии осложнений (абсцесс, синусит, остеомиелит).",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп11_периимплантит",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация в стационарные условия показана при отягощенном анамнезе на ЛП для местной анестезии, тяжелой общесоматической патологии в стадии декомпенсации или при развитии осложнений (абсцесс, син"
+          }
+        }
+      ],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "stomatologiya_кп11_периимплантит",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/stomatologiya/КП11_периимплантит.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "периимплантит"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:48.754630+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T18:21:23.069136+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:48.763325+00:00"
+    "validated_at": "2026-07-20T18:21:23.080291+00:00"
   }
 }

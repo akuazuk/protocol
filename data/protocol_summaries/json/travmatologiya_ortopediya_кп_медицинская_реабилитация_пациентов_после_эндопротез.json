@@ -1,7 +1,7 @@
 {
   "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "Медицинская реабилитация пациентов после эндопротезирования тазобедренного сустава (взрослое население)",
@@ -32,27 +32,311 @@
   },
   "conditions": [
     {
-      "condition_id": "медицинская_реабилитация_пациентов_после_эндопро",
-      "name": "Медицинская реабилитация пациентов после эндопротезирования тазобедренного сустава",
+      "condition_id": "rehabilitation_after_hip_arthroplasty",
+      "name": "Медицинская реабилитация после эндопротезирования тазобедренного сустава",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
+        "M05",
+        "M06",
+        "M07",
         "M15",
         "M16",
+        "M87",
+        "M96.0",
+        "M96.6",
         "S72.0",
         "S72.1",
-        "S72.8"
+        "S72.8",
+        "T93.1"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
       "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
+      "required_exams": [
+        {
+          "name": "Медицинский осмотр пациента врачом-травматологом-ортопедом (врачом-хирургом)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обязательные диагностические мероприятия на амбулаторном этапе проведения медицинской реабилитации: медицинский осмотр пациента врачом-травматологом-ортопедом"
+          }
+        },
+        {
+          "name": "Медицинский осмотр пациента врачом физической и реабилитационной медицины",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обязательные диагностические мероприятия на амбулаторном этапе проведения медицинской реабилитации: медицинский осмотр пациента врачом физической и реабилитационной медицины"
+          }
+        },
+        {
+          "name": "Измерение длины нижних конечностей, окружностей бедра, голени и коленных суставов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обязательные диагностические мероприятия на амбулаторном этапе... измерение длины нижних конечностей, окружностей бедра, голени и коленных суставов"
+          }
+        },
+        {
+          "name": "Определение силы групп мышц нижних конечностей",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обязательные диагностические мероприятия на амбулаторном этапе... определение силы групп мышц нижних конечностей"
+          }
+        },
+        {
+          "name": "Измерение объема движений в суставах нижних конечностей",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обязательные диагностические мероприятия на амбулаторном этапе... измерение объема движений в суставах нижних конечностей"
+          }
+        },
+        {
+          "name": "Оценка интенсивности боли по шкале ВАШ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обязательные диагностические мероприятия на амбулаторном этапе... оценка интенсивности боли по шкале ВАШ согласно приложению 1"
+          }
+        },
+        {
+          "name": "Тестирование с применением модифицированной шкалы HHS",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обязательные диагностические мероприятия на амбулаторном этапе... тестирование с применением модифицированной шкалы HHS согласно приложению 2"
+          }
+        },
+        {
+          "name": "Общий анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обязательные диагностические мероприятия на амбулаторном этапе проведения медицинской реабилитации: общий анализ крови"
+          }
+        },
+        {
+          "name": "Общий анализ мочи",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обязательные диагностические мероприятия на амбулаторном этапе проведения медицинской реабилитации: общий анализ мочи"
+          }
+        },
+        {
+          "name": "Электрокардиографическое исследование",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обязательные диагностические мероприятия на амбулаторном этапе проведения медицинской реабилитации: электрокардиографическое исследование"
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Психологическое консультирование",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Психологическая коррекция или психотерапия (при наличии медицинских показаний по результатам психологического консультирования)"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 7. Рефлексотерапия (назначается по медицинским показаниям (стр. 2)",
+            "text": "Рефлексотерапия (классическое иглоукалывание, лазеропунктура) назначается по медицинским показаниям.",
             "source_ref": {
               "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
               "document_url": null,
@@ -63,11 +347,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 7. Рефлексотерапия (назначается по медицинским показаниям (стр. 2)"
+              "quote": "Рефлексотерапия (классическое иглоукалывание, лазеропунктура) назначается по медицинским показаниям."
             }
           },
           {
-            "text": "7.1. классическое иглоукалывание",
+            "text": "Психологическая коррекция или психотерапия (индивидуальная, групповая) при наличии медицинских показаний по результатам психологического консультирования.",
             "source_ref": {
               "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
               "document_url": null,
@@ -78,11 +362,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "7.1. классическое иглоукалывание"
+              "quote": "Психологическая коррекция или психотерапия (индивидуальная, групповая) при наличии медицинских показаний по результатам психологического консультирования."
             }
           },
           {
-            "text": "[treatment] 9. Психологическая коррекция или психотерапия (при наличии (стр. 2)",
+            "text": "Лечебная физкультура (ЛФК): обучение правильному подбору и ходьбе с помощью технических средств социальной реабилитации (на костылях, с тростью), в том числе с 3-го дня после операции.",
             "source_ref": {
               "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
               "document_url": null,
@@ -93,11 +377,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 9. Психологическая коррекция или психотерапия (при наличии (стр. 2)"
+              "quote": "Лечебная физкультура (ЛФК): обучение правильному подбору и ходьбе с помощью технических средств социальной реабилитации (на костылях, с тростью), в том числе с 3-го дня после операции."
             }
           },
           {
-            "text": "медицинских показаний по результатам психологического",
+            "text": "Эрготерапия: обучение и восстановление навыков самообслуживания (одевание, обувание, мытье, физиологические отправления, нахождение в позе сидя).",
             "source_ref": {
               "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
               "document_url": null,
@@ -108,11 +392,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "медицинских показаний по результатам психологического"
+              "quote": "Эрготерапия: обучение и восстановление навыков самообслуживания (одевание, обувание, мытье, физиологические отправления, нахождение в позе сидя)."
             }
           },
           {
-            "text": "9.1. индивидуальная психокоррекция, индивидуальная",
+            "text": "Механотерапия: занятия на механических блоковых тренажерах (10–20 мин, 1 раз в день, 8–10 процедур).",
             "source_ref": {
               "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
               "document_url": null,
@@ -123,11 +407,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "9.1. индивидуальная психокоррекция, индивидуальная"
+              "quote": "Механотерапия: занятия на механических блоковых тренажерах (10–20 мин, 1 раз в день, 8–10 процедур)."
             }
           },
           {
-            "text": "[treatment] 7. Обязательные диагностические мероприятия на амбулаторном этапе проведения (стр. 3)",
+            "text": "Физиотерапевтическое лечение (ФТЛ): электростимуляция мышц бедра и голени, высокочастотная электротерапия на область тазобедренного сустава, общая гидротерапия.",
             "source_ref": {
               "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
               "document_url": null,
@@ -138,106 +422,247 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 7. Обязательные диагностические мероприятия на амбулаторном этапе проведения (стр. 3)"
+              "quote": "Физиотерапевтическое лечение (ФТЛ): электростимуляция мышц бедра и голени, высокочастотная электротерапия на область тазобедренного сустава, общая гидротерапия."
+            }
+          },
+          {
+            "text": "Лечебная физкультура (ЛФК) с 1-го дня после операции: дыхательные упражнения (статические, динамические, дренажные) с акцентом на диафрагмальное дыхание и удлиненный выдох; обучение дыхательной гимнастике для самостоятельного выполнения.",
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лечебная физкультура (ЛФК) с 1-го дня после операции: дыхательные упражнения (статические, динамические, дренажные) с акцентом на диафрагмальное дыхание и удлиненный выдох; обучение дыхательной гимнас"
+            }
+          },
+          {
+            "text": "Лечебная физкультура (ЛФК) с 1-го дня после операции: упражнения для мелких и средних суставов верхних и нижних конечностей (пассивные, пассивно-активные, активные).",
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лечебная физкультура (ЛФК) с 1-го дня после операции: упражнения для мелких и средних суставов верхних и нижних конечностей (пассивные, пассивно-активные, активные)."
+            }
+          },
+          {
+            "text": "Лечебная физкультура (ЛФК) с 1-го дня после операции: упражнения для крупных суставов верхних и неоперированной нижней конечности (пассивные, пассивно-активные, активные).",
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лечебная физкультура (ЛФК) с 1-го дня после операции: упражнения для крупных суставов верхних и неоперированной нижней конечности (пассивные, пассивно-активные, активные)."
+            }
+          },
+          {
+            "text": "Лечебная физкультура (ЛФК) с 1-го дня после операции: упражнения для крупных суставов оперированной нижней конечности (пассивные, пассивно-активные, активные), включая пассивную гимнастику на функциональной шине и пассивно-активную гимнастику с блоковой установкой.",
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лечебная физкультура (ЛФК) с 1-го дня после операции: упражнения для крупных суставов оперированной нижней конечности (пассивные, пассивно-активные, активные), включая пассивную гимнастику на функцион"
+            }
+          },
+          {
+            "text": "Лечебная физкультура (ЛФК) с 7-го дня после операции: активные сгибания-разгибания ног в коленных суставах и активные разгибания оперированной ноги в тазобедренном суставе из положения «лежа на животе».",
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лечебная физкультура (ЛФК) с 7-го дня после операции: активные сгибания-разгибания ног в коленных суставах и активные разгибания оперированной ноги в тазобедренном суставе из положения «лежа на животе"
+            }
+          },
+          {
+            "text": "Лечебная физкультура (ЛФК): изометрические упражнения для мышц оперированной нижней конечности (четырехглавой мышцы бедра, ягодичных мышц, двуглавой мышцы бедра, мышц голени).",
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лечебная физкультура (ЛФК): изометрические упражнения для мышц оперированной нижней конечности (четырехглавой мышцы бедра, ягодичных мышц, двуглавой мышцы бедра, мышц голени)."
+            }
+          },
+          {
+            "text": "Вертикализация: присаживание на койке со спущенными ногами с 1–3-го дня после операции (20–30 мин, 1–2 раза в день до достижения адаптации).",
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Вертикализация: присаживание на койке со спущенными ногами с 1–3-го дня после операции (20–30 мин, 1–2 раза в день до достижения адаптации)."
+            }
+          },
+          {
+            "text": "Вертикализация: с 2–3-го дня после операции с использованием вспомогательных технических средств социальной реабилитации для опоры и передвижения (костыли, ходунки), удержание позы стоя.",
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Вертикализация: с 2–3-го дня после операции с использованием вспомогательных технических средств социальной реабилитации для опоры и передвижения (костыли, ходунки), удержание позы стоя."
+            }
+          },
+          {
+            "text": "Школа пациентов после ЭКС. План занятий: ознакомление с правилами перехода к ходьбе с полной нагрузкой; информирование о методах физической реабилитации для самостоятельных занятий.",
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Школа пациентов после ЭКС. План занятий: ознакомление с правилами перехода к ходьбе с полной нагрузкой; информирование о методах физической реабилитации для самостоятельных занятий."
+            }
+          },
+          {
+            "text": "ФТЛ (по медицинским показаниям 2–3 вида процедур): магнитостимуляция мышц нижних конечностей, переменная пневмокомпрессия нижних конечностей, аппликации парафина, озокерита, лечебной грязи на пояснично-крестцовую область, гидротерапия общая (гидромассажные ванны, подводный душ-массаж, один из видов).",
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ФТЛ (по медицинским показаниям 2–3 вида процедур): магнитостимуляция мышц нижних конечностей, переменная пневмокомпрессия нижних конечностей, аппликации парафина, озокерита, лечебной грязи на поясничн"
             }
           }
         ],
         "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "марта",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2026 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "марта 2026 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня 1993 г"
-            }
-          }
-        ],
+        "drugs": [],
         "procedures": [],
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
+      "follow_up": [
+        {
+          "text": "Длительность разгрузки, динамика дозирования нагрузки оперированной нижней конечности при передвижении определяется индивидуально согласно рекомендациям, указанным в эпикризе.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Длительность разгрузки, динамика дозирования нагрузки оперированной нижней конечности при передвижении определяется индивидуально согласно рекомендациям, указанным в эпикризе."
+          }
+        }
+      ],
       "hospitalization": [],
-      "routing": [],
+      "routing": [
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        },
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        }
+      ],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "travmatologiya_ortopediya_кп_медицинская_реабилитация_пациентов_после_эндопротез",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Медицинская_реабилитация_пациентов_после_эндопротезирования_тазобедренного_сустава_(взрослое_население).pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Медицинская реабилитация пациентов после эндопротезирования тазобедренного сустава (взрослое население)"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:56.638028+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T19:02:40.631840+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:56.638460+00:00"
+    "validated_at": "2026-07-20T19:02:40.636189+00:00"
   }
 }

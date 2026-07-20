@@ -1,6 +1,6 @@
 protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Диагностика и лечение пациентов детс население с гипоплазией эмали
@@ -19,25 +19,29 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов_детс_население_с
-  name: Диагностика и лечение пациентов детс население с гипоплазией эмали
+- condition_id: enamel_hypoplasia
+  name: Гипоплазия эмали
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B24
+  - K00.4
+  - K00.40
+  - K00.41
+  - K00.42
+  - K00.46
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: КЛАССИФИКАЦИЯ, ПРИЗНАКИ И КРИТЕРИИ ГИПОПЛАЗИИ ЭМАЛИ
+    - text: Дефекты эмали в виде пятен, полосок, бороздок, вплоть до аплазии
       logic_group: null
       operator: unknown
       values: []
@@ -54,9 +58,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: КЛАССИФИКАЦИЯ, ПРИЗНАКИ И КРИТЕРИИ ГИПОПЛАЗИИ ЭМАЛИ
-    - text: '[diagnostics] 5. Признаки и критерии, определяющие гипоплазию эмали:
-        (стр. 4)'
+        quote: Дефекты эмали в виде пятен, полосок, бороздок, вплоть до аплазии
+    - text: Появляются с момента прорезывания зубов
       logic_group: null
       operator: unknown
       values: []
@@ -73,16 +76,200 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 5. Признаки и критерии, определяющие гипоплазию эмали:
-          (стр. 4)'
+        quote: Появляются с момента прорезывания зубов
+    - text: Имеют одинаковую величину на одноименных зубах, симметричность поражения
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Имеют одинаковую величину на одноименных зубах, симметричность поражения
+    - text: Расположены параллельно режущему краю или жевательной поверхности, чаще
+        на вестибулярной поверхности и буграх
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Расположены параллельно режущему краю или жевательной поверхности,
+          чаще на вестибулярной поверхности и буграх
+    - text: Стенки и края дефектов гладкие, возможна желто-коричневая пигментация
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Стенки и края дефектов гладкие, возможна желто-коричневая пигментация
+    - text: При значительных разрушениях эмали - кратковременная боль от температурных
+        раздражителей
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При значительных разрушениях эмали - кратковременная боль от температурных
+          раздражителей
+    - text: 'Зуб Турнера: изменение цвета (белое или желто-коричневое помутнение эмали),
+        дефекты или их сочетание'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Зуб Турнера: изменение цвета (белое или желто-коричневое помутнение
+          эмали), дефекты или их сочетание'
+    - text: Порок развития эмали, проявляющийся в количественном и качественном изменении
+        эмали.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Порок развития эмали, проявляющийся в количественном и качественном
+          изменении эмали.
     optional: []
     exclusion: []
-  required_exams: []
+  required_exams:
+  - name: Сбор анамнеза
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: сбор анамнеза
+  - name: Осмотр полости рта и тканей
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: осмотр полости рта с помощью дополнительных инструментов, пальпация,
+        перкуссия, оценка состояния твердых тканей зубов, зубных рядов, пломб, протезов
+        и ортодонтических аппаратов (при их наличии), оценка состояния тканей периодонта
+        и слизистой оболочки полости рта
+  - name: Индексная оценка стоматологического здоровья
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'индексная оценка стоматологического здоровья: индекс интенсивности кариеса
+        зубов – КПУ, гигиенический индекс Green, Vermillion – OHI-S или индекс зубного
+        налета Silness, Loe – PLI, индексы оценки состояния тканей периодонта (десневой
+        индекс Loe, Silness – GI)'
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] 10. Общими принципами медицинской профилактики и лечения
-        гипоплазии эмали (стр. 5)'
+    - text: 'Консервативный метод: коррекция индивидуальной гигиены полости рта в
+        сочетании с местным применением препаратов фтора, кальция, фосфора.'
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
         document_url: null
@@ -93,10 +280,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 10. Общими принципами медицинской профилактики и лечения
-          гипоплазии эмали (стр. 5)'
-    - text: являются консервативный и реставрационный методы лечения (выбор метода
-        зависит
+        quote: 'Консервативный метод: коррекция индивидуальной гигиены полости рта
+          в сочетании с местным применением препаратов фтора, кальция, фосфора.'
+    - text: 'Реставрационный метод: восстановление анатомической формы зуба современными
+        адгезивными материалами либо ортопедическими конструкциями (по медицинским
+        показаниям).'
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
         document_url: null
@@ -107,65 +295,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: являются консервативный и реставрационный методы лечения (выбор метода
-          зависит
-    - text: от степени нарушения эстетики при улыбке, глубины локализации дефекта,
-        вида
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: от степени нарушения эстетики при улыбке, глубины локализации дефекта,
-          вида
-    - text: 'и площади дефекта, степени постэруптивной минерализации эмали):'
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'и площади дефекта, степени постэруптивной минерализации эмали):'
-    - text: консервативный метод рассматривается как начальный этап перед реставрационным
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: консервативный метод рассматривается как начальный этап перед реставрационным
-    - text: лечением и включает коррекцию индивидуальной гигиены полости рта в сочетании
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: лечением и включает коррекцию индивидуальной гигиены полости рта в
-          сочетании
+        quote: 'Реставрационный метод: восстановление анатомической формы зуба современными
+          адгезивными материалами либо ортопедическими конструкциями (по медицинским
+          показаниям).'
     drug_groups: []
     drugs:
-    - drug_name: применения
+    - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: 100 мг
+      dose_text: Спрей для местного применения 100 мг/мл во флаконах 50 мл
       frequency_text: null
       duration_text: null
       route: null
@@ -177,17 +315,20 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: применения 100 мг/мл во флаконах 50 мл | Одну порцию (1–3
-    - drug_name: шприцах
+        quote: Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на
+          слизистую оболочку полости рта или десну. Лекарственное средство можно наносить
+          путем смазывания смоченным в средстве ватным тампоном
+    - drug_name: Лидокаин/Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 12,5 г
+      dose_text: Анестезирующий гель в шприцах 12,5 г; анестезирующий гель в шприцах
+        8,5 г
       frequency_text: null
       duration_text: null
       route: null
@@ -199,17 +340,20 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: шприцах 12,5 г
-    - drug_name: превышать
+        quote: Для аппликационной анестезии слизистой оболочки полости рта, а также
+          перед инъекционной анестезией. У детей до 2 лет применение противопоказано.
+          Предназначен для детей с 2 лет.
+    - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: 2,9 мг
+      dose_text: Спрей 100 мг/мл. Одну порцию (1–3 нажатия) наносят на слизистую или
+        десну. Возможно смазывание ватным тампоном.
       frequency_text: null
       duration_text: null
       route: null
@@ -221,17 +365,20 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: превышать 2,9 мг/кг
-    - drug_name: ампулах
+        quote: Лидокаин | Спрей для местного применения 100 мг/мл во флаконах 50 мл
+          | Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую
+          оболочку полости рта или десну.
+    - drug_name: Лидокаин/Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 2 мл
+      dose_text: 'Гель 12,5 г/8,5 г. Для аппликационной анестезии. Противопоказан
+        детям до 2 лет. Для детей 2-11 лет: доза лидокаина не более 2,9 мг/кг.'
       frequency_text: null
       duration_text: null
       route: null
@@ -243,17 +390,22 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: ампулах 2 мл (картриджах 1,7 мл)
-    - drug_name: картриджах
+        quote: Лидокаин/Хлоргексидин | Анестезирующий гель в шприцах 12,5 г; анестезирующий
+          гель в шприцах 8,5 г | У детей до 2 лет применение противопоказано. ...Для
+          детей в возрасте от 2 до 11 лет максимально допустимая доза лидокаина гидрохлорида
+          не должна превышать 2,9 мг/кг.
+    - drug_name: Артикаин/Эпинефрин
       active_substance: null
       drug_group: null
-      dose_text: 1,7 мл
+      dose_text: Раствор для инъекций (40 мг + 0,006 мг)/1 мл и др. Инъекционная анестезия.
+        Доза артикаина не более 7 мг/кг массы тела. Использование у детей до года
+        не изучалось.
       frequency_text: null
       duration_text: null
       route: null
@@ -265,17 +417,22 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: картриджах 1,7 мл
-    - drug_name: ноября
+        quote: Артикаин/Эпинефрин | Раствор для инъекций (40 мг + 0,006 мг)/1 мл в
+          ампулах 2 мл (картриджах 1,7 мл)... доза лекарственного средства не должна
+          превышать 7 мг артикаина на 1 кг массы тела. Использование у детей до года
+          не изучалось
+    - drug_name: Лидокаина гидрохлорид
       active_substance: null
       drug_group: null
-      dose_text: 2022 г
+      dose_text: Для детей в возрасте от 2 до 11 лет максимально допустимая доза лидокаина
+        гидрохлорида не должна превышать 2,9 мг/кг. Разовую дозу врач-специалист назначает
+        индивидуально, учитывая состояние области н
       frequency_text: null
       duration_text: null
       route: null
@@ -287,17 +444,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 1
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: ноября 2022 г
-    - drug_name: июня
+        quote: Для детей в возрасте от 2 до 11 лет максимально допустимая доза лидокаина
+          гидрохлорида не должна превышать 2,9 мг/кг. Разовую дозу врач-специалист
+          назначает индивидуально.
+    - drug_name: Артикаин/Эпинефрин
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: 'Раствор для инъекций (40 мг + 0,006 мг)/1 мл в ампулах 2 мл (картриджах
+        1,7 мл); раствор для инъекций (40 мг + 0,005 мг)/1 мл в ампулах 2 мл; раствор
+        для инъекций (40 мг/0,005 мг)/мл в картриджах 1,7 '
       frequency_text: null
       duration_text: null
       route: null
@@ -309,90 +470,103 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 1
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: марта
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: марта 2023 г
+        quote: Доза Артикаина/Эпинефрина не должна превышать 7 мг артикаина на 1 кг
+          массы тела. Разовую дозу врач назначает индивидуально. Использование у детей
+          до года не изучалось.
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: 'Частота медицинского наблюдения определяется активностью кариозного процесса:
+      низкая активность – 2 раза в год; средняя активность – 4 раза в год; высокая
+      активность – 4–6 раз в год.'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Частота медицинского наблюдения определяется активностью кариозного
+        процесса: низкая активность – 2 раза в год; средняя активность – 4 раза в
+        год; высокая активность – 4–6 раз в год.'
+  - text: Частота медицинского наблюдения определяется активностью кариозного
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Частота медицинского наблюдения определяется активностью кариозного
   hospitalization: []
   routing: []
-  red_flags: []
+  red_flags:
+  - text: Применение Лидокаина/Хлоргексидина противопоказано у детей до 2 лет.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: У детей до 2 лет применение противопоказано. Предназначен для детей с
+        2 лет.
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эм
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_гипоплазией_эмали_пост_МЗ_30.11.2022_112.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов детс население с гипоплазией эмали
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:51.333156+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T18:08:42.773163+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:51.336850+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[enamel_hypoplasia].treatment.drugs[2]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[enamel_hypoplasia].treatment.drugs[3]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[enamel_hypoplasia].treatment.drugs[6]
+  validated_at: '2026-07-20T18:08:42.779281+00:00'

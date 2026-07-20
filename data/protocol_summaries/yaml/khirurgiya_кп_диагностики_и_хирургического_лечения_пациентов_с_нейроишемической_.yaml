@@ -1,6 +1,6 @@
 protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: диагностики и хирургического лечения пациентов с нейроишемической формой
@@ -22,16 +22,15 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - adult
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностики_и_хирургического_лечения_пациентов_с
-  name: диагностики и хирургического лечения пациентов с нейроишемической формой синдрома
-    диабетической стопы
+- condition_id: neuroischemic_diabetic_foot_syndrome
+  name: Нейроишемическая форма синдрома диабетической стопы
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -45,7 +44,7 @@ conditions:
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[other] Описание протокола (стр. 1)'
+    - text: Хирургическое лечение нейроишемической формы синдрома диабетической стопы
       source_ref:
         protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
         document_url: null
@@ -58,9 +57,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[other] Описание протокола (стр. 1)'
-    - text: 'Клинический протокол: диагностики и хирургического лечения пациентов
-        с нейроишемической формой синдрома диабетической стопы'
+        quote: Хирургическое лечение нейроишемической формы синдрома диабетической
+          стопы
+    - text: Интервенционная эндоваскулярная хирургия
       source_ref:
         protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
         document_url: null
@@ -73,210 +72,148 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Клинический протокол: диагностики и хирургического лечения пациентов
-          с нейроишемической формой синдрома диабетической стопы'
-    - text: 'Тип: Клинический КП (есть коды МКБ)'
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического
-          лечения пациентов с нейроишемической формой синдрома диабетической стопы
-          20.03.2013 № 348.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Тип: Клинический КП (есть коды МКБ)'
-    - text: 'МКБ-10: I43 (98%), B24 (28%), E10.7, Y20.80, B50.250, B13'
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического
-          лечения пациентов с нейроишемической формой синдрома диабетической стопы
-          20.03.2013 № 348.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'МКБ-10: I43 (98%), B24 (28%), E10.7, Y20.80, B50.250, B13'
-    - text: 'Метки: kind:clinical, rubric:endokrinologiya-narusheniya-obmena-veshchestv,
-        diagnostics, treatment'
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического
-          лечения пациентов с нейроишемической формой синдрома диабетической стопы
-          20.03.2013 № 348.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Метки: kind:clinical, rubric:endokrinologiya-narusheniya-obmena-veshchestv,
-          diagnostics, treatment'
-    - text: 3. Контроль за исполнением настоящего приказа возложить на
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического
-          лечения пациентов с нейроишемической формой синдрома диабетической стопы
-          20.03.2013 № 348.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 3. Контроль за исполнением настоящего приказа возложить на
+        quote: Интервенционная эндоваскулярная хирургия
     drug_groups: []
-    drugs:
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического
-          лечения пациентов с нейроишемической формой синдрома диабетической стопы
-          20.03.2013 № 348.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня 1993 года \n«О здравоохранении» в редакции Зако"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического
-          лечения пациентов с нейроишемической формой синдрома диабетической стопы
-          20.03.2013 № 348.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: августа
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического
-          лечения пациентов с нейроишемической формой синдрома диабетической стопы
-          20.03.2013 № 348.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "августа \n2011 г"
+    drugs: []
     procedures: []
     surgery: []
     source_refs: []
-  follow_up:
-  - text: Контроль
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического лечения
-        пациентов с нейроишемической формой синдрома диабетической стопы 20.03.2013
-        № 348.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Контроль
-  - text: Контроль
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического лечения
-        пациентов с нейроишемической формой синдрома диабетической стопы 20.03.2013
-        № 348.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Контроль
+  follow_up: []
   hospitalization: []
-  routing: []
-  red_flags: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического лечения
+        пациентов с нейроишемической формой синдрома диабетической стопы 20.03.2013
+        № 348.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags:
+  - text: Критическая ишемия конечности, развившаяся на фоне диабетической полинейропатии
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического лечения
+        пациентов с нейроишемической формой синдрома диабетической стопы 20.03.2013
+        № 348.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Нейроишемическая форма синдрома диабетической стопы (НИО СДС) – это критическая
+        ишемия конечности, развившаяся на фоне диабетической полинейропатии.
+  - text: Глубокое поражение тканей с вовлечением костей и развитием остеомиелитического
+      процесса, гнойных артритов, глубоких абсцессов и флегмон (по Wagner 3 степени)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического лечения
+        пациентов с нейроишемической формой синдрома диабетической стопы 20.03.2013
+        № 348.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 3 степень - глубокое поражение тканей с вовлечением костей и развитием
+        остеомиелитического процесса, гнойных артритов, глубоких абсцессов и флегмон;
+  - text: Развитие гангрены пальца или отдела стопы (по Wagner 4 степени)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического лечения
+        пациентов с нейроишемической формой синдрома диабетической стопы 20.03.2013
+        № 348.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 4 степень - развитие гангрены пальца или отдела стопы;
+  - text: Обширная гангрена, захватывающая два или все три отдела стопы (по Wagner
+      5 степени)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического лечения
+        пациентов с нейроишемической формой синдрома диабетической стопы 20.03.2013
+        № 348.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 5 степень - обширная гангрена, захватывающая два или все три отдела столы.
+  - text: Осложнение процесса флегмоной стопы
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического лечения
+        пациентов с нейроишемической формой синдрома диабетической стопы 20.03.2013
+        № 348.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Указанные процессы могут осложниться флегмоной стопы.
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
-    document_url: null
-    local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического лечения
-      пациентов с нейроишемической формой синдрома диабетической стопы 20.03.2013
-      № 348.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: диагностики и хирургического лечения пациентов с нейроишемической формой
-      синдрома диабетической стопы
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:37.169863+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T16:40:07.820045+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:37.170605+00:00'
+  validated_at: '2026-07-20T16:40:07.820241+00:00'

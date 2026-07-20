@@ -1,6 +1,6 @@
 # Validation: transplantatsiya_organov_i_tkaney_т_почка
 
 - **status:** valid
-- **validated_at:** 2026-06-23T19:16:26.661351+00:00
-- **review_status:** not_reviewed
-- **extraction_status:** auto_extracted
+- **validated_at:** 2026-07-20T18:13:29.932008+00:00
+- **review_status:** needs_review
+- **extraction_status:** llm_extracted

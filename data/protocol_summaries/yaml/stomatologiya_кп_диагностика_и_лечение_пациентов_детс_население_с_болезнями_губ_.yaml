@@ -1,6 +1,6 @@
 protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Диагностика и лечение пациентов детс население с болезнями губ
@@ -19,31 +19,34 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов_детс_население_с
-  name: Диагностика и лечение пациентов детс население с болезнями губ
+- condition_id: diseases_of_the_lips
+  name: Болезни губ
   synonyms: []
   abbreviations: []
   icd10_codes:
+  - K13.0
+  - K13.00
   - K13.01
+  - K13.02
   - K13.03
   - K13.04
   - K13.08
   - K13.09
-  - B24
+  - K13.1
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[criteria] 5. Признаками и критериями, определяющими болезни губ, являются:
-        (стр. 4)'
+    - text: 'Ангулярный хейлит: локализация воспаления на слизистой в области комиссур
+        и прилегающих участков кожи (с двух сторон).'
       logic_group: null
       operator: unknown
       values: []
@@ -60,10 +63,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[criteria] 5. Признаками и критериями, определяющими болезни губ,
-          являются: (стр. 4)'
-    - text: '[criteria] 5. Признаками и критериями, определяющими болезни губ, являются:
-        (стр. 4)'
+        quote: 'Ангулярный хейлит: локализация воспаления на слизистой в области комиссур
+          и прилегающих участков кожи (с двух сторон).'
+    - text: 'Ангулярный хейлит: появление болезненных эрозий в складках кожи.'
       logic_group: null
       operator: unknown
       values: []
@@ -80,10 +82,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[criteria] 5. Признаками и критериями, определяющими болезни губ,
-          являются: (стр. 4)'
-    - text: '[criteria] 5. Признаками и критериями, определяющими болезни губ, являются:
-        (стр. 4)'
+        quote: 'Ангулярный хейлит: появление болезненных эрозий в складках кожи.'
+    - text: 'Ангулярный хейлит (стафилококковая инфекция): эрозии покрыты желтыми
+        корками, регионарные лимфоузлы увеличены, болезненны при пальпации.'
       logic_group: null
       operator: unknown
       values: []
@@ -100,10 +101,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[criteria] 5. Признаками и критериями, определяющими болезни губ,
-          являются: (стр. 4)'
-    - text: '[criteria] 5. Признаками и критериями, определяющими болезни губ, являются:
-        (стр. 4)'
+        quote: 'Ангулярный хейлит (стафилококковая инфекция): эрозии покрыты желтыми
+          корками, регионарные лимфоузлы увеличены, болезненны при пальпации.'
+    - text: 'Ангулярный хейлит (грибковая инфекция): эрозии покрыты белым налетом.'
       logic_group: null
       operator: unknown
       values: []
@@ -120,9 +120,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[criteria] 5. Признаками и критериями, определяющими болезни губ,
-          являются: (стр. 4)'
-    - text: КЛАССИФИКАЦИЯ, ПРИЗНАКИ И КРИТЕРИИ БОЛЕЗНЕЙ ГУБ
+        quote: 'Ангулярный хейлит (грибковая инфекция): эрозии покрыты белым налетом.'
+    - text: 'Сухая форма эксфолиативного хейлита: болезненное открывание рта.'
       logic_group: null
       operator: unknown
       values: []
@@ -139,15 +138,261 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: КЛАССИФИКАЦИЯ, ПРИЗНАКИ И КРИТЕРИИ БОЛЕЗНЕЙ ГУБ
+        quote: 'Сухая форма эксфолиативного хейлита: болезненное открывание рта.'
+    - text: 'Сухая форма эксфолиативного хейлита: на гиперемированной красной кайме
+        губ сухие полупрозрачные чешуйки, плотно прикрепленные центральной частью,
+        по периферии отстают, легко снимаются через 5-7 дней без эрозий.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Сухая форма эксфолиативного хейлита: на гиперемированной красной кайме
+          губ сухие полупрозрачные чешуйки, плотно прикрепленные центральной частью,
+          по периферии отстают, легко снимаются через 5-7 дней б'
+    - text: 'Сухая форма эксфолиативного хейлита: патологический процесс локализуется
+        только на красной кайме губ.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Сухая форма эксфолиативного хейлита: патологический процесс локализуется
+          только на красной кайме губ.'
+    - text: 'Экссудативная форма эксфолиативного хейлита: резкая болезненность при
+        движении губ, рот всегда приоткрыт.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Экссудативная форма эксфолиативного хейлита: резкая болезненность
+          при движении губ, рот всегда приоткрыт.'
+    - text: 'Экссудативная форма эксфолиативного хейлита: значительный отек губ с
+        массивными отслаивающимися корками серовато-желтого или желтовато-коричневого
+        цвета в зоне Клейна, свисающими с губы.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Экссудативная форма эксфолиативного хейлита: значительный отек губ
+          с массивными отслаивающимися корками серовато-желтого или желтовато-коричневого
+          цвета в зоне Клейна, свисающими с губы.'
+    - text: 'Экссудативная форма эксфолиативного хейлита: после снятия корок обнажается
+        ярко-красная гладкая поверхность красной каймы без эрозий.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Экссудативная форма эксфолиативного хейлита: после снятия корок обнажается
+          ярко-красная гладкая поверхность красной каймы без эрозий.'
+    - text: 'Экссудативная форма эксфолиативного хейлита: процесс никогда не переходит
+        на кожу и слизистую оболочку губ и имеет длительное течение.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Экссудативная форма эксфолиативного хейлита: процесс никогда не переходит
+          на кожу и слизистую оболочку губ и имеет длительное течение.'
+    - text: 'Прикусывание щеки и губ: общее состояние ребенка не нарушено.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Прикусывание щеки и губ: общее состояние ребенка не нарушено.'
+    - text: 'Прикусывание щеки и губ: дефекты верхних слоев эпителия слизистой оболочки
+        полости рта или красной каймы губ из-за привычного прикусывания.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Прикусывание щеки и губ: дефекты верхних слоев эпителия слизистой
+          оболочки полости рта или красной каймы губ из-за привычного прикусывания.'
+    - text: 'Прикусывание щеки и губ: слизистая обычной окраски, в местах травмирования
+        неровная поверхность, обрывки эпителия белого цвета, иногда небольшие кровоизлияния.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Прикусывание щеки и губ: слизистая обычной окраски, в местах травмирования
+          неровная поверхность, обрывки эпителия белого цвета, иногда небольшие кровоизлияния.'
+    - text: 'Аутоанестезиофагия: сильный отек травмированной губы, образование болезненной
+        эрозии больших размеров неправильной формы, покрытой фибринозным налетом.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Аутоанестезиофагия: сильный отек травмированной губы, образование
+          болезненной эрозии больших размеров неправильной формы, покрытой фибринозным
+          налетом.'
+    - text: 'Аутоанестезиофагия: окружающая слизистая оболочка слабо или умеренно
+        гиперемирована.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Аутоанестезиофагия: окружающая слизистая оболочка слабо или умеренно
+          гиперемирована.'
     optional: []
     exclusion: []
-  required_exams: []
+  required_exams:
+  - name: Сбор анамнеза
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: сбор анамнеза и выявление факторов, способствующих неправильному смыканию
+        губ;
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] 11. Терапевтические лечебные мероприятия у пациентов с болезнями
-        губ включают: (стр. 6)'
+    - text: Устранение (минимизация) факторов, способствующих неправильному смыканию
+        губ (лечение заболеваний носоглотки, устранение вредной привычки дышать ртом,
+        прикусывать и облизывать губы, лечение аномалий прикуса).
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
         document_url: null
@@ -158,9 +403,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 11. Терапевтические лечебные мероприятия у пациентов с
-          болезнями губ включают: (стр. 6)'
-    - text: '11.2. дополнительные лечебные мероприятия (по медицинским показаниям):'
+        quote: Устранение (минимизация) факторов, способствующих неправильному смыканию
+          губ (лечение заболеваний носоглотки, устранение вредной привычки дышать
+          ртом, прикусывать и облизывать губы, лечение аномалий п
+    - text: Мотивация и обучение гигиене полости рта.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
         document_url: null
@@ -171,8 +417,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '11.2. дополнительные лечебные мероприятия (по медицинским показаниям):'
-    - text: для нормализации смыкания губ функциональное лечение и (или) изготовление
+        quote: Мотивация и обучение гигиене полости рта.
+    - text: Функциональное лечение, направленное на нормализацию тонуса круговой мышцы
+        рта.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
         document_url: null
@@ -183,8 +430,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: для нормализации смыкания губ функциональное лечение и (или) изготовление
-    - text: защитных ортодонтических аппаратов у врача-стоматолога-ортодонта
+        quote: Функциональное лечение, направленное на нормализацию тонуса круговой
+          мышцы рта.
+    - text: Для нормализации смыкания губ функциональное лечение и (или) изготовление
+        защитных ортодонтических аппаратов у врача-стоматолога-ортодонта.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
         document_url: null
@@ -195,8 +444,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: защитных ортодонтических аппаратов у врача-стоматолога-ортодонта
-    - text: лазеротерапия, 5–7 процедур ежедневно на очаги поражения. Приложение
+        quote: Для нормализации смыкания губ функциональное лечение и (или) изготовление
+          защитных ортодонтических аппаратов у врача-стоматолога-ортодонта.
+    - text: Лазеротерапия, 5–7 процедур ежедневно на очаги поражения.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
         document_url: null
@@ -207,25 +457,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: лазеротерапия, 5–7 процедур ежедневно на очаги поражения. Приложение
-    - text: Лекарственные средства, применяемые при лечении
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Лекарственные средства, применяемые при лечении
+        quote: Лазеротерапия, 5–7 процедур ежедневно на очаги поражения.
     drug_groups: []
     drugs:
-    - drug_name: применения
+    - drug_name: Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 0,5 мг
+      dose_text: Раствор для местного и наружного применения 0,5 мг/мл
       frequency_text: null
       duration_text: null
       route: null
@@ -237,17 +475,20 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "применения \n0,5 мг/мл \nНеразведенный раствор применяется в"
-    - drug_name: флаконах
+        quote: Неразведенный раствор применяется в виде орошений, полосканий и аппликаций
+          – 5–10 мл раствора наносят на пораженную поверхность слизистой оболочки
+          полости рта или на десну с экспозицией 1–3 мин 2–3 раза в сутки (на тампоне
+          или путем орошения). Длительность применения устанавливается индивидуально
+    - drug_name: Бензилдиметил- аммония хлорид
       active_substance: null
       drug_group: null
-      dose_text: 30 мл
+      dose_text: Раствор для наружного (местного) применения 0,1 мг/мл
       frequency_text: null
       duration_text: null
       route: null
@@ -259,17 +500,20 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "флаконах \n30 мл, 50 мл, 100 мл \nПрименяется у детей с 1"
-    - drug_name: шприцах
+        quote: Неразведенный раствор применяется в виде протираний – 5–10 мл раствора
+          наносят на красную кайму губ и углы рта на пораженную поверхность с экспозицией
+          1–3 мин 2–3 раза в сутки (на тампоне, в течение 3–5 дней)
+    - drug_name: Гиалуронидаза
       active_substance: null
       drug_group: null
-      dose_text: 12,5 г
+      dose_text: Порошок лиофилизированный для приготовления раствора для внутримышечного
+        и подкожного введения 725 МЕ
       frequency_text: null
       duration_text: null
       route: null
@@ -281,17 +525,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: шприцах 12,5 г
-    - drug_name: превышать
+        quote: 'Местно. На изъязвленную или некротизированную слизистую оболочку полости
+          рта или десны накладывается смоченная салфетка с раствором: 64 УЕ в 10 мл
+          кипяченой воды комнатной температуры (готовят непосредственно перед применением).
+          Количество процедур индивидуально'
+    - drug_name: Трипсин кристаллический
       active_substance: null
       drug_group: null
-      dose_text: 2,9 мг
+      dose_text: Лиофилизат для приготовления раствора для инъекций и местного применения
+        10 мг во флаконах
       frequency_text: null
       duration_text: null
       route: null
@@ -303,17 +551,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: превышать 2,9 мг/кг
-    - drug_name: моногидрат
+        quote: 'Местно. На изъязвленную или некротизированную слизистую оболочку полости
+          рта или десны накладывают смоченную салфетку раствором трипсина (готовят
+          непосредственно перед применением: 10 мг трипсина растворяют в 10 мл стерильного
+          физиологического раствора). Количество процедур индивидуально'
+    - drug_name: Химотрипсин
       active_substance: null
       drug_group: null
-      dose_text: 20,0 мг
+      dose_text: Лиофилизат для приготовления раствора для инъекций и местного применения
+        10 мг во флаконах
       frequency_text: null
       duration_text: null
       route: null
@@ -325,17 +577,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "моногидрат 20,0 мг / \nРомашки аптечной \nцветков экстракт (1"
-    - drug_name: раствором
+        quote: Местно. На гнойные поверхности слизистой оболочки полости рта или десны
+          с некротизированными тканями накладывается смоченная салфетка раствором
+          10 мг химотрипсина в 10 мл стерильного физиологического раствора. Количество
+          процедур индивидуально
+    - drug_name: Облепихи масло
       active_substance: null
       drug_group: null
-      dose_text: 10 мг
+      dose_text: Масло для приема внутрь, местного и наружного применения во флаконах
+        30 мл, 50 мл, 100 мл
       frequency_text: null
       duration_text: null
       route: null
@@ -347,17 +603,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: раствором 10 мг химотрипсина в 10 мл стерильного физиоло
-    - drug_name: ноября
+        quote: Применяется у детей с 12 лет в комплексной терапии в качестве ранозаживляющего
+          средства при поражении слизистых оболочек, масло наносится тампоном на пораженные
+          участки слизистой оболочки полости рта или десны тонким слоем 1 раз в сутки
+          длительностью до 20 мин.
+    - drug_name: Лидокаин/Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 2022 г
+      dose_text: Анестезирующий гель в шприцах 12,5 г; анестезирующий гель в шприцах
+        8,5 г
       frequency_text: null
       duration_text: null
       route: null
@@ -369,17 +629,19 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: ноября 2022 г
-    - drug_name: июня
+        quote: Для аппликационной анестезии слизистой оболочки полости рта. Для детей
+          в возрасте от 2 до 11 лет максимально допустимая доза лидокаина гидрохлорида
+          не должна превышать 2,9 мг/кг. Разовую дозу врач-специалист назначает индивидуально
+    - drug_name: Нистатин
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: Мазь для наружного применения 100 000 ЕД/г в тубах
       frequency_text: null
       duration_text: null
       route: null
@@ -391,17 +653,18 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
+        quote: Наружно, мазь наносится на пораженную поверхность красной каймы губ
+          и углов рта 1 раз в сутки. Курс лечения – 10–14 дней
+    - drug_name: Лидокаина гидрохлорид моногидрат / Ромашки аптечной цветков экстракт
       active_substance: null
       drug_group: null
-      dose_text: 2011 г
+      dose_text: Гель для местного применения в тубах
       frequency_text: null
       duration_text: null
       route: null
@@ -413,68 +676,71 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: октября 2011 г
-    - drug_name: марта
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: марта 2023 г
+        quote: Для детей старше 12 лет.
     procedures: []
     surgery: []
     source_refs: []
   follow_up: []
   hospitalization: []
   routing: []
-  red_flags: []
+  red_flags:
+  - text: Не применять Гиалуронидазу у детей младше 2 лет.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Не применять у детей младше 2 лет
+  - text: Не применять Лидокаин/Хлоргексидин у детей младше 2 лет.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Не применять у детей младше 2 лет.
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_болезнями_губ_пост_МЗ_30.11.2022_112.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов детс население с болезнями губ
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:51.021060+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T18:32:21.645735+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:51.025809+00:00'
+  validated_at: '2026-07-20T18:32:21.651835+00:00'

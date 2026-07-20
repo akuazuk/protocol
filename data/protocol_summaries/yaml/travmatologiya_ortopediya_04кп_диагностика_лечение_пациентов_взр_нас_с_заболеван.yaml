@@ -1,10 +1,10 @@
 protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: 04КП Диагностика лечение пациентов взрослое население с заболеваниями позвоночника
-    стационарных условияхиях
+    стационарных условиях
   url: null
   local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
   document_sha256: null
@@ -27,9 +27,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: 04кп_диагностика_лечение_пациентов_взрослое_насе
-  name: 04КП Диагностика лечение пациентов взрослое население с заболеваниями позвоночника
-    стационарных условияхиях
+- condition_id: zabolevaniya_pozvonochnika
+  name: Заболевания позвоночника
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -43,14 +42,13 @@ conditions:
   - M49.3
   - Q07.0
   - Q75.8
-  - O26.9
-  - O72
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: определение группы крови и резус-фактора
+    - text: Стойкий болевой синдром как показание к хирургическому вмешательству при
+        сирингомиелии и синдроме Арнольда-Киари
       logic_group: null
       operator: unknown
       values: []
@@ -67,8 +65,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение группы крови и резус-фактора
-    - text: определение группы крови и резус-фактора
+        quote: Стойкий болевой синдром как показание к хирургическому вмешательству
+          при сирингомиелии и синдроме Арнольда-Киари
+    - text: Развитие неврологического дефицита как показание к хирургическому вмешательству
+        при сирингомиелии и синдроме Арнольда-Киари
       logic_group: null
       operator: unknown
       values: []
@@ -85,14 +85,100 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение группы крови и резус-фактора
+        quote: Развитие неврологического дефицита как показание к хирургическому вмешательству
+          при сирингомиелии и синдроме Арнольда-Киари
+    - text: Наличие стволо-мозжечкового синдрома, глазодвигательных нарушений как
+        показание к хирургическому вмешательству при сирингомиелии и синдроме Арнольда-Киари
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие стволо-мозжечкового синдрома, глазодвигательных нарушений как
+          показание к хирургическому вмешательству при сирингомиелии и синдроме Арнольда-Киари
     optional: []
     exclusion: []
-  required_exams: []
-  conditional_exams: []
+  required_exams:
+  - name: Обязательные диагностические исследования
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обязательные диагностические исследования при лечении заболеваний позвоночника
+        в стационарных условиях установлены согласно приложению 3.
+  - name: Осмотр врачом-анестезиологом-реаниматологом
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: В ходе предоперационной подготовки пациент осматривается врачом-анестезиологом-реаниматологом.
+  conditional_exams:
+  - name: Повторные лабораторные и функциональные исследования
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: В ходе предоперационной подготовки... по медицинским показаниям повторно
+        могут выполняться лабораторные и функциональные исследования.
   treatment:
     non_drug:
-    - text: '[treatment] 4. Фармакотерапия (стр. 3)'
+    - text: Ранняя послеоперационная мобилизация пациента при низком риске ВТЭО.
       source_ref:
         protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
         document_url: null
@@ -103,9 +189,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 4. Фармакотерапия (стр. 3)'
-    - text: фармакологической характеристики лекарственного препарата (далее – ЛП).
-        При этом
+        quote: Ранняя послеоперационная мобилизация пациента при низком риске ВТЭО.
+    - text: Периоперационная и послеоперационная тромбопрофилактика механическими
+        методами (компрессионный трикотаж или перемежающаяся пневматическая компрессия)
+        при высоком риске ВТЭО.
       source_ref:
         protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
         document_url: null
@@ -116,9 +203,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: фармакологической характеристики лекарственного препарата (далее –
-          ЛП). При этом
-    - text: аллергологический и фармакологический анамнез.
+        quote: Периоперационная и послеоперационная тромбопрофилактика механическими
+          методами (компрессионный трикотаж или перемежающаяся пневматическая компрессия)
+          при высоком риске ВТЭО.
+    - text: Периоперационная тромбопрофилактика перемежающейся пневматической компрессией
+        при очень высоком риске ВТЭО.
       source_ref:
         protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
         document_url: null
@@ -129,9 +218,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: аллергологический и фармакологический анамнез.
-    - text: '[treatment] 5. Режим дозирования, путь введения и кратность применения
-        ЛП определяются (стр. 3)'
+        quote: Периоперационная тромбопрофилактика перемежающейся пневматической компрессией
+          при очень высоком риске ВТЭО.
+    - text: 'Хирургическое вмешательство при сирингомиелии и синдроме Арнольда–Киари:
+        декомпрессивная трепанация задней черепной ямки, ламинэктомия С1 или С1–С2,
+        менинголиз (опционно), пластика твердой мозговой оболочки, резекция миндалин
+        мозжечка.'
       source_ref:
         protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
         document_url: null
@@ -142,9 +234,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 5. Режим дозирования, путь введения и кратность применения
-          ЛП определяются (стр. 3)'
-    - text: инструкцией по медицинскому применению (листком-вкладышем).
+        quote: 'Хирургическое вмешательство при сирингомиелии и синдроме Арнольда–Киари:
+          декомпрессивная трепанация задней черепной ямки, ламинэктомия С1 или С1–С2,
+          менинголиз (опционно), пластика твердой мозговой об'
+    - text: 'Хирургическое вмешательство при сирингомиелии и синдроме Арнольда–Киари:
+        цистерно-перитонеальное шунтирование окципито-цервикального перехода, обширная
+        декомпрессия (окципитоспондилодез при атланто-аксиальной нестабильности).'
       source_ref:
         protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
         document_url: null
@@ -155,27 +250,16 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: инструкцией по медицинскому применению (листком-вкладышем).
-    - text: '[treatment] 6. До проведения хирургического вмешательства пациентам рассчитывается
-        риск (стр. 3)'
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 6. До проведения хирургического вмешательства пациентам
-          рассчитывается риск (стр. 3)'
+        quote: 'Хирургическое вмешательство при сирингомиелии и синдроме Арнольда–Киари:
+          цистерно-перитонеальное шунтирование окципито-цервикального перехода, обширная
+          декомпрессия (окципитоспондилодез при атланто-ак'
     drug_groups: []
     drugs:
-    - drug_name: июня
+    - drug_name: Нефракционированный гепарин
       active_substance: null
       drug_group: null
-      dose_text: 2024 г
+      dose_text: Применяется для фармакологической профилактики ВТЭО в послеоперационном
+        периоде у пациентов очень высокого риска.
       frequency_text: null
       duration_text: null
       route: null
@@ -187,17 +271,21 @@ conditions:
         protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
         document_url: null
         local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-        page_start: null
+        page_start: 4
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: июня 2024 г
-    - drug_name: октября
+        quote: Фармакологическая профилактика с применением нефракционированного гепарина,
+          низкомолекулярного гепарина или фондапаринукса натрия. Фармакологическая
+          профилактика ВТЭО начинается в срок 24–48 часов после хирургического вмешательства.
+    - drug_name: Низкомолекулярный гепарин
       active_substance: null
       drug_group: null
-      dose_text: 2011 г
+      dose_text: 'Применяется для фармакологической профилактики ВТЭО в послеоперационном
+        периоде у пациентов очень высокого риска. Продолжается до 4 недель при повреждении
+        спинного мозга или значительных двигательных '
       frequency_text: null
       duration_text: null
       route: null
@@ -209,18 +297,148 @@ conditions:
         protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
         document_url: null
         local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-        page_start: null
+        page_start: 4
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: октября 2011 г
+        quote: Фармакологическая профилактика с применением нефракционированного гепарина,
+          низкомолекулярного гепарина или фондапаринукса натрия. ...тромбопрофилактика
+          с использованием низкомолекулярного гепарина продолжается во время медицинской
+          реабилитации в стационарных условиях до 4 недель.
+    - drug_name: Фондапаринукс натрия
+      active_substance: null
+      drug_group: null
+      dose_text: Применяется для фармакологической профилактики ВТЭО в послеоперационном
+        периоде у пациентов очень высокого риска.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Фармакологическая профилактика с применением нефракционированного гепарина,
+          низкомолекулярного гепарина или фондапаринукса натрия. Фармакологическая
+          профилактика ВТЭО начинается в срок 24–48 часов после хирургического вмешательства.
+    - drug_name: Варфарин
+      active_substance: null
+      drug_group: null
+      dose_text: Возможен перевод на прием через 2 недели терапии низкомолекулярным
+        гепарином при длительной тромбопрофилактике.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: '...возможен перевод пациента на прием пероральных антикоагулянтов:
+          варфарина или не витамин К-зависимых антикоагулянтов (прямые ингибиторы
+          фактора Xa, прямые ингибиторы тромбина).'
+    - drug_name: Не витамин К-зависимые антикоагулянты (прямые ингибиторы фактора
+        Xa, прямые ингибиторы тромбина)
+      active_substance: null
+      drug_group: null
+      dose_text: Возможен перевод на прием через 2 недели терапии низкомолекулярным
+        гепарином при длительной тромбопрофилактике.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: '...возможен перевод пациента на прием пероральных антикоагулянтов:
+          варфарина или не витамин К-зависимых антикоагулянтов (прямые ингибиторы
+          фактора Xa, прямые ингибиторы тромбина).'
+    - drug_name: Антибиотики для периоперационной профилактики (согласно приложению
+        4)
+      active_substance: null
+      drug_group: null
+      dose_text: Применяется один из ЛП, указанных в приложении 4. Не показана при
+        хирургических вмешательствах без имплантации чужеродного материала.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: С целью периоперационной антибиотикопрофилактики применяется один из
+          ЛП, указанных в приложении 4. Периоперационная антибиотикопрофилактика не
+          показана при хирургических вмешательствах без имплантации.
+    - drug_name: Фармакотерапия при травмах опорно-двигательного аппарата (согласно
+        приложению 5)
+      active_substance: null
+      drug_group: null
+      dose_text: Назначается в послеоперационном периоде.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: В послеоперационном периоде назначается фармакотерапия при травмах
+          опорно-двигательного аппарата согласно приложению 5.
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: через 2 нед
+  - text: Медицинская профилактика ВТЭО продолжается до выписки пациента, но не менее
+      7 дней.
     timing: null
     required_if: []
     expected_actions: []
@@ -234,14 +452,86 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: через 2 нед
+      quote: Медицинская профилактика ВТЭО продолжается до выписки пациента, но не
+        менее 7 дней.
+  - text: Тромбопрофилактика низкомолекулярным гепарином при повреждении спинного
+      мозга или значительных двигательных нарушениях продолжается до 4 недель во время
+      медицинской реабилитации.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Тромбопрофилактика низкомолекулярным гепарином при повреждении спинного
+        мозга или значительных двигательных нарушениях продолжается до 4 недель во
+        время медицинской реабилитации.
+  - text: Через 2 недели терапии низкомолекулярным гепарином при длительной тромбопрофилактике
+      возможен перевод на пероральные антикоагулянты (варфарин или не витамин К-зависимые
+      антикоагулянты).
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Через 2 недели терапии низкомолекулярным гепарином при длительной тромбопрофилактике
+        возможен перевод на пероральные антикоагулянты (варфарин или не витамин К-зависимые
+        антикоагулянты).
   hospitalization: []
-  routing: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
   red_flags:
-  - text: "(глубокий венозный тромбоз и (или) тромбоэмболия легочной артерии) в анамнезе;\
-      \ \nиспользование системных глюкокортикоидов (>10 дней); \nбеременность"
+  - text: Высокий риск развития венозного тромбоэмболического осложнения (ВТЭО) при
+      наличии 1 балла по шкале факторов риска.
     aliases: []
-    red_flag_type: thrombosis
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Высокий риск развития ВТЭО – хирургические вмешательства на позвоночнике
+        по поводу травматических повреждений при наличии 1 балла по шкале ФР.
+  - text: Очень высокий риск развития венозного тромбоэмболического осложнения (ВТЭО)
+      при наличии >2 баллов по шкале факторов риска.
+    aliases: []
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -249,18 +539,20 @@ conditions:
       protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
       document_url: null
       local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: null
+      page_start: 3
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "(глубокий венозный тромбоз и (или) тромбоэмболия легочной артерии) в\
-        \ анамнезе; \nиспользование системных глюкокортикоидов (>10 дней); \nбеременность"
-  - text: "омбоз и (или) тромбоэмболия легочной артерии) в анамнезе; \nиспользование\
-      \ системных глюкокортикоидов (>10 дней); \nбеременность; \nпослеродовый перио"
+      quote: Очень высокий риск развития ВТЭО – хирургические вмешательства на позвоночнике
+        по поводу травматических повреждений при наличии >2 баллов по шкале ФР.
+  - text: 'Наличие больших факторов риска ВТЭО: иммобилизация пациента, длительность
+      хирургического вмешательства >4 часов, ожидаемый постельный режим >72 часов,
+      тяжелый неврологический дефицит, комбинированный переднезадний доступ, вмешательство
+      на нескольких уровнях позвоночника.'
     aliases: []
-    red_flag_type: thrombosis
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -268,118 +560,34 @@ conditions:
       protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
       document_url: null
       local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: null
+      page_start: 11
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "омбоз и (или) тромбоэмболия легочной артерии) в анамнезе; \nиспользование\
-        \ системных глюкокортикоидов (>10 дней); \nбеременность; \nпослеродовый перио"
-  - text: "(глубокий венозный тромбоз и (или) тромбоэмболия легочной артерии) в анамнезе;\
-      \ \nиспользование системных глюкокортикоидов (>10 дней); \nбеременность"
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "(глубокий венозный тромбоз и (или) тромбоэмболия легочной артерии) в\
-        \ анамнезе; \nиспользование системных глюкокортикоидов (>10 дней); \nбеременность"
-  - text: "омбоз и (или) тромбоэмболия легочной артерии) в анамнезе; \nиспользование\
-      \ системных глюкокортикоидов (>10 дней); \nбеременность; \nпослеродовый перио"
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "омбоз и (или) тромбоэмболия легочной артерии) в анамнезе; \nиспользование\
-        \ системных глюкокортикоидов (>10 дней); \nбеременность; \nпослеродовый перио"
-  - text: "тия венозного тромбоэмболического осложнения (далее – ВТЭО) с учетом \n\
-      предполагаемого метода хирургического вмешательства и количества баллов по ш"
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "тия венозного тромбоэмболического осложнения (далее – ВТЭО) с учетом\
-        \ \nпредполагаемого метода хирургического вмешательства и количества баллов\
-        \ по ш"
-  - text: (глубокий венозный тромбоз и (или) тромбоэмболия легочной артерии) в анамнезе;
-      использование системных глюкокортикоидов (>10 дней); беременность;
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: (глубокий венозный тромбоз и (или) тромбоэмболия легочной артерии) в
-        анамнезе; использование системных глюкокортикоидов (>10 дней); беременность;
+      quote: 'Большие ФР: иммобилизация пациента до и (или) после хирургического вмешательства;
+        длительность хирургического вмешательства >4 часов и (или) ожидаемый послеоперационный
+        постельный режим >72 часов; тяжелый неврологический дефицит (такой, как глубокий
+        гемипарез или гемиплегия); комбинированный переднезадний доступ; хирургическое
+        вмешательство на нескольких уровнях позвоночника'
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: travmatologiya_ortopediya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеван
-    document_url: null
-    local_path: minzdrav_protocols/travmatologiya-ortopediya/04КП_Диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: 04КП Диагностика лечение пациентов взрослое население с заболеваниями позвоночника
-      стационарных условияхиях
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:53.042987+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T18:14:40.610512+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:53.043907+00:00'
+  validated_at: '2026-07-20T18:14:40.619326+00:00'

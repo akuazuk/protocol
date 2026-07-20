@@ -1,9 +1,9 @@
 protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов взрослое население с крапчатыми зубами
+  title: Диагностика и лечение пациентов с крапчатыми зубами
   url: null
   local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
   document_sha256: null
@@ -26,19 +26,22 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов_взрослое_населен
-  name: Диагностика и лечение пациентов взрослое население с крапчатыми зубами
+- condition_id: kraapchatye_zuby
+  name: Крапчатые зубы
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B24
+  - K00.3
+  - K00.30
+  - K00.31
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: постановки диагноза должен быть поражен, по крайней мере, один первый
-        постоянный
+    - text: 'Эндемическая крапчатость эмали: избыток фторидов в первые 6 лет жизни,
+        постоянные зубы прорезались с измененным цветом (меловидно-коричневый) в виде
+        полосок и пятен.'
       logic_group: null
       operator: unknown
       values: []
@@ -55,9 +58,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: постановки диагноза должен быть поражен, по крайней мере, один первый
-          постоянный
-    - text: КЛАССИФИКАЦИЯ, ПРИЗНАКИ И КРИТЕРИИ КРАПЧАТЫХ ЗУБОВ
+        quote: 'Эндемическая крапчатость эмали: избыток фторидов в первые 6 лет жизни,
+          постоянные зубы прорезались с измененным цветом (меловидно-коричневый) в
+          виде полосок и пятен.'
+    - text: 'Неэндемическое помутнение эмали: нарушения формирования постоянных зубов
+        (1-4 моляров/резцов), участки непрозрачной эмали (опаковость) с четкой границей,
+        «сырные» зубы, чувствительность к механическим и температурным раздражителям.'
       logic_group: null
       operator: unknown
       values: []
@@ -74,55 +80,197 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: КЛАССИФИКАЦИЯ, ПРИЗНАКИ И КРИТЕРИИ КРАПЧАТЫХ ЗУБОВ
-    - text: '[diagnostics] 5. Признаки и критерии, определяющие крапчатые зубы: (стр.
-        5)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[diagnostics] 5. Признаки и критерии, определяющие крапчатые зубы:
-          (стр. 5)'
-    - text: а также определение медицинских показаний к лечению, выбор метода лечения
-        и тактики
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: а также определение медицинских показаний к лечению, выбор метода лечения
-          и тактики
+        quote: 'Неэндемическое помутнение эмали: нарушения формирования постоянных
+          зубов (1-4 моляров/резцов), участки непрозрачной эмали (опаковость) с четкой
+          границей, «сырные» зубы, чувствительность к механическим'
     optional: []
     exclusion: []
   required_exams: []
-  conditional_exams: []
+  conditional_exams:
+  - name: Витальное окрашивание твердых тканей зуба
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями (по медицинским показаниям)
+        являются: витальное окрашивание твердых тканей зуба.'
+  - name: Лазерная диагностика
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями (по медицинским показаниям)
+        являются: [...] физические методы исследования: лазерная диагностика.'
+  - name: Количественная световая флуоресценция
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями (по медицинским показаниям)
+        являются: [...] физические методы исследования: [...] количественная световая
+        флуоресценция.'
+  - name: Трансиллюминация
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями (по медицинским показаниям)
+        являются: [...] физические методы исследования: [...] трансиллюминация.'
+  - name: Люминесцентная стоматоскопия
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями (по медицинским показаниям)
+        являются: [...] физические методы исследования: [...] люминесцентная стоматоскопия.'
+  - name: Ортопантомография челюстей
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями (по медицинским показаниям)
+        являются: [...] инструментальное диагностическое исследование (лучевой метод
+        исследования): ортопантомография челюстей.'
+  - name: Конусно-лучевая компьютерная томография зубов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями (по медицинским показаниям)
+        являются: [...] инструментальное диагностическое исследование (лучевой метод
+        исследования): [...] конусно-лучевая компьютерная томография зубов.'
+  - name: Фотографирование для оценки твердых тканей зуба
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями (по медицинским показаниям)
+        являются: [...] фотографирование для оценки твердых тканей зуба.'
   treatment:
     non_drug:
-    - text: '[treatment] 9. Общими принципами лечения и медицинской профилактики крапчатых
-        зубов (стр. 6)'
+    - text: Гигиенические мероприятия (мотивация и обучение гигиене полости рта с
+        использованием лечебно-профилактических зубных паст), профессиональное удаление
+        зубных отложений до показателей OHI-S < 0,3–0,6 балла.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
         document_url: null
@@ -133,9 +281,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 9. Общими принципами лечения и медицинской профилактики
-          крапчатых зубов (стр. 6)'
-    - text: восстановление анатомической и функциональной целостности зуба
+        quote: Гигиенические мероприятия (мотивация и обучение гигиене полости рта
+          с использованием лечебно-профилактических зубных паст), профессиональное
+          удаление зубных отложений до показателей OHI-S < 0,3–0,6 ба
+    - text: Микроабразия (сошлифовывание) или отбеливание зубов средствами на основе
+        перекиси водорода или перекиси карбамида.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
         document_url: null
@@ -146,8 +296,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: восстановление анатомической и функциональной целостности зуба
-    - text: предупреждение развития патологических процессов и осложнений.
+        quote: Микроабразия (сошлифовывание) или отбеливание зубов средствами на основе
+          перекиси водорода или перекиси карбамида.
+    - text: Препарирование с последующим пломбированием композиционными материалами,
+        или компомерами, или гиомерами; или препарирование с последующим пломбированием
+        композиционными материалами в виде винира.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
         document_url: null
@@ -158,9 +311,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: предупреждение развития патологических процессов и осложнений.
-    - text: '[treatment] 11. Ортопедическое лечение пациентов с крапчатыми зубами
-        (проводится врачом- (стр. 6)'
+        quote: Препарирование с последующим пломбированием композиционными материалами,
+          или компомерами, или гиомерами; или препарирование с последующим пломбированием
+          композиционными материалами в виде винира.
+    - text: Препарирование под искусственные коронки, вкладки, виниры.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
         document_url: null
@@ -171,9 +325,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 11. Ортопедическое лечение пациентов с крапчатыми зубами
-          (проводится врачом- (стр. 6)'
-    - text: 'стоматологом-ортопедом) включает:'
+        quote: Препарирование под искусственные коронки, вкладки, виниры.
+    - text: Изготовление временных конструкций (исключение – препарированные зубы
+        под штампованные коронки).
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
         document_url: null
@@ -184,9 +338,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'стоматологом-ортопедом) включает:'
-    - text: средств, применяемых при лечении пациентов (взрослое население) с крапчатыми
-        зубами,
+        quote: Изготовление временных конструкций (исключение – препарированные зубы
+          под штампованные коронки).
+    - text: Получение аналоговых или оптических (3D) оттисков.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
         document_url: null
@@ -197,14 +351,147 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: средств, применяемых при лечении пациентов (взрослое население) с крапчатыми
-          зубами,
+        quote: Получение аналоговых или оптических (3D) оттисков.
+    - text: Определение и фиксация центрального соотношения челюстей или центральной
+        окклюзии при помощи восковых или пластмассовых базисов с окклюзионными валиками
+        или окклюзионных силиконовых материалов.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Определение и фиксация центрального соотношения челюстей или центральной
+          окклюзии при помощи восковых или пластмассовых базисов с окклюзионными валиками
+          или окклюзионных силиконовых материалов.
+    - text: Выбор цвета, размера и формы искусственных коронок, вкладок, виниров в
+        соответствии с имеющимися зубами и индивидуальными особенностями пациента.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выбор цвета, размера и формы искусственных коронок, вкладок, виниров
+          в соответствии с имеющимися зубами и индивидуальными особенностями пациента.
+    - text: Наложение и припасовка каркаса коронки.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наложение и припасовка каркаса коронки.
+    - text: Наложение и припасовка готовой коронки, вкладки, винира.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наложение и припасовка готовой коронки, вкладки, винира.
+    - text: Фиксация коронки на временный материал (по медицинским показаниям).
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Фиксация коронки на временный материал (по медицинским показаниям).
+    - text: Фиксация коронки, вкладки, винира на постоянный материал.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Фиксация коронки, вкладки, винира на постоянный материал.
+    - text: Рекомендации по гигиеническому уходу за зубным протезом, правилам адаптации
+        и срокам замены конструкций.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Рекомендации по гигиеническому уходу за зубным протезом, правилам адаптации
+          и срокам замены конструкций.
+    - text: При индексе разрушения окклюзионной поверхности зуба (ИРОПЗ) от 0,4 до
+        0,6 – изготовление вкладок, виниров.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При индексе разрушения окклюзионной поверхности зуба (ИРОПЗ) от 0,4
+          до 0,6 – изготовление вкладок, виниров.
+    - text: При ИРОПЗ от 0,6 до 0,8 – изготовление искусственных коронок.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При ИРОПЗ от 0,6 до 0,8 – изготовление искусственных коронок.
+    - text: При ИРОПЗ более 0,8 – применение штифтовых конструкций с последующим изготовлением
+        искусственных коронок.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При ИРОПЗ более 0,8 – применение штифтовых конструкций с последующим
+          изготовлением искусственных коронок.
     drug_groups: []
     drugs:
-    - drug_name: применения
+    - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: 100 мг
+      dose_text: Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию
+        (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку
+        полости рта или десну. Лекарственное средство можно так
       frequency_text: null
       duration_text: null
       route: null
@@ -216,17 +503,22 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "применения \n100 мг/мл во флаконах 50 мл \nОдну порцию (1–3 "
-    - drug_name: шприцах
+        quote: Лидокаин. Спрей для местного применения 100 мг/мл во флаконах 50 мл.
+          Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую
+          оболочку полости рта или десну. Лекарственное средство можно также наносить
+          путем смазывания смоченным в нем ватным тампоном
+    - drug_name: Лидокаин/Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 12,5 г
+      dose_text: Анестезирующий гель в шприцах 12,5 г. Для аппликационной анестезии
+        слизистой оболочки полости рта, в т. ч. перед инъекционной анестезией. Разовую
+        дозу врач-специалист назначает индивидуально, учитывая
       frequency_text: null
       duration_text: null
       route: null
@@ -238,17 +530,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "шприцах \n12,5 г \nДля аппликационной анестезии слизистой \n"
-    - drug_name: картриджах
+        quote: Лидокаин/Хлоргексидин. Анестезирующий гель в шприцах 12,5 г. Для аппликационной
+          анестезии слизистой оболочки полости рта, в т. ч. перед инъекционной анестезией.
+          Разовую дозу врач-специалист назначает индивидуально
+    - drug_name: Артикаин/Эпинефрин
       active_substance: null
       drug_group: null
-      dose_text: 1,7 мл
+      dose_text: Раствор для инъекций (40 мг + 0,005 мг)/мл, (40 мг + 0,006 мг)/мл,
+        (40 мг + 0,010 мг)/мл, (40 мг + 0,012 мг)/мл. В картриджах 1,7 мл (1,8 мл)
+        или ампулах 2 мл. Для инъекционного применения в полости р
       frequency_text: null
       duration_text: null
       route: null
@@ -260,128 +556,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "картриджах 1,7 мл \n(1,8 мл), в ампулах 2 мл"
-    - drug_name: соответствует
-      active_substance: null
-      drug_group: null
-      dose_text: 12,5 мл
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "соответствует \n12,5 мл раствора для инъекций)\n\n[treatment] Лека"
-    - drug_name: января
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: января 2023 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: марта
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: марта 2023 г
+        quote: Артикаин/Эпинефрин. Раствор для инъекций (...) Лекарственное средство
+          предназначено для инъекционного применения в полости рта и может вводиться
+          только в ткани, где отсутствует воспаление. Доза до 7 мг на 1 кг массы тела.
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: через 6 мес
+  - text: Медицинские осмотры врачом-стоматологом-терапевтом через 6 месяцев после
+      завершения терапевтического лечения.
     timing: null
     required_if: []
     expected_actions: []
@@ -395,36 +584,45 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: через 6 мес
+      quote: Медицинские осмотры врачом-стоматологом-терапевтом через 6 месяцев после
+        завершения терапевтического лечения.
+  - text: Последующее медицинское наблюдение за состоянием зубов и зубных протезов
+      (при их наличии) 2 раза в год (каждые 6 месяцев).
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Последующее медицинское наблюдение за состоянием зубов и зубных протезов
+        (при их наличии) 2 раза в год (каждые 6 месяцев).
   hospitalization: []
   routing: []
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пос
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_крапчатыми_зубами_пост_МЗ_11.01.2023_4.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов взрослое население с крапчатыми зубами
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:50.324535+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T17:54:30.025300+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:50.328307+00:00'
+  validated_at: '2026-07-20T17:54:30.027733+00:00'

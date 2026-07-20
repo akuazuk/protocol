@@ -1,9 +1,9 @@
 protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: диагностики и лечения заболеваний, осложненных сердечной недостаточностью
+  title: Диагностика и лечение заболеваний, осложненных сердечной недостаточностью
   url: null
   local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол
     диагностики и лечения заболеваний, осложненных сердечной недостаточностью 06.06.2017
@@ -21,15 +21,15 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - adult
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностики_и_лечения_заболеваний_осложненных_се
-  name: диагностики и лечения заболеваний, осложненных сердечной недостаточностью
+- condition_id: heart_failure
+  name: Сердечная недостаточность
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -43,8 +43,221 @@ conditions:
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Синдром с комплексом характерных симптомов (одышка, утомляемость, снижение
+        физической активности, отеки), связанных с неадекватной перфузией органов
+        или задержкой жидкости.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
+          протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
+          06.06.2017 № 59.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Синдром с комплексом характерных симптомов (одышка, утомляемость, снижение
+          физической активности, отеки), связанных с неадекватной перфузией органов
+          или задержкой жидкости.
+    - text: 'Первопричина: ухудшение способности сердца к наполнению или опорожнению,
+        обусловленное повреждением миокарда или дисбалансом нейрогуморальных систем.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
+          протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
+          06.06.2017 № 59.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Первопричина: ухудшение способности сердца к наполнению или опорожнению,
+          обусловленное повреждением миокарда или дисбалансом нейрогуморальных систем.'
+    - text: 'Острая СН: возникновение острой (кардиогенной) одышки, связанной с быстрым
+        развитием легочного застоя (отек легких) или кардиогенного шока (с гипотонией,
+        олигурией).'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
+          протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
+          06.06.2017 № 59.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Острая СН: возникновение острой (кардиогенной) одышки, связанной с
+          быстрым развитием легочного застоя (отек легких) или кардиогенного шока
+          (с гипотонией, олигурией).'
+    - text: 'Хроническая СН: периодически возникающие эпизоды обострения (декомпенсации),
+        проявляющиеся внезапным или постепенным усилением симптомов и признаков.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
+          протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
+          06.06.2017 № 59.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Хроническая СН: периодически возникающие эпизоды обострения (декомпенсации),
+          проявляющиеся внезапным или постепенным усилением симптомов и признаков.'
+    optional: []
+    exclusion: []
   required_exams:
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
+        протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
+        06.06.2017 № 59.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Общий анализ мочи
+  - name: Общий анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
+        протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
+        06.06.2017 № 59.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Общий анализ крови
+  - name: Биохимическое исследование крови (калий, натрий, хлор, кальций, мочевина,
+      креатинин, АсАТ, АлАТ, ГГТ, билирубин, глюкоза)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
+        протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
+        06.06.2017 № 59.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Биохимическое исследование крови: определение концентрации калия, натрия,
+        хлора, кальция, мочевины, креатинина в динамике, АсАТ, АлАТ, ГГТ, билирубина,
+        глюкозы'
+  - name: Измерение АД (профиль)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
+        протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
+        06.06.2017 № 59.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Измерение АД (профиль)
+  - name: Измерение ЧСС
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
+        протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
+        06.06.2017 № 59.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ЧСС
   - name: ЭКГ
     aliases: []
     exam_type: unknown
@@ -61,18 +274,42 @@ conditions:
       local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
         протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
         06.06.2017 № 59.pdf
-      page_start: null
+      page_start: 9
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "сти)) (I50.0) \nИзмерение АД (профиль) \nЭКГ \nОбщий анализ крови \n\
-        Рентгенография \nорганов \nгрудной полости  \nКонтроль массы"
-  conditional_exams: []
+      quote: ЭКГ (всем пациентам исходно и перед выпиской)
+  conditional_exams:
+  - name: Определение уровня мозгового натрийуретического гормона (BNP) или СРТ
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
+        протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
+        06.06.2017 № 59.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Определен ие уровня мозгового натрийурет ического гормона (BNP)* или
+        СРТ*
   treatment:
     non_drug:
-    - text: ресинхронизирующую терапию (далее-
+    - text: Комплексная терапия (продолжение лечения, подобранного в стационарных
+        условиях).
       source_ref:
         protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
         document_url: null
@@ -85,8 +322,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: ресинхронизирующую терапию (далее-
-    - text: отделение интенсивной терапии. На догоспитальном этапе - лечение
+        quote: Комплексная терапия (продолжение лечения, подобранного в стационарных
+          условиях).
+    - text: Хирургическое лечение СН.
       source_ref:
         protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
         document_url: null
@@ -99,118 +337,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: отделение интенсивной терапии. На догоспитальном этапе - лечение
-    - text: основного заболевания, приведшего к
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
-          протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
-          06.06.2017 № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: основного заболевания, приведшего к
-    - text: 'Диуретики: фуросемид 40-100 мг в/в'
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
-          протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
-          06.06.2017 № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Диуретики: фуросемид 40-100 мг в/в'
-    - text: раствора хлорида натрия в/в при
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
-          протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
-          06.06.2017 № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: раствора хлорида натрия в/в при
-    - text: при гипертоническом кризе снижение
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
-          протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
-          06.06.2017 № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: при гипертоническом кризе снижение
+        quote: Хирургическое лечение СН.
     drug_groups: []
-    drugs:
-    - drug_name: раствор
-      active_substance: null
-      drug_group: null
-      dose_text: 1 мл
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
-          протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
-          06.06.2017 № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "раствор 1 мл на 10 мл 0,9% \nраствора хлорида натрия в"
-    - drug_name: торасемид
-      active_substance: null
-      drug_group: null
-      dose_text: 5 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
-          протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
-          06.06.2017 № 59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "торасемид 5 мг/сут (однократно), мак- \nсимум – до 20 м"
+    drugs: []
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Контроль
+  - text: 'Биохимическое исследование крови (для амбулаторных условий): исходно и
+      по показаниям, но не реже 1 раза в год.'
     timing: null
     required_if: []
     expected_actions: []
@@ -226,35 +361,14 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контроль
-  - text: Контроль
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
-      document_url: null
-      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
-        протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
-        06.06.2017 № 59.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Контроль
+      quote: 'Биохимическое исследование крови (для амбулаторных условий): исходно
+        и по показаниям, но не реже 1 раза в год.'
   hospitalization: []
-  routing: []
-  red_flags:
-  - text: "профилактика \nтромбоэмболических \nосложнений \nдолжна основываться на\
-      \ оценке риска \nразвития \nинсульта \nпо \n \nшкале \nCHA2DS2-VASc \nи \nоценке\
-      \ \nриска"
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
+  routing:
+  - text: 'Диагностика СН и консультации врачей-специалистов: в районных, межрайонных,
+      областных и республиканских организациях здравоохранения.'
+    timing: null
+    required_if: []
     source_ref:
       protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
       document_url: null
@@ -267,16 +381,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: "профилактика \nтромбоэмболических \nосложнений \nдолжна основываться\
-        \ на оценке риска \nразвития \nинсульта \nпо \n \nшкале \nCHA2DS2-VASc \n\
-        и \nоценке \nриска"
-  - text: "реднего риска тромбоэмболии (1 балл по CHA2DS2-VASc): рекомендовано назначение\
-      \ \nацетилсалициловой кислоты 75-150 мг/сут или оральных антикоагулянт"
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
+      quote: 'Диагностика СН и консультации врачей-специалистов: в районных, межрайонных,
+        областных и республиканских организациях здравоохранения.'
+  - text: 'Хирургическое лечение СН: в областных и республиканских организациях здравоохранения.'
+    timing: null
+    required_if: []
     source_ref:
       protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
       document_url: null
@@ -289,123 +398,26 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: "реднего риска тромбоэмболии (1 балл по CHA2DS2-VASc): рекомендовано\
-        \ назначение \nацетилсалициловой кислоты 75-150 мг/сут или оральных антикоагулянт"
-  - text: "ысокого риска тромбоэмболии (2 балла по CHA2DS2-VASc):  \nпрепарат выбора\
-      \ – варфарин 2,5-5 мг/сут первоначально с последующим изменением дозы под к"
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
-      document_url: null
-      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
-        протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
-        06.06.2017 № 59.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "ысокого риска тромбоэмболии (2 балла по CHA2DS2-VASc):  \nпрепарат выбора\
-        \ – варфарин 2,5-5 мг/сут первоначально с последующим изменением дозы под\
-        \ к"
-  - text: "профилактика \nтромбоэмболических \nосложнений \nдолжна основываться на\
-      \ оценке риска \nразвития \nинсульта \nпо \n \nшкале \nCHA2DS2-VASc \nи \nоценке\
-      \ \nриска"
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
-      document_url: null
-      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
-        протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
-        06.06.2017 № 59.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "профилактика \nтромбоэмболических \nосложнений \nдолжна основываться\
-        \ на оценке риска \nразвития \nинсульта \nпо \n \nшкале \nCHA2DS2-VASc \n\
-        и \nоценке \nриска"
-  - text: "Профилактика тромбоэмболических осложнений при наличии симптоматической\
-      \ сердечной недостаточности \n(функциональный класс II-IV, NYHA) и перманент"
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
-      document_url: null
-      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
-        протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
-        06.06.2017 № 59.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "Профилактика тромбоэмболических осложнений при наличии симптоматической\
-        \ сердечной недостаточности \n(функциональный класс II-IV, NYHA) и перманент"
-  - text: "акторов риска тромбоэмболии (по CHA2DS2-VASc):  \nинсульт/транзиторная\
-      \ ишемическая атака / эмболия другой локализации,  возраст > 75 лет – наличие"
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
-      document_url: null
-      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
-        протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
-        06.06.2017 № 59.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "акторов риска тромбоэмболии (по CHA2DS2-VASc):  \nинсульт/транзиторная\
-        \ ишемическая атака / эмболия другой локализации,  возраст > 75 лет – наличие"
+      quote: 'Хирургическое лечение СН: в областных и республиканских организациях
+        здравоохранения.'
+  red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_за
-    document_url: null
-    local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический
-      протокол диагностики и лечения заболеваний, осложненных сердечной недостаточностью
-      06.06.2017 № 59.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: диагностики и лечения заболеваний, осложненных сердечной недостаточностью
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:15.442314+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T15:21:18.968543+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:15.444739+00:00'
+  validated_at: '2026-07-20T15:21:18.973649+00:00'

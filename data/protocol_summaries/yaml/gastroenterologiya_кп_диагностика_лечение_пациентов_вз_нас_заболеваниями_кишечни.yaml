@@ -1,9 +1,9 @@
 protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение пациентов вз нас заболеваниями кишечника
+  title: Диагностика и лечение заболеваний кишечника
   url: null
   local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
   document_sha256: null
@@ -26,28 +26,39 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_лечение_пациентов_вз_нас_заболевания
-  name: Диагностика лечение пациентов вз нас заболеваниями кишечника
+- condition_id: celiac_artery_compression_syndrome
+  name: Синдром компрессии чревного ствола брюшной аорты
   synonyms: []
   abbreviations: []
   icd10_codes:
   - I77.4
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing: []
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: crohns_disease
+  name: Болезнь Крона
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
   - K50
-  - K51
-  - K52.8
-  - K57
-  - K58
-  - B24
-  - C90.0
-  - K90.0
-  - O72
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: диагнозом ЯК, который ранее достиг клинической ремиссии либо спонтанно,
-        либо
+    - text: 'Клинические: Хроническая диарея (с кровью/без), запоры (стр. 14)'
       logic_group: null
       operator: unknown
       values: []
@@ -64,9 +75,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: диагнозом ЯК, который ранее достиг клинической ремиссии либо спонтанно,
-          либо
-    - text: '[classification] 8. Диагноз (стр. 6)'
+        quote: 'Клинические: Хроническая диарея (с кровью/без), запоры (стр. 14)'
+    - text: 'Клинические: Абдоминальная боль (возможна острая манифестация, напоминающая
+        аппендицит) (стр. 14)'
       logic_group: null
       operator: unknown
       values: []
@@ -83,8 +94,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 8. Диагноз (стр. 6)'
-    - text: эндоскопических и гистологических критериев.
+        quote: 'Клинические: Абдоминальная боль (возможна острая манифестация, напоминающая
+          аппендицит) (стр. 14)'
+    - text: 'Клинические: Снижение массы тела, другие признаки недостаточности питания
+        (стр. 14)'
       logic_group: null
       operator: unknown
       values: []
@@ -101,9 +114,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: эндоскопических и гистологических критериев.
-    - text: '[classification] 33. Пациентам с установленным диагнозом ЯК с целью медицинской
-        профилактики (стр. 12)'
+        quote: 'Клинические: Снижение массы тела, другие признаки недостаточности
+          питания (стр. 14)'
+    - text: 'Клинические: Общие признаки воспаления (стр. 14)'
       logic_group: null
       operator: unknown
       values: []
@@ -120,9 +133,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 33. Пациентам с установленным диагнозом ЯК с целью
-          медицинской профилактики (стр. 12)'
-    - text: 'по возрасту на момент диагноза (А – Age): A1 – до 16 лет'
+        quote: 'Клинические: Общие признаки воспаления (стр. 14)'
+    - text: 'Клинические: Внекишечные признаки (артропатии, узловая эритема, поражения
+        глаз, афтозный стоматит, гангренозная пиодермия) (стр. 14)'
       logic_group: null
       operator: unknown
       values: []
@@ -139,9 +152,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'по возрасту на момент диагноза (А – Age): A1 – до 16 лет'
-    - text: '[classification] 82. Формулировка диагноза микроскопических колитов включает:
-        (стр. 24)'
+        quote: 'Клинические: Внекишечные признаки (артропатии, узловая эритема, поражения
+          глаз, афтозный стоматит, гангренозная пиодермия) (стр. 14)'
+    - text: 'Клинические: Перианальное поражение (свищи, абсцессы, аноректальные стриктуры)
+        (стр. 14)'
       logic_group: null
       operator: unknown
       values: []
@@ -158,9 +172,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 82. Формулировка диагноза микроскопических колитов
-          включает: (стр. 24)'
-    - text: 'Пример формулировки диагноза:'
+        quote: 'Клинические: Перианальное поражение (свищи, абсцессы, аноректальные
+          стриктуры) (стр. 14)'
+    - text: 'Эндоскопические: Признаки воспаления слизистой оболочки (афты, язвы,
+        «булыжная мостовая», деформация просвета, стриктуры, псевдополипы, устья свищевых
+        ходов) (стр. 15)'
       logic_group: null
       operator: unknown
       values: []
@@ -177,9 +193,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Пример формулировки диагноза:'
-    - text: '[classification] 94. Диагноз СРК устанавливается при соответствии симптомов
-        у пациента всем (стр. 26)'
+        quote: 'Эндоскопические: Признаки воспаления слизистой оболочки (афты, язвы,
+          «булыжная мостовая», деформация просвета, стриктуры, псевдополипы, устья
+          свищевых ходов) (стр. 15)'
+    - text: 'Эндоскопические: Прерывистый характер воспаления (стр. 15)'
       logic_group: null
       operator: unknown
       values: []
@@ -196,15 +213,586 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 94. Диагноз СРК устанавливается при соответствии
-          симптомов у пациента всем (стр. 26)'
+        quote: 'Эндоскопические: Прерывистый характер воспаления (стр. 15)'
+    - text: 'Эндоскопические: Очаговый характер воспаления (язвы на фоне неизмененной
+        слизистой) (стр. 15)'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Эндоскопические: Очаговый характер воспаления (язвы на фоне неизмененной
+          слизистой) (стр. 15)'
+    - text: 'Эндоскопические: Поражение подвздошной кишки и отсутствие поражения прямой
+        кишки (стр. 15)'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Эндоскопические: Поражение подвздошной кишки и отсутствие поражения
+          прямой кишки (стр. 15)'
+    - text: 'Эндоскопические: В фазу ремиссии могут обнаруживаться псевдополипы, стенозы,
+        деформации кишки (стр. 15)'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Эндоскопические: В фазу ремиссии могут обнаруживаться псевдополипы,
+          стенозы, деформации кишки (стр. 15)'
+    - text: 'Радиологические: Прерывистый характер поражения (стр. 15)'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Радиологические: Прерывистый характер поражения (стр. 15)'
+    - text: 'Радиологические: Стриктуры, сужения и расширения просвета кишки, причудливые
+        деформации кишки (стр. 15)'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Радиологические: Стриктуры, сужения и расширения просвета кишки, причудливые
+          деформации кишки (стр. 15)'
+    - text: 'Радиологические: Картина «булыжной мостовой» (стр. 15)'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Радиологические: Картина «булыжной мостовой» (стр. 15)'
+    - text: 'Радиологические: Дефекты слизистой/наполнения (псевдополипы), эксцентричное
+        расположение поражений (стр. 15)'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Радиологические: Дефекты слизистой/наполнения (псевдополипы), эксцентричное
+          расположение поражений (стр. 15)'
+    - text: 'Радиологические: Свищи (стр. 15)'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Радиологические: Свищи (стр. 15)'
     optional: []
     exclusion: []
+  required_exams:
+  - name: Оценка статуса питания
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 16
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Оценка статуса питания проводится: по ИМТ согласно приложению 4; по
+        критериям высокого нутритивного риска согласно приложению 5; по шкале нутритивного
+        риска (NSR).'
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: Госпитализация при впервые установленном или ранее установленном диагнозе
+      БК со средней степенью активности (гастроэнтерологическое отделение ГОЗ, ООЗ).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация при впервые установленном или ранее установленном диагнозе
+        БК со средней степенью активности (гастроэнтерологическое отделение ГОЗ, ООЗ).
+  - text: Госпитализация при БК с высокой степенью активности или непрерывным течением
+      (гастроэнтерологическое отделение ООЗ).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация при БК с высокой степенью активности или непрерывным течением
+        (гастроэнтерологическое отделение ООЗ).
+  - text: Госпитализация при БК любой степени активности для дополнительного стационарного
+      обследования.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация при БК любой степени активности для дополнительного стационарного
+        обследования.
+  - text: 'Госпитализация при осложнениях БК: кишечная непроходимость, перфорация,
+      кровотечение, токсический мегаколон, малигнизация, свищи, резистентные к медикаментозной
+      терапии (хирургическое отделение ООЗ).'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Госпитализация при осложнениях БК: кишечная непроходимость, перфорация,
+        кровотечение, токсический мегаколон, малигнизация, свищи, резистентные к медикаментозной
+        терапии (хирургическое отделение ООЗ).'
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: ulcerative_colitis
+  name: Язвенный колит
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - K51
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: 'Монреальская классификация тяжести обострения (клиническая): клиническая
+        ремиссия, легкое, умеренное, тяжелое обострение.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Монреальская классификация тяжести обострения (клиническая): клиническая
+          ремиссия, легкое, умеренное, тяжелое обострение.'
+    - text: 'Эндоскопические критерии тяжести обострения ЯК: легкое, умеренное, тяжелое
+        обострение (отек, гиперемия, эрозии, кровоточивость, изъязвления).'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Эндоскопические критерии тяжести обострения ЯК: легкое, умеренное,
+          тяжелое обострение (отек, гиперемия, эрозии, кровоточивость, изъязвления).'
+    - text: 'Клинические критерии ЯК: диарея с кровью, тенезмы; общие признаки воспаления;
+        внекишечные признаки (спондилоартропатии, узловая эритема, поражения глаз,
+        афтозный стоматит, гангренозная пиодермия, первичный склерозирующий холангит).'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Клинические критерии ЯК: диарея с кровью, тенезмы; общие признаки
+          воспаления; внекишечные признаки (спондилоартропатии, узловая эритема, поражения
+          глаз, афтозный стоматит, гангренозная пиодермия, перв'
+    - text: 'Эндоскопические критерии ЯК: признаки воспаления слизистой оболочки толстой
+        кишки (отек, гиперемия, ослабление/исчезновение сосудистого рисунка, гранулярность,
+        кровоточивость, эрозии, язвы, налеты фибрина, псевдополипы); непрерывный и
+        диффузный характер воспаления.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Эндоскопические критерии ЯК: признаки воспаления слизистой оболочки
+          толстой кишки (отек, гиперемия, ослабление/исчезновение сосудистого рисунка,
+          гранулярность, кровоточивость, эрозии, язвы, налеты фиб'
+    - text: 'Эндоскопические признаки в ремиссии: отсутствие воспаления, возможны
+        псевдополипы толстой кишки.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Эндоскопические признаки в ремиссии: отсутствие воспаления, возможны
+          псевдополипы толстой кишки.'
+    - text: 'Гистологические критерии ЯК: признаки хронического воспаления (инфильтрация
+        плазматическими клетками базальных отделов, повышение клеточности, ветвление/изменение
+        формы крипт, разрежение крипт, панетоклеточная метаплазия, уменьшение бокаловидных
+        клеток, неровность поверхности, базальные лимфоидные агрегаты).'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Гистологические критерии ЯК: признаки хронического воспаления (инфильтрация
+          плазматическими клетками базальных отделов, повышение клеточности, ветвление/изменение
+          формы крипт, разрежение крипт, пането'
+    - text: 'Гистологические признаки активной фазы: инфильтрация эпителия крипт нейтрофилами
+        (криптит, крипт-абсцессы).'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Гистологические признаки активной фазы: инфильтрация эпителия крипт
+          нейтрофилами (криптит, крипт-абсцессы).'
+    - text: 'Гистологический характер воспаления: диффузный и непрерывный.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Гистологический характер воспаления: диффузный и непрерывный.'
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Оценка активности ЯК по шкале Мейо
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: клинико-эндоскопическая оценка тяжести обострения ЯК осуществляется по
+        шкале Мейо для оценки активности ЯК согласно приложению 3.
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: Госпитализация при впервые установленном ЯК с легким или умеренным обострением.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация при впервые установленном ЯК с легким или умеренным обострением.
+  - text: Госпитализация при ранее установленном ЯК с умеренным обострением.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация при ранее установленном ЯК с умеренным обострением.
+  - text: Госпитализация при ЯК с тяжелым обострением или непрерывном течении.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация при ЯК с тяжелым обострением или непрерывном течении.
+  - text: Госпитализация при осложненных формах ЯК для решения вопроса о хирургическом
+      вмешательстве.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация при осложненных формах ЯК для решения вопроса о хирургическом
+        вмешательстве.
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: other_specified_noninfective_gastroenteritis_colitis
+  name: Другие уточненные неинфекционные гастроэнтериты и колиты
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - K52.8
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: Госпитализация пациента с микроскопическим колитом при клинических признаках
+      средней или тяжелой степени в гастроэнтерологическое отделение ГОЗ, ООЗ.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация пациента с микроскопическим колитом при клинических признаках
+        средней или тяжелой степени в гастроэнтерологическое отделение ГОЗ, ООЗ.
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: chronic_vascular_diseases
+  name: Хронические сосудистые болезни
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - K55.1
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
   required_exams: []
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] 3. Фармакотерапия (стр. 3)'
+    - text: Хирургическое вмешательство (проктоколэктомия) при отсутствии ответа на
+        преднизолон/циклоспорин или при непрерывном течении, рефрактерном к ГКС
       source_ref:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
         document_url: null
@@ -215,81 +803,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 3. Фармакотерапия (стр. 3)'
-    - text: протоколом с учетом всех индивидуальных особенностей пациента, тяжести
-        заболевания,
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: протоколом с учетом всех индивидуальных особенностей пациента, тяжести
-          заболевания,
-    - text: Национальный правовой Интернет-портал Республики Беларусь, 04.02.2026,
-        11-3/44531
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Национальный правовой Интернет-портал Республики Беларусь, 04.02.2026,
-          11-3/44531
-    - text: лекарственных препаратов (далее – ЛП). При этом необходимо учитывать наличие
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: лекарственных препаратов (далее – ЛП). При этом необходимо учитывать
-          наличие
-    - text: по медицинскому применению (листком–вкладышем). Допускается включение
-        в схему
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: по медицинскому применению (листком–вкладышем). Допускается включение
-          в схему
-    - text: лечения ЛП по медицинским показаниям, не указанным в инструкции по медицинскому
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: лечения ЛП по медицинским показаниям, не указанным в инструкции по
-          медицинскому
+        quote: Хирургическое вмешательство (проктоколэктомия) при отсутствии ответа
+          на преднизолон/циклоспорин или при непрерывном течении, рефрактерном к ГКС
     drug_groups: []
     drugs:
-    - drug_name: ниже
+    - drug_name: Месалазин
       active_substance: null
       drug_group: null
-      dose_text: 10 мг
+      dose_text: для ректального применения (суппозитории 250 мг, 500 мг, суспензия
+        4 г/60 мл, пена 1 г/аппликация) 1–2 г в сутки.
       frequency_text: null
       duration_text: null
       route: null
@@ -301,17 +823,18 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: ниже 10 мг в сутки или будесонида ниже 3 мг в сутки
-    - drug_name: дозе
+        quote: месалазин в формах для ректального применения (суппозитории ректальные
+          250 мг, 500 мг, суспензия 4 г/60 мл, пена 1 г/аппликация) 1–2 г в сутки.
+    - drug_name: Месалазин
       active_substance: null
       drug_group: null
-      dose_text: 0,75 мг
+      dose_text: (таблетка 400 мг, 250 мг, 500 мг) 2–3 г в сутки внутрь
       frequency_text: null
       duration_text: null
       route: null
@@ -323,17 +846,20 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: дозе 0,75 мг/кг в сутки в течение 4 недель и более
-    - drug_name: ректальные
+        quote: 'При необходимости усиления терапии... назначается дополнительно один
+          из следующих ЛП: месалазин (таблетка 400 мг, 250 мг, 500 мг) 2–3 г в сутки
+          внутрь;'
+    - drug_name: Преднизолон (микроклизмы)
       active_substance: null
       drug_group: null
-      dose_text: 250 мг
+      dose_text: (раствор для инъекций 30 мг/1 мл, содержимое ампулы растворяется
+        в воде до объема 10–20 мл) 30 мг в сутки
       frequency_text: null
       duration_text: null
       route: null
@@ -345,17 +871,18 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "ректальные 250 мг, 500 мг, суспензия 4 г/60 мл, пена \n1 г"
-    - drug_name: таблетка
+        quote: микроклизмы с преднизолоном (раствор для инъекций 30 мг/1 мл, содержимое
+          ампулы растворяется в воде до объема 10–20 мл) 30 мг в сутки;
+    - drug_name: Будесонид
       active_substance: null
       drug_group: null
-      dose_text: 400 мг
+      dose_text: (суппозитории 2 мг, 4 мг; пена 2 мг/доза) ректально 2–4 мг в сутки.
       frequency_text: null
       duration_text: null
       route: null
@@ -367,17 +894,19 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: таблетка 400 мг, 250 мг, 500 мг) 2–3 г в сутки внутрь
-    - drug_name: инъекций
+        quote: будесонид (суппозитории 2 мг, 4 мг; пена 2 мг/доза) ректально 2–4 мг
+          в сутки.
+    - drug_name: Такролимус
       active_substance: null
       drug_group: null
-      dose_text: 30 мг
+      dose_text: 1–4 мг в сутки (капсулы 0,5 мг, 1 мг, содержимое капсулы растворить
+        в воде до общего объема 10 мл) ректально
       frequency_text: null
       duration_text: null
       route: null
@@ -389,17 +918,20 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "инъекций 30 мг/1 мл, содержимое \nампулы растворяется в"
-    - drug_name: суппозитории
+        quote: При рефрактерном проктите назначается такролимус* 1–4 мг в сутки (капсулы
+          0,5 мг, 1 мг, содержимое капсулы растворить в воде до общего объема 10 мл)
+          ректально
+    - drug_name: Преднизолон (перорально)
       active_substance: null
       drug_group: null
-      dose_text: 2 мг
+      dose_text: 40 мг в сутки 1 неделю, затем 30 мг в сутки 1 неделю, далее – 20
+        мг в сутки 1 месяц, затем снижение дозы на 5 мг в неделю до полной отмены
       frequency_text: null
       duration_text: null
       route: null
@@ -411,17 +943,20 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: суппозитории 2 мг, 4 мг
-    - drug_name: пена
+        quote: преднизолон (таблетка 5 мг) внутрь в утренние часы 40 мг в сутки 1
+          неделю, затем 30 мг в сутки 1 неделю, далее – 20 мг в сутки 1 месяц, затем
+          снижение дозы на 5 мг в неделю до полной отмены
+    - drug_name: Метилпреднизолон (перорально)
       active_substance: null
       drug_group: null
-      dose_text: 2 мг
+      dose_text: 32 мг в сутки 1 неделю, 24 мг в сутки 1 неделю, 16 мг в сутки 1 месяц
+        – снижение на 4 мг в неделю.
       frequency_text: null
       duration_text: null
       route: null
@@ -433,17 +968,20 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: пена 2 мг/доза) ректально 2–4 мг в сутки
-    - drug_name: капсулы
+        quote: метилпреднизолон (таблетка 4 мг, 8 мг, 16 мг, 32 мг) 32 мг в сутки
+          1 неделю, 24 мг в сутки 1 неделю, 16 мг в сутки 1 месяц – снижение на 4
+          мг в неделю.
+    - drug_name: Преднизолон (внутривенно)
       active_substance: null
       drug_group: null
-      dose_text: 0,5 мг
+      dose_text: 60–90 мг в сутки внутривенно до развития ответа на лечение, но не
+        менее 5 дней
       frequency_text: null
       duration_text: null
       route: null
@@ -455,17 +993,18 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "капсулы \n0,5 мг, 1 мг, содержимое капсулы растворить в "
-    - drug_name: объема
+        quote: преднизолон (раствор для инъекций 30 мг/1 мл) 60–90 мг в сутки внутривенно
+          до развития ответа на лечение, но не менее 5 дней
+    - drug_name: ЛП биологической терапии
       active_substance: null
       drug_group: null
-      dose_text: 10 мл
+      dose_text: согласно приложению 2
       frequency_text: null
       duration_text: null
       route: null
@@ -477,17 +1016,18 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "объема 10 мл) ректально \n(длительность \nиндукционног"
-    - drug_name: суспензия
+        quote: один из ЛП биологической терапии согласно приложению 2.
+    - drug_name: Циклоспорин (внутривенно/перорально)
       active_substance: null
       drug_group: null
-      dose_text: 4 г
+      dose_text: внутривенно 2 мг/кг в сутки в течение 1 недели с переходом на пероральный
+        прием (капсулы 50 мг, 100 мг) 4–8 мг/кг в сутки в 2 приема
       frequency_text: null
       duration_text: null
       route: null
@@ -499,17 +1039,19 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "суспензия 4 г/60 мл, пена 1 г/аппликация) 1–2 г \nв су"
-    - drug_name: затем
+        quote: циклоспорин внутривенно (концентрат для приготовления раствора для
+          инфузий 50 мг/мл) 2 мг/кг в сутки 1 неделю с переходом на пероральный прием
+          (капсулы 50 мг, 100 мг) 4–8 мг/кг в сутки.
+    - drug_name: Азатиоприн
       active_substance: null
       drug_group: null
-      dose_text: 30 мг
+      dose_text: (таблетка 50 мг) внутрь 2–2,5 мг/кг в сутки
       frequency_text: null
       duration_text: null
       route: null
@@ -521,17 +1063,17 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: 'затем 30 мг в сутки 1 неделю, далее – 20 мг в сутки '
-    - drug_name: более
+        quote: азатиоприн (таблетка 50 мг) внутрь 2–2,5 мг/кг в сутки;
+    - drug_name: Меркаптопурин
       active_substance: null
       drug_group: null
-      dose_text: 2 г
+      dose_text: (таблетка 50 мг) внутрь 1–1,5 мг/кг в сутки
       frequency_text: null
       duration_text: null
       route: null
@@ -543,21 +1085,20 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "более 2 г в сутки назначается один \nиз следующих Л"
+        quote: меркаптопурин (таблетка 50 мг) внутрь 1–1,5 мг/кг в сутки.
     procedures: []
     surgery: []
     source_refs: []
   follow_up: []
   hospitalization: []
   routing:
-  - text: '[routing] 15. Медицинскими показаниями для госпитализации пациента с ЯК
-      являются: (стр. 7)'
+  - text: госпитализация
     timing: null
     required_if: []
     source_ref:
@@ -570,9 +1111,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 15. Медицинскими показаниями для госпитализации пациента с
-        ЯК являются: (стр. 7)'
-  - text: установленный диагноз ЯК с умеренным обострением (госпитализация пациента
+      quote: госпитализация
+  - text: Госпитализация при впервые установленном диагнозе ЯК с легким или умеренным
+      обострением или ранее установленном с умеренным обострением.
     timing: null
     required_if: []
     source_ref:
@@ -585,8 +1126,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: установленный диагноз ЯК с умеренным обострением (госпитализация пациента
-  - text: ЯК с тяжелым обострением или непрерывное течение ЯК (госпитализация пациента
+      quote: Госпитализация при впервые установленном диагнозе ЯК с легким или умеренным
+        обострением или ранее установленном с умеренным обострением.
+  - text: Госпитализация при ЯК с тяжелым обострением или непрерывном течении.
     timing: null
     required_if: []
     source_ref:
@@ -599,9 +1141,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: ЯК с тяжелым обострением или непрерывное течение ЯК (госпитализация пациента
-  - text: (госпитализация осуществляется в проктологическое или хирургическое отделение
-      ГОЗ,
+      quote: Госпитализация при ЯК с тяжелым обострением или непрерывном течении.
+  - text: Госпитализация при осложненных формах ЯК для решения вопроса о хирургическом
+      вмешательстве.
     timing: null
     required_if: []
     source_ref:
@@ -614,35 +1156,1076 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: (госпитализация осуществляется в проктологическое или хирургическое отделение
-        ГОЗ,
+      quote: Госпитализация при осложненных формах ЯК для решения вопроса о хирургическом
+        вмешательстве.
+  - text: Госпитализация при впервые установленном диагнозе БК с активностью средней
+      степени или ранее установленном с активностью средней степени.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация при впервые установленном диагнозе БК с активностью средней
+        степени или ранее установленном с активностью средней степени.
+  - text: Госпитализация при БК с активностью высокой степени или непрерывном течении.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация при БК с активностью высокой степени или непрерывном течении.
+  red_flags:
+  - text: Профузное толстокишечное кровотечение
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: профузное толстокишечное кровотечение;
+  - text: Токсическая дилатация толстой кишки
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: токсическая дилатация толстой кишки;
+  - text: Перфорация толстой кишки
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: перфорация толстой кишки;
+  - text: Колоректальный рак (КРР)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: колоректальный рак (далее – КРР).
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: diverticular_disease_intestine
+  name: Дивертикулярная болезнь кишечника
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - K57
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: абдоминальная боль, чаще в нижнем левом квадранте живота
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: абдоминальная боль, чаще в нижнем левом квадранте живота
+    - text: лихорадка
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: лихорадка
+    - text: положительные симптомы раздражения брюшины
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: положительные симптомы раздражения брюшины
+    - text: пальпаторное определение абдоминальной массы (при осложнениях)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: пальпаторное определение абдоминальной массы (при осложнениях)
+    - text: наличие дивертикулита кишечника по данным эндоскопии или лучевого рентгенологического
+        исследования кишечника
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: наличие дивертикулита кишечника по данным эндоскопии или лучевого рентгенологического
+          исследования кишечника
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Эндоскопия кишечника
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диагностическим критерием ДБ является наличие дивертикулита кишечника
+        по данным эндоскопии или лучевого рентгенологического исследования кишечника.
+  - name: Лучевое рентгенологическое исследование кишечника
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диагностическим критерием ДБ является наличие дивертикулита кишечника
+        по данным эндоскопии или лучевого рентгенологического исследования кишечника.
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing: []
+  red_flags:
+  - text: Абдоминальная боль, чаще в нижнем левом квадранте живота
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Клиническими критериями дивертикулита являются: абдоминальная боль,
+        чаще в нижнем левом квадранте живота; лихорадка, положительные симптомы раздражения
+        брюшины, пальпаторное определение абдоминальной массы (при осложнениях).'
+  - text: Лихорадка
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Клиническими критериями дивертикулита являются: абдоминальная боль,
+        чаще в нижнем левом квадранте живота; лихорадка, положительные симптомы раздражения
+        брюшины, пальпаторное определение абдоминальной массы (при осложнениях).'
+  - text: Положительные симптомы раздражения брюшины
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Клиническими критериями дивертикулита являются: абдоминальная боль,
+        чаще в нижнем левом квадранте живота; лихорадка, положительные симптомы раздражения
+        брюшины, пальпаторное определение абдоминальной массы (при осложнениях).'
+  - text: Пальпаторное определение абдоминальной массы (при осложнениях)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Клиническими критериями дивертикулита являются: абдоминальная боль,
+        чаще в нижнем левом квадранте живота; лихорадка, положительные симптомы раздражения
+        брюшины, пальпаторное определение абдоминальной массы (при осложнениях).'
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: irritable_bowel_syndrome
+  name: Синдром раздраженного кишечника
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - K58
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Определение степени тяжести СРК по оценке выраженности доминирующего симптома
+        (диареи, запора, абдоминальной боли).
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Определение степени тяжести СРК по оценке выраженности доминирующего
+          симптома (диареи, запора, абдоминальной боли).
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Оценка статуса питания по ИМТ
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 16
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Оценка статуса питания проводится: по ИМТ согласно приложению 4'
+  - name: Оценка статуса питания по критериям высокого нутритивного риска
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 16
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Оценка статуса питания проводится: по критериям высокого нутритивного
+        риска согласно приложению 5'
+  - name: Оценка статуса питания по шкале нутритивного риска (NSR)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 16
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Оценка статуса питания проводится: по шкале нутритивного риска (NSR)
+        согласно приложению 6'
+  - name: Оценка статуса питания по клинической диагностике саркопении
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 16
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Оценка статуса питания проводится: в соответствии с клинической диагностикой
+        саркопении согласно приложению 7'
+  - name: Биоимпедансный анализ состава тела человека
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 16
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Оценка статуса питания проводится: инструментальными методами: биоимпедансный
+        анализ состава тела человека'
+  - name: Двойная рентгеновская абсорбциометрия
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 16
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Оценка статуса питания проводится: инструментальными методами: двойная
+        рентгеновская абсорбциометрия'
+  - name: Инфракрасная спектроскопия
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 16
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Оценка статуса питания проводится: инструментальными методами: инфракрасная
+        спектроскопия'
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing: []
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
-    document_url: null
-    local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика лечение пациентов вз нас заболеваниями кишечника
+  source_refs: []
+- condition_id: celiac_disease
+  name: Целиакия
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - K90.0
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Хроническая диарея
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хроническая диарея
+    - text: Снижение массы тела (синдром мальабсорбции)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Снижение массы тела (синдром мальабсорбции)
+    - text: Низкая длина тела
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Низкая длина тела
+    - text: Слабость
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Слабость
+    - text: Утомляемость
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Утомляемость
+    - text: Хроническая усталость
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хроническая усталость
+    - text: Метеоризм
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Метеоризм
+    - text: Рецидивирующая абдоминальная боль
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Рецидивирующая абдоминальная боль
+    - text: Запор
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Запор
+    - text: Гастроэзофагеальный рефлюкс
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Гастроэзофагеальный рефлюкс
+    - text: Гипертрансаминаземия
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Гипертрансаминаземия
+    - text: Рвота
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Рвота
+    - text: Диспепсия
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Диспепсия
+    - text: Железодефицитная анемия
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Железодефицитная анемия
+    - text: Фолиево-дефицитная анемия
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Фолиево-дефицитная анемия
+    - text: Тромбоцитоз (гипоспленизм)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Тромбоцитоз (гипоспленизм)
+    optional: []
+    exclusion: []
+  required_exams: []
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing: []
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: malabsorption_post_surgical_nec
+  name: Нарушение всасывания после хирургического вмешательства, не классифицированное
+    в других рубриках
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - K91.2
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams:
+  - name: Оценка статуса питания по ИМТ
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 16
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Оценка статуса питания проводится: по ИМТ согласно приложению 4;'
+  - name: Оценка статуса питания по критериям высокого нутритивного риска
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 16
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Оценка статуса питания проводится: по критериям высокого нутритивного
+        риска согласно приложению 5;'
+  - name: Оценка статуса питания по шкале нутритивного риска (NSR)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 16
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Оценка статуса питания проводится: по шкале нутритивного риска (NSR)
+        согласно приложению 6;'
+  - name: Оценка статуса питания по клинической диагностике саркопении
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 16
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Оценка статуса питания проводится: в соответствии с клинической диагностикой
+        саркопении согласно приложению 7;'
+  - name: Биоимпедансный анализ состава тела человека
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 16
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Оценка статуса питания проводится инструментальными методами: биоимпедансный
+        анализ состава тела человека;'
+  - name: Двойная рентгеновская абсорбциометрия
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 16
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Оценка статуса питания проводится инструментальными методами: двойная
+        рентгеновская абсорбциометрия;'
+  - name: Инфракрасная спектроскопия
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечни
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf
+      page_start: 16
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Оценка статуса питания проводится инструментальными методами: инфракрасная
+        спектроскопия.'
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing: []
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:28.516969+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T16:13:12.955923+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=9
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:28.532556+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[chronic_vascular_diseases].treatment.drugs[1]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[malabsorption_post_surgical_nec].required_exams[0]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[malabsorption_post_surgical_nec].required_exams[1]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[malabsorption_post_surgical_nec].required_exams[2]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[malabsorption_post_surgical_nec].required_exams[3]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[malabsorption_post_surgical_nec].required_exams[4]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[malabsorption_post_surgical_nec].required_exams[5]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[malabsorption_post_surgical_nec].required_exams[6]
+  validated_at: '2026-07-20T16:13:13.016005+00:00'

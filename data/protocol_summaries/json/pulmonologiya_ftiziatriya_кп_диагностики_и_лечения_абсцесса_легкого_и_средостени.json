@@ -1,10 +1,10 @@
 {
   "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "диагностики и лечения абсцесса легкого и средостения",
+    "title": "Диагностики и лечения абсцесса легкого и средостения",
     "url": null,
     "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "adult"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,8 +32,8 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностики_и_лечения_абсцесса_легкого_и_средост",
-      "name": "диагностики и лечения абсцесса легкого и средостения",
+      "condition_id": "abscess_lung_mediastinum",
+      "name": "Абсцесс легкого и средостения",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
@@ -41,21 +41,271 @@
         "J85.0",
         "J85.1",
         "J85.2",
-        "J85.3",
-        "B24",
-        "C90.0",
-        "K04.7"
+        "J85.3"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
+      "diagnostic_criteria": {
+        "required": [
+          {
+            "text": "Ограниченное гнойное воспаление легочной ткани с деструкцией ее паренхимы и бронхов, их расплавлением и образованием полости.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ограниченное гнойное воспаление легочной ткани с деструкцией ее паренхимы и бронхов, их расплавлением и образованием полости."
+            }
+          }
+        ],
+        "optional": [],
+        "exclusion": []
+      },
+      "required_exams": [
+        {
+          "name": "Общий анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Общий анализ крови"
+          }
+        },
+        {
+          "name": "Общий анализ мочи",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Общий анализ мочи"
+          }
+        },
+        {
+          "name": "Биохимическое исследование крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Биохимическое исследование крови: определение концентрации белка и его фракций; мочевины; определение активности аспартатаминотрансферазы (АсАТ); аланинаминотрансферазы (АлАТ)"
+          }
+        },
+        {
+          "name": "Микроскопическое и бактериологическое исследование мокроты",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Микроскопическое и бактериологическое исследование мокроты"
+          }
+        },
+        {
+          "name": "Рентгенография органов грудной полости",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Ренгенография органов грудной полости"
+          }
+        },
+        {
+          "name": "КТ грудной полости",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "КТ грудной полости"
+          }
+        },
+        {
+          "name": "Бронхоскопия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Бронхоскопия"
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Исследование гемокультуры",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Исследование гемокультуры (оптимально проводить забор двух проб венозной крови из разных вен с интервалом 30-60 мин)"
+          }
+        },
+        {
+          "name": "Спирография",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Спирография"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "Лекарственные средства резерва:",
+            "text": "Хирургическое лечение в зависимости от варианта течения гнойно-некротического легочного процесса.",
             "source_ref": {
               "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
               "document_url": null,
@@ -66,175 +316,374 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Лекарственные средства резерва:"
-            }
-          },
-          {
-            "text": "цефоперазон/сульбактам. Хирургическое лечение  в зави-",
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "цефоперазон/сульбактам. Хирургическое лечение  в зави-"
-            }
-          },
-          {
-            "text": "Лекарственные средства резерва:",
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Лекарственные средства резерва:"
-            }
-          },
-          {
-            "text": "цефоперазон/сульбактам. Хирургическое лечение  в зави-",
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "цефоперазон/сульбактам. Хирургическое лечение  в зави-"
-            }
-          },
-          {
-            "text": "[other] Описание протокола (стр. 1)",
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[other] Описание протокола (стр. 1)"
-            }
-          },
-          {
-            "text": "Клинический протокол: диагностики и лечения абсцесса легкого и средостения",
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Клинический протокол: диагностики и лечения абсцесса легкого и средостения"
+              "quote": "Хирургическое лечение в зависимости от варианта течения гнойно-некротического легочного процесса."
             }
           }
         ],
         "drug_groups": [],
-        "drugs": [],
+        "drugs": [
+          {
+            "drug_name": "Амоксициллин/клавулановая кислота",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "1,2 г в/в 3 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Препараты выбора: амоксициллин/клавулановая кислота 1,2 г в/в 3 раза в сутки"
+            }
+          },
+          {
+            "drug_name": "Цефотаксим",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "1–2 г в/в 2-3 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "цефотаксим 1– 2 г в/в 2-3 раза в сутки"
+            }
+          },
+          {
+            "drug_name": "Левофлоксацин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,5 г в/в 1 раз в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "левофлоксацин 0,5 г в/в 1 раз в сутки"
+            }
+          },
+          {
+            "drug_name": "Метронидазол",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,5 г в/в 3 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "метронидазол 0,5 г в/в 3 раза в сутки"
+            }
+          },
+          {
+            "drug_name": "Амикацин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "15-20 мг/кг 1 раз в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "амикацин 15-20 мг/кг 1 раз в сутки"
+            }
+          },
+          {
+            "drug_name": "Цефепим",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "1-2 г в/в 2 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "цефепим 1-2 г в/в 2 раза в сутки"
+            }
+          },
+          {
+            "drug_name": "Меропенем",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": null,
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лекарственные средства резерва: меропенем, дорипенем, эртапенем, имипенем /циластатин, тейко-планин, ванкомицин, линезолид, цефоперазон/сульбактам."
+            }
+          },
+          {
+            "drug_name": "Дорипенем",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": null,
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лекарственные средства резерва: меропенем, дорипенем, эртапенем, имипенем /циластатин, тейко-планин, ванкомицин, линезолид, цефоперазон/сульбактам."
+            }
+          },
+          {
+            "drug_name": "Эртапенем",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": null,
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лекарственные средства резерва: меропенем, дорипенем, эртапенем, имипенем /циластатин, тейко-планин, ванкомицин, линезолид, цефоперазон/сульбактам."
+            }
+          },
+          {
+            "drug_name": "Имипенем/циластатин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": null,
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лекарственные средства резерва: меропенем, дорипенем, эртапенем, имипенем /циластатин, тейко-планин, ванкомицин, линезолид, цефоперазон/сульбактам."
+            }
+          },
+          {
+            "drug_name": "Тейкопланин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": null,
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лекарственные средства резерва: меропенем, дорипенем, эртапенем, имипенем /циластатин, тейко-планин, ванкомицин, линезолид, цефоперазон/сульбактам."
+            }
+          },
+          {
+            "drug_name": "Ванкомицин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": null,
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лекарственные средства резерва: меропенем, дорипенем, эртапенем, имипенем /циластатин, тейко-планин, ванкомицин, линезолид, цефоперазон/сульбактам."
+            }
+          },
+          {
+            "drug_name": "Линезолид",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": null,
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лекарственные средства резерва: меропенем, дорипенем, эртапенем, имипенем /циластатин, тейко-планин, ванкомицин, линезолид, цефоперазон/сульбактам."
+            }
+          },
+          {
+            "drug_name": "Цефоперазон/сульбактам",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": null,
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лекарственные средства резерва: меропенем, дорипенем, эртапенем, имипенем /циластатин, тейко-планин, ванкомицин, линезолид, цефоперазон/сульбактам."
+            }
+          }
+        ],
         "procedures": [],
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [
-        {
-          "text": "контроль",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "контроль"
-          }
-        },
-        {
-          "text": "контроль",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "контроль"
-          }
-        },
-        {
-          "text": "Контроль",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Контроль"
-          }
-        },
-        {
-          "text": "Контроль",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Контроль"
-          }
-        }
-      ],
+      "follow_up": [],
       "hospitalization": [],
-      "routing": [],
-      "red_flags": [
+      "routing": [
         {
-          "text": "летки, гематогенная эмболизация инфекцией. Возрастная категория: взрослое население Республики Беларусь.\n\n[diagnostics] ГЛАВА 2 (стр. 5)\nДИАГНОСТИ",
-          "aliases": [],
-          "red_flag_type": "thrombosis",
-          "severity": "high",
-          "expected_actions": [],
-          "cap_if_unhandled": null,
+          "text": "Госпитализация",
+          "timing": null,
+          "required_if": [],
           "source_ref": {
             "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
             "document_url": null,
@@ -245,16 +694,13 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "летки, гематогенная эмболизация инфекцией. Возрастная категория: взрослое население Республики Беларусь.\n\n[diagnostics] ГЛАВА 2 (стр. 5)\nДИАГНОСТИ"
+            "quote": "Госпитализация"
           }
         },
         {
-          "text": "летки, гематогенная эмболизация инфекцией. Возрастная категория: взрослое население Республики Беларусь.\n\n[diagnostics] ГЛАВА 2 (стр. 5)\nДИАГНОСТИ",
-          "aliases": [],
-          "red_flag_type": "thrombosis",
-          "severity": "high",
-          "expected_actions": [],
-          "cap_if_unhandled": null,
+          "text": "Лечение пациентов с острым гнойным абсцессом с хорошим бронхиальным дренажем (на обзорной рентгенограмме – полость без горизонтального уровня) показано в терапевтическом (пульмонологическом) отделении.",
+          "timing": null,
+          "required_if": [],
           "source_ref": {
             "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
             "document_url": null,
@@ -265,45 +711,51 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "летки, гематогенная эмболизация инфекцией. Возрастная категория: взрослое население Республики Беларусь.\n\n[diagnostics] ГЛАВА 2 (стр. 5)\nДИАГНОСТИ"
+            "quote": "Лечение пациентов с острым гнойным абсцессом с хорошим бронхиальным дренажем (на обзорной рентгенограмме – полость без горизонтального уровня) показано в терапевтическом (пульмонологическом) отделении"
+          }
+        },
+        {
+          "text": "Пациенты с другими клиническими формами и вариантами течения должны направляться для лечения в торакальные хирургические отделения, так как в остром периоде течения болезни необходимы паллиативные хирургические вмешательства, направленные на создание оттока (улучшение бронхиального дренажа) из внутрилегочных полостей.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Пациенты с другими клиническими формами и вариантами течения должны направляться для лечения в торакальные хирургические отделения, так как в остром периоде течения болезни необходимы паллиативные хир"
           }
         }
       ],
+      "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения абсцесса легкого и средостения 05.07.2012 № 768.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "диагностики и лечения абсцесса легкого и средостения"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:46.319066+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T18:01:26.489574+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:46.319172+00:00"
+    "validated_at": "2026-07-20T18:01:26.501573+00:00"
   }
 }

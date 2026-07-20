@@ -1,7 +1,7 @@
 {
   "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "диагностики и лечения тахикардии и нарушений проводимости",
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "adult"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,23 +32,12 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностики_и_лечения_тахикардии_и_нарушений_про",
-      "name": "диагностики и лечения тахикардии и нарушений проводимости",
+      "condition_id": "nadzheludochkovaya_takhikardiya",
+      "name": "Наджелудочковая тахикардия",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "I47.1",
-        "I47.2",
-        "I48",
-        "I49.0",
-        "I49.4",
-        "I49.5",
-        "I44.0",
-        "I44.1",
-        "I44.2",
-        "I44.4",
-        "I44.5",
-        "I44.7"
+        "I47.1"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -56,7 +45,7 @@
       "diagnostic_criteria": null,
       "required_exams": [
         {
-          "name": "ЭКГ",
+          "name": "Биохимическое исследование крови: определение концентрации калия, магния, холестерин",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -71,20 +60,197 @@
             "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
             "document_url": null,
             "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
-            "page_start": null,
+            "page_start": 8,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "концентрации калия, магния, холестерин. ЭКГ в 12-ти отведениях Консультация врача-кардиолога ХМ* Эхо-КГ При рецидивах консу"
+            "quote": "Биохимическое исследование крови: определение концентрации калия, магния, холестерин."
+          }
+        },
+        {
+          "name": "ЭКГ в 12-ти отведениях",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ЭКГ в 12-ти отведениях"
+          }
+        },
+        {
+          "name": "Консультация врача-кардиолога",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Консультация врача-кардиолога"
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Холтеровское мониторирование (ХМ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ХМ*"
+          }
+        },
+        {
+          "name": "Эхо-КГ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Эхо-КГ"
+          }
+        },
+        {
+          "name": "Консультация в городском/областном кардиологическом диспансере (при рецидивах)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При рецидивах консультация в городском/областном кардиологическом диспансере"
+          }
+        },
+        {
+          "name": "Чреспищеводное электрофизиологическое исследование (ЧПЭФИ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ЧПЭФИ"
+          }
+        },
+        {
+          "name": "Консультация в РНПЦ «Кардиология» (при рецидивах)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При рецидивах консультация в РНПЦ «Кардиология»"
           }
         },
         {
           "name": "ФГДС",
           "aliases": [],
           "exam_type": "unknown",
-          "requirement_level": "required",
+          "requirement_level": "conditional",
           "accepted_statuses": [
             "performed",
             "recommended"
@@ -96,21 +262,145 @@
             "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
             "document_url": null,
             "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
-            "page_start": null,
+            "page_start": 8,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "дивах консультация в РНПЦ «Кардиология» ФГДС Гормоны щитовидной железы (тиреотропный гормон, Т4 свободный) Липидограмма | Ку"
+            "quote": "ФГДС"
+          }
+        },
+        {
+          "name": "Гормоны щитовидной железы (тиреотропный гормон, Т4 свободный)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Гормоны щитовидной железы (тиреотропный гормон, Т4 свободный)"
+          }
+        },
+        {
+          "name": "Липидограмма",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Липидограмма"
+          }
+        },
+        {
+          "name": "ЧПЭхоКГ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
+            "page_start": 67,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Диагностический поиск источника тромбоэмболии при наличии Инсульта/ТИА ишемического генеза у пациента с ФП."
+          }
+        },
+        {
+          "name": "ЧПЭхоКГ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
+            "page_start": 68,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Исключение наличия тромбоза камер сердца у пациентов с эпизодом ФП длительностью более 48 часов и более или неизвестной давности, если избрана стратегия контроля ритма, подразумевающая кардиоверсию любым методом."
+          }
+        },
+        {
+          "name": "ЧПЭхоКГ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
+            "page_start": 68,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При подготовке пациента к РЧА по поводу ФП и другим интревеннционным вмешательствам внутри камер сердца."
           }
         }
       ],
-      "conditional_exams": [],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 10. С этого момента кроме введения вазопрессора (адреналина) необходимо использовать только одно из (стр. 6)",
+            "text": "электроимпульсная терапия (ЭИТ) 50-360 Дж",
             "source_ref": {
               "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
               "document_url": null,
@@ -121,11 +411,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 10. С этого момента кроме введения вазопрессора (адреналина) необходимо использовать только одно из (стр. 6)"
+              "quote": "электроимпульсная терапия (ЭИТ) 50-360 Дж"
             }
           },
           {
-            "text": "при наличии веретенообразной ЖТ (torsade de points), подозрении на недостаток магния (интенсивная",
+            "text": "Аблация субстрата аритмии (по решению консультации кардиолога или рентгено-эндоваскулярного хирурга, кардиохирурга)",
             "source_ref": {
               "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
               "document_url": null,
@@ -136,77 +426,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "при наличии веретенообразной ЖТ (torsade de points), подозрении на недостаток магния (интенсивная"
-            }
-          },
-          {
-            "text": "диуретическая терапия в анамнезе) рассмотреть введение раствора MgSO4 25% раствор 5-10 мл, 50% раствор",
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "диуретическая терапия в анамнезе) рассмотреть введение раствора MgSO4 25% раствор 5-10 мл, 50% раствор"
-            }
-          },
-          {
-            "text": "[treatment] 10. С этого момента кроме введения вазопрессора (адреналина) необходимо использовать только одно из (стр. 9)",
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 10. С этого момента кроме введения вазопрессора (адреналина) необходимо использовать только одно из (стр. 9)"
-            }
-          },
-          {
-            "text": "Лечение наджелудочковой тахикардии.",
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Лечение наджелудочковой тахикардии."
-            }
-          },
-          {
-            "text": "Купирование приступа. Лечение проводится в зависимости от длительности пароксизма, стабильности гемодинамики и",
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Купирование приступа. Лечение проводится в зависимости от длительности пароксизма, стабильности гемодинамики и"
+              "quote": "Аблация субстрата аритмии (по решению консультации кардиолога или рентгено-эндоваскулярного хирурга, кардиохирурга)"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "раствор",
+            "drug_name": "Метопролол",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1 мл",
+            "dose_text": "0,1% раствор – первоначально 2,5-5 мл (2,5-5,0 мг со скоростью 1-2 мг/мин); при необходимости дозу повторить с 5 минутным интервалом до достижения терапевтического эффекта или до 10-15 мг (максимальна",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -218,20 +448,20 @@
               "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
               "document_url": null,
               "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
-              "page_start": null,
+              "page_start": 9,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "раствор 1 мл (1 мг) \nвнутривенно болюсно каждые 3-5 м"
+              "quote": "метопролол 0,1% раствор – первоначально 2,5-5 мл (2,5-5,0 мг со скоростью 1-2 мг/мин); дозу повторить с 5 мин интервалом до 10-15 мг (макс. 20 мг); или 25-50 мг/сут., внутрь."
             }
           },
           {
-            "drug_name": "амиодарон",
+            "drug_name": "Пропафенон",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "300 мг",
+            "dose_text": "0,5-1 мг / кг в/венно за 10-20 минут. (при необходимости дозу повторить суммарно до 2 мг/кг в/венно)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -243,20 +473,20 @@
               "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
               "document_url": null,
               "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
-              "page_start": null,
+              "page_start": 9,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "амиодарон 300 мг (2 ампулы) внутривенно болюсно однократн"
+              "quote": "пропафенон – 0,5-1 мг / кг в/венно за 10-20 минут. (при необходимости дозу повторить суммарно до 2 мг/кг в/венно)"
             }
           },
           {
-            "drug_name": "скоростью",
+            "drug_name": "Метопролол (профилактика)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1 мг",
+            "dose_text": "25-200 мг/сут.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -268,20 +498,20 @@
               "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
               "document_url": null,
               "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
-              "page_start": null,
+              "page_start": 10,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "скоростью 1 мг/мин в \nтечение первых 6 часов (360 мг з"
+              "quote": "метопролол – 25-200 мг/сут."
             }
           },
           {
-            "drug_name": "затем",
+            "drug_name": "Бисопролол (профилактика)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,5 мг",
+            "dose_text": "2,5-10 мг/сут.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -293,20 +523,20 @@
               "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
               "document_url": null,
               "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
-              "page_start": null,
+              "page_start": 10,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "затем 0,5 мг/мин до конца суток (540 мг за 18 часов)"
+              "quote": "бисопролол – 2,5-10 мг/сут."
             }
           },
           {
-            "drug_name": "расчета",
+            "drug_name": "Пропафенон (профилактика)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,5 мг",
+            "dose_text": "450-600 мг/сут.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -318,13 +548,38 @@
               "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
               "document_url": null,
               "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
-              "page_start": null,
+              "page_start": 10,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "расчета 0,5 мг/кг до 2 дополнительных введений до сумм"
+              "quote": "пропафенон – 450-600 мг/сут."
+            }
+          },
+          {
+            "drug_name": "Этацизин (профилактика)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "150-200 мг/сут.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "этацизин – 150-200 мг/сут."
             }
           }
         ],
@@ -332,14 +587,104 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
+      "follow_up": [
+        {
+          "text": "Биохимическое исследование крови (калий, магний, холестерин) и ЭКГ в 12-ти отведениях: исходно и по показаниям, но не реже 1 раза в год.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Биохимическое исследование крови (калий, магний, холестерин) и ЭКГ в 12-ти отведениях: исходно и по показаниям, но не реже 1 раза в год."
+          }
+        },
+        {
+          "text": "Сочетание нескольких антиаритмических лекарственных средств для профилактики приступов.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Сочетание нескольких антиаритмических лекарственных средств для профилактики приступов."
+          }
+        },
+        {
+          "text": "Требует осторожности и более частого контроля пациентов на терапии оральными антикоагулянтами (при высоком риске кровотечения по HAS-BLED).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Требует осторожности и более частого контроля пациентов на терапии оральными антикоагулянтами (при высоком риске кровотечения по HAS-BLED)."
+          }
+        }
+      ],
       "hospitalization": [],
-      "routing": [],
+      "routing": [
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        },
+        {
+          "text": "Консультация врача-кардиолога или врача-рентгено-эндоваскулярного хирурга, врача-кардиохирурга для решения вопроса о выполнении аблации субстрата аритмии.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Консультация врача-кардиолога или врача-рентгено-эндоваскулярного хирурга, врача-кардиохирурга для решения вопроса о выполнении аблации субстрата аритмии."
+          }
+        }
+      ],
       "red_flags": [
         {
-          "text": "действия;  \n тромбоэмболию;  \n гипогликемию;  \n травму.\n\n[other] 06.06. 2017  № 59 (стр. 5)\n3. \nесли фибрилляция желудочков/желудочковая тахика",
+          "text": "Внезапная остановка сердца, вызванная тахи- и брадиаритмиями, как ведущая причина летальных исходов",
           "aliases": [],
-          "red_flag_type": "thrombosis",
+          "red_flag_type": "other",
           "severity": "high",
           "expected_actions": [],
           "cap_if_unhandled": null,
@@ -347,19 +692,19 @@
             "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
             "document_url": null,
             "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
-            "page_start": null,
+            "page_start": 2,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "действия;  \n тромбоэмболию;  \n гипогликемию;  \n травму.\n\n[other] 06.06. 2017  № 59 (стр. 5)\n3. \nесли фибрилляция желудочков/желудочковая тахика"
+            "quote": "Более 60 % летальных исходов в данной группе пациентов вызваны внезапной остановкой сердца в основе которой лежат тахи- и брадиаритмии."
           }
         },
         {
-          "text": "ния и вызов скорой (неотложной) помощи; \n \nраннее начало СЛР; \n \nраннее проведение дефибрилляции (при наличии показаний); \n \nранняя расширенная С",
+          "text": "Раннее распознавание ургентного состояния и вызов скорой (неотложной) помощи",
           "aliases": [],
-          "red_flag_type": "urgent_referral",
+          "red_flag_type": "other",
           "severity": "high",
           "expected_actions": [],
           "cap_if_unhandled": null,
@@ -367,19 +712,19 @@
             "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
             "document_url": null,
             "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
-            "page_start": null,
+            "page_start": 2,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "ния и вызов скорой (неотложной) помощи; \n \nраннее начало СЛР; \n \nраннее проведение дефибрилляции (при наличии показаний); \n \nранняя расширенная С"
+            "quote": "раннее распознавание ургентного состояния и вызов скорой (неотложной) помощи;"
           }
         },
         {
-          "text": "ния и вызов скорой (неотложной) помощи; \n \nраннее начало СЛР; \n \nраннее проведение дефибрилляции (при наличии показаний); \n \nранняя расширенная С",
+          "text": "Структурная патология сердца, являющаяся противопоказанием для назначения препаратов класса 1С: перенесенный инфаркт миокарда, стенокардия, гипертрофия миокарда ЛЖ > 14 мм, наличие дилатации ЛЖ и снижение ФВ < 40%.",
           "aliases": [],
-          "red_flag_type": "urgent_referral",
+          "red_flag_type": "other",
           "severity": "high",
           "expected_actions": [],
           "cap_if_unhandled": null,
@@ -387,19 +732,19 @@
             "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
             "document_url": null,
             "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
-            "page_start": null,
+            "page_start": 9,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "ния и вызов скорой (неотложной) помощи; \n \nраннее начало СЛР; \n \nраннее проведение дефибрилляции (при наличии показаний); \n \nранняя расширенная С"
+            "quote": "Структурная патология сердца, являющаяся противопоказанием для назначения препаратов класса 1С: перенесенный инфаркт миокарда, стенокардия, гипертрофия миокарда ЛЖ > 14 мм, наличии дилатации ЛЖ и снижения ФВ < 40%)."
           }
         },
         {
-          "text": "ния и вызов скорой (неотложной) помощи; \n \nраннее начало СЛР; \n \nраннее проведение дефибрилляции (при наличии показаний); \n \nранняя расширенная С",
+          "text": "Высокий риск кровотечения (HAS-BLED ≥ 3 балла)",
           "aliases": [],
-          "red_flag_type": "urgent_referral",
+          "red_flag_type": "other",
           "severity": "high",
           "expected_actions": [],
           "cap_if_unhandled": null,
@@ -407,51 +752,59 @@
             "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
             "document_url": null,
             "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
-            "page_start": null,
+            "page_start": 67,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "ния и вызов скорой (неотложной) помощи; \n \nраннее начало СЛР; \n \nраннее проведение дефибрилляции (при наличии показаний); \n \nранняя расширенная С"
+            "quote": "Значение ≥ 3 баллов по шкале HAS-BLED говорит о высоком риске кровотечения. Высокое значение само по себе не является показанием к отмене/не назначению антикоагулянтов, но служит поиску и модификации управляемых факторов риска."
+          }
+        },
+        {
+          "text": "Атлантоаксиальное заболевание и тяжелые обострения артрита шеи (противопоказание к ЧПЭхоКГ)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
+            "page_start": 68,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Атлантоаксиальное заболевание и тяжелые обострения артрита шеи: ЧПЭхоКГ никогда не следует выполнять, если есть какие-либо вопросы об устойчивости шейного отдела позвоночника."
           }
         }
       ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_та",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения тахикардии и нарушений проводимости 06.06.2017 № 59.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "диагностики и лечения тахикардии и нарушений проводимости"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:15.512849+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T15:40:40.817793+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:15.519675+00:00"
+    "validated_at": "2026-07-20T15:40:40.835273+00:00"
   }
 }

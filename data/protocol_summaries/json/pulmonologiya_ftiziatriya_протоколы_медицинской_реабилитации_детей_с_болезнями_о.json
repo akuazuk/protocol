@@ -1,7 +1,7 @@
 {
   "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "Протоколы медицинской реабилитации детей с болезнями органов дыхания",
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,28 +32,50 @@
   },
   "conditions": [
     {
-      "condition_id": "протоколы_медицинской_реабилитации_детей_с_болез",
-      "name": "Протоколы медицинской реабилитации детей с болезнями органов дыхания",
+      "condition_id": "other_chronic_obstructive_lung_disease",
+      "name": "Другая хроническая обструктивная легочная болезнь",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
         "J41",
-        "J42",
-        "J43.0",
-        "J44",
-        "J45",
-        "J40"
+        "J42"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
-      "diagnostic_criteria": null,
+      "diagnostic_criteria": {
+        "required": [
+          {
+            "text": "МКБ 10, ФК",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "МКБ 10, ФК"
+            }
+          }
+        ],
+        "optional": [],
+        "exclusion": []
+      },
       "required_exams": [],
       "conditional_exams": [],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 5. Психотерапия (стр. 3)",
+            "text": "Мероприятия психотерапии (психолого-педагогической коррекции)",
             "source_ref": {
               "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
               "document_url": null,
@@ -64,11 +86,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 5. Психотерапия (стр. 3)"
+              "quote": "Мероприятия психотерапии (психолого-педагогической коррекции)"
             }
           },
           {
-            "text": "[treatment] 1. Активная кинезотерапия (стр. 4)",
+            "text": "Индивидуальная психотерапия: психокоррекционная беседа",
             "source_ref": {
               "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
               "document_url": null,
@@ -79,11 +101,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 1. Активная кинезотерапия (стр. 4)"
+              "quote": "Индивидуальная психотерапия: психокоррекционная беседа"
             }
           },
           {
-            "text": "[treatment] 1.3. Игротерапия (стр. 5)",
+            "text": "Индивидуальная психотерапия: позитивная психотерапия",
             "source_ref": {
               "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
               "document_url": null,
@@ -94,11 +116,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 1.3. Игротерапия (стр. 5)"
+              "quote": "Индивидуальная психотерапия: позитивная психотерапия"
             }
           },
           {
-            "text": "[treatment] 1.8. Эрготерапия: (стр. 5)",
+            "text": "Индивидуальная психотерапия: нейропсихологический тренинг",
             "source_ref": {
               "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
               "document_url": null,
@@ -109,11 +131,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 1.8. Эрготерапия: (стр. 5)"
+              "quote": "Индивидуальная психотерапия: нейропсихологический тренинг"
             }
           },
           {
-            "text": "[treatment] 2.Пассивная кинезотерапия (стр. 6)",
+            "text": "Индивидуальная психотерапия: аутотренинг",
             "source_ref": {
               "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
               "document_url": null,
@@ -124,11 +146,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 2.Пассивная кинезотерапия (стр. 6)"
+              "quote": "Индивидуальная психотерапия: аутотренинг"
             }
           },
           {
-            "text": "[treatment] 3. Механотерапия: (стр. 6)",
+            "text": "Групповая психотерапия: музыкотерапия (звуки природы)",
             "source_ref": {
               "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
               "document_url": null,
@@ -139,45 +161,169 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 3. Механотерапия: (стр. 6)"
+              "quote": "Групповая психотерапия: музыкотерапия (звуки природы)"
+            }
+          },
+          {
+            "text": "Групповая психотерапия: релаксационные методики",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Групповая психотерапия: релаксационные методики"
+            }
+          },
+          {
+            "text": "Групповая психотерапия: сказкотерапия",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Групповая психотерапия: сказкотерапия"
+            }
+          },
+          {
+            "text": "Активная кинезотерапия (физические нагрузки щадяще-тренирующего режима)",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Активная кинезотерапия (физические нагрузки щадяще-тренирующего режима)"
+            }
+          },
+          {
+            "text": "Утренняя гигиеническая гимнастика",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Утренняя гигиеническая гимнастика"
+            }
+          },
+          {
+            "text": "Игротерапия",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Игротерапия"
+            }
+          },
+          {
+            "text": "Упражнения для мелких мышечных групп",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Упражнения для мелких мышечных групп"
+            }
+          },
+          {
+            "text": "Эрготерапия: забавная и развлекательная трудотерапия",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Эрготерапия: забавная и развлекательная трудотерапия"
+            }
+          },
+          {
+            "text": "Эрготерапия: графомоторика",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Эрготерапия: графомоторика"
+            }
+          },
+          {
+            "text": "Эрготерапия: обучение правильным стереотипам самообслуживания, передвижения адекватно возрасту",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Эрготерапия: обучение правильным стереотипам самообслуживания, передвижения адекватно возрасту"
+            }
+          },
+          {
+            "text": "Пассивная кинезотерапия: Массаж - сегментарный",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Пассивная кинезотерапия: Массаж - сегментарный"
             }
           }
         ],
         "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "августа",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2000 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "августа \n2000 г"
-            }
-          }
-        ],
+        "drugs": [],
         "procedures": [],
         "surgery": [],
         "source_refs": []
       },
       "follow_up": [
         {
-          "text": "Контроль",
+          "text": "Стабилизация клинико-лабораторных показателей",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -191,48 +337,409 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Контроль"
+            "quote": "Стабилизация клинико-лабораторных показателей"
+          }
+        },
+        {
+          "text": "Достижение клинической ремиссии и снижение потребности в медикаментозной терапии (дозы и кратности)",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Достижение клинической ремиссии и снижение потребности в медикаментозной терапии (дозы и кратности)"
+          }
+        },
+        {
+          "text": "Достижение частичной компенсации со стороны пораженных органов и систем",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Достижение частичной компенсации со стороны пораженных органов и систем"
           }
         }
       ],
       "hospitalization": [],
-      "routing": [],
+      "routing": [
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        }
+      ],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
+      "source_refs": []
+    },
+    {
+      "condition_id": "congenital_anomalies_resp_organs",
+      "name": "Врожденные аномалии легких, трахеи и бронхов",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "J43.0",
+        "J44",
+        "Q32",
+        "Q34"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [
         {
-          "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Протоколы медицинской реабилитации детей с болезнями органов дыхания"
+          "name": "Консультация специалистов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Консультация специалистов (по показаниям): Мероприятия психотерапии (психолого-педагогической коррекции)"
+          }
         }
-      ]
+      ],
+      "treatment": {
+        "non_drug": [
+          {
+            "text": "Мероприятия психотерапии (психолого-педагогической коррекции)",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Мероприятия психотерапии (психолого-педагогической коррекции)"
+            }
+          },
+          {
+            "text": "Индивидуальная психокоррекционная беседа",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Индивидуальная психокоррекционная беседа"
+            }
+          },
+          {
+            "text": "Индивидуальная позитивная психотерапия",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Индивидуальная позитивная психотерапия"
+            }
+          },
+          {
+            "text": "Индивидуальный нейропсихологический тренинг",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Индивидуальный нейропсихологический тренинг"
+            }
+          },
+          {
+            "text": "Индивидуальный аутотренинг",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Индивидуальный аутотренинг"
+            }
+          },
+          {
+            "text": "Групповая музыкотерапия (звуки природы)",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Групповая музыкотерапия (звуки природы)"
+            }
+          },
+          {
+            "text": "Групповые релаксационные методики",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Групповые релаксационные методики"
+            }
+          },
+          {
+            "text": "Групповая сказкотерапия",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Групповая сказкотерапия"
+            }
+          },
+          {
+            "text": "Активная кинезотерапия (физические нагрузки щадяще-тренирующего режима)",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Активная кинезотерапия (физические нагрузки щадяще-тренирующего режима)"
+            }
+          },
+          {
+            "text": "Утренняя гигиеническая гимнастика",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Утренняя гигиеническая гимнастика"
+            }
+          },
+          {
+            "text": "Игротерапия",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Игротерапия"
+            }
+          },
+          {
+            "text": "Упражнения для мелких мышечных групп",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Упражнения для мелких мышечных групп"
+            }
+          },
+          {
+            "text": "Эрготерапия (забавная и развлекательная трудотерапия)",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Эрготерапия (забавная и развлекательная трудотерапия)"
+            }
+          },
+          {
+            "text": "Эрготерапия (графомоторика)",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Эрготерапия (графомоторика)"
+            }
+          },
+          {
+            "text": "Эрготерапия (обучение правильным стереотипам самообслуживания, передвижения адекватно возрасту)",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Эрготерапия (обучение правильным стереотипам самообслуживания, передвижения адекватно возрасту)"
+            }
+          },
+          {
+            "text": "Пассивная кинезотерапия",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Пассивная кинезотерапия"
+            }
+          }
+        ],
+        "drug_groups": [],
+        "drugs": [],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_протоколы_медицинской_реабилитации_детей_с_болезнями_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/Протоколы медицинской реабилитации детей с болезнями органов дыхания 18.02.2011 №172.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        }
+      ],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:47.331755+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T17:42:50.511536+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=2"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:47.332110+00:00"
+    "validated_at": "2026-07-20T17:42:50.511774+00:00"
   }
 }

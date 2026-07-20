@@ -1,6 +1,6 @@
 protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Диагностика и лечение пациентов детское население с гастродуоденальной язвой
@@ -19,15 +19,15 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - adult_and_child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов_детское_населени
-  name: Диагностика и лечение пациентов детское население с гастродуоденальной язвой
+- condition_id: gastroduodenal_ulcer
+  name: Гастродуоденальная язва
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -41,8 +41,8 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[classification] 14. Формулировка диагноза гастродуоденальной язвы включает
-        указание на: (стр. 5)'
+    - text: Интенсивная абдоминальная боль (эпигастральная/параумбиликальная, ночной/«голодный»
+        характер, ранняя/поздняя, иррадиация)
       logic_group: null
       operator: unknown
       values: []
@@ -59,9 +59,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 14. Формулировка диагноза гастродуоденальной язвы
-          включает указание на: (стр. 5)'
-    - text: определение антигена HP в кале
+        quote: Интенсивная абдоминальная боль (эпигастральная/параумбиликальная, ночной/«голодный»
+          характер, ранняя/поздняя, иррадиация)
+    - text: «Мойнигановский» ритм боли
       logic_group: null
       operator: unknown
       values: []
@@ -78,8 +78,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение антигена HP в кале
-    - text: 'определение HP другими методами: быстрый уреазный тест или дыхательный'
+        quote: «Мойнигановский» ритм боли
+    - text: Желудочная диспепсия (рвота, тяжесть/давление после еды, отрыжка, тошнота,
+        жжение, изжога)
       logic_group: null
       operator: unknown
       values: []
@@ -96,8 +97,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'определение HP другими методами: быстрый уреазный тест или дыхательный'
-    - text: БАК с определением витамина В12, фолиевой кислоты
+        quote: Желудочная диспепсия (рвота, тяжесть/давление после еды, отрыжка, тошнота,
+          жжение, изжога)
+    - text: Резистентная к терапии железодефицитная или мегалобластная анемия
       logic_group: null
       operator: unknown
       values: []
@@ -114,8 +116,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: БАК с определением витамина В12, фолиевой кислоты
-    - text: определение групп крови по системам АВ0 и резус (при наличии признаков
+        quote: Резистентная к терапии железодефицитная или мегалобластная анемия
+    - text: Наличие вышеперечисленных жалоб и симптомов при длительном приеме НПВП
       logic_group: null
       operator: unknown
       values: []
@@ -132,49 +134,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение групп крови по системам АВ0 и резус (при наличии признаков
-    - text: определение антител к париетальным клеткам и внутреннему фактору Кастла
-        (при
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: определение антител к париетальным клеткам и внутреннему фактору Кастла
-          (при
-    - text: определение уровня общего IgE и специфических IgE к пищевым аллергенам
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: определение уровня общего IgE и специфических IgE к пищевым аллергенам
+        quote: Наличие вышеперечисленных жалоб и симптомов при длительном приеме НПВП
     optional: []
     exclusion: []
   required_exams:
-  - name: ОАК
+  - name: Общий анализ крови (ОАК)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -188,347 +152,320 @@ conditions:
       protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
       document_url: null
       local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
-      page_start: null
+      page_start: 3
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "ледования: \nобщий анализ крови (далее – ОАК); \nобщий анализ мочи;\
-        \ \nбиохимический \nанализ \nкрови \n(далее – \nБАК) \nс определе"
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: '[treatment] 3. Для целей настоящего клинического протокола используются
-        основные термины (стр. 2)'
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 3. Для целей настоящего клинического протокола используются
-          основные термины (стр. 2)'
-    - text: «Об обращении лекарственных средств», Законом Республики Беларусь от 19
-        ноября
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: «Об обращении лекарственных средств», Законом Республики Беларусь от
-          19 ноября
-    - text: '1993 г. № 2570-XII «О правах ребенка», а также следующие термины и их
-        определения:'
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '1993 г. № 2570-XII «О правах ребенка», а также следующие термины и
-          их определения:'
-    - text: язва гастродуоденальной слизистой оболочки – углубленный локализованный
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: язва гастродуоденальной слизистой оболочки – углубленный локализованный
-    - text: дефект, проникающий глубже мышечной пластинки слизистой оболочки
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: дефект, проникающий глубже мышечной пластинки слизистой оболочки
-    - text: эрозия гастродуоденальной слизистой оболочки – дефект гастродуоденальной
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: эрозия гастродуоденальной слизистой оболочки – дефект гастродуоденальной
-    drug_groups: []
-    drugs:
-    - drug_name: июля
-      active_substance: null
-      drug_group: null
-      dose_text: 2006 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июля 2006 г
-    - drug_name: ноября
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "ноября \n1993 г"
-    - drug_name: доза
-      active_substance: null
-      drug_group: null
-      dose_text: 120 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: доза 120 мг, детям с 8 до 12 лет максимальная суточ
-    - drug_name: капсулы
-      active_substance: null
-      drug_group: null
-      dose_text: 120 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "капсулы 120 мг – детям старше 12 лет \n120 мг 4 раза в д"
-    - drug_name: старше
-      active_substance: null
-      drug_group: null
-      dose_text: 1 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: старше 1 года по 0,5–1,0 мг/кг/сутки (максимальная
-    - drug_name: дозе
-      active_substance: null
-      drug_group: null
-      dose_text: 1 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: дозе 1 мг/кг/сутки внутрь – капсулу омепразола мо
-    - drug_name: введения
-      active_substance: null
-      drug_group: null
-      dose_text: 40 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "введения \n40 мг во флаконах – в качестве альтернативы пе"
-    - drug_name: таблетки
-      active_substance: null
-      drug_group: null
-      dose_text: 10 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: таблетки 10 мг, 20 мг – детям старше 12 лет по 20 мг 2
-    - drug_name: марта
-      active_substance: null
-      drug_group: null
-      dose_text: 2024 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: марта 2024 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    procedures: []
-    surgery: []
-    source_refs: []
+      quote: 'Обязательными диагностическими мероприятиями являются: 10.1. лабораторные
+        диагностические исследования: общий анализ крови (далее – ОАК);'
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями являются: 10.1. лабораторные
+        диагностические исследования: общий анализ мочи;'
+  - name: Биохимический анализ крови (БАК) с определением билирубина, АсАТ, АлАТ,
+      ЩФ, гамма-глютамилтранспептидазы, общего белка, C-реактивного белка, мочевины,
+      креатинина, глюкозы, холестерина, амилазы, железа
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями являются: 10.1. лабораторные
+        диагностические исследования: биохимический анализ крови (далее – БАК) с определением
+        билирубина, АсАТ, АлАТ, ЩФ, гамма-глютамилтранспептидазы, общего белка, C-реактивного
+        белка, мочевины, креатинина, глюкозы, холестерина, амилазы, железа сыворотки
+        крови, ферритина, кальция;'
+  - name: Копрологическое исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями являются: 10.1. лабораторные
+        диагностические исследования: копрологическое исследование;'
+  - name: Обнаружение скрытой крови в кале
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями являются: 10.1. лабораторные
+        диагностические исследования: обнаружение скрытой крови в кале;'
+  - name: Анализ кала на яйца гельминтов, лямблиоз
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями являются: 10.1. лабораторные
+        диагностические исследования: анализ кала на яйца гельминтов, лямблиоз;'
+  - name: Определение антигена HP в кале
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями являются: 10.1. лабораторные
+        диагностические исследования: определение антигена HP в кале;'
+  conditional_exams:
+  - name: Определение HP другими методами (быстрый уреазный тест или дыхательный 13С-тест)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями являются: 11.1. лабораторные
+        диагностические исследования: определение HP другими методами: быстрый уреазный
+        тест или дыхательный 13С-тест;'
+  - name: Серологический метод выявления антител класса IgG к HP
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями являются: 11.1. лабораторные
+        диагностические исследования: серологический метод выявления антител класса
+        IgG к HP'
+  - name: БАК с определением витамина В12, фолиевой кислоты
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями являются: 11.1. лабораторные
+        диагностические исследования: БАК с определением витамина В12, фолиевой кислоты;'
+  - name: Определение групп крови по системам АВ0 и резус
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями являются: 11.1. лабораторные
+        диагностические исследования: определение групп крови по системам АВ0 и резус
+        (при наличии признаков кровотечения);'
+  - name: Определение антител к париетальным клеткам и внутреннему фактору Кастла
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями являются: 11.1. лабораторные
+        диагностические исследования: определение антител к париетальным клеткам и
+        внутреннему фактору Кастла (при атрофии в теле желудка в сочетании с признаками
+        макроцитарной анемии)'
+  - name: Серологический скрининг на целиакию (антитела к диамидированному глиадину
+      IgG или антитела к глиадину IgG, антитела к тканевой трансглютаминазе IgA)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями являются: 11.1. лабораторные
+        диагностические исследования: серологический скрининг на целиакию (уровень
+        антител к диамидированному глиадину IgG или антител к глиадину IgG, антител
+        к тканевой трансглютаминазе IgA)'
+  - name: Определение уровня общего IgE и специфических IgE к пищевым аллергенам
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями являются: 11.1. лабораторные
+        диагностические исследования: определение уровня общего IgE и специфических
+        IgE к пищевым аллергенам'
+  treatment: null
   follow_up: []
   hospitalization: []
   routing:
-  - text: '[routing] 16. Медицинскими показаниями для госпитализации пациента с гастродуоденальной
-      (стр. 6)'
+  - text: амбулаторно
     timing: null
     required_if: []
     source_ref:
@@ -541,9 +478,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 16. Медицинскими показаниями для госпитализации пациента с
-        гастродуоденальной (стр. 6)'
-  - text: перфорации) (пациент госпитализируется в хирургическое отделение больничной
+      quote: амбулаторно
+  - text: стационарно
     timing: null
     required_if: []
     source_ref:
@@ -556,35 +492,92 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: перфорации) (пациент госпитализируется в хирургическое отделение больничной
-  red_flags: []
+      quote: стационарно
+  - text: Госпитализация при язве желудка или язве ДПК.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация при язве желудка или язве ДПК.
+  - text: Госпитализация при язве желудка или язве ДПК с осложнениями в анамнезе или
+      с угрозой развития осложнений.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация при язве желудка или язве ДПК с осложнениями в анамнезе
+        или с угрозой развития осложнений.
+  - text: Госпитализация в хирургическое отделение при осложненной язве желудка или
+      ДПК (кровотечение, стеноз, пенетрация, перфорация).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация в хирургическое отделение при осложненной язве желудка
+        или ДПК (кровотечение, стеноз, пенетрация, перфорация).
+  red_flags:
+  - text: Кровотечение, пенетрация, перфорация, стеноз (как осложнения гастродуоденальной
+      язвы)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: В настоящем клиническом протоколе не рассматриваются вопросы оказания
+        медицинской помощи... пациентам с острыми хирургическими заболеваниями вследствие
+        осложнения гастродуоденальной язвы (наличие кровотечения, пенетрации, перфорации,
+        стеноза), требующими госпитализации пациента в хирургическое отделение
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальн
-    document_url: null
-    local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой_пост_МЗ_05.03.2024_46.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов детское население с гастродуоденальной
-      язвой
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:28.244705+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T15:41:03.221262+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:28.251060+00:00'
+  validated_at: '2026-07-20T15:41:03.227209+00:00'

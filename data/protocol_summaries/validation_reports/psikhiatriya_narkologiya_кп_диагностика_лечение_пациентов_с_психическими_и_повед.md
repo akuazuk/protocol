@@ -1,6 +1,58 @@
 # Validation: psikhiatriya_narkologiya_кп_диагностика_лечение_пациентов_с_психическими_и_повед
 
-- **status:** valid
-- **validated_at:** 2026-06-23T19:16:26.644854+00:00
+- **status:** needs_human_review
+- **validated_at:** 2026-07-20T17:00:02.962705+00:00
 - **review_status:** needs_review
-- **extraction_status:** auto_extracted
+- **extraction_status:** llm_extracted
+
+## Warnings
+- `duplicate_exam` conditions[delirium].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[delirium].required_exams[4]: Дублирующееся обследование
+- `duplicate_exam` conditions[delirium].required_exams[5]: Дублирующееся обследование
+- `duplicate_exam` conditions[delirium].required_exams[6]: Дублирующееся обследование
+- `duplicate_drug` conditions[delirium].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[delirium].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[delirium].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[delirium].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_exam` conditions[alcohol_related_disorders].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[alcohol_related_disorders].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[alcohol_related_disorders].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[acute_alcohol_intoxication].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[acute_alcohol_intoxication].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[acute_alcohol_intoxication].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[pathological_intoxication].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[pathological_intoxication].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[pathological_intoxication].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[harmful_alcohol_use].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[harmful_alcohol_use].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[alcohol_withdrawal_state].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[alcohol_withdrawal_state].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[alcohol_withdrawal_state].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[alcohol_withdrawal_state].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[alcohol_dependence_syndrome].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[alcohol_dependence_syndrome].required_exams[7]: Дублирующееся обследование
+- `duplicate_exam` conditions[alcohol_dependence_syndrome].required_exams[8]: Дублирующееся обследование
+- `duplicate_drug` conditions[alcohol_dependence_syndrome].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[alcohol_dependence_syndrome].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[alcohol_dependence_syndrome].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[alcohol_dependence_syndrome].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[alcohol_dependence_syndrome].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[alcohol_dependence_syndrome].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_exam` conditions[other_p_a_v_disorders].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[other_p_a_v_disorders].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[other_p_a_v_disorders].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[other_p_a_v_disorders].required_exams[3]: Дублирующееся обследование
+- `missing_icd10` conditions[intellectual_disability]: Нет icd10_codes у condition
+- `duplicate_exam` conditions[intellectual_disability].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[intellectual_disability].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[intellectual_disability].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[intellectual_disability].required_exams[4]: Дублирующееся обследование
+- `duplicate_exam` conditions[intellectual_disability].required_exams[8]: Дублирующееся обследование
+- `duplicate_exam` conditions[intellectual_disability].required_exams[9]: Дублирующееся обследование
+- `duplicate_exam` conditions[intellectual_disability].required_exams[10]: Дублирующееся обследование
+- `duplicate_drug` conditions[intellectual_disability].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[intellectual_disability].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[intellectual_disability].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[intellectual_disability].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[intellectual_disability].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[intellectual_disability].treatment.drugs[5]: Дублирующийся препарат

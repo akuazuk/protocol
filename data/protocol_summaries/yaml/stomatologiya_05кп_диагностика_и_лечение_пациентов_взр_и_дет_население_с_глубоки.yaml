@@ -1,9 +1,9 @@
 protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: 05КП Диагностика и лечение пациентов взр и дет население с глубоким прикусом
+  title: Диагностика и лечение пациентов с глубоким прикусом
   url: null
   local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
   document_sha256: null
@@ -19,25 +19,27 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - adult_and_child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: 05кп_диагностика_и_лечение_пациентов_взр_и_дет_н
-  name: 05КП Диагностика и лечение пациентов взр и дет население с глубоким прикусом
+- condition_id: profound_overbite
+  name: Глубокий прикус
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B24
+  - K07.23
+  - K07.2
+  - K07.5
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: на зубоальвеолярном и (или) гнатическом уровне, определение степени выраженности,
+    - text: Выявление факторов, влияющих на возникновение и развитие ГП
       logic_group: null
       operator: unknown
       values: []
@@ -54,9 +56,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: на зубоальвеолярном и (или) гнатическом уровне, определение степени
-          выраженности,
-    - text: а также определение медицинских показаний к лечению, выбору метода лечения
+        quote: Выявление факторов, влияющих на возникновение и развитие ГП
+    - text: Определение степени выраженности ГП
       logic_group: null
       operator: unknown
       values: []
@@ -73,217 +74,217 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: а также определение медицинских показаний к лечению, выбору метода
-          лечения
+        quote: Определение степени выраженности ГП
+    - text: Проведение дифференциальной диагностики ГП
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Проведение дифференциальной диагностики ГП
+    - text: Выявление взаимосвязи стоматологического и общего здоровья с ГП
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выявление взаимосвязи стоматологического и общего здоровья с ГП
     optional: []
     exclusion: []
-  required_exams: []
+  required_exams:
+  - name: Оценка общесоматического состояния
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Определяют общесоматическое состояние пациентов, в первую очередь с выявлением
+        патологии, которая может повлиять на выбор метода лечения (бронхиальная астма,
+        эпилепсия, состояние эндокринной системы, аллергические реакции, другие).
   conditional_exams: []
-  treatment:
-    non_drug:
-    - text: '[treatment] 7. Дополнительные диагностические мероприятия (по медицинским
-        показаниям) (стр. 5)'
-      source_ref:
-        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 7. Дополнительные диагностические мероприятия (по медицинским
-          показаниям) (стр. 5)'
-    - text: стоматолога-терапевта, врача-стоматолога-ортопеда, врача-стоматолога-хирурга
-      source_ref:
-        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: стоматолога-терапевта, врача-стоматолога-ортопеда, врача-стоматолога-хирурга
-    - text: врача-психотерапевта, врача-психиатра-нарколога, врача-стоматолога детского,
-        врача-
-      source_ref:
-        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: врача-психотерапевта, врача-психиатра-нарколога, врача-стоматолога
-          детского, врача-
-    - text: психиатра детского) при нарушениях осанки, функции дыхания, глотания,
-        смыкания губ,
-      source_ref:
-        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: психиатра детского) при нарушениях осанки, функции дыхания, глотания,
-          смыкания губ,
-    - text: речи, жевания и наличии вредных привычек для выяснения причины нарушения(ий)
-      source_ref:
-        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: речи, жевания и наличии вредных привычек для выяснения причины нарушения(ий)
-    - text: '[treatment] 9. Общими принципами лечения и медицинской профилактики ГП
-        являются: (стр. 5)'
-      source_ref:
-        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 9. Общими принципами лечения и медицинской профилактики
-          ГП являются: (стр. 5)'
-    drug_groups: []
-    drugs:
-    - drug_name: августа
-      active_substance: null
-      drug_group: null
-      dose_text: 2022 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: августа 2022 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: марта
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: марта 2023 г
-    procedures: []
-    surgery: []
-    source_refs: []
+  treatment: null
   follow_up: []
   hospitalization: []
   routing: []
-  red_flags: []
+  red_flags:
+  - text: Неадекватное психоэмоциональное состояние пациента
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'целенаправленно выявляют: неадекватное психоэмоциональное состояние
+        пациента'
+  - text: Острые поражения слизистой оболочки полости рта и красной каймы губ
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'целенаправленно выявляют: острые поражения слизистой оболочки полости
+        рта и красной каймы губ'
+  - text: Острые воспалительные заболевания органов и тканей рта
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'целенаправленно выявляют: острые воспалительные заболевания органов
+        и тканей рта'
+  - text: Болезни периодонта в стадии обострения
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'целенаправленно выявляют: болезни периодонта в стадии обострения'
+  - text: Неудовлетворительное гигиеническое состояние полости рта
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'целенаправленно выявляют: неудовлетворительное гигиеническое состояние
+        полости рта'
+  - text: Отказ от лечения
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'целенаправленно выявляют: желание лечиться или отказ от лечения'
+  - text: Состояния, при которых противопоказано ортодонтическое лечение
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'целенаправленно выявляют: состояния, при которых противопоказано ортодонтическое
+        лечение (нахождение на учете у врача-психиатра-нарколога, врача-психиатра
+        детского, другое).'
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: 05КП Диагностика и лечение пациентов взр и дет население с глубоким прикусом
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:47.955373+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T18:17:07.760357+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:47.956985+00:00'
+  validated_at: '2026-07-20T18:17:07.761364+00:00'

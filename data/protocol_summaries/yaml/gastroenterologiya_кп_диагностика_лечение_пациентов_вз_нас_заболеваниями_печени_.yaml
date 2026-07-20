@@ -1,9 +1,9 @@
 protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение пациентов вз нас заболеваниями печени
+  title: Диагностика и лечение заболеваний печени
   url: null
   local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
   document_sha256: null
@@ -26,26 +26,31 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_лечение_пациентов_вз_нас_заболевания
-  name: Диагностика лечение пациентов вз нас заболеваниями печени
+- condition_id: liver_diseases
+  name: Заболевания печени
   synonyms: []
   abbreviations: []
   icd10_codes:
   - B18
+  - E80.4
+  - E83.0
+  - E83.1
+  - K70.0
   - K70.1
+  - K70.3
   - K71
-  - K73
-  - K76.0
   - K71.3
-  - C90.0
-  - K75.9
+  - K73
+  - K74.3
+  - K74.4
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[classification] 6. Формулировка диагноза стеатоза печени включает: (стр.
-        4)'
+    - text: Причинно-следственная связь между воздействием токсического гепатотропного
+        агента и появлением признаков гепатита; спонтанная положительная динамика
+        лабораторных показателей после отмены токсического гепатотропного агента.
       logic_group: null
       operator: unknown
       values: []
@@ -62,9 +67,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 6. Формулировка диагноза стеатоза печени включает:
-          (стр. 4)'
-    - text: '[classification] 7. Примеры формулировки диагноза: (стр. 4)'
+        quote: 'Причинно-следственная связь между воздействием токсического гепатотропного
+          агента и появлением признаков гепатита; спонтанная положительная динамика
+          лабораторных показателей после отмены токсического '
+    - text: Длительность заболевания более 3 месяцев при преобладании цитолитического
+        синдрома и более 6 месяцев – при холестатическом синдроме; исключение других
+        этиологических факторов.
       logic_group: null
       operator: unknown
       values: []
@@ -81,9 +89,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 7. Примеры формулировки диагноза: (стр. 4)'
-    - text: '[classification] 23. Формулировка диагноза хронический гепатит включает:
-        (стр. 8)'
+        quote: Длительность заболевания более 3 месяцев при преобладании цитолитического
+          синдрома и более 6 месяцев – при холестатическом синдроме; исключение других
+          этиологических факторов.
+    - text: 'Гепатотоксичность азатиоприна подтверждается биопсией печени и клиническими
+        признаками: улучшением показателей АсАТ и АлАТ после отмены ЛП и их ухудшением
+        при повторном назначении азатиоприна.'
       logic_group: null
       operator: unknown
       values: []
@@ -100,193 +111,16 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 23. Формулировка диагноза хронический гепатит включает:
-          (стр. 8)'
-    - text: 'Примеры формулировки диагноза:'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Примеры формулировки диагноза:'
-    - text: '[classification] 45. Формулировка диагноза ЦП включает: (стр. 12)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 45. Формулировка диагноза ЦП включает: (стр. 12)'
-    - text: 'Примеры формулировки диагноза:'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Примеры формулировки диагноза:'
-    - text: 46. Клинические критерии ЦП определяются согласно приложению 21.
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 46. Клинические критерии ЦП определяются согласно приложению 21.
-    - text: '[classification] 87. Формулировка диагноза ПБЦ включает: (стр. 22)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 87. Формулировка диагноза ПБЦ включает: (стр. 22)'
+        quote: 'Гепатотоксичность азатиоприна подтверждается биопсией печени и клиническими
+          признаками: улучшением показателей АсАТ и АлАТ после отмены ЛП и их ухудшением
+          при повторном назначении азатиоприна.'
     optional: []
     exclusion: []
-  required_exams:
-  - name: ANA
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
-      document_url: null
-      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "ры формулировки диагноза: \n«АИГ, тип I (ANA-позитивный), высокая биохимическая\
-        \ активность»; \n«Алкогольный гепатит тяжелый ("
-  - name: УЗИ
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
-      document_url: null
-      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "(ультразвуковое исследование (далее – УЗИ), компьютерная томография\
-        \ (далее – КТ), \nмагнитно-резонансная томография (далее"
-  - name: КТ
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
-      document_url: null
-      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "УЗИ), компьютерная томография (далее – КТ), \nмагнитно-резонансная томография\
-        \ (далее – МРТ) и (или) наличие жира более чем"
-  - name: МРТ
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
-      document_url: null
-      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "агнитно-резонансная томография (далее – МРТ) и (или) наличие жира более\
-        \ чем в 5 % \nгепатоцитов по данным морфологического и"
+  required_exams: []
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] 3. Фармакотерапия (стр. 3)'
+    - text: Низкокалорийная диета для лечения стеатоза печени.
       source_ref:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
         document_url: null
@@ -297,9 +131,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 3. Фармакотерапия (стр. 3)'
-    - text: протоколом с учетом всех индивидуальных особенностей пациента, тяжести
-        заболевания,
+        quote: Низкокалорийная диета для лечения стеатоза печени.
+    - text: Модификация образа жизни (физическая активность и упражнения для уменьшения
+        стеатоза, предпочтительно > 150 минут в неделю умеренной или 75 минут в неделю
+        интенсивной физической активности).
       source_ref:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
         document_url: null
@@ -310,9 +145,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: протоколом с учетом всех индивидуальных особенностей пациента, тяжести
-          заболевания,
-    - text: лекарственных препаратов (далее – ЛП). При этом необходимо учитывать наличие
+        quote: Модификация образа жизни (физическая активность и упражнения для уменьшения
+          стеатоза, предпочтительно > 150 минут в неделю умеренной или 75 минут в
+          неделю интенсивной физической активности).
+    - text: Отказ от употребления алкоголя для лечения стеатоза печени и хронического
+        гепатита.
       source_ref:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
         document_url: null
@@ -323,10 +160,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: лекарственных препаратов (далее – ЛП). При этом необходимо учитывать
-          наличие
-    - text: по медицинскому применению (листком-вкладышем). Допускается включение
-        в схему
+        quote: Отказ от употребления алкоголя для лечения стеатоза печени и хронического
+          гепатита.
+    - text: Коррекция дисметаболических факторов НАЖБП.
       source_ref:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
         document_url: null
@@ -337,9 +173,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: по медицинскому применению (листком-вкладышем). Допускается включение
-          в схему
-    - text: лечения ЛП по медицинским показаниям, не указанным в инструкции по медицинскому
+        quote: Коррекция дисметаболических факторов НАЖБП.
+    - text: Ограничение физической активности при высокой активности хронического
+        гепатита и наличии симптомов.
       source_ref:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
         document_url: null
@@ -350,10 +186,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: лечения ЛП по медицинским показаниям, не указанным в инструкции по
-          медицинскому
-    - text: применению (листке-вкладыше), дополнительно указываются особые условия
-        назначения,
+        quote: Ограничение физической активности при высокой активности хронического
+          гепатита и наличии симптомов.
+    - text: Обычное полноценное питание либо дополнительное энтеральное питание (при
+        признаках недостаточности питания) в зависимости от тяжести хронического гепатита
+        и нарушения статуса питания.
       source_ref:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
         document_url: null
@@ -364,14 +201,16 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: применению (листке-вкладыше), дополнительно указываются особые условия
-          назначения,
+        quote: Обычное полноценное питание либо дополнительное энтеральное питание
+          (при признаках недостаточности питания) в зависимости от тяжести хронического
+          гепатита и нарушения статуса питания.
     drug_groups: []
     drugs:
-    - drug_name: капсула
+    - drug_name: Силимарин
       active_substance: null
       drug_group: null
-      dose_text: 90 мг
+      dose_text: таблетка, покрытая оболочкой, 22,5 мг, 35 мг, капсула 90 мг, 140
+        мг) внутрь 210–420 мг в сутки длительно
       frequency_text: null
       duration_text: null
       route: null
@@ -383,17 +222,18 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "капсула 90 мг, 140 мг) \nвнутрь 210–420 мг в сутки дли"
-    - drug_name: раствора
+        quote: силимарин (таблетка, покрытая оболочкой, 22,5 мг, 35 мг, капсула 90
+          мг, 140 мг) внутрь 210–420 мг в сутки длительно
+    - drug_name: Урсодезоксихолевая кислота (УДХК)
       active_substance: null
       drug_group: null
-      dose_text: 400 мг
+      dose_text: капсула 250 мг, 300 мг) внутрь 10–15 мг/кг в сутки длительно
       frequency_text: null
       duration_text: null
       route: null
@@ -405,17 +245,20 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "раствора 400 мг, 500 мг) внутривенно \n800/1000 мг в сут"
-    - drug_name: внутрь
+        quote: урсодезоксихолевая кислота (УДХК) (капсула 250 мг, 300 мг) внутрь 10–15
+          мг/кг в сутки длительно
+    - drug_name: Адеметионин
       active_substance: null
       drug_group: null
-      dose_text: 1000 мг
+      dose_text: порошок для приготовления раствора 400 мг, 500 мг) внутривенно 800/1000
+        мг в сутки и (или) адеметионин (таблетка, покрытая оболочкой, 500 мг) внутрь
+        1000 мг в сутки длительно
       frequency_text: null
       duration_text: null
       route: null
@@ -427,17 +270,21 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "внутрь \n1000 мг в сутки длительно"
-    - drug_name: инфузий
+        quote: адеметионин (порошок для приготовления раствора 400 мг, 500 мг) внутривенно
+          800/1000 мг в сутки и (или) адеметионин (таблетка, покрытая оболочкой, 500
+          мг) внутрь 1000 мг в сутки длительно
+    - drug_name: Разветвленные аминокислоты (гепавил/гепавилаг)
       active_substance: null
       drug_group: null
-      dose_text: 200 мл
+      dose_text: гепавил (валин/лейцин/изолейцин) раствор для инфузий 200 мл, 400
+        мл) внутривенно или гепавилаг (гранулы/порошок) внутрь до 0,25 г/кг в сутки
+        длительно
       frequency_text: null
       duration_text: null
       route: null
@@ -449,17 +296,20 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "инфузий 200 мл, 400 мл) внутривенно или \nгепавилаг (ва"
-    - drug_name: инъекций
+        quote: 'разветвленные аминокислоты для парентерального применения: гепавил...
+          внутривенно или гепавилаг... внутрь до 0,25 г/кг в сутки длительно'
+    - drug_name: L-орнитин (орнитина аспартат)
       active_substance: null
       drug_group: null
-      dose_text: 100 мг
+      dose_text: раствор для инъекций 100 мг/мл, концентрат для приготовления раствора
+        для инфузий 5 г/10 мл) внутривенно 20–40 г в сутки или L-орнитин... внутрь
+        9–18 г в сутки длительно
       frequency_text: null
       duration_text: null
       route: null
@@ -471,19 +321,19 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: 'инъекций 100 мг/мл, концентрат
-
-          для приготовления раство'
-    - drug_name: применения
+        quote: L-орнитин (орнитина аспартат)... внутривенно 20–40 г в сутки или L-орнитин...
+          внутрь 9–18 г в сутки длительно
+    - drug_name: Эссенциальные фосфолипиды
       active_substance: null
       drug_group: null
-      dose_text: 3 г
+      dose_text: раствор для внутривенного введения 250 мг/5 мл) внутривенно 5–20
+        мл в течение до двух недель
       frequency_text: null
       duration_text: null
       route: null
@@ -495,19 +345,20 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: 'применения 3 г) внутрь 9–18 г
-
-          в сутки длительно'
-    - drug_name: введения
+        quote: эссенциальные фосфолипиды (раствор для внутривенного введения 250 мг/5
+          мл) внутривенно 5–20 мл в течение до двух недель
+    - drug_name: Преднизолон или Метилпреднизолон (ГКС)
       active_substance: null
       drug_group: null
-      dose_text: 250 мг
+      dose_text: в стартовой суточной дозе 0,5 мг/кг в два приема (в 8:00 и 12:00)
+        с последующим снижением дозы до 5 мг в сутки и продолжением приема ГКС в течение
+        6 месяцев
       frequency_text: null
       duration_text: null
       route: null
@@ -519,17 +370,21 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "введения 250 мг/5 мл) \nвнутривенно 5–20 мл в течение до"
-    - drug_name: таблетки
+        quote: Преднизолон (таблетки 5 мг) или метилпреднизолон... внутрь в стартовой
+          суточной дозе 0,5 мг/кг в два приема... с последующим снижением дозы до
+          5 мг в сутки и продолжением приема ГКС в течение 6 месяцев...
+    - drug_name: Азатиоприн
       active_substance: null
       drug_group: null
-      dose_text: 5 мг
+      dose_text: таблетки 50 мг) внутрь в стартовой суточной дозе 1 мг/кг в два приема
+        (8:00 и 20:00). Вводится в схему лечения через 2–4 недели после начала терапии
+        ГКС.
       frequency_text: null
       duration_text: null
       route: null
@@ -541,17 +396,21 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "таблетки \n5 мг) \nили \nметилпреднизолон (таблетки 4 мг,"
-    - drug_name: дозе
+        quote: Азатиоприн (таблетки 50 мг) внутрь в стартовой суточной дозе 1 мг/кг
+          в два приема. Вводится в схему лечения через 2–4 недели после начала терапии
+          ГКС для снижения дозы ГКС.
+    - drug_name: Аллопуринол*
       active_substance: null
       drug_group: null
-      dose_text: 0,5 мг
+      dose_text: таблетка 100 мг, 300 мг) внутрь в стартовой дозе 100 мг в сутки до
+        достижения целевой суточной дозы 2–3 мг/кг (при этом доза азатиоприна уменьшается
+        до 1/4).
       frequency_text: null
       duration_text: null
       route: null
@@ -563,84 +422,21 @@ conditions:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
         document_url: null
         local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "дозе \n0,5 мг/кг в два приема (в 8:00 часов и 12:00 ч"
-    - drug_name: таблетка
-      active_substance: null
-      drug_group: null
-      dose_text: 100 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: таблетка 100 мг, 300 мг) внутрь в стартовой дозе 100 мг
-    - drug_name: терапии
-      active_substance: null
-      drug_group: null
-      dose_text: 2 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: терапии 2 года
-    - drug_name: ноября
-      active_substance: null
-      drug_group: null
-      dose_text: 2025 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ноября 2025 г
+        quote: Аллопуринол* (таблетка 100 мг, 300 мг) внутрь в стартовой дозе 100
+          мг в сутки до достижения целевой 2–3 мг/кг. Доза азатиоприна при этом уменьшается
+          до 1/4 от предыдущей.
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: контроль
+  - text: 'Условиями отмены терапии АИГ являются: длительность терапии 2 года; назначалась
+      только монотерапия; нормализация АсАТ, АлАТ, IgG < 12 г/л.'
     timing: null
     required_if: []
     expected_actions: []
@@ -654,11 +450,13 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
+      quote: 'Условиями отмены терапии АИГ являются: длительность терапии 2 года;
+        назначалась только монотерапия; нормализация АсАТ, АлАТ, IgG < 12 г/л.'
   hospitalization: []
   routing:
-  - text: '[routing] 162. Медицинскими показаниями для госпитализации пациента с ЛПП
-      являются: (стр. 34)'
+  - text: Госпитализация пациента со стеатозом печени показана при необходимости выполнения
+      биопсии печени (в гастроэнтерологическое или хирургическое отделение городской/областной
+      организации здравоохранения).
     timing: null
     required_if: []
     source_ref:
@@ -671,9 +469,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 162. Медицинскими показаниями для госпитализации пациента
-        с ЛПП являются: (стр. 34)'
-  - text: отказ другого органа вследствие ЛПП (госпитализация пациента
+      quote: Госпитализация пациента со стеатозом печени показана при необходимости
+        выполнения биопсии печени (в гастроэнтерологическое или хирургическое отделение
+        городской/областной организации здравоохранения).
+  - text: госпитализация
     timing: null
     required_if: []
     source_ref:
@@ -686,107 +485,2643 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: отказ другого органа вследствие ЛПП (госпитализация пациента
-  - text: '[prevention] 130. Медицинское наблюдение пациентов с болезнью Вильсона
-      в амбулаторных (стр. 28)'
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
-      document_url: null
-      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: '[prevention] 130. Медицинское наблюдение пациентов с болезнью Вильсона
-        в амбулаторных (стр. 28)'
-  red_flags:
-  - text: "его \nиспользования \nнефротоксичных \nЛП \n(нестероидные \nпротивовоспалительные\
-      \ \nЛП \n(далее –\n\n[criteria] 57. Критериями СБП являются: (стр. 15)\nположит"
-    aliases: []
-    red_flag_type: drug_safety
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
-      document_url: null
-      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "его \nиспользования \nнефротоксичных \nЛП \n(нестероидные \nпротивовоспалительные\
-        \ \nЛП \n(далее –\n\n[criteria] 57. Критериями СБП являются: (стр. 15)\nположит"
-  - text: "я дефицита железа). Гепатотоксичность азатиоприна подтверждается биопсией\
-      \ печени и клиническими \nпризнаками: улучшением показателей АсАТ и АлАТ после"
-    aliases: []
-    red_flag_type: drug_safety
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
-      document_url: null
-      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "я дефицита железа). Гепатотоксичность азатиоприна подтверждается биопсией\
-        \ печени и клиническими \nпризнаками: улучшением показателей АсАТ и АлАТ после"
-  - text: "явлении \nпризнаков \nгепатотоксичности в дополнение к азатиоприну может\
-      \ быть проведена пробная терапия \nаллопуринолом* (блокирует метаболизм азатиоприн"
-    aliases: []
-    red_flag_type: drug_safety
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
-      document_url: null
-      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "явлении \nпризнаков \nгепатотоксичности в дополнение к азатиоприну может\
-        \ быть проведена пробная терапия \nаллопуринолом* (блокирует метаболизм азатиоприн"
+      quote: госпитализация
+  red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
-    document_url: null
-    local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика лечение пациентов вз нас заболеваниями печени
+  source_refs: []
+- condition_id: hepatic_steatosis
+  name: Стеатоз печени
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - K70.0
+  - K76.0
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Аккумуляция жира в печени.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Аккумуляция жира в печени.
+    - text: Увеличенная печень.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Увеличенная печень.
+    - text: Наличие пристрастия к алкоголю с употреблением алкоголя в токсических
+        для печени дозах (по опросникам).
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие пристрастия к алкоголю с употреблением алкоголя в токсических
+          для печени дозах (по опросникам).
+    - text: Ассоциация с одним или более дисметаболическими факторами.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ассоциация с одним или более дисметаболическими факторами.
+    - text: Наличие признаков аккумуляции жира по данным методов визуализации (УЗИ,
+        КТ, МРТ).
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие признаков аккумуляции жира по данным методов визуализации (УЗИ,
+          КТ, МРТ).
+    - text: Наличие жира более чем в 5 % гепатоцитов по данным морфологического исследования
+        печени.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие жира более чем в 5 % гепатоцитов по данным морфологического
+          исследования печени.
+    - text: Отсутствие причин вторичной аккумуляции жира (употребление алкоголя, прием
+        стеатогенных ЛП, врожденные метаболические нарушения) для НАЖБП.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Отсутствие причин вторичной аккумуляции жира (употребление алкоголя,
+          прием стеатогенных ЛП, врожденные метаболические нарушения) для НАЖБП.
+    - text: Наличие признаков аккумуляции жира, установленных на основании основных
+        предиктивных индексов при болезнях печени согласно приложению 6.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие признаков аккумуляции жира, установленных на основании основных
+          предиктивных индексов при болезнях печени согласно приложению 6.
+    - text: 'Гистологические критерии степени тяжести: 1 степень (<33 % гепатоцитов),
+        2 степень (33–66 % гепатоцитов), 3 степень (>66 % гепатоцитов).'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Гистологические критерии степени тяжести: 1 степень (<33 % гепатоцитов),
+          2 степень (33–66 % гепатоцитов), 3 степень (>66 % гепатоцитов).'
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Ультразвуковое исследование (УЗИ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: наличие признаков аккумуляции жира по данным методов визуализации (ультразвуковое
+        исследование (далее – УЗИ))
+  - name: Компьютерная томография (КТ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: наличие признаков аккумуляции жира по данным методов визуализации (далее
+        – УЗИ), компьютерная томография (далее – КТ)
+  - name: Магнитно-резонансная томография (МРТ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: наличие признаков аккумуляции жира по данным методов визуализации (далее
+        – КТ), магнитно-резонансная томография (далее – МРТ)
+  - name: Морфологическое исследование печени
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: наличие жира более чем в 5 % гепатоцитов по данным морфологического исследования
+        печени
+  conditional_exams:
+  - name: Биомаркеры (индекс NAFLD fibrosis score NFS, индекс фиброза-4 (Fibrosis-4
+      index))
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'оценка прогрессирования процесса и степени фиброза может проводиться
+        1 раз в год по биомаркерам: индекс NAFLD fibrosis score NFS, индекс фиброза-4
+        (Fibrosis-4 index)'
+  treatment:
+    non_drug:
+    - text: 'Целями лечения стеатоза печени являются: уменьшение количества жира в
+        печени; предупреждение развития стеатогепатита; предупреждение развития фиброза
+        печени; предупреждение развития ГЦР.'
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Целями лечения стеатоза печени являются: уменьшение количества жира
+          в печени; предупреждение развития стеатогепатита; предупреждение развития
+          фиброза печени; предупреждение развития ГЦР.'
+    - text: 'Лечение пациента со стеатозом печени включает устранение или минимизацию
+        факторов риска: низкокалорийная диета.'
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Лечение пациента со стеатозом печени включает устранение или минимизацию
+          факторов риска: низкокалорийная диета.'
+    - text: Модификация образа жизни (физическая активность и упражнения для уменьшения
+        стеатоза, подобранные с учетом индивидуальных предпочтений и возможностей
+        (предпочтительно > 150 минут в неделю умеренной или 75 минут в неделю интенсивной
+        физической активности)).
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Модификация образа жизни (физическая активность и упражнения для уменьшения
+          стеатоза, подобранные с учетом индивидуальных предпочтений и возможностей
+          (предпочтительно > 150 минут в неделю умеренной ил
+    - text: Отказ от употребления алкоголя.
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Отказ от употребления алкоголя.
+    - text: Коррекция дисметаболических факторов НАЖБП.
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Коррекция дисметаболических факторов НАЖБП.
+    drug_groups: []
+    drugs: []
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Оценка прогрессирования процесса и степени фиброза может проводиться 1 раз
+      в год по биомаркерам (индекс NAFLD fibrosis score NFS, индекс фиброза-4) у пациентов
+      со стеатозом печени, ассоциированным с дисметаболическими факторами.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Оценка прогрессирования процесса и степени фиброза может проводиться
+        1 раз в год по биомаркерам (индекс NAFLD fibrosis score NFS, индекс фиброза-4)
+        у пациентов со стеатозом печени, ассоциированным с д
+  hospitalization: []
+  routing:
+  - text: Госпитализация пациента со стеатозом печени показана при необходимости выполнения
+      биопсии печени (госпитализация осуществляется в гастроэнтерологическое или хирургическое
+      отделение ГОЗ, ООЗ).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация пациента со стеатозом печени показана при необходимости
+        выполнения биопсии печени (госпитализация осуществляется в гастроэнтерологическое
+        или хирургическое отделение ГОЗ, ООЗ).
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: chronic_hepatitis
+  name: Хронический гепатит
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - B18
+  - K73
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: Медицинское наблюдение пациентов с хроническим гепатитом (кроме вирусного
+      гепатита, АИГ) осуществляется в амбулаторных условиях.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение пациентов с хроническим гепатитом (кроме вирусного
+        гепатита, АИГ) осуществляется в амбулаторных условиях.
+  - text: Медицинское наблюдение пациентов с хроническим гепатитом (кроме вирусного
+      гепатита, АИГ) осуществляется врачом – терапевтом участковым (врачом общей практики)
+      постоянно.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение пациентов с хроническим гепатитом (кроме вирусного
+        гепатита, АИГ) осуществляется врачом – терапевтом участковым (врачом общей
+        практики) постоянно.
+  - text: Медицинское наблюдение пациентов с АИГ осуществляется врачом-гастроэнтерологом
+      постоянно.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение пациентов с АИГ осуществляется врачом-гастроэнтерологом
+        постоянно.
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: liver_cirrhosis
+  name: Цирроз печени
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - K70.3
+  - K74.3
+  - K74.4
+  - K74.5
+  - K74.6
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment:
+    non_drug:
+    - text: исключение алкоголя
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: исключение алкоголя
+    - text: ограничение физической активности при высокой активности хронического
+        гепатита и наличии симптомов
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ограничение физической активности при высокой активности хронического
+          гепатита и наличии симптомов
+    - text: обычное полноценное питание либо дополнительное энтеральное питание (при
+        признаках недостаточности питания)
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: обычное полноценное питание либо дополнительное энтеральное питание
+          (при признаках недостаточности питания)
+    drug_groups: []
+    drugs:
+    - drug_name: Преднизолон / Метилпреднизолон
+      active_substance: null
+      drug_group: null
+      dose_text: внутрь в стартовой суточной дозе 0,5 мг/кг в два приема, с последующим
+        постепенным снижением дозы до 5 мг в сутки в течение 6 месяцев
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: преднизолон (таблетки 5 мг) или метилпреднизолон (таблетки 4 мг, 8
+          мг, 16 мг, 32 мг) внутрь в стартовой суточной дозе 0,5 мг/кг в два приема
+    - drug_name: Азатиоприн
+      active_substance: null
+      drug_group: null
+      dose_text: внутрь в стартовой суточной дозе 1 мг/кг в два приема. При недостаточном
+        ответе доза до 2 мг/кг в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: азатиоприн (таблетки 50 мг) внутрь в стартовой суточной дозе 1 мг/кг
+          в два приема. Увеличение дозы азатиоприна (таблетки 50 мг) внутрь до 2 мг/кг
+          в сутки.
+    - drug_name: Аллопуринол
+      active_substance: null
+      drug_group: null
+      dose_text: внутрь в стартовой дозе 100 мг в сутки до достижения целевой суточной
+        дозы 2–3 мг/кг (дополнительно к азатиоприну)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: аллопуринол* (таблетка 100 мг, 300 мг) внутрь в стартовой дозе 100
+          мг в сутки до достижения целевой суточной дозы 2–3 мг/кг.
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Контроль активности АсАТ, АлАТ и концентрации IgG в плазме крови каждые
+      2–4 недели при терапии ГКС.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль активности АсАТ, АлАТ и концентрации IgG в плазме крови каждые
+        2–4 недели при терапии ГКС.
+  - text: 'Условиями отмены терапии АИГ являются: длительность терапии 2 года, монотерапия,
+      нормализация АсАТ, АлАТ, IgG < 12 г/л.'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Условиями отмены терапии АИГ являются: длительность терапии 2 года,
+        монотерапия, нормализация АсАТ, АлАТ, IgG < 12 г/л.'
+  hospitalization: []
+  routing:
+  - text: Госпитализация в гастроэнтерологическое отделение при умеренном и тяжелом
+      ЛПП.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация в гастроэнтерологическое отделение при умеренном и тяжелом
+        ЛПП.
+  - text: 'Госпитализация в отделение анестезиологии и реанимации при наличии ЛПП
+      и одного из критериев: МНО > 1,5ВГН; ПЭ; наличие предшествующего ЦП; отказ другого
+      органа вследствие ЛПП.'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Госпитализация в отделение анестезиологии и реанимации при наличии ЛПП
+        и одного из критериев: МНО > 1,5ВГН; ПЭ; наличие предшествующего ЦП; отказ
+        другого органа вследствие ЛПП.'
+  red_flags:
+  - text: Недостаточный ответ на лечение АИГ (недостижение нормализации активности
+      АсАТ, АлАТ и концентрации IgG и/или низкий индекс активности гепатита)
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Недостаточный ответ на лечение (недостижение в течение 6 месяцев нормализации
+        активности АсАТ, АлАТ и IgG в плазме крови и (или) индекса активности гепатита
+        3 и менее балов).
+  - text: Появление признаков гепатотоксичности (в контексте терапии азатиоприном)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При недостаточном ответе на лечение и (или) появлении признаков гепатотоксичности
+        в дополнение к азатиоприну может быть проведена пробная терапия аллопуринолом*
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: hepatic_encephalopathy
+  name: Печеночная энцефалопатия
+  synonyms: []
+  abbreviations: []
+  icd10_codes: []
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: primary_biliary_cholangitis
+  name: Первичный билиарный холангит
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - K74.3
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Кожный зуд
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Кожный зуд
+    - text: Слабость
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Слабость
+    - text: Сухой синдром
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Сухой синдром
+    - text: Кальцинаты в коже
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Кальцинаты в коже
+    - text: Дисфагия
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Дисфагия
+    - text: Ксантелазмы
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ксантелазмы
+    - text: Ксантомы
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ксантомы
+    - text: Сосудистые стигматы
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Сосудистые стигматы
+    - text: Спленомегалия
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Спленомегалия
+    - text: Желтуха (поздний симптом)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Желтуха (поздний симптом)
+    - text: Портальная гипертензия (поздняя стадия)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Портальная гипертензия (поздняя стадия)
+    - text: Повышение уровня ЩФ > 2 ВГН
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Повышение уровня ЩФ > 2 ВГН
+    - text: Повышение уровня ГГТП > 5 ВГН
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Повышение уровня ГГТП > 5 ВГН
+    - text: Повышение уровня антимитохондриальных антител (АМА) > 1:40
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Повышение уровня антимитохондриальных антител (АМА) > 1:40
+    - text: Дуктопеническое повреждение желчных протоков по данным биопсии печени
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Дуктопеническое повреждение желчных протоков по данным биопсии печени
+    - text: Наличие sp100, gp210 (для АМА-негативного ПБЦ)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие sp100, gp210 (для АМА-негативного ПБЦ)
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Определение уровня щелочной фосфатазы
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 21
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: повышение уровня ЩФ > 2 ВГН
+  - name: Определение уровня гамма-глутамилтранспептидазы
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 21
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: повышение уровня ГГТП > 5 ВГН
+  - name: Определение антимитохондриальных антител (АМА)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 21
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: повышение уровня антимитохондриальных антител (далее – АМА) > 1:40
+  - name: Биопсия печени
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 21
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: дуктопеническое повреждение желчных протоков (по данным биопсии печени)
+  conditional_exams:
+  - name: Определение аутоантител sp100 и gp210
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 21
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Для подтверждения АМА-негативного ПБЦ определяются sp100, gp210.
+  - name: Определение уровня аланинаминотрансферазы (АлАТ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 21
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: АлАТ > 5 ВГН
+  - name: Определение уровня иммуноглобулина G (IgG)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 21
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: уровень IgG в сыворотке крови > 2 ВГН
+  - name: Определение аутоантител к гладкой мускулатуре
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 21
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: наличие аутоантител к гладкой мускулатуре
+  - name: Гистологическое исследование печени
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 21
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: гепатит средней или тяжелой степени при гистологическом исследовании.
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: Госпитализация при умеренном и тяжелом ЛПП (в гастроэнтерологическое отделение
+      ГОЗ, ООЗ).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация при умеренном и тяжелом ЛПП (в гастроэнтерологическое
+        отделение ГОЗ, ООЗ).
+  - text: 'Госпитализация при ЛПП и одном из критериев: МНО > 1,5ВГН, ПЭ, наличие
+      предшествующего ЦП, отказ другого органа вследствие ЛПП (в отделение анестезиологии
+      и реанимации ГОЗ, ООЗ).'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Госпитализация при ЛПП и одном из критериев: МНО > 1,5ВГН, ПЭ, наличие
+        предшествующего ЦП, отказ другого органа вследствие ЛПП (в отделение анестезиологии
+        и реанимации ГОЗ, ООЗ).'
+  red_flags:
+  - text: При назначении лекарственных препаратов необходимо учитывать индивидуальные
+      медицинские противопоказания, аллергологический и фармакологический анамнез
+      пациента.
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При этом необходимо учитывать наличие индивидуальных медицинских противопоказаний,
+        аллергологический и фармакологический анамнез.
+  - text: Лечение, описанное для аутоиммунного гепатита (АИГ), исключает первичный
+      билиарный холангит (ПБЦ) и холангиты иной этиологии.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'При этом исключаются: ... ПСХ и ПБЦ или холангит иной этиологии; цитомегаловирусный
+        гепатит; инфекция, вызванная вирусом Эпштейна – Барр;'
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: primary_sclerosing_cholangitis
+  name: Первичный склерозирующий холангит
+  synonyms: []
+  abbreviations: []
+  icd10_codes: []
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Кожный зуд и боли в животе (основные симптомы)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Кожный зуд и боли в животе (основные симптомы)
+    - text: Ксантелазмы, ксантомы (возможные объективные данные)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ксантелазмы, ксантомы (возможные объективные данные)
+    - text: Желтуха (поздний симптом)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Желтуха (поздний симптом)
+    - text: Портальная гипертензия на поздней стадии
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Портальная гипертензия на поздней стадии
+    - text: Типичная картина по результатам МРХПГ
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Типичная картина по результатам МРХПГ
+    - text: Отсутствие других заболеваний (кроме АИГ), очевидных и вероятных причин
+        гепатита с холестазом
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Отсутствие других заболеваний (кроме АИГ), очевидных и вероятных причин
+          гепатита с холестазом
+    - text: Биопсия печени (в редких случаях при форме «болезни малых протоков»)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Биопсия печени (в редких случаях при форме «болезни малых протоков»)
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Магнитнорезонансная холангиопанкреатография (МРХПГ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 24
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: выявление типичной картины по результатам магнитнорезонансной холангиопанкреатографии
+        (далее – МРХПГ)
+  conditional_exams:
+  - name: Биопсия печени
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 24
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: биопсия печени (выполняется в редких случаях при форме «болезни малых
+        протоков»)
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: Госпитализация в гастроэнтерологическое отделение при умеренном и тяжелом
+      лекарственном поражении печени (ЛПП).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация в гастроэнтерологическое отделение при умеренном и тяжелом
+        лекарственном поражении печени (ЛПП).
+  - text: Госпитализация в отделение анестезиологии и реанимации при ЛПП с МНО > 1,5ВГН,
+      печеночной энцефалопатии (ПЭ), предшествующем циррозе печени (ЦП) или отказе
+      другого органа вследствие ЛПП.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация в отделение анестезиологии и реанимации при ЛПП с МНО
+        > 1,5ВГН, печеночной энцефалопатии (ПЭ), предшествующем циррозе печени (ЦП)
+        или отказе другого органа вследствие ЛПП.
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: wilson_disease
+  name: Болезнь Вильсона
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - E83.0
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Возраст манифестации 5–45 лет
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Возраст манифестации 5–45 лет
+    - text: Гепатомегалия
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Гепатомегалия
+    - text: Изолированная спленомегалия
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Изолированная спленомегалия
+    - text: Стеатоз печени
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Стеатоз печени
+    - text: Острый гепатит
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Острый гепатит
+    - text: Хронический гепатит
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хронический гепатит
+    - text: Цирроз печени
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Цирроз печени
+    - text: Острая печеночная недостаточность
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Острая печеночная недостаточность
+    - text: Тремор
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Тремор
+    - text: Непроизвольные движения конечностей, головы
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Непроизвольные движения конечностей, головы
+    - text: Нарушение координации движений
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Нарушение координации движений
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Определение активности трансаминаз в сыворотке крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 26
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: повышение активности трансаминаз
+  - name: Медицинский осмотр с оценкой статуса питания
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: '1 раз в 6 месяцев: медицинский осмотр с оценкой статуса питания'
+  - name: ОАК
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: '1 раз в 6 месяцев: ОАК'
+  - name: БИК (глюкоза, билирубин, АсАТ, АлАТ, ЩФ, ГГТП)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: '1 раз в 6 месяцев: БИК (глюкоза, билирубин, АсАТ, АлАТ, ЩФ, ГГТП)'
+  - name: МНО
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: '1 раз в 6 месяцев: МНО'
+  - name: Определение суточной экскреции меди с мочой
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: '1 раз в 6 месяцев: определение суточной экскреции меди с мочой'
+  - name: Медицинский осмотр врача-невролога
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: '1 раз в 6 месяцев: медицинский осмотр врача-невролога'
+  - name: УЗИ органов брюшной полости
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: '1 раз в год: УЗИ ОБП'
+  conditional_exams:
+  - name: ЭГДС
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'по медицинским показаниям: ЭГДС'
+  - name: Осмотр врача-офтальмолога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'по медицинским показаниям: осмотр врача-офтальмолога'
+  - name: КТА органов брюшной полости
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'по медицинским показаниям: КТА ОБП'
+  - name: МРТ органов брюшной полости
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'по медицинским показаниям: МРТ ОБП'
+  - name: МРТ головного мозга
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'по медицинским показаниям: МРТ головного мозга'
+  treatment: null
+  follow_up:
+  - text: Медицинское наблюдение пациентов с болезнью Вильсона в амбулаторных условиях
+      осуществляют врач-гастроэнтеролог, врач-невролог, врач – терапевт участковый
+      (врач общей практики) постоянно.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение пациентов с болезнью Вильсона в амбулаторных условиях
+        осуществляют врач-гастроэнтеролог, врач-невролог, врач – терапевт участковый
+        (врач общей практики) постоянно.
+  hospitalization: []
+  routing:
+  - text: Госпитализация пациента с умеренным и тяжелым ЛПП в гастроэнтерологическое
+      отделение.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация пациента с умеренным и тяжелым ЛПП в гастроэнтерологическое
+        отделение.
+  - text: Госпитализация пациента с ЛПП при наличии МНО > 1,5ВГН, ПЭ, предшествующего
+      ЦП или отказа другого органа в отделение анестезиологии и реанимации.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация пациента с ЛПП при наличии МНО > 1,5ВГН, ПЭ, предшествующего
+        ЦП или отказа другого органа в отделение анестезиологии и реанимации.
+  - text: Медицинское наблюдение пациентов с болезнью Вильсона осуществляется в амбулаторных
+      условиях.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение пациентов с болезнью Вильсона осуществляется в
+        амбулаторных условиях.
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: hemochromatosis
+  name: Гемохроматоз
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - E83.1
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: hepatorenal_syndrome
+  name: Гепаторенальный синдром
+  synonyms: []
+  abbreviations: []
+  icd10_codes: []
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Наличие цирроза печени с асцитом
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие цирроза печени с асцитом
+    - text: Острое почечное повреждение (ОПП), диагностированное по повышению сывороточного
+        креатинина (> 26,5 мкмоль/л за 48 ч или > 50 % от исходного за 7 дней)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Острое почечное повреждение (ОПП), диагностированное по повышению сывороточного
+          креатинина (> 26,5 мкмоль/л за 48 ч или > 50 % от исходного за 7 дней)
+    - text: Отсутствие ответа сывороточного креатинина после 2 дней отмены диуретиков
+        и плазмозамещающей терапии альбумином
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Отсутствие ответа сывороточного креатинина после 2 дней отмены диуретиков
+          и плазмозамещающей терапии альбумином
+    - text: Отсутствие шока
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Отсутствие шока
+    - text: Отсутствие текущего или недавнего использования нефротоксичных лекарственных
+        препаратов
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Отсутствие текущего или недавнего использования нефротоксичных лекарственных
+          препаратов
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Сывороточный креатинин
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 14
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ОПП, диагностированное на основании повышения сывороточного креатинина
+        на > 26,5 мкмоль/л в течение 48 часов или на > 50 % от начального уровня;
+        отсутствие ответа креатинина после 2 дней отмены диуретиков
+  conditional_exams: []
+  treatment:
+    non_drug:
+    - text: Отмена диуретиков
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Отмена диуретиков
+    drug_groups: []
+    drugs:
+    - drug_name: Альбумин
+      active_substance: null
+      drug_group: null
+      dose_text: 1 г/кг массы тела
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: 14
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: отсутствие ответа со стороны сывороточного креатинина после 2 дней
+          отмены диуретиков и проведения плазмозамещающей терапии альбумином в дозе
+          1 г/кг массы тела
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: Госпитализация пациента с умеренным и тяжелым ЛПП в гастроэнтерологическое
+      отделение.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация пациента с умеренным и тяжелым ЛПП в гастроэнтерологическое
+        отделение.
+  - text: Госпитализация пациента с ЛПП и МНО > 1,5ВГН, ПЭ, наличием предшествующего
+      ЦП или отказом другого органа вследствие ЛПП в отделение анестезиологии и реанимации.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация пациента с ЛПП и МНО > 1,5ВГН, ПЭ, наличием предшествующего
+        ЦП или отказом другого органа вследствие ЛПП в отделение анестезиологии и
+        реанимации.
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: spontaneous_bacterial_peritonitis
+  name: Спонтанный бактериальный перитонит
+  synonyms: []
+  abbreviations: []
+  icd10_codes: []
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Положительные культуры асцитической жидкости (E. coli, Klebsiella pneumonia,
+        Pneumococcus).
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Положительные культуры асцитической жидкости (E. coli, Klebsiella pneumonia,
+          Pneumococcus).
+    - text: Повышение абсолютного содержания нейтрофилов в асцитической жидкости (>
+        250/мм3).
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Повышение абсолютного содержания нейтрофилов в асцитической жидкости
+          (> 250/мм3).
+    - text: Отсутствие очевидного интраабдоминального или хирургического вмешательства
+        по лечению источника инфекции.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Отсутствие очевидного интраабдоминального или хирургического вмешательства
+          по лечению источника инфекции.
+    - text: 'Классический СБП: положительные культуры и нейтрофилы > 250 клеток/мм3
+        в асцитической жидкости.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Классический СБП: положительные культуры и нейтрофилы > 250 клеток/мм3
+          в асцитической жидкости.'
+    - text: 'Культуро-негативный нейтрофильный асцит: негативные культуры и нейтрофилы
+        > 250 клеток/мм3 в асцитической жидкости.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Культуро-негативный нейтрофильный асцит: негативные культуры и нейтрофилы
+          > 250 клеток/мм3 в асцитической жидкости.'
+    - text: 'Мономикробный безнейтрофильный бактериальный асцит: положительные культуры
+        и нейтрофилы < 250 клеток/мм3 в асцитической жидкости.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Мономикробный безнейтрофильный бактериальный асцит: положительные
+          культуры и нейтрофилы < 250 клеток/мм3 в асцитической жидкости.'
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Исследование асцитической жидкости
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Критериями СБП являются: положительные культуры (E. coli, Klebsiella
+        pneumonia, Pneumococcus) асцитической жидкости; повышение абсолютного содержания
+        нейтрофилов в асцитической жидкости (> 250/мм3)'
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: Госпитализация в гастроэнтерологическое отделение при умеренном и тяжелом
+      ЛПП.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация в гастроэнтерологическое отделение при умеренном и тяжелом
+        ЛПП.
+  - text: 'Госпитализация в отделение анестезиологии и реанимации при наличии ЛПП
+      и одном из критериев: МНО > 1,5ВГН; ПЭ; наличие предшествующего ЦП; отказ другого
+      органа вследствие ЛПП.'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_печени_пост_МЗ_2025_185.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Госпитализация в отделение анестезиологии и реанимации при наличии ЛПП
+        и одном из критериев: МНО > 1,5ВГН; ПЭ; наличие предшествующего ЦП; отказ
+        другого органа вследствие ЛПП.'
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:28.559451+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T15:58:18.490019+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=11
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:28.577930+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[liver_cirrhosis].treatment.drugs[1]
+  - level: warning
+    code: missing_icd10
+    message: Нет icd10_codes у condition
+    path: conditions[hepatic_encephalopathy]
+  - level: warning
+    code: missing_icd10
+    message: Нет icd10_codes у condition
+    path: conditions[primary_sclerosing_cholangitis]
+  - level: warning
+    code: missing_icd10
+    message: Нет icd10_codes у condition
+    path: conditions[hepatorenal_syndrome]
+  - level: warning
+    code: missing_icd10
+    message: Нет icd10_codes у condition
+    path: conditions[spontaneous_bacterial_peritonitis]
+  validated_at: '2026-07-20T15:58:18.547028+00:00'

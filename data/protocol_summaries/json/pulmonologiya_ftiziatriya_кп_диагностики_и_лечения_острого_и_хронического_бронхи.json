@@ -1,10 +1,10 @@
 {
   "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "диагностики и лечения острого и хронического бронхита",
+    "title": "Диагностика и лечение острого и хронического бронхита",
     "url": null,
     "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "adult"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,8 +32,8 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностики_и_лечения_острого_и_хронического_бро",
-      "name": "диагностики и лечения острого и хронического бронхита",
+      "condition_id": "acute_bronchitis",
+      "name": "Острый бронхит",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
@@ -45,10 +45,8 @@
         "J20.5",
         "J20.6",
         "J20.7",
-        "J20.9",
-        "J41",
-        "J41.0",
-        "J41.1"
+        "J20.8",
+        "J20.9"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -56,7 +54,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "Острый бронхит неуточненный  (J20.9). Диагноз «острый бронхит» следует предполагать при наличии остро возникшего кашля, продолжающегося не",
+            "text": "Воспалительное заболевание бронхов, преимущественно инфекционного происхождения",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -73,11 +71,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Острый бронхит неуточненный  (J20.9). Диагноз «острый бронхит» следует предполагать при наличии остро возникшего кашля, продолжающегося не"
+              "quote": "Воспалительное заболевание бронхов, преимущественно инфекционного происхождения"
             }
           },
           {
-            "text": "пневмонии и хронических заболеваний лёгких, которые могут быть причиной кашля. Диагноз выносится на основа-",
+            "text": "Проявляется кашлем, интоксикационным синдромом, возможно выделение мокроты",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -94,19 +92,163 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "пневмонии и хронических заболеваний лёгких, которые могут быть причиной кашля. Диагноз выносится на основа-"
+              "quote": "Проявляется кашлем, интоксикационным синдромом, возможно выделение мокроты"
+            }
+          },
+          {
+            "text": "выделение гнойной мокроты и увеличение её количества, возникновение или нарастание одышки, нарастание признаков интоксикации",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "выделение гнойной мокроты и увеличение её количества, возникновение или нарастание одышки, нарастание признаков интоксикации"
+            }
+          },
+          {
+            "text": "бронхообструкция и признаки бронхиальной гиперреактивности, проявляющиеся рассеянными сухими, свистящими дистанционными хрипами",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "бронхообструкция и признаки бронхиальной гиперреактивности, проявляющиеся рассеянными сухими, свистящими дистанционными хрипами"
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
-      "conditional_exams": [],
+      "required_exams": [
+        {
+          "name": "Анамнез и физикальное исследование",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Анамнез и физикальное исследование"
+          }
+        },
+        {
+          "name": "Общий анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Общий анализ крови 1 раз, контрольное обследование – по показаниям"
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Спирограмма",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При обструктивном синдроме: спирограмма"
+          }
+        },
+        {
+          "name": "Рентгенограмма органов грудной полости",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При второй волне лихорадки – рентгенограмма органов грудной полости"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "При кашле целесообразно назначение отхаркивающих лекарственных средств, муколитическая тера-",
+            "text": "Назначается высококалорийная, витаминизированная диета.",
             "source_ref": {
               "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
               "document_url": null,
@@ -117,11 +259,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "При кашле целесообразно назначение отхаркивающих лекарственных средств, муколитическая тера-"
+              "quote": "Назначается высококалорийная, витаминизированная диета."
             }
           },
           {
-            "text": "пия назначается в случаях появления вязкой трудно отделяемой мокроты (ацетилцистеин, амброксол бромгексин). Применение противокашлевых препаратов центрального действия (кодеин, бутамират и др.) при бронхитах совмест-",
+            "text": "Восстановлению дренажной функции бронхов способствуют вспомогательные методы — лечебная физкультура (далее-ЛФК), массаж грудной клетки, физиотерапия.",
             "source_ref": {
               "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
               "document_url": null,
@@ -132,11 +274,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "пия назначается в случаях появления вязкой трудно отделяемой мокроты (ацетилцистеин, амброксол бромгексин). Применение противокашлевых препаратов центрального действия (кодеин, бутамират и др.) при бр"
+              "quote": "Восстановлению дренажной функции бронхов способствуют вспомогательные методы — лечебная физкультура (далее-ЛФК), массаж грудной клетки, физиотерапия."
             }
           },
           {
-            "text": "но с муколитической терапией нерационально, так как эти лекарственные средства подавляют кашлевой рефлекс,",
+            "text": "Бронхосанационная терапия (по показаниям).",
             "source_ref": {
               "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
               "document_url": null,
@@ -147,62 +289,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "но с муколитической терапией нерационально, так как эти лекарственные средства подавляют кашлевой рефлекс,"
-            }
-          },
-          {
-            "text": "замедляют мукоцилиарный транспорт и повышают вязкость бронхиального секрета. Бронходилататоры показаны при наличии бронхообструктивного синдрома. Обосновано ситуационное назна-",
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "замедляют мукоцилиарный транспорт и повышают вязкость бронхиального секрета. Бронходилататоры показаны при наличии бронхообструктивного синдрома. Обосновано ситуационное назна-"
-            }
-          },
-          {
-            "text": "чение сальбутамола или фенотерола в виде дозирующего аэрозольного ингалятора (далее-ДАИ) или ингаляции рас-",
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "чение сальбутамола или фенотерола в виде дозирующего аэрозольного ингалятора (далее-ДАИ) или ингаляции рас-"
-            }
-          },
-          {
-            "text": "творов фенотерола или беродуала (ипротропия бромид /фенотерол) через небулайзер в случаях, когда немедикамен-",
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "творов фенотерола или беродуала (ипротропия бромид /фенотерол) через небулайзер в случаях, когда немедикамен-"
+              "quote": "Бронхосанационная терапия (по показаниям)."
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "амброксол",
+            "drug_name": "Амоксициллин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,03 г",
+            "dose_text": "0,5г 3 раза в сутки в течение 5 дней",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -214,20 +311,20 @@
               "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
               "document_url": null,
               "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "амброксол 0,03 г  3 раза в сутки \nвнутрь или 2мл через неб"
+              "quote": "Антибактериальная терапия назначается только при наличии cимптомов бактериальной инфекции: амоксициллин внутрь 0,5г 3 раза в сутки в течение 5 дней (до купирования клинической симптоматики и интоксикационного синдрома)"
             }
           },
           {
-            "drug_name": "аминофиллин",
+            "drug_name": "Азитромицин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,15 г",
+            "dose_text": "0,5г внутрь 1 раз в сутки",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -239,20 +336,20 @@
               "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
               "document_url": null,
               "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "аминофиллин \n0,15 г 3  раза в сутки внутрь, или \nпролонгиров"
+              "quote": "азитромицин 0,5г внутрь 1 раз в сутки"
             }
           },
           {
-            "drug_name": "теофиллин",
+            "drug_name": "Кларитромицин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "350  мг",
+            "dose_text": "0,5-1,0 г в сутки",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -264,13 +361,463 @@
               "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
               "document_url": null,
               "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "теофиллин  \n350  мг 2 раза в сутки,  или 500 \nмг 1 раз в сут"
+              "quote": "или кларитромицин 0,5-1,0 г в сутки."
+            }
+          },
+          {
+            "drug_name": "Ацетилцистеин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "внутрь 400-600 мг /сутки в 2 приема",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ацетилцистеин внутрь 400-600 мг /сутки в 2 приема"
+            }
+          },
+          {
+            "drug_name": "Ацетилцистеин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "для аэрозольной терапии в УЗИ-приборах распыляют 3-9 мл 10% раствора, в приборах с распределительным клапаном - 6 мл 10% раствора; продолжительность ингаляции - 15-20 мин; кратность - 2-4 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "для аэрозольной терапии в УЗИ-приборах распыляют 3-9 мл 10% раствора ацетилцистеина, в приборах с распределительным клапаном - 6 мл 10% раствора; продолжительность ингаляции - 15-20 мин; кратность - 2-4 раза в сутки; при лечении острых состояний средняя продолжительность терапии - 5-10 дней"
+            }
+          },
+          {
+            "drug_name": "Амброксол",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,03 г 3 раза в сутки внутрь или 2мл через небулайзер",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "амброксол 0,03 г 3 раза в сутки внутрь или 2мл через небулайзер"
+            }
+          },
+          {
+            "drug_name": "Бромгексин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "внутрь 8-16 мг 3 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "бромгексин внутрь 8-16 мг 3 раза в сутки."
+            }
+          },
+          {
+            "drug_name": "Сальбутамол",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "100 мкг (1-2 вдоха) ДАИ",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При наличии бронхообструктивного синдрома - сальбутамол (ДАИ) 100 мкг (1-2 вдоха)"
+            }
+          },
+          {
+            "drug_name": "Фенотерол",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "100 мкг (1-2 вдоха) ДАИ или в возрастной дозе через небулайзер (ситуационно)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "фенотерол (ДАИ) 100 мкг (1-2 вдоха) или в возрастной дозе через небулайзер – по потребности (ситуационно)."
+            }
+          },
+          {
+            "drug_name": "Ипротропия бромид/Фенотерол (Беродуал)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "ингаляции растворов через небулайзер (ситуационно)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 4,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ингаляции растворов фенотерола или беродуала (ипротропия бромид /фенотерол) через небулайзер в случаях, когда немедикаментозные методы недостаточно эффективны"
+            }
+          },
+          {
+            "drug_name": "Ипротропия бромид /Фенотерол",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "по 20мкг/ 50мкг в ДАИ по 2 дозы до 3 раз в сутки или 10-20 капель раствора (250 мкг+500 мкг/1 мл) для ингаляций через небулайзер 2-3 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ипратропия бромид /фенотерол по 20мкг мкг/ 50мкг в ДАИ по 2 дозы до 3 раз в сутки или 10-20 капель раствора ипратропия Бромид/фенотерол (250 мкг+500 мкг/1 мл) для ингаляций через небулайзер 2-3 раза в сутки"
+            }
+          },
+          {
+            "drug_name": "Аминофиллин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,15 г 3 раза в сутки внутрь",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "метилксантины (аминофиллин 0,15 г 3 раза в сутки внутрь)"
+            }
+          },
+          {
+            "drug_name": "Теофиллин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "пролонгированный 350 мг 2 раза в сутки, или 500 мг 1 раз в сутки внутрь",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "пролонгированный теофиллин 350 мг 2 раза в сутки, или 500 мг 1 раз в сутки внутрь"
+            }
+          },
+          {
+            "drug_name": "Бутамират",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "сироп по 15 мл 4 раза в сутки (при непродуктивном кашле)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Противокашлевые лекарственные средства при непродуктивном кашле: бутамират (сироп) по 15 мл 4 раза в сутки"
+            }
+          },
+          {
+            "drug_name": "Преноксдиазин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,1г 3-4 раза в сутки внутрь (при непродуктивном кашле)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "преноксдиазин по 0,1г 3-4 раза в сутки внутрь."
+            }
+          },
+          {
+            "drug_name": "Макролиды",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "препараты выбора при бактериальном поражении бронхов",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 4,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При явных признаках бактериального поражения бронхов... препаратами выбора могут быть антибиотики группы макролидов"
+            }
+          },
+          {
+            "drug_name": "Бета-лактамы",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "препараты выбора при бактериальном поражении бронхов",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 4,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При явных признаках бактериального поражения бронхов... препаратами выбора могут быть... бета-лактамы."
+            }
+          },
+          {
+            "drug_name": "Амоксициллин/клавулановая кислота",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "875/125 мг внутрь 2 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "амоксициллин/клавулановая кислота 875/125 мг внутрь 2 раза в сутки"
+            }
+          },
+          {
+            "drug_name": "Азитромицин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,5 г 1 раз в сутки внутрь (при недостаточной эффективности)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "макролиды (азитромицин - 0,5 г 1раз в сутки внутрь)"
+            }
+          },
+          {
+            "drug_name": "Кларитромицин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,5-1,0 г в сутки (при недостаточной эффективности)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "кларитромицин 0,5-1,0 г в сутки"
+            }
+          },
+          {
+            "drug_name": "Левофлоксацин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,5 г 1 раз в сутки (препарат резерва)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "препараты резерва левофлоксацин 0,5 г 1раз в сутки."
             }
           }
         ],
@@ -280,7 +827,7 @@
       },
       "follow_up": [
         {
-          "text": "контроль",
+          "text": "Контрольное обследование общего анализа крови – по показаниям",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -294,11 +841,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
+            "quote": "Контрольное обследование общего анализа крови – по показаниям"
           }
         },
         {
-          "text": "через \n7 дн",
+          "text": "Консультации врача- пульмонолога, врача- фтизиатра (при затянувшемся течении и сохраняющемся кашле более 3 недель)",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -312,66 +859,1285 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "через \n7 дн"
-          }
-        },
-        {
-          "text": "Контроль",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Контроль"
+            "quote": "Консультации врача- пульмонолога, врача- фтизиатра (при затянувшемся течении и сохраняющемся кашле более 3 недель)"
           }
         }
       ],
       "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
+      "routing": [
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        },
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Вторая волна лихорадки",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При второй волне лихорадки – рентгенограмма органов грудной полости"
+          }
+        },
+        {
+          "text": "Явные признаки бактериального поражения бронхов (выделение гнойной мокроты и увеличение её количества, возникновение или нарастание одышки, нарастание признаков интоксикации)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При явных признаках бактериального поражения бронхов (выделение гнойной мокроты и увеличение её количества, возникновение или нарастание одышки, нарастание признаков интоксикации) лечение антибактериальными лекарственными средствами необходимо."
+          }
+        },
+        {
+          "text": "Затянувшееся течение и сохраняющийся кашель более 3 недель",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Консультации врача- пульмонолога, врача- фтизиатра (при затянувшемся течении и сохраняющемся кашле более 3 недель)"
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
+      "source_refs": []
+    },
+    {
+      "condition_id": "chronic_bronchitis",
+      "name": "Хронический бронхит",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "J41",
+        "J41.0",
+        "J41.1",
+        "J41.8",
+        "J42"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": {
+        "required": [
+          {
+            "text": "Диффузное прогрессирующее воспаление бронхов, проявляющееся продуктивным кашлем не менее 3 месяцев в году в течение 2 лет подряд.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Диффузное прогрессирующее воспаление бронхов, проявляющееся продуктивным кашлем не менее 3 месяцев в году в течение 2 лет подряд."
+            }
+          },
+          {
+            "text": "Исключение других заболеваний верхних дыхательных путей, бронхов и легких, способных вызвать эти симптомы.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Исключение других заболеваний верхних дыхательных путей, бронхов и легких, способных вызвать эти симптомы."
+            }
+          },
+          {
+            "text": "Связь с длительным раздражением бронхов вредными факторами (курение, вдыхание загрязненного воздуха, химические соединения).",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Связь с длительным раздражением бронхов вредными факторами (курение, вдыхание загрязненного воздуха, химические соединения)."
+            }
+          },
+          {
+            "text": "Связь с воздействием рецидивирующей респираторной инфекции (респираторные вирусы, пневмококки).",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Связь с воздействием рецидивирующей респираторной инфекции (респираторные вирусы, пневмококки)."
+            }
+          }
+        ],
+        "optional": [],
+        "exclusion": []
+      },
+      "required_exams": [
         {
-          "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "диагностики и лечения острого и хронического бронхита"
+          "name": "Общий анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": 11,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Общий анализ крови"
+          }
+        },
+        {
+          "name": "Спирограмма",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": 11,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Спирограмма"
+          }
+        },
+        {
+          "name": "Общий анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": 11,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Общий анализ крови"
+          }
+        },
+        {
+          "name": "Бактериологическое и микроскопическое исследование мокроты на аэробные и факультативно-анаэробные микроорганизмы",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": 11,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Бактериологическое и микроскопическое исследование мокроты на аэробные и факультативно-анаэробные микроорганизмы"
+          }
+        },
+        {
+          "name": "Спирограмма",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": 11,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Спирограмма"
+          }
+        },
+        {
+          "name": "Бронхоскопия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": 11,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Бронхоскопия"
+          }
+        },
+        {
+          "name": "Рентгенография органов грудной полости",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": 11,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Рентгенография органов грудной полости"
+          }
         }
-      ]
+      ],
+      "conditional_exams": [
+        {
+          "name": "Исследование мокроты (макроскопическое, цитологическое, биохимическое)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "В диагностике активности хронического бронхита имеет значение исследование мокроты: макроскопическое, цитологическое, биохимическое."
+          }
+        },
+        {
+          "name": "Рентгенография органов грудной полости",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Пациентам с лихорадкой и/или с хрипами над поверхностью легких показано проведение рентгенологического исследования органов грудной клетки для исключения пневмонии."
+          }
+        },
+        {
+          "name": "Бронхоскопия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Значительную помощь в распознавании хронического бронхита оказывает бронхоскопия, при которой визуально оценивают эндобронхиальные проявления воспалительного процесса..."
+          }
+        },
+        {
+          "name": "Биопсия слизистой оболочки (при бронхоскопии)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Бронхоскопия позволяет выполнить биопсию слизистой оболочки для уточнения характера поражения при необходимости исключить другие причины длительного кашля (новообразования дыхательных путей)."
+          }
+        }
+      ],
+      "treatment": {
+        "non_drug": [
+          {
+            "text": "Устранение внешних причинных факторов (курение, вдыхание вредных веществ и другое).",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Устранение внешних причинных факторов (курение, вдыхание вредных веществ и другое)."
+            }
+          },
+          {
+            "text": "Высококалорийная, витаминизированная диета.",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Высококалорийная, витаминизированная диета."
+            }
+          },
+          {
+            "text": "Лечебная физкультура (ЛФК), массаж грудной клетки, физиотерапия.",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лечебная физкультура (ЛФК), массаж грудной клетки, физиотерапия."
+            }
+          },
+          {
+            "text": "Бронхосанационная терапия (по показаниям).",
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Бронхосанационная терапия (по показаниям)."
+            }
+          }
+        ],
+        "drug_groups": [],
+        "drugs": [
+          {
+            "drug_name": "Амоксициллин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,5 г 3 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При выраженном интоксикационном и бронхолегочном синдроме (в случае подтверждения бактериальной природы обострения) – антибиотикотерапия: амоксициллин 0,5 г 3 раза в сутки"
+            }
+          },
+          {
+            "drug_name": "Азитромицин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,5 г 1 раз в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При выраженном интоксикационном и бронхолегочном синдроме (в случае подтверждения бактериальной природы обострения) – антибиотикотерапия: ... и/или азитромицин 0,5 г 1раз в сутки"
+            }
+          },
+          {
+            "drug_name": "Кларитромицин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,5-1,0 г в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При выраженном интоксикационном и бронхолегочном синдроме (в случае подтверждения бактериальной природы обострения) – антибиотикотерапия: ... или кларитромицин 0,5-1,0 г в сутки."
+            }
+          },
+          {
+            "drug_name": "Ацетилцистеин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "внутрь 400-600 мг /сутки в 2 приема; для аэрозольной терапии 3-9 мл 10% раствора, 2-4 раза в сутки.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ацетилцистеин внутрь 400-600 мг /сутки в 2 приема; для аэрозольной терапии в УЗИ-приборах распыляют 3-9 мл 10% раствора, в приборах с распределительным клапаном - 6 мл 10%."
+            }
+          },
+          {
+            "drug_name": "Амброксол",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,03 г 3 раза в сутки внутрь или 2мл через небулайзер.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "амброксол 0,03 г 3 раза в сутки внутрь или 2мл через небулайзер."
+            }
+          },
+          {
+            "drug_name": "Бромгексин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "внутрь 8-16 мг 3 раза в сутки.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "бромгексин внутрь 8-16 мг 3 раза в сутки."
+            }
+          },
+          {
+            "drug_name": "Сальбутамол",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "ДАИ 100 мкг (1-2 вдоха) по потребности (ситуационно).",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При наличии бронхообструктивного синдрома - сальбутамол (ДАИ) 100 мкг (1-2 вдоха) ... – по потребности (ситуационно)."
+            }
+          },
+          {
+            "drug_name": "Фенотерол",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "ДАИ 100 мкг (1-2 вдоха) или в возрастной дозе через небулайзер по потребности (ситуационно).",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При наличии бронхообструктивного синдрома - фенотерол (ДАИ) 100 мкг (1-2 вдоха) или в возрастной дозе через небулайзер – по потребности (ситуационно)."
+            }
+          },
+          {
+            "drug_name": "Ипратропия бромид",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "2 ингаляции 3-4 раза в сутки или в возрастной дозе через небулайзер.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 13,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При обструктивном синдроме – ипратропия бромид в ДАИ - 2 ингаляции 3-4 раза в сутки или в возрастной дозе через небулайзер."
+            }
+          },
+          {
+            "drug_name": "Ипратропия бромид / Фенотерол",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "ДАИ по 20 мкг/50 мкг по 2 дозы до 3 раз в сутки или 10-20 капель раствора (250 мкг+500 мкг/1 мл) для ингаляций через небулайзер 2-3 раза в сутки; или 2 ингаляции 3-4 раза в сутки.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ипратропия бромид /фенотерол по 20мкг/50мкг в ДАИ по 2 дозы до 3 раз в сутки или 10-20 капель раствора (250 мкг+500 мкг/1 мл) для ингаляций через небулайзер 2-3 раза в сутки."
+            }
+          },
+          {
+            "drug_name": "Аминофиллин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,15 г 3 раза в сутки внутрь.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "метилксантины (аминофиллин 0,15 г 3 раза в сутки внутрь)."
+            }
+          },
+          {
+            "drug_name": "Теофиллин (пролонгированный)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "350 мг 2 раза в сутки, или 500 мг 1 раз в сутки внутрь.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "пролонгированный теофиллин 350 мг 2 раза в сутки, или 500 мг 1 раз в сутки внутрь."
+            }
+          },
+          {
+            "drug_name": "Бутамират",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "сироп по 15 мл 4 раза в сутки.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Противокашлевые лекарственные средства при непродуктивном кашле: бутамират (сироп) по 15 мл 4 раза в сутки."
+            }
+          },
+          {
+            "drug_name": "Преноксдиазин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,1 г 3-4 раза в сутки внутрь.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Противокашлевые лекарственные средства при непродуктивном кашле: ... преноксдиазин по 0,1г 3-4 раза в сутки внутрь."
+            }
+          },
+          {
+            "drug_name": "Амоксициллин/Клавулановая кислота",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "875/125 мг внутрь 2 раза в сутки.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "амоксициллин/клавулановая кислота 875/125 мг внутрь 2 раза в сутки, при недостаточной эффективности - макролиды."
+            }
+          },
+          {
+            "drug_name": "Азитромицин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,5 г 1 раз в сутки внутрь.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При недостаточной эффективности - макролиды (азитромицин - 0,5 г 1раз в сутки внутрь)."
+            }
+          },
+          {
+            "drug_name": "Кларитромицин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,5-1,0 г в сутки.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При недостаточной эффективности - макролиды (... кларитромицин 0,5-1,0 г в сутки)."
+            }
+          },
+          {
+            "drug_name": "Левофлоксацин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,5 г 1 раз в сутки (препарат резерва).",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "препараты резерва левофлоксацин 0,5 г 1раз в сутки."
+            }
+          }
+        ],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [
+        {
+          "text": "Контрольное исследование общего анализа крови и спирограммы проводится по показаниям.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Контрольное исследование общего анализа крови и спирограммы проводится по показаниям."
+          }
+        },
+        {
+          "text": "Консультации врача-пульмонолога, врача-фтизиатра (при затянувшемся течении и сохраняющемся кашле более 3 недель).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Консультации врача-пульмонолога, врача-фтизиатра (при затянувшемся течении и сохраняющемся кашле более 3 недель)."
+          }
+        }
+      ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "госпитализация/амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация/амбулаторно"
+          }
+        },
+        {
+          "text": "Госпитализация при хроническом бронхите показана при: обострении бронхита с присоединением новых симптомов (изменение характера одышки, появление кашля с гнойной мокротой); неэффективности проводимой терапии; наличии осложнений (пневмония, бронхоэктазы); наличии тяжелых сопутствующих заболеваний.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация при хроническом бронхите показана при: обострении бронхита с присоединением новых симптомов (изменение характера одышки, появление кашля с гнойной мокротой); неэффективности проводимой "
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Необходимость исключить другие причины длительного кашля, в частности новообразования дыхательных путей.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Бронхоскопия позволяет выполнить биопсию слизистой оболочки для уточнения характера поражения при необходимости исключить другие причины длительного кашля (новообразования дыхательных путей)."
+          }
+        },
+        {
+          "text": "Применение противокашлевых препаратов центрального действия совместно с муколитической терапией нерационально, так как они подавляют кашлевой рефлекс, замедляют мукоцилиарный транспорт и повышают вязкость бронхиального секрета.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_острого_и_хронического_бронхи",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения острого и хронического бронхита 05.07.2012 № 768.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Применение противокашлевых препаратов центрального действия при бронхитах совместно с муколитической терапией нерационально, так как эти лекарственные средства подавляют кашлевой рефлекс."
+          }
+        }
+      ],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:46.415988+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T17:26:23.766839+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=2"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-06-23T19:15:46.417840+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[acute_bronchitis].treatment.drugs[4]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[acute_bronchitis].treatment.drugs[18]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[acute_bronchitis].treatment.drugs[19]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[chronic_bronchitis].required_exams[0]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[chronic_bronchitis].required_exams[2]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[chronic_bronchitis].required_exams[4]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[chronic_bronchitis].treatment.drugs[0]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[chronic_bronchitis].treatment.drugs[1]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[chronic_bronchitis].treatment.drugs[2]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[chronic_bronchitis].treatment.drugs[3]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[chronic_bronchitis].treatment.drugs[4]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[chronic_bronchitis].treatment.drugs[5]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[chronic_bronchitis].treatment.drugs[6]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[chronic_bronchitis].treatment.drugs[7]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[chronic_bronchitis].treatment.drugs[10]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[chronic_bronchitis].treatment.drugs[12]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[chronic_bronchitis].treatment.drugs[13]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[chronic_bronchitis].treatment.drugs[14]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[chronic_bronchitis].treatment.drugs[15]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[chronic_bronchitis].treatment.drugs[16]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[chronic_bronchitis].treatment.drugs[17]"
+      }
+    ],
+    "validated_at": "2026-07-20T17:26:23.805866+00:00"
   }
 }

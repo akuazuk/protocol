@@ -1,9 +1,9 @@
 protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение осложнений многоплодной беременности 2017 44
+  title: Диагностика и лечение осложнений многоплодной беременности
   url: null
   local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
   document_sha256: null
@@ -19,22 +19,19 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
+  - pregnant
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_лечение_осложнений_многоплодной_бере
-  name: Диагностика лечение осложнений многоплодной беременности 2017 44
+- condition_id: feto_fetal_transfusion_syndrome
+  name: Фето-фетальный трансфузионный синдром
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B24
-  - C90.0
-  - D64.9
-  - N97.9
   - O30
   - O35
   condition_applicability: null
@@ -42,7 +39,8 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: определение количества плодов
+    - text: Расширение воротникового пространства более 3 мм у плода-реципиента (10+5
+        – 13+6 недель)
       logic_group: null
       operator: unknown
       values: []
@@ -59,9 +57,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение количества плодов
-    - text: определение типа плацентации и амниальности по «λ» – и «Т» – признакам,
-        толщине
+        quote: Расширение воротникового пространства более 3 мм у плода-реципиента
+          (10+5 – 13+6 недель)
+    - text: КТР плода-реципиента больше, чем у плода-донора
       logic_group: null
       operator: unknown
       values: []
@@ -78,9 +76,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение типа плацентации и амниальности по «λ» – и «Т» – признакам,
-          толщине
-    - text: определение срока беременности, зрелости и жизнеспособности плодов
+        quote: КТР плода-реципиента больше, чем у плода-донора
+    - text: Многоводие у плода-реципиента (МВК > 60 мм до 20 недель, > 80 мм 20-22
+        недель, > 100 мм 23-25 недель)
       logic_group: null
       operator: unknown
       values: []
@@ -97,8 +95,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение срока беременности, зрелости и жизнеспособности плодов
-    - text: определение типа плацентации
+        quote: Многоводие у плода-реципиента (МВК > 60 мм до 20 недель, > 80 мм 20-22
+          недель, > 100 мм 23-25 недель)
+    - text: Маловодие у плода-донора (МВК < 20 мм)
       logic_group: null
       operator: unknown
       values: []
@@ -115,8 +114,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение типа плацентации
-    - text: '[diagnostics] 5.2. Ультразвуковые критерии ФФТС: (стр. 2)'
+        quote: Маловодие у плода-донора (МВК < 20 мм)
+    - text: Различие размеров мочевого пузыря (у плода-донора меньше либо не визуализируется)
       logic_group: null
       operator: unknown
       values: []
@@ -133,9 +132,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 5.2. Ультразвуковые критерии ФФТС: (стр. 2)'
-    - text: межамниотической перегородки необходимо проводить дифференциальный диагноз
-        между
+        quote: Различие размеров мочевого пузыря (у плода-донора меньше либо не визуализируется)
+    - text: Диссоциированное развитие плодов (различие в предполагаемой массе плодов
+        более 20 %)
       logic_group: null
       operator: unknown
       values: []
@@ -152,12 +151,52 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: межамниотической перегородки необходимо проводить дифференциальный
-          диагноз между
+        quote: Диссоциированное развитие плодов (различие в предполагаемой массе плодов
+          более 20 %)
+    - text: Водянка плода-реципиента (подкожный отек более 5 мм, плевральный/перикардиальный
+        выпот, асцит)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Водянка плода-реципиента (подкожный отек более 5 мм, плевральный/перикардиальный
+          выпот, асцит)
+    - text: Тесное прилегание плода-донора к стенке матки и снижение двигательной
+        активности
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Тесное прилегание плода-донора к стенке матки и снижение двигательной
+          активности
     optional: []
     exclusion: []
   required_exams:
-  - name: УЗИ
+  - name: Ультразвуковая диагностика (УЗИ) в 10+5 – 13+6 недель беременности
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -171,220 +210,1268 @@ conditions:
       protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
       document_url: null
       local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Ультразвуковая диагностика в 10 недель 5 дней – 13 недель 6 дней беременности:
+        определение количества плодов; определение типа плацентации и амниальности
+        по «λ» – и «Т» – признакам, толщине межамниотической мембраны; измерение КТР,
+        воротникового пространства плодов; диагностика маркеров хромосомных аномалий
+        и ВПР.'
+  - name: Ультразвуковая диагностика (УЗИ) при монохориальной двойне
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Ультразвуковая диагностика при МХ двойне проводится 1 раз в 2 недели
+        с 16 до 25 недель беременности: определение срока беременности, зрелости и
+        жизнеспособности плодов; определение типа плацентации; измерение толщины межамниотической
+        мембраны; фетометрия; измерение количества околоплодных вод; диагностика анемии
+        плодов...'
+  conditional_exams: []
+  treatment:
+    non_drug:
+    - text: Фетоскопическая лазерная коагуляция плацентарных анастомозов (при диагностике
+        ФФТС 16–25 недель гестации)
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Фетоскопическая лазерная коагуляция плацентарных анастомозов (при диагностике
+          ФФТС 16–25 недель гестации)
+    - text: Амниодренирование (при диагностике ФФТС после 25 недель гестации)
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Амниодренирование (при диагностике ФФТС после 25 недель гестации)
+    drug_groups: []
+    drugs: []
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Плановые госпитализации в ГУ «РНПЦ «Мать и дитя» в 28–30, 32–34 (с медицинской
+      профилактикой респираторного дистресс-синдрома), 36 недель беременности или
+      по медицинским показаниям.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
       page_start: null
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "Ультразвуковое \nисследование \n(далее – \nУЗИ) \nпуповин \nплодов \n\
-        с \nцветным \nдопплеровским картированием в В-режиме позволяет"
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: '[treatment] 11. Лечение СОАП осуществляется в ГУ «РНПЦ «Мать и дитя»
-        в сроках (стр. 4)'
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 11. Лечение СОАП осуществляется в ГУ «РНПЦ «Мать и дитя»
-          в сроках (стр. 4)'
-    - text: беременности до 21 недели 6 дней методом фетоскопической лазерной коагуляции
-        сосудов
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: беременности до 21 недели 6 дней методом фетоскопической лазерной коагуляции
-          сосудов
-    - text: пуповины плода-«паразита» после информированного согласия беременной.
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: пуповины плода-«паразита» после информированного согласия беременной.
-    - text: В послеоперационном периоде плановые госпитализации в 28–30, 32–34, 38
-        недель
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: В послеоперационном периоде плановые госпитализации в 28–30, 32–34,
-          38 недель
-    - text: беременности и по медицинским показаниям в ГУ «РНПЦ «Мать и дитя» или
-        на III уровень
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: беременности и по медицинским показаниям в ГУ «РНПЦ «Мать и дитя» или
-          на III уровень
-    - text: 'При диагностированном СОАП после 22 недель беременности показаны:'
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'При диагностированном СОАП после 22 недель беременности показаны:'
-    drug_groups: []
-    drugs:
-    - drug_name: декабря
-      active_substance: null
-      drug_group: null
-      dose_text: 2024 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: декабря 2024 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 2017 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июня 2017 г
-    - drug_name: августа
-      active_substance: null
-      drug_group: null
-      dose_text: 2025 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: августа 2025 г
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
+      quote: Плановые госпитализации в ГУ «РНПЦ «Мать и дитя» в 28–30, 32–34 (с медицинской
+        профилактикой респираторного дистресс-синдрома), 36 недель беременности или
+        по медицинским показаниям.
   hospitalization: []
-  routing: []
-  red_flags: []
+  routing:
+  - text: Госпитализация в ГУ «РНПЦ «Мать и дитя» для проведения фетоскопической лазерной
+      коагуляции плацентарных анастомозов (при 16–25 недель гестации)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация в ГУ «РНПЦ «Мать и дитя» для проведения фетоскопической
+        лазерной коагуляции плацентарных анастомозов (при 16–25 недель гестации)
+  - text: Госпитализация в ГУ «РНПЦ «Мать и дитя» для проведения амниодренирования
+      (при диагностике ФФТС после 25 недель)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация в ГУ «РНПЦ «Мать и дитя» для проведения амниодренирования
+        (при диагностике ФФТС после 25 недель)
+  - text: Родоразрешение в ГУ «РНПЦ «Мать и дитя» в 32–37 недель беременности
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Родоразрешение в ГУ «РНПЦ «Мать и дитя» в 32–37 недель беременности
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags:
+  - text: Водянка плода-реципиента
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: водянка плода-реципиента (подкожный отек более 5 мм, плевральный выпот,
+        перикардиальный выпот, асцит)
+  - text: Тесное прилегание плода-донора к стенке матки и снижение двигательной активности
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: тесное прилегание (признак «прилипания») плода-донора к стенке матки
+        и снижение двигательной активности плода-донора.
+  - text: Расширение воротникового пространства более 3 мм у плода-реципиента
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: расширение воротникового пространства более 3 мм в сроки 10 недель 5
+        дней – 13 недель 6 дней беременности у плода-реципиента
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
-    document_url: null
-    local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика лечение осложнений многоплодной беременности 2017 44
+  source_refs: []
+- condition_id: dissociated_fetal_dev_critical_flow
+  name: Диссоциированное развитие плодов и персистенция критического кровотока в артерии
+    пуповины у одного из плодов
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - O30
+  - O35
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: различие в показателях предполагаемой массы плодов более чем 20 %
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: различие в показателях предполагаемой массы плодов более чем 20 %
+    - text: различие в показателях окружности живота плодов 20 мм и более
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: различие в показателях окружности живота плодов 20 мм и более
+    - text: различие в показателях окружности головы свыше 5 %
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: различие в показателях окружности головы свыше 5 %
+    - text: различие бипариетального размера головы более 6 мм
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: различие бипариетального размера головы более 6 мм
+    - text: различие в показателях кровотока (индекс резистентности, пульсационный
+        индекс) в артерии пуповин плодов более 15 %
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: различие в показателях кровотока (индекс резистентности, пульсационный
+          индекс) в артерии пуповин плодов более 15 %
+    - text: повышение абсолютных значений (более 0,4) индексов в артерии пуповин у
+        одного или обоих плодов
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: повышение абсолютных значений (более 0,4) индексов в артерии пуповин
+          у одного или обоих плодов
+    - text: нулевой диастолический кровоток в артерии пуповины одного из плодов
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: нулевой диастолический кровоток в артерии пуповины одного из плодов
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Ультразвуковая диагностика в 10-13 недель беременности
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Ультразвуковая диагностика в 10 недель 5 дней – 13 недель 6 дней беременности:
+        определение количества плодов; определение типа плацентации и амниальности
+        по «λ» – и «Т» – признакам'
+  - name: Ультразвуковая диагностика при монохориальной двойне (16-25 недель)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Ультразвуковая диагностика при МХ двойне проводится 1 раз в 2 недели
+        с 16 до 25 недель беременности: определение срока беременности, зрелости и
+        жизнеспособности плодов; определение типа плацентации'
+  - name: УЗИ пуповин плодов с цветным допплеровским картированием
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Ультразвуковое исследование (далее – УЗИ) пуповин плодов с цветным допплеровским
+        картированием в В-режиме позволяет диагностировать переплетение петель пуповин.
+  - name: УЗИ плодов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: пролонгирование беременности с УЗИ и допплерометрией (далее – ДПМ) плодов
+        2 раза в неделю
+  - name: Допплерометрия (ДПМ) плодов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: пролонгирование беременности с УЗИ и допплерометрией (далее – ДПМ) плодов
+        2 раза в неделю
+  conditional_exams: []
+  treatment:
+    non_drug:
+    - text: Пролонгирование беременности
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Пролонгирование беременности
+    - text: Родоразрешение путем кесарева сечения
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Родоразрешение путем кесарева сечения
+    drug_groups: []
+    drugs:
+    - drug_name: Профилактика респираторного дистресс-синдрома плода
+      active_substance: null
+      drug_group: null
+      dose_text: через 1 сутки после окончания проведения
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: родоразрешение в 32–36 недель беременности путем хирургической операции
+          «кесарево сечение» через 1 сутки после окончания проведения медицинской
+          профилактики респираторного дистресс-синдрома плода
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Ультразвуковая диагностика при МХ двойне проводится 1 раз в 2 недели с 16
+      до 25 недель беременности.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Ультразвуковая диагностика при МХ двойне проводится 1 раз в 2 недели
+        с 16 до 25 недель беременности.
+  hospitalization: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: Направление в ГУ «РНПЦ «Мать и дитя» или на III уровень оказания перинатальной
+      помощи
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Направление в ГУ «РНПЦ «Мать и дитя» или на III уровень оказания перинатальной
+        помощи
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags:
+  - text: Нулевой диастолический кровоток в артерии пуповины одного из плодов
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: нулевой диастолический кровоток в артерии пуповины одного из плодов.
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: syndrome_of_reverse_arterial_perfusion
+  name: Синдром обратной артериальной перфузии
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - O30
+  - O35
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Множественные пороки развития у плода-реципиента
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Множественные пороки развития у плода-реципиента
+    - text: Отсутствие головы и сердца или рудиментарное сердце у плода-реципиента
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Отсутствие головы и сердца или рудиментарное сердце у плода-реципиента
+    - text: Пороки развития верхних и нижних конечностей у плода-реципиента
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Пороки развития верхних и нижних конечностей у плода-реципиента
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Ультразвуковая диагностика
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Специфические ультразвуковые маркеры СОАП в I триместре беременности:
+        у плода-реципиента (плода-«паразита») диагностируются множественные пороки
+        развития, несовместимые с жизнью: отсутствие головы и сердца.'
+  - name: УЗИ и допплерометрия (ДПМ) плодов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: пролонгирование беременности с УЗИ и ДПМ плодов 1 раз в месяц на III
+        уровне оказания перинатальной помощи или в ГУ «РНПЦ «Мать и дитя»
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: Госпитализация в ГУ «РНПЦ «Мать и дитя» (для лечения до 21 нед 6 дней, плановых
+      госпитализаций, консультаций, пролонгирования беременности, родоразрешения).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация в ГУ «РНПЦ «Мать и дитя» (для лечения до 21 нед 6 дней,
+        плановых госпитализаций, консультаций, пролонгирования беременности, родоразрешения).
+  - text: Госпитализация на III уровень оказания перинатальной помощи (для плановых
+      госпитализаций, пролонгирования беременности, родоразрешения).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация на III уровень оказания перинатальной помощи (для плановых
+        госпитализаций, пролонгирования беременности, родоразрешения).
+  - text: Амбулаторно по месту жительства (для диспансерного наблюдения за детьми
+      после внутриутробного хирургического лечения).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторно по месту жительства (для диспансерного наблюдения за детьми
+        после внутриутробного хирургического лечения).
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags:
+  - text: Множественные пороки развития плода-реципиента, несовместимые с жизнью
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Специфические ультразвуковые маркеры СОАП в I триместре беременности:
+        у плода-реципиента (плода-«паразита») диагностируются множественные пороки
+        развития, несовместимые с жизнью: отсутствие головы и сердца.'
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: mch_mam_cord_entanglement
+  name: Переплетение пуповин плодов-близнецов при монохориальной моноамниотической
+    двойне
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - O30
+  - O35
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Одна плацента и однополые плоды (УЗИ-признак монохориальной моноамниотической
+        двойни)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Одна плацента и однополые плоды (УЗИ-признак монохориальной моноамниотической
+          двойни)
+    - text: Близкое расположение мест прикрепления пуповин обоих плодов к плаценте
+        (УЗИ-признак монохориальной моноамниотической двойни)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Близкое расположение мест прикрепления пуповин обоих плодов к плаценте
+          (УЗИ-признак монохориальной моноамниотической двойни)
+    - text: Отсутствие межамниотической перегородки между плодами (УЗИ-признак монохориальной
+        моноамниотической двойни)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Отсутствие межамниотической перегородки между плодами (УЗИ-признак
+          монохориальной моноамниотической двойни)
+    - text: Движения плода не ограничены (для дифференциальной диагностики МХ МА от
+        Stuck-twin)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Движения плода не ограничены (для дифференциальной диагностики МХ МА
+          от Stuck-twin)
+    - text: Переплетение петель пуповин (диагностируется УЗИ пуповин с цветным допплеровским
+        картированием в В-режиме)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Переплетение петель пуповин (диагностируется УЗИ пуповин с цветным
+          допплеровским картированием в В-режиме)
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Ультразвуковая диагностика (для МХ двойни)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Ультразвуковая диагностика при МХ двойне проводится 1 раз в 2 недели
+        с 16 до 25 недель беременности
+  - name: УЗИ пуповин плодов с цветным допплеровским картированием в В-режиме
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Ультразвуковое исследование (далее – УЗИ) пуповин плодов с цветным допплеровским
+        картированием в В-режиме позволяет диагностировать переплетение петель пуповин.
+  - name: ДПМ плодов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: После 30 недель показаны ДПМ плодов и кардиотокографическое (далее –
+        КТГ) исследование 1 раз в 2 недели.
+  - name: Кардиотокографическое (КТГ) исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: После 30 недель показаны ДПМ плодов и кардиотокографическое (далее –
+        КТГ) исследование 1 раз в 2 недели.
+  conditional_exams: []
+  treatment:
+    non_drug:
+    - text: Плановые госпитализации в 28–30 недель и в 34 недели для досрочного родоразрешения.
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Плановые госпитализации в 28–30 недель и в 34 недели для досрочного
+          родоразрешения.
+    - text: Родоразрешение МХ МА двойни в 34–35 недель беременности путем хирургической
+        операции «кесарево сечение».
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Родоразрешение МХ МА двойни в 34–35 недель беременности путем хирургической
+          операции «кесарево сечение».
+    drug_groups: []
+    drugs:
+    - drug_name: Медицинская профилактика респираторного дистресс-синдрома плода
+      active_substance: null
+      drug_group: null
+      dose_text: Проводится за 1 сутки до досрочного родоразрешения.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Родоразрешение МХ МА двойни в 34–35 недель беременности путем хирургической
+          операции «кесарево сечение» через 1 сутки после медицинской профилактики
+          респираторного дистресс-синдрома плода в ГУ «РНПЦ «Мать и дитя».
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Диспансерное наблюдение за детьми, перенесшими внутриутробное хирургическое
+      лечение антенатальной патологии (включая МХ МА двойню), проводится в амбулаторных
+      условиях по месту жительства.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диспансерное наблюдение за детьми, перенесшими внутриутробное хирургическое
+        лечение антенатальной патологии (включая МХ МА двойню), проводится в амбулаторных
+        условиях по месту жительства.
+  - text: Сроки и кратность медицинских осмотров и диагностических исследований у
+      детей до 1 года, включая младенцев после вмешательств, определены Инструкцией
+      о порядке диспансеризации детского населения № 174 от 16.12.2024 г.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Сроки и кратность медицинских осмотров и диагностических исследований
+        у детей до 1 года, включая младенцев после вмешательств, определены Инструкцией
+        о порядке диспансеризации детского населения № 174
+  - text: Определение группы риска развития анемии и диспансерное наблюдение в соответствующем
+      объеме для детей, перенесших внутриутробное хирургическое лечение антенатальной
+      патологии.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Определение группы риска развития анемии и диспансерное наблюдение в
+        соответствующем объеме для детей, перенесших внутриутробное хирургическое
+        лечение антенатальной патологии.
+  - text: При медицинском осмотре проводится оценка цвета кожного покрова и слизистых,
+      размеров печени и селезенки.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При медицинском осмотре проводится оценка цвета кожного покрова и слизистых,
+        размеров печени и селезенки.
+  hospitalization: []
+  routing:
+  - text: Госпитализация в ГУ «РНПЦ «Мать и дитя» в 28–30 недель и в 34 недели.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация в ГУ «РНПЦ «Мать и дитя» в 28–30 недель и в 34 недели.
+  - text: Родоразрешение в ГУ «РНПЦ «Мать и дитя».
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Родоразрешение в ГУ «РНПЦ «Мать и дитя».
+  - text: Амбулаторное диспансерное наблюдение детей по месту жительства.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторное диспансерное наблюдение детей по месту жительства.
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags:
+  - text: Переплетение петель пуповин
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_осложнений_многоплодно
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_осложнений_многоплодной_беременности_2017_44.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Ультразвуковое исследование (далее – УЗИ) пуповин плодов с цветным допплеровским
+        картированием в В-режиме позволяет диагностировать переплетение петель пуповин.
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:16:00.359338+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T18:13:14.840422+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=4
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:16:00.362113+00:00'
+  validated_at: '2026-07-20T18:13:14.853549+00:00'

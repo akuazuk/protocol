@@ -1,10 +1,10 @@
 protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: 02КП Диагностика лечение пациентов взрослое население травмами опорно двигательного
-    аппарата стационарных условияхиях
+  title: Диагностика и лечение травм опорно-двигательного аппарата в стационарных
+    условиях
   url: null
   local_path: minzdrav_protocols/travmatologiya-ortopediya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf
   document_sha256: null
@@ -27,9 +27,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: 02кп_диагностика_лечение_пациентов_взрослое_насе
-  name: 02КП Диагностика лечение пациентов взрослое население травмами опорно двигательного
-    аппарата стационарных условияхиях
+- condition_id: musculoskeletal_trauma
+  name: Травмы опорно-двигательного аппарата
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -48,55 +47,99 @@ conditions:
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria:
-    required:
-    - text: '[classification] 29. При установлении диагноза вывих бедра и (или) перелом
-        вертлужной впадины (стр. 6)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 29. При установлении диагноза вывих бедра и (или)
-          перелом вертлужной впадины (стр. 6)'
-    - text: '[classification] 29. При установлении диагноза вывих бедра и (или) перелом
-        вертлужной впадины (стр. 6)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 29. При установлении диагноза вывих бедра и (или)
-          перелом вертлужной впадины (стр. 6)'
-    optional: []
-    exclusion: []
-  required_exams: []
-  conditional_exams: []
+  diagnostic_criteria: null
+  required_exams:
+  - name: Осмотр врачом-анестезиологом-реаниматологом
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: В ходе предоперационной подготовки пациент осматривается врачом-анестезиологом-реаниматологом
+  - name: Осмотр врачом-анестезиологом-реаниматологом
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: В ходе предоперационной подготовки пациент осматривается врачом-анестезиологом-реаниматологом
+  conditional_exams:
+  - name: Лабораторные и функциональные исследования (повторные)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: по медицинским показаниям повторно могут выполняться лабораторные и функциональные
+        исследования.
+  - name: Повторные лабораторные и функциональные исследования
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: по медицинским показаниям повторно могут выполняться лабораторные и функциональные
+        исследования.
   treatment:
     non_drug:
-    - text: '[treatment] 4. Фармакотерапия (стр. 3)'
+    - text: Постельный режим в положении по Волковичу (при стабильных переломах костей
+        таза)
       source_ref:
         protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
         document_url: null
@@ -107,9 +150,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 4. Фармакотерапия (стр. 3)'
-    - text: фармакологической характеристики лекарственного препарата (далее – ЛП).
-        При этом
+        quote: Постельный режим в положении по Волковичу (при стабильных переломах
+          костей таза)
+    - text: Ходьба с помощью костылей по мере консолидации перелома (индивидуально)
       source_ref:
         protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
         document_url: null
@@ -120,10 +163,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: фармакологической характеристики лекарственного препарата (далее –
-          ЛП). При этом
-    - text: Национальный правовой Интернет-портал Республики Беларусь, 20.08.2024,
-        8/41962
+        quote: Ходьба с помощью костылей по мере консолидации перелома (индивидуально)
+    - text: Лечебная физическая культура (для сохранения объема движений, профилактики
+        пролежней и гипостатической пневмонии)
       source_ref:
         protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
         document_url: null
@@ -134,9 +176,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Национальный правовой Интернет-портал Республики Беларусь, 20.08.2024,
-          8/41962
-    - text: аллергологический и фармакологический анамнез.
+        quote: Лечебная физическая культура (для сохранения объема движений, профилактики
+          пролежней и гипостатической пневмонии)
+    - text: Физиотерапевтическое лечение (после консультации врача-физиотерапевта)
       source_ref:
         protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
         document_url: null
@@ -147,9 +189,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: аллергологический и фармакологический анамнез.
-    - text: '[treatment] 5. Режим дозирования, путь введения и кратность применения
-        ЛП определяются (стр. 4)'
+        quote: Физиотерапевтическое лечение (после консультации врача-физиотерапевта)
+    - text: 'Хирургическое вмешательство: открытая репозиция, внутренний остеосинтез
+        пластиной и (или) винтами (при переломах таза типа А)'
       source_ref:
         protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
         document_url: null
@@ -160,9 +202,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 5. Режим дозирования, путь введения и кратность применения
-          ЛП определяются (стр. 4)'
-    - text: инструкцией по медицинскому применению (листком-вкладышем).
+        quote: 'Хирургическое вмешательство: открытая репозиция, внутренний остеосинтез
+          пластиной и (или) винтами (при переломах таза типа А)'
+    - text: Иммобилизация травмированной конечности деротационным сапожком сроком
+        до 3 недель (при нефункциональном остеосинтезе костей таза)
       source_ref:
         protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
         document_url: null
@@ -173,87 +216,200 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: инструкцией по медицинскому применению (листком-вкладышем).
+        quote: Иммобилизация травмированной конечности деротационным сапожком сроком
+          до 3 недель (при нефункциональном остеосинтезе костей таза)
+    - text: 'Иммобилизация таза: фиксация простыней, ремнем и (или) бандажом (при
+        нестабильных повреждениях таза в период подготовки к операции)'
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Иммобилизация таза: фиксация простыней, ремнем и (или) бандажом (при
+          нестабильных повреждениях таза в период подготовки к операции)'
     drug_groups: []
-    drugs:
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 2024 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июня 2024 г
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
+    drugs: []
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Индивидуальный контроль консолидации перелома при ходьбе с костылями
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Индивидуальный контроль консолидации перелома при ходьбе с костылями
+  - text: Снятие иммобилизации (деротационный сапожок) через 3 недели при нефункциональном
+      остеосинтезе костей таза
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Снятие иммобилизации (деротационный сапожок) через 3 недели при нефункциональном
+        остеосинтезе костей таза
   hospitalization: []
-  routing: []
-  red_flags: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: госпитализация/стационарное лечение
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация/стационарное лечение
+  - text: экстренная помощь
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: экстренная помощь
+  - text: Наружный остеосинтез с применением С-рамы или переднего стержневого тазового
+      фиксатора при нестабильности гемодинамики или механической нестабильности костей
+      таза.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Наружный остеосинтез с применением С-рамы или переднего стержневого тазового
+        фиксатора при нестабильности гемодинамики или механической нестабильности
+        костей таза.
+  - text: Переход к открытой репозиции и окончательному внутреннему остеосинтезу пластиной
+      и (или) винтами при неудовлетворительном положении отломков или механической
+      нестабильности костей таза.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Переход к открытой репозиции и окончательному внутреннему остеосинтезу
+        пластиной и (или) винтами при неудовлетворительном положении отломков или
+        механической нестабильности костей таза.
+  red_flags:
+  - text: Неудовлетворительное положение отломков
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Медицинскими показаниями к хирургическому вмешательству при лечении
+        перелома подвздошной кости, перелома лобковой кости (переломы таза типа А
+        по классификации АО) являются: неудовлетворительное положение отломков'
+  - text: Неврологический дефицит
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Медицинскими показаниями к хирургическому вмешательству при лечении
+        перелома подвздошной кости, перелома лобковой кости (переломы таза типа А
+        по классификации АО) являются: (...) неврологический дефицит.'
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: travmatologiya_ortopediya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_оп
-    document_url: null
-    local_path: minzdrav_protocols/travmatologiya-ortopediya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: 02КП Диагностика лечение пациентов взрослое население травмами опорно двигательного
-      аппарата стационарных условияхиях
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:52.929419+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T18:58:57.552921+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:52.930205+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[musculoskeletal_trauma].required_exams[1]
+  validated_at: '2026-07-20T18:58:57.554853+00:00'

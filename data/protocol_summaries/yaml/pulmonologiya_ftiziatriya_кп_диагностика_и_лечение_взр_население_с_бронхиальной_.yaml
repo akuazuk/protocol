@@ -1,9 +1,9 @@
 protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение взрослое население с бронхиальной астмой
+  title: Диагностика и лечение бронхиальной астмы
   url: null
   local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
   document_sha256: null
@@ -26,19 +26,22 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_взрослое_население_с_бронх
-  name: Диагностика и лечение взрослое население с бронхиальной астмой
+- condition_id: bronchial_asthma
+  name: Бронхиальная астма
   synonyms: []
   abbreviations: []
   icd10_codes:
+  - J45
   - J46
-  - J06.9
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '«О здравоохранении», а также следующие термины и их определения:'
+    - text: 'Наличие вариабельных респираторных симптомов в анамнезе (свистящие хрипы,
+        одышка, затрудненное дыхание и кашель): как правило, более одного симптома,
+        вариабельных по времени и интенсивности, ухудшающихся ночью/утром, провоцируемых
+        физ. нагрузками, аллергенами, холодом, инфекциями.'
       logic_group: null
       operator: unknown
       values: []
@@ -55,9 +58,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '«О здравоохранении», а также следующие термины и их определения:'
-    - text: '[classification] 15. В формулировке диагноза следует указывать клиническую
-        форму, степень (стр. 5)'
+        quote: 'Наличие вариабельных респираторных симптомов в анамнезе (свистящие
+          хрипы, одышка, затрудненное дыхание и кашель): как правило, более одного
+          симптома, вариабельных по времени и интенсивности, ухудшающи'
+    - text: 'Подтвержденное вариабельное ограничение скорости воздушного потока на
+        выдохе: при низком ОФВ1 отношение ОФВ1/ФЖЕЛ снижено (<0,75–0,80).'
       logic_group: null
       operator: unknown
       values: []
@@ -74,9 +79,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 15. В формулировке диагноза следует указывать клиническую
-          форму, степень (стр. 5)'
-    - text: 'Примеры формулировок диагноза:'
+        quote: 'Подтвержденное вариабельное ограничение скорости воздушного потока
+          на выдохе: при низком ОФВ1 отношение ОФВ1/ФЖЕЛ снижено (<0,75–0,80).'
+    - text: 'Повышенная вариабельность показателей функции внешнего дыхания: чем больше
+        или чаще выявляется, тем выше уверенность в диагнозе.'
       logic_group: null
       operator: unknown
       values: []
@@ -93,9 +99,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Примеры формулировок диагноза:'
-    - text: 'В диагнозе могут быть указаны дополнительные фенотипические особенности
-        БА:'
+        quote: 'Повышенная вариабельность показателей функции внешнего дыхания: чем
+          больше или чаще выявляется, тем выше уверенность в диагнозе.'
+    - text: 'Положительный результат теста на обратимость бронхообструкции с использованием
+        бронходилататора: повышение ОФВ1 на >12% и >200 мл от исходного значения.'
       logic_group: null
       operator: unknown
       values: []
@@ -112,9 +119,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'В диагнозе могут быть указаны дополнительные фенотипические особенности
-          БА:'
-    - text: '«О здравоохранении», а также следующие термины и их определения:'
+        quote: 'Положительный результат теста на обратимость бронхообструкции с использованием
+          бронходилататора: повышение ОФВ1 на >12% и >200 мл от исходного значения.'
+    - text: 'Повышенная вариабельность ПСВ, измеряемой 2 раза в сутки в течение >2
+        недель: средняя суточная вариабельность ПСВ >10%.'
       logic_group: null
       operator: unknown
       values: []
@@ -131,9 +139,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '«О здравоохранении», а также следующие термины и их определения:'
-    - text: '[classification] 15. В формулировке диагноза следует указывать клиническую
-        форму, степень (стр. 5)'
+        quote: 'Повышенная вариабельность ПСВ, измеряемой 2 раза в сутки в течение
+          >2 недель: средняя суточная вариабельность ПСВ >10%.'
+    - text: 'Значительное повышение показателей функции внешнего дыхания через 4 недели
+        противовоспалительного лечения: повышение ОФВ1 на >12% и >200 мл (или ПСВ
+        на >20%) от исходного.'
       logic_group: null
       operator: unknown
       values: []
@@ -150,9 +160,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 15. В формулировке диагноза следует указывать клиническую
-          форму, степень (стр. 5)'
-    - text: 'Примеры формулировок диагноза:'
+        quote: 'Значительное повышение показателей функции внешнего дыхания через
+          4 недели противовоспалительного лечения: повышение ОФВ1 на >12% и >200 мл
+          (или ПСВ на >20%) от исходного.'
+    - text: 'Положительный результат теста с физической нагрузкой: снижение ОФВ1 на
+        >10% и >200 мл от исходного значения.'
       logic_group: null
       operator: unknown
       values: []
@@ -169,9 +181,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Примеры формулировок диагноза:'
-    - text: 'В диагнозе могут быть указаны дополнительные фенотипические особенности
-        БА:'
+        quote: 'Положительный результат теста с физической нагрузкой: снижение ОФВ1
+          на >10% и >200 мл от исходного значения.'
+    - text: 'Классификация обострений БА по степени тяжести: нетяжелая, тяжелая, жизнеугрожающая,
+        близкая к фатальной.'
       logic_group: null
       operator: unknown
       values: []
@@ -188,16 +201,188 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'В диагнозе могут быть указаны дополнительные фенотипические особенности
-          БА:'
+        quote: 'Классификация обострений БА по степени тяжести: нетяжелая, тяжелая,
+          жизнеугрожающая, близкая к фатальной.'
+    - text: Степени тяжести жизнеугрожающая БА и БА, близкая к фатальной, эквивалентны
+        астматическому статусу.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Степени тяжести жизнеугрожающая БА и БА, близкая к фатальной, эквивалентны
+          астматическому статусу.
     optional: []
     exclusion: []
-  required_exams: []
+  required_exams:
+  - name: Сбор анамнеза
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: сбор анамнеза с оценкой выраженности и продолжительности симптомов, определением
+        триггеров (включая профессиональный анамнез) – при каждом медицинском осмотре;
+  - name: Физикальное обследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: физикальное обследование с оценкой индекса массы тела – при каждом медицинском
+        осмотре;
+  - name: ОАК (Общий анализ крови)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ОАК – однократно при первичном медицинском осмотре, в дальнейшем – при
+        необходимости;
+  - name: SpO2
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: SpO2 – при каждом медицинском осмотре;
+  - name: Спирометрия (функция внешнего дыхания) с бронходилатационным тестом
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: спирометрия (функция внешнего дыхания) с бронходилатационным тестом –
+        при первичной диагностике, повторное проведение спирометрии не позже чем через
+        3 месяца от начала терапии;
+  - name: Рентгенография ОГК
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: рентгенография ОГК – однократно;
+  - name: ЭКГ
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ЭКГ – однократно.
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] 7. Настоящий клинический протокол в части лечения БА включает
-        основные ЛС, (стр. 2)'
+    - text: Аллергенспецифическая иммунотерапия (АСИТ) может использоваться как дополнительная
+        терапия при наличии медицинских показаний.
       source_ref:
         protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
         document_url: null
@@ -208,80 +393,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 7. Настоящий клинический протокол в части лечения БА включает
-          основные ЛС, (стр. 2)'
-    - text: по систематической или заместительной номенклатуре, с указанием лекарственной
-        формы
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: по систематической или заместительной номенклатуре, с указанием лекарственной
-          формы
-    - text: В соответствии с настоящим клиническим протоколом по медицинским показаниям
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: В соответствии с настоящим клиническим протоколом по медицинским показаниям
-    - text: возможно применение лекарственных препаратов off label, назначаемых по
-        решению
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: возможно применение лекарственных препаратов off label, назначаемых
-          по решению
-    - text: '[treatment] 8. В настоящем клиническом протоколе используются следующие
-        сокращения: (стр. 3)'
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 8. В настоящем клиническом протоколе используются следующие
-          сокращения: (стр. 3)'
-    - text: АЛТР – антагонисты лейкотриеновых рецепторов
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: АЛТР – антагонисты лейкотриеновых рецепторов
+        quote: Аллергенспецифическая иммунотерапия (АСИТ) может использоваться как
+          дополнительная терапия при наличии медицинских показаний.
     drug_groups: []
     drugs:
-    - drug_name: ингаляций
+    - drug_name: Беклометазона дипропионат (ДАИ, стандартные частицы)
       active_substance: null
       drug_group: null
-      dose_text: 0,25 мг
+      dose_text: низкая 200–500 мкг, средняя >500–1000 мкг, высокая >1000 мкг
       frequency_text: null
       duration_text: null
       route: null
@@ -293,17 +412,18 @@ conditions:
         protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
         document_url: null
         local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
-        page_start: null
+        page_start: 16
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: ингаляций 0,25 мг/мл или 0,5 мг/мл в небулах по 2 мл
-    - drug_name: действия
+        quote: Беклометазона дипропионат (ДАИ, стандартные частицы) 200–500 >500–1000
+          >1000
+    - drug_name: Беклометазона дипропионат (ДАИ или ДПИ, экстрамелкодисперсные частицы)
       active_substance: null
       drug_group: null
-      dose_text: 100 мг
+      dose_text: низкая 100–200 мкг, средняя >200–400 мкг, высокая >400 мкг
       frequency_text: null
       duration_text: null
       route: null
@@ -315,17 +435,18 @@ conditions:
         protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
         document_url: null
         local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
-        page_start: null
+        page_start: 16
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: действия 100 мг, 200 мг, 300 мг, 350 мг
-    - drug_name: омализумаб
+        quote: Беклометазона дипропионат (ДАИ или ДПИ, экстрамелкодисперсные частицы)
+          100–200 >200–400 >400
+    - drug_name: Будесонид (ДАИ или ДПИ, стандартная частица)
       active_substance: null
       drug_group: null
-      dose_text: 125 мг
+      dose_text: низкая 200–400 мкг, средняя >400–800 мкг, высокая >800 мкг
       frequency_text: null
       duration_text: null
       route: null
@@ -337,17 +458,17 @@ conditions:
         protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
         document_url: null
         local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
-        page_start: null
+        page_start: 16
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: омализумаб 125 мг/мл
-    - drug_name: таблетки
+        quote: Будесонид (ДАИ или ДПИ, стандартная частица) 200–400 >400–800 >800
+    - drug_name: Циклесонид (ДАИ, экстрамелкодисперсные частицы)
       active_substance: null
       drug_group: null
-      dose_text: 4 мг
+      dose_text: низкая 80–160 мкг, средняя >160–320 мкг, высокая >320 мкг
       frequency_text: null
       duration_text: null
       route: null
@@ -359,17 +480,17 @@ conditions:
         protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
         document_url: null
         local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
-        page_start: null
+        page_start: 16
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: таблетки 4 мг и 16 мг, преднизолон таблетки 5 мг
-    - drug_name: сальбутамол
+        quote: Циклесонид (ДАИ, экстрамелкодисперсные частицы) 80–160 >160–320 >320
+    - drug_name: Флутиказона фуроат (ДПИ)
       active_substance: null
       drug_group: null
-      dose_text: 50 мкг
+      dose_text: низкая 100 мкг, средняя 200 мкг
       frequency_text: null
       duration_text: null
       route: null
@@ -381,17 +502,17 @@ conditions:
         protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
         document_url: null
         local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
-        page_start: null
+        page_start: 16
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "сальбутамол 50 мкг + 100 мкг/доза, \n250 мкг + 100 мкг/доза,"
-    - drug_name: формотерол
+        quote: Флутиказона фуроат (ДПИ) 100 200
+    - drug_name: Флутиказона пропионат (ДПИ)
       active_substance: null
       drug_group: null
-      dose_text: 80 мкг
+      dose_text: низкая 100–250 мкг, средняя >250–500 мкг, высокая >500 мкг
       frequency_text: null
       duration_text: null
       route: null
@@ -403,17 +524,17 @@ conditions:
         protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
         document_url: null
         local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
-        page_start: null
+        page_start: 16
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: формотерол 80 мкг + 4,5 мкг доза, 160 мкг + 4,5 мкг доза
-    - drug_name: дозы
+        quote: Флутиказона пропионат (ДПИ) 100–250 >250–500 >500
+    - drug_name: Флутиказона пропионат (ДАИ, стандартные частицы)
       active_substance: null
       drug_group: null
-      dose_text: 900 мг
+      dose_text: низкая 100–250 мкг, средняя >250–500 мкг, высокая >500 мкг
       frequency_text: null
       duration_text: null
       route: null
@@ -425,17 +546,17 @@ conditions:
         protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
         document_url: null
         local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
-        page_start: null
+        page_start: 16
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: дозы 900 мг/сут
-    - drug_name: апреля
+        quote: Флутиказона пропионат (ДАИ, стандартные частицы) 100–250 >250–500 >500
+    - drug_name: Мометазона фуроат (ДАИ, стандартные частицы)
       active_substance: null
       drug_group: null
-      dose_text: 2024 г
+      dose_text: низкая 200–400 мкг, средняя >400 мкг
       frequency_text: null
       duration_text: null
       route: null
@@ -447,18 +568,382 @@ conditions:
         protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
         document_url: null
         local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
-        page_start: null
+        page_start: 16
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: апреля 2024 г
+        quote: Мометазона фуроат (ДАИ, стандартные частицы) 200–400 >400
+    - drug_name: Беклометазон
+      active_substance: null
+      drug_group: null
+      dose_text: ДАИ 100 мкг/доза, 250 мкг/доза
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'ИГКС: беклометазон ДАИ 100 мкг/доза, 250 мкг/доза;'
+    - drug_name: Будесонид
+      active_substance: null
+      drug_group: null
+      dose_text: ДАИ 100 мкг/доза, 200 мкг/доза
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: будесонид ДАИ 100 мкг/доза, 200 мкг/доза;
+    - drug_name: Флутиказон
+      active_substance: null
+      drug_group: null
+      dose_text: ДАИ 50 мкг/доза, 125 мкг/доза, 250 мкг/доза
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: флутиказон ДАИ 50 мкг/доза, 125 мкг/доза, 250 мкг/доза;
+    - drug_name: Беклометазон/формотерол
+      active_substance: null
+      drug_group: null
+      dose_text: ДАИ 100 мкг + 6 мкг/доза
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: комбинации ИГКС с ДДБА – беклометазон/формотерол ДАИ 100 мкг + 6 мкг/доза;
+    - drug_name: Будесонид/формотерол
+      active_substance: null
+      drug_group: null
+      dose_text: ДПИ 80 мкг + 4,5 мкг доза, 160 мкг + 4,5 мкг доза
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: будесонид/формотерол ДПИ 80 мкг + 4,5 мкг доза, 160 мкг + 4,5 мкг доза;
+    - drug_name: Флутиказон/сальметерол
+      active_substance: null
+      drug_group: null
+      dose_text: ДАИ 25 мкг + 50 мкг/доза, 25 мкг + 125 мкг/доза, 25 мкг + 250 мкг/доза;
+        ДПИ 50 мкг + 100 мкг/доза, 50 мкг + 250 мкг/доза, 50 мкг + 500 мкг/доза
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: флутиказон/сальметерол ДАИ 25 мкг + 50 мкг/доза, 25 мкг + 125 мкг/доза,
+          25 мкг + 250 мкг/доза; флутиказон/сальметерол ДПИ 50 мкг + 100 мкг/доза,
+          50 мкг + 250 мкг/доза, 50 мкг + 500 мкг/доза;
+    - drug_name: Флутиказон/вилантерол
+      active_substance: null
+      drug_group: null
+      dose_text: ДПИ 92 мкг + 22 мкг/доза, 184 мкг + 22 мкг/доза
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: флутиказон/вилантерол ДПИ 92 мкг + 22 мкг/доза, 184 мкг + 22 мкг/доза;
+    - drug_name: Будесонид (суспензия)
+      active_substance: null
+      drug_group: null
+      dose_text: суспензия для ингаляций 0,25 мг/мл или 0,5 мг/мл в небулах по 2 мл
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: будесонид суспензия для ингаляций 0,25 мг/мл или 0,5 мг/мл в небулах
+          по 2 мл;
+    - drug_name: Флутиказон (суспензия)
+      active_substance: null
+      drug_group: null
+      dose_text: суспензия для ингаляций 0,25 мг/мл или 1 мг/мл в небулах по 2 мл
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: флутиказон суспензия для ингаляций 0,25 мг/мл или 1 мг/мл в небулах
+          по 2 мл;
+    - drug_name: Монтелукаст
+      active_substance: null
+      drug_group: null
+      dose_text: таблетки, покрытые пленочной оболочкой, 10 мг
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'АЛТР: монтелукаст таблетки, покрытые пленочной оболочкой, 10 мг;'
+    - drug_name: Теофиллин
+      active_substance: null
+      drug_group: null
+      dose_text: капсулы пролонгированного действия 100 мг, 200 мг, 300 мг, 350 мг;
+        максимальная доза 13 мг/кг/сут до 900 мг/сут
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: метилксантины замедленного высвобождения – теофиллин, капсулы пролонгированного
+          действия 100 мг, 200 мг, 300 мг, 350 мг; Максимальная доза, которую можно
+          применять без контроля концентрации теофиллина в плазме крови – 13 мг/кг/сут
+          до максимальной дозы 900 мг/сут;
+    - drug_name: Тиотропиум бромид
+      active_substance: null
+      drug_group: null
+      dose_text: раствор для ингаляций в ДАИ 2,5 мкг/доза
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ДДМА – тиотропиум бромид раствор для ингаляций в ДАИ 2,5 мкг/доза;
+    - drug_name: Омализумаб
+      active_substance: null
+      drug_group: null
+      dose_text: 125 мг/мл; 75–600 мг в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ГИБП – омализумаб 125 мг/мл; омализумаб – гумазированные рекомбинантные
+          антитела к IgE 75–600 мг в сутки согласно инструкции по медицинскому применению
+    - drug_name: Метилпреднизолон
+      active_substance: null
+      drug_group: null
+      dose_text: таблетки 4 мг и 16 мг
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: СГКС – метилпреднизолон таблетки 4 мг и 16 мг,
+    - drug_name: Преднизолон
+      active_substance: null
+      drug_group: null
+      dose_text: таблетки 5 мг
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: преднизолон таблетки 5 мг;
+    - drug_name: Сальбутамол
+      active_substance: null
+      drug_group: null
+      dose_text: ДАИ 100 мкг/доза, раствор для ингаляций 1 мг/1 мл (для небулайзерной
+        терапии)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: сальбутамол ДАИ 100 мкг/доза, сальбутамол раствор для ингаляций 1 мг/1
+          мл (для небулайзерной терапии),
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: контроль
+  - text: Повторное проведение спирометрии не позже чем через 3 месяца от начала терапии.
     timing: null
     required_if: []
     expected_actions: []
@@ -472,8 +957,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
-  - text: контроль
+      quote: Повторное проведение спирометрии не позже чем через 3 месяца от начала
+        терапии.
+  - text: Сбор анамнеза, физикальное обследование, SpO2 – при каждом медицинском осмотре.
     timing: null
     required_if: []
     expected_actions: []
@@ -487,8 +973,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
-  - text: контроль
+      quote: Сбор анамнеза, физикальное обследование, SpO2 – при каждом медицинском
+        осмотре.
+  - text: ОАК – в дальнейшем при необходимости.
     timing: null
     required_if: []
     expected_actions: []
@@ -502,8 +989,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
-  - text: контроль
+      quote: ОАК – в дальнейшем при необходимости.
+  - text: Пациентов с персистирующими симптомами или обострениями БА, несмотря на
+      правильную технику ингаляции и хорошую приверженность лечению, соответствующему
+      ступени терапии 4, направляют к врачу-специалисту.
     timing: null
     required_if: []
     expected_actions: []
@@ -517,26 +1006,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
-  - text: через 4 нед
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
-      document_url: null
-      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: через 4 нед
+      quote: Пациентов с персистирующими симптомами или обострениями БА, несмотря
+        на правильную технику ингаляции и хорошую приверженность лечению, соответствующему
+        ступени терапии 4, направляют к врачу-специалист
   hospitalization: []
   routing:
-  - text: '[routing] 6. Направление пациентов с БА в больничные организации для оказания
-      им (стр. 2)'
+  - text: Первичная диагностика БА осуществляется в амбулаторных условиях.
     timing: null
     required_if: []
     source_ref:
@@ -549,10 +1024,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 6. Направление пациентов с БА в больничные организации для
-        оказания им (стр. 2)'
-  - text: с Инструкцией о порядке направления пациентов для получения медицинской
-      помощи
+      quote: Первичная диагностика БА осуществляется в амбулаторных условиях.
+  - text: Для уточнения диагноза и коррекции лечения пациента направляют на консультацию
+      к врачу-пульмонологу и (или) врачу-аллергологу-иммунологу.
     timing: null
     required_if: []
     source_ref:
@@ -565,10 +1039,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: с Инструкцией о порядке направления пациентов для получения медицинской
-        помощи
-  - text: '[routing] 6. Направление пациентов с БА в больничные организации для оказания
-      им (стр. 2)'
+      quote: Для уточнения диагноза и коррекции лечения пациента направляют на консультацию
+        к врачу-пульмонологу и (или) врачу-аллергологу-иммунологу.
+  - text: направляют к врачу-специалисту (врачу-пульмонологу, врачу-иммунологу-аллергологу)
     timing: null
     required_if: []
     source_ref:
@@ -581,10 +1054,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 6. Направление пациентов с БА в больничные организации для
-        оказания им (стр. 2)'
-  - text: с Инструкцией о порядке направления пациентов для получения медицинской
-      помощи
+      quote: направляют к врачу-специалисту (врачу-пульмонологу, врачу-иммунологу-аллергологу)
+  - text: Направление пациентов с БА в больничные организации для оказания им медицинской
+      помощи в стационарных условиях осуществляется в соответствии с Инструкцией.
     timing: null
     required_if: []
     source_ref:
@@ -597,13 +1069,34 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: с Инструкцией о порядке направления пациентов для получения медицинской
-        помощи
+      quote: Направление пациентов с БА в больничные организации для оказания им медицинской
+        помощи в стационарных условиях осуществляется в соответствии с Инструкцией.
   red_flags:
-  - text: "таблетки 5 мг; \nдля неотложной медицинской помощи (ситуационная терапия)\
-      \ назначаются КДБА \nпо потребности с целью купирования приступов бронхоспазма"
+  - text: 'Тяжелое обострение: ПСВ 33–50% от лучших, ЧД >25, ЧСС >110, невозможность
+      произнести фразу на одном выдохе.'
     aliases: []
-    red_flag_type: urgent_referral
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+      page_start: 13
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Тяжелое обострение ПСВ 33–50 % от лучших или должных значений. Частота
+        дыхания более 25 в минуту. ЧСС >110 в минуту. Невозможность произнести фразу
+        на одном выдохе
+  - text: 'Жизнеугрожающее обострение: ПСВ <33%, SpO2 <92, РаО2 <60, нормокапния,
+      «Немое» легкое, цианоз, слабые дыхательные усилия, брадикардия, гипотензия,
+      оглушение, кома.'
+    aliases: []
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -611,18 +1104,20 @@ conditions:
       protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
       document_url: null
       local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
-      page_start: null
+      page_start: 13
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "таблетки 5 мг; \nдля неотложной медицинской помощи (ситуационная терапия)\
-        \ назначаются КДБА \nпо потребности с целью купирования приступов бронхоспазма"
-  - text: "ьзование в качестве неотложной медицинской помощи (ситуационной терапии)\
-      \ \nкомбинаций ИГКС/формотерол осуществляется в режиме по требованию. В случае"
+      quote: Жизнеугрожающее обострение ПСВ менее 33 % от лучшей или должной. SpO2
+        <92. РаО2 <60 мм рт.ст. Нормокапния (РаСО2 35–45 мм рт.ст.). «Немое» легкое.
+        Цианоз. Слабые дыхательные усилия. Брадикардия. Гипотензия. Усталость дыхательной
+        мускулатуры. Оглушение. Кома
+  - text: 'Обострение, близкое к фатальному: Гиперкапния (РаСО2 >45 мм рт.ст.) и/или
+      необходимость в проведении механической вентиляции легких.'
     aliases: []
-    red_flag_type: urgent_referral
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -630,18 +1125,18 @@ conditions:
       protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
       document_url: null
       local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
-      page_start: null
+      page_start: 14
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "ьзование в качестве неотложной медицинской помощи (ситуационной терапии)\
-        \ \nкомбинаций ИГКС/формотерол осуществляется в режиме по требованию. В случае"
-  - text: "учае применения для неотложной медицинской помощи монопрепаратов КДБА \n\
-      или КДБА/КДМА после ингаляции быстродействующих бронхолитиков дополнительно"
+      quote: Обострение, близкое к фатальному Гиперкапния (РаСО2 >45 мм рт.ст.) и
+        (или) необходимость в проведении механической вентиляции легких
+  - text: Жизнеугрожающая БА и БА, близкая к фатальной, эквивалентны астматическому
+      статусу.
     aliases: []
-    red_flag_type: urgent_referral
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -649,60 +1144,70 @@ conditions:
       protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
       document_url: null
       local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
-      page_start: null
+      page_start: 5
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "учае применения для неотложной медицинской помощи монопрепаратов КДБА\
-        \ \nили КДБА/КДМА после ингаляции быстродействующих бронхолитиков дополнительно"
-  - text: "кого ЛС или как ЛС \nнеотложной медицинской помощи), если вариант 1 невозможен\
-      \ или не соответствует \nпредпочтениям пациента, а также отсутствуют обос"
+      quote: Степени тяжести жизнеугрожающая БА и БА, близкая к фатальной, эквивалентны
+        астматическому статусу.
+  - text: Терапия только бронхолитическими ЛС для купирования приступов одышки (удушья)
+      не рекомендуется.
     aliases: []
-    red_flag_type: urgent_referral
-    severity: high
+    red_flag_type: other
+    severity: medium
     expected_actions: []
     cap_if_unhandled: null
     source_ref:
       protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
       document_url: null
       local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
-      page_start: null
+      page_start: 6
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "кого ЛС или как ЛС \nнеотложной медицинской помощи), если вариант 1\
-        \ невозможен или не соответствует \nпредпочтениям пациента, а также отсутствуют\
-        \ обос"
+      quote: При БА для нетложной медицинской помощи (ситуационной терапии) терапия
+        с использованием только бронхолитических ЛС для купирования приступов одышки
+        (удушья) не рекомендуется.
+  - text: Для избежания рисков монотерапии КДБА, при каждом их использовании добавляется
+      ингаляция низкой дозы ИГКС.
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Чтобы избежать рисков монотерапии КДБА, при каждом их использовании добавляется
+        ингаляция низкой дозы ИГКС.
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: pulmonologiya_ftiziatriya_кп_диагностика_и_лечение_взр_население_с_бронхиальной_
-    document_url: null
-    local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение взрослое население с бронхиальной астмой
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:46.777774+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T17:31:34.546883+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:46.787574+00:00'
+  validated_at: '2026-07-20T17:31:34.617297+00:00'

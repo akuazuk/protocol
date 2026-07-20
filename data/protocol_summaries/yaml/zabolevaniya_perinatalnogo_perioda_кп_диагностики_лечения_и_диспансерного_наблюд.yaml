@@ -1,9 +1,9 @@
 protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: диагностики лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+  title: Диагностика, лечение и диспансерное наблюдение пациентов с фенилкетонурией
   url: null
   local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
     лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
@@ -20,27 +20,27 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - adult_and_child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностики_лечения_и_диспансерного_наблюдения_п
-  name: диагностики лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+- condition_id: phenylketonuria
+  name: Фенилкетонурия
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B24
-  - E03.9
   - E70.0
+  - E70.1
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[classification] 7. Верификация диагноза включает: (стр. 3)'
+    - text: Границей нормальных значений ФА при скрининге является концентрация 180
+        мкмоль/л.
       logic_group: null
       operator: unknown
       values: []
@@ -59,8 +59,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 7. Верификация диагноза включает: (стр. 3)'
-    - text: 7.1. определение концентрации ФА в сыворотке крови
+        quote: Границей нормальных значений ФА при скрининге является концентрация
+          180 мкмоль/л.
+    - text: Уровень ФА при контроле лечения не должен превышать 600 мкмоль/л.
       logic_group: null
       operator: unknown
       values: []
@@ -79,135 +80,280 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 7.1. определение концентрации ФА в сыворотке крови
-    - text: '[classification] 7. Верификация диагноза включает: (стр. 3)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
-          лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
-          07.08.2009_№781.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 7. Верификация диагноза включает: (стр. 3)'
-    - text: 7.1. определение концентрации ФА в сыворотке крови
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
-          лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
-          07.08.2009_№781.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 7.1. определение концентрации ФА в сыворотке крови
-    - text: '[classification] 7. Верификация диагноза включает: (стр. 3)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
-          лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
-          07.08.2009_№781.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[classification] 7. Верификация диагноза включает: (стр. 3)'
-    - text: 7.1. определение концентрации ФА в сыворотке крови
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
-          лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
-          07.08.2009_№781.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 7.1. определение концентрации ФА в сыворотке крови
-    - text: скринирующим тестом на фенилкетонурию является определение
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
-          лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
-          07.08.2009_№781.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: скринирующим тестом на фенилкетонурию является определение
-    - text: ребенка в РНПЦ «Мать и дитя» для верификации диагноза, введения
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
-          лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
-          07.08.2009_№781.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ребенка в РНПЦ «Мать и дитя» для верификации диагноза, введения
+        quote: Уровень ФА при контроле лечения не должен превышать 600 мкмоль/л.
     optional: []
     exclusion: []
-  required_exams: []
-  conditional_exams: []
+  required_exams:
+  - name: Биохимический неонатальный скрининг на фенилкетонурию
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
+        лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+        07.08.2009_№781.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обследованию на ФКУ подлежат все новорожденные (материалом для исследования
+        является капиллярная кровь, взятая из пальца). Скринирующим тестом является
+        определение ФА флюорометрическим методом.
+  - name: Сроки взятия крови для неонатального скрининга
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
+        лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+        07.08.2009_№781.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Взятие крови у новорожденных осуществляется: у доношенных на 3 день
+        жизни, у недоношенных на 7-14 день жизни.'
+  - name: Определение уровня ФА в сыворотке или сухом пятне крови (контроль лечения)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
+        лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+        07.08.2009_№781.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль лечения ФКУ проводится определением уровня ФА в сыворотке или
+        сухом пятне крови.
+  - name: Медико-генетическое консультирование и молекулярно-генетические исследования
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
+        лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+        07.08.2009_№781.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Генетической службой проводится медико-генетическое консультирование,
+        молекулярно-генетические исследования семей с ФКУ.
+  - name: Наблюдение врачом-генетиком
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
+        лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+        07.08.2009_№781.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Дети с фенилкетонурией для введения диетотерапии госпитализируются в
+        инфекционное отделение новорожденных РНПЦ «Мать и дитя», где наблюдаются врачом-генетиком
+  - name: Наблюдение врачом-педиатром
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
+        лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+        07.08.2009_№781.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Дети с фенилкетонурией для введения диетотерапии госпитализируются в
+        инфекционное отделение новорожденных РНПЦ «Мать и дитя», где наблюдаются врачом-педиатром
+  - name: Контроль уровня фенилаланина (ФА)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
+        лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+        07.08.2009_№781.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: введение диетотерапии смесью аминокислот осуществляется... под контролем
+        уровня ФА.
+  conditional_exams:
+  - name: Повторное тестирование уровня ФА
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
+        лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+        07.08.2009_№781.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При превышении пограничного значения концентрации ФА (более 180 мкмоль/л)
+        осуществляется повторное тестирование (должно быть проведено до двухнедельного
+        возраста ребёнка).
+  - name: Дополнительное биохимическое исследование крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
+        лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+        07.08.2009_№781.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительная диагностика (по показаниям): биохимическое исследование
+        крови: концентрация общего билирубина, общего белка, электролиты, АсАТ, АлАТ.'
+  - name: Анализ ДНК женщины и ее супруга, пренатальная диагностика
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
+        лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+        07.08.2009_№781.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Анализ ДНК женщины и ее супруга; при гетерозиготном носительстве мутации
+        обоими супругами проведение пренатальной диагностики (по желанию семьи).
+  - name: Наблюдение врачом-неврологом
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
+        лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+        07.08.2009_№781.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Дети с фенилкетонурией для введения диетотерапии госпитализируются...
+        и (по показаниям) врачом-неврологом.
   treatment:
     non_drug:
-    - text: '[treatment] 4. Фенилкетонурия – наследственная болезнь обмена веществ,
-        (стр. 2)'
+    - text: Диетотерапия с ограничением естественного белка
       source_ref:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
         document_url: null
@@ -220,9 +366,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 4. Фенилкетонурия – наследственная болезнь обмена веществ,
-          (стр. 2)'
-    - text: связанная с дефицитом фермента фенилаланингидроксилазы, что
+        quote: Диетотерапия с ограничением естественного белка
+    - text: Оптимальное введение диеты в течение первых двух недель жизни
       source_ref:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
         document_url: null
@@ -235,8 +380,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: связанная с дефицитом фермента фенилаланингидроксилазы, что
-    - text: приводит к повышенному содержанию фенилаланина (далее-ФА) в
+        quote: Оптимальное введение диеты в течение первых двух недель жизни
+    - text: 'Введение диетотерапии смесью аминокислот осуществляется в течение 6-7
+        дней: ежедневно одно кормление заменяется смесью аминокислот'
       source_ref:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
         document_url: null
@@ -249,8 +395,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: приводит к повышенному содержанию фенилаланина (далее-ФА) в
-    - text: крови и других тканях. При отсутствии лечения заболевание
+        quote: 'Введение диетотерапии смесью аминокислот осуществляется в течение
+          6-7 дней: ежедневно одно кормление заменяется смесью аминокислот'
+    - text: Симптоматическая терапия по показаниям согласно ранее утвержденным протоколам
       source_ref:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
         document_url: null
@@ -263,8 +410,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: крови и других тканях. При отсутствии лечения заболевание
-    - text: микроцефалией, судорогами, нарушениями поведения и другими
+        quote: Симптоматическая терапия по показаниям согласно ранее утвержденным
+          протоколам
+    - text: Диетотерапия с ограничением естественного белка и заменой его смесью аминокислот
+        должна проводиться до 18 лет (в дальнейшем - с учетом индивидуальных особенностей
+        пациента)
       source_ref:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
         document_url: null
@@ -277,27 +427,17 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: микроцефалией, судорогами, нарушениями поведения и другими
-    - text: проявлениями. Одним из осложнений у пациентов с ФКУ, не
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
-          лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
-          07.08.2009_№781.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: проявлениями. Одним из осложнений у пациентов с ФКУ, не
+        quote: Диетотерапия с ограничением естественного белка и заменой его смесью
+          аминокислот должна проводиться до 18 лет (в дальнейшем - с учетом индивидуальных
+          особенностей пациента)
     drug_groups: []
     drugs:
-    - drug_name: июня
+    - drug_name: Аминокислотная смесь, не содержащая фенилаланин (ФА)
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: Ежедневно одно кормление заменяется смесью аминокислот в течение
+        6-7 дней, далее постоянно до 18 лет (с учетом индивидуальных особенностей
+        пациента).
       frequency_text: null
       duration_text: null
       route: null
@@ -311,42 +451,22 @@ conditions:
         local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
           лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
           07.08.2009_№781.pdf
-        page_start: null
+        page_start: 4
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "июня 1993 года \n«О здравоохранении» в редакции Зако"
-    - drug_name: августа
-      active_substance: null
-      drug_group: null
-      dose_text: 2000 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
-          лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
-          07.08.2009_№781.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: августа 2000 г
+        quote: Основным методом лечения ФКУ является диетотерапия с ограничением естественного
+          белка и заменой его аминокислотной смесью, не содержащей ФА... ежедневно
+          одно кормление заменяется смесью аминокислот... должна проводиться до 18
+          лет
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Контроль
+  - text: Контроль лечения ФКУ проводится определением уровня ФА в сыворотке или сухом
+      пятне крови.
     timing: null
     required_if: []
     expected_actions: []
@@ -362,8 +482,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контроль
-  - text: Контроль
+      quote: Контроль лечения ФКУ проводится определением уровня ФА в сыворотке или
+        сухом пятне крови.
+  - text: 'Частота контрольного обследования: в течение первого года жизни – 2 раза
+      в месяц; с 1 года до 12 лет – 1 раз в месяц; в дальнейшем - 1 раз в квартал.'
     timing: null
     required_if: []
     expected_actions: []
@@ -379,8 +501,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контроль
-  - text: контроль
+      quote: 'Частота контрольного обследования: в течение первого года жизни – 2
+        раза в месяц; с 1 года до 12 лет – 1 раз в месяц; в дальнейшем - 1 раз в квартал.'
+  - text: Уровень ФА при контроле лечения не должен превышать 600мкмоль/л.
     timing: null
     required_if: []
     expected_actions: []
@@ -396,8 +519,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
-  - text: контроль
+      quote: Уровень ФА при контроле лечения не должен превышать 600мкмоль/л.
+  - text: Диспансерное наблюдение пациентов с ФКУ, выявленных системой скрининга новорожденных
     timing: null
     required_if: []
     expected_actions: []
@@ -413,8 +536,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
-  - text: контроль
+      quote: Диспансерное наблюдение пациентов с ФКУ, выявленных системой скрининга
+        новорожденных
+  - text: Контроль лечения
     timing: null
     required_if: []
     expected_actions: []
@@ -430,38 +554,245 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
+      quote: Контроль лечения
   hospitalization: []
-  routing: []
-  red_flags: []
+  routing:
+  - text: Медицинская помощь новорожденным, детям и беременным оказывается в амбулаторных
+      и стационарных условиях районных, областных организаций здравоохранения, а также
+      в областных и республиканских организациях здравоохранения Республики Беларусь,
+      имеющих медико-генетические центры (отделения, консультации).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
+        лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+        07.08.2009_№781.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинская помощь новорожденным, детям и беременным оказывается в амбулаторных
+        и стационарных условиях районных, областных организаций здравоохранения, а
+        также в областных и республиканских организац
+  - text: При сохранении повышенного уровня ФА при повторном тестировании рекомендуется
+      в трёхдневный срок госпитализировать ребенка в РНПЦ «Мать и дитя» для верификации
+      диагноза, введения терапии и консультации врача-генетика.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
+        лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+        07.08.2009_№781.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При сохранении повышенного уровня ФА при повторном тестировании рекомендуется
+        в трёхдневный срок госпитализировать ребенка в РНПЦ «Мать и дитя» для верификации
+        диагноза, введения терапии и консультаци
+  - text: Госпитализация в инфекционное отделение новорожденных РНПЦ «Мать и дитя»
+      для введения диетотерапии
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
+        лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+        07.08.2009_№781.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация в инфекционное отделение новорожденных РНПЦ «Мать и дитя»
+        для введения диетотерапии
+  - text: Диспансерное наблюдение пациентов с ФКУ осуществляется медико-генетическими
+      центром (отделением, консультацией) в областных организациях здравоохранения.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
+        лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+        07.08.2009_№781.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диспансерное наблюдение пациентов с ФКУ осуществляется медико-генетическими
+        центром (отделением, консультацией) в областных организациях здравоохранения.
+  red_flags:
+  - text: Превышение концентрации ФА (> 180 мкмоль/л) при первичном биохимическом
+      неонатальном скрининге
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
+        лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+        07.08.2009_№781.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Границей нормальных значений ФА является концентрация 180 мкмоль/л. При
+        превышении этих значений проводят повторное тестирование
+  - text: Сохранение повышенного уровня ФА при повторном тестировании
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
+        лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+        07.08.2009_№781.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При сохранении повышенного уровня ФА при повторном тестировании рекомендуется
+        в трёхдневный срок госпитализировать ребенка в РНПЦ «Мать и дитя» для верификации
+        диагноза, введения терапии и консультации врача-генетика.
+  - text: Задержка моторного и психоречевого развития
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
+        лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+        07.08.2009_№781.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При отсутствии лечения заболевание проявляется задержкой моторного и
+        психоречевого развития
+  - text: Микроцефалия
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
+        лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+        07.08.2009_№781.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При отсутствии лечения заболевание проявляется ... микроцефалией
+  - text: Судороги
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
+        лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+        07.08.2009_№781.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При отсутствии лечения заболевание проявляется ... судорогами
+  - text: Нарушения поведения
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
+        лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+        07.08.2009_№781.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При отсутствии лечения заболевание проявляется ... нарушениями поведения
+  - text: Упорные экземоподобные высыпания, не поддающиеся обычным методам лечения,
+      обусловленные метаболическим дефицитом тирозина (при несоблюдении диеты)
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
+        лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+        07.08.2009_№781.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Одним из осложнений у пациентов с ФКУ, не соблюдающих диету, являются
+        упорные экземоподобные высыпания, не поддающиеся обычным методам лечения и
+        обусловленные метаболическим дефицитом тирозина.
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностики_лечения_и_диспансерного_наблюд
-    document_url: null
-    local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП диагностики
-      лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: диагностики лечения и диспансерного наблюдения пациентов с заболеванием
-      фенилкетонурия
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:16:00.223771+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T18:24:53.266224+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:16:00.224978+00:00'
+  validated_at: '2026-07-20T18:24:53.271581+00:00'

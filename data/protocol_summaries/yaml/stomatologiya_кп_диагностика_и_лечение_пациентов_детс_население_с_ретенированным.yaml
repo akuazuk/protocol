@@ -1,6 +1,6 @@
 protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_ретенированным
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Диагностика и лечение пациентов детс население с ретенированными и импактными
@@ -20,71 +20,39 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов_детс_население_с
-  name: Диагностика и лечение пациентов детс население с ретенированными и импактными
-    зубами
+- condition_id: retained_impacted_teeth
+  name: Ретенированные и импактные зубы
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B24
+  - K01
+  - K01.0
+  - K01.1
+  - K01.10
+  - K01.11
+  - K01.12
+  - K01.13
+  - K01.14
+  - K01.15
+  - K01.16
+  - K01.17
+  - K01.18
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria:
-    required:
-    - text: ПРИЗНАКИ, КРИТЕРИИ И ДИАГНОСТИКА РЕТЕНИРОВАННЫХ
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_ретенированным
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_ретенированными_и_импактными_зубами_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ПРИЗНАКИ, КРИТЕРИИ И ДИАГНОСТИКА РЕТЕНИРОВАННЫХ
-    - text: зубов, определение медицинских показаний к лечению, выбор метода лечения
-        и тактики
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_ретенированным
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_ретенированными_и_импактными_зубами_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: зубов, определение медицинских показаний к лечению, выбор метода лечения
-          и тактики
-    optional: []
-    exclusion: []
+  diagnostic_criteria: null
   required_exams: []
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] 8. Общими принципами лечения и медицинской профилактики ретенированных
-        (стр. 5)'
+    - text: Своевременное лечение и предупреждение кариеса временных зубов.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_ретенированным
         document_url: null
@@ -95,9 +63,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 8. Общими принципами лечения и медицинской профилактики
-          ретенированных (стр. 5)'
-    - text: своевременное лечение и предупреждение кариеса временных зубов
+        quote: Своевременное лечение и предупреждение кариеса временных зубов.
+    - text: Коррекция других факторов риска, имеющих отношение к стоматологическому
+        здоровью.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_ретенированным
         document_url: null
@@ -108,32 +76,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: своевременное лечение и предупреждение кариеса временных зубов
-    - text: коррекция других факторов риска, имеющих отношение к стоматологическому
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_ретенированным
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_ретенированными_и_импактными_зубами_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: коррекция других факторов риска, имеющих отношение к стоматологическому
-    - text: регулярные (1 раз в 6 месяцев) визиты к стоматологу
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_ретенированным
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_ретенированными_и_импактными_зубами_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: регулярные (1 раз в 6 месяцев) визиты к стоматологу
-    - text: рекомендации по выбору методов и средств индивидуальной гигиены полости
+        quote: Коррекция других факторов риска, имеющих отношение к стоматологическому
+          здоровью.
+    - text: Рекомендации по выбору методов и средств индивидуальной гигиены полости
         рта.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_ретенированным
@@ -145,10 +90,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: рекомендации по выбору методов и средств индивидуальной гигиены полости
+        quote: Рекомендации по выбору методов и средств индивидуальной гигиены полости
           рта.
-    - text: '[treatment] 9. Терапевтическое лечение пациентов с ретенированными и
-        импактными зубами (стр. 5)'
+    - text: Мотивация к формированию здоровых привычек, имеющих отношение к стоматологическому
+        здоровью.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_ретенированным
         document_url: null
@@ -159,14 +104,40 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 9. Терапевтическое лечение пациентов с ретенированными
-          и импактными зубами (стр. 5)'
+        quote: Мотивация к формированию здоровых привычек, имеющих отношение к стоматологическому
+          здоровью.
+    - text: Обучение гигиене полости рта.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_ретенированным
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_ретенированными_и_импактными_зубами_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Обучение гигиене полости рта.
+    - text: Профессиональное удаление зубных отложений.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_ретенированным
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_ретенированными_и_импактными_зубами_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Профессиональное удаление зубных отложений.
     drug_groups: []
     drugs:
-    - drug_name: ноября
+    - drug_name: Зубные пасты, содержащие ионы кальция, фосфора, фтора
       active_substance: null
       drug_group: null
-      dose_text: 2022 г
+      dose_text: От 0 до 2 лет – 1 000 ppm в количестве «рисовое зерно», от 2 до 6
+        лет – 1 000 ppm в количестве «маленькая горошина», старше 6 лет – 1 450 ppm
+        в количестве 1–2 см пасты.
       frequency_text: null
       duration_text: null
       route: null
@@ -178,84 +149,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_ретенированным
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_ретенированными_и_импактными_зубами_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 5
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: ноября 2022 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_ретенированным
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_ретенированными_и_импактными_зубами_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_ретенированным
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_ретенированными_и_импактными_зубами_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: марта
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_ретенированным
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_ретенированными_и_импактными_зубами_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: марта 2023 г
+        quote: 'гигиенические мероприятия (обучение гигиене полости рта с использованием
+          зубных паст, содержащих ионы кальция, фосфора, фтора в соответствии с возрастными
+          рекомендациями: от 0 до 2 лет – 1 000 ppm «рисовое зерно», от 2 до 6 лет
+          – 1 000 ppm «горошина», старше 6 лет – 1 450 ppm 1–2 см пасты)'
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: контроль
+  - text: Регулярные (1 раз в 6 месяцев) визиты к стоматологу.
     timing: null
     required_if: []
     expected_actions: []
@@ -269,37 +177,44 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
+      quote: Регулярные (1 раз в 6 месяцев) визиты к стоматологу.
+  - text: Контроль эффективности гигиены полости рта детей старше 6 лет (контролируемая
+      чистка зубов).
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_ретенированным
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_ретенированными_и_импактными_зубами_пост_МЗ_30.11.2022_112.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль эффективности гигиены полости рта детей старше 6 лет (контролируемая
+        чистка зубов).
   hospitalization: []
   routing: []
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_ретенированным
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_ретенированными_и_импактными_зубами_пост_МЗ_30.11.2022_112.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов детс население с ретенированными и импактными
-      зубами
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:51.704448+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T18:34:42.949003+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:51.705362+00:00'
+  validated_at: '2026-07-20T18:34:42.949665+00:00'

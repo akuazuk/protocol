@@ -1,6 +1,43 @@
 # Validation: psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_половыми_сексуальными
 
-- **status:** valid
-- **validated_at:** 2026-06-23T19:16:26.645763+00:00
+- **status:** needs_human_review
+- **validated_at:** 2026-07-20T17:29:00.994585+00:00
 - **review_status:** needs_review
-- **extraction_status:** auto_extracted
+- **extraction_status:** llm_extracted
+
+## Warnings
+- `duplicate_drug` conditions[genital_response_insufficiency].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[genital_response_insufficiency].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[genital_response_insufficiency].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[genital_response_insufficiency].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[genital_response_insufficiency].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[orgasmic_dysfunction].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[orgasmic_dysfunction].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[orgasmic_dysfunction].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[orgasmic_dysfunction].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[orgasmic_dysfunction].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_exam` conditions[premature_ejaculation].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[premature_ejaculation].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[premature_ejaculation].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[premature_ejaculation].required_exams[5]: Дублирующееся обследование
+- `duplicate_exam` conditions[premature_ejaculation].required_exams[6]: Дублирующееся обследование
+- `duplicate_drug` conditions[premature_ejaculation].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[premature_ejaculation].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[premature_ejaculation].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[premature_ejaculation].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[premature_ejaculation].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[non_organic_vaginismus].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[non_organic_vaginismus].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[non_organic_vaginismus].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[non_organic_vaginismus].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[non_organic_vaginismus].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[non_organic_dyspareunia].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[non_organic_dyspareunia].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[non_organic_dyspareunia].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[non_organic_dyspareunia].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[non_organic_dyspareunia].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[other_sexual_dysfunction_non_organic].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[other_sexual_dysfunction_non_organic].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[other_sexual_dysfunction_non_organic].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[other_sexual_dysfunction_non_organic].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[other_sexual_dysfunction_non_organic].treatment.drugs[4]: Дублирующийся препарат

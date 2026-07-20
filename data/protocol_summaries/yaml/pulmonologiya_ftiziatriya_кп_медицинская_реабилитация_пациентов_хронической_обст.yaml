@@ -1,10 +1,9 @@
 protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Медицинская реабилитация пациентов хронической обструктивной болезнью легких
-    вз нас
+  title: Медицинская реабилитация пациентов с хронической обструктивной болезнью легких
   url: null
   local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
   document_sha256: null
@@ -27,24 +26,19 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: медицинская_реабилитация_пациентов_хронической_о
-  name: Медицинская реабилитация пациентов хронической обструктивной болезнью легких
-    вз нас
+- condition_id: chronic_obstructive_pulmonary_disease
+  name: Хроническая обструктивная болезнь легких
   synonyms: []
   abbreviations: []
   icd10_codes:
   - J44
-  - G40.9
-  - I10
-  - I50.9
   - J44.9
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[criteria] Критерии оценки эффективности медицинской реабилитации пациентов
-        с ХОБЛ'
+    - text: 'Критерии оценки эффективности реабилитации по ограничениям жизнедеятельности:'
       logic_group: null
       operator: unknown
       values: []
@@ -61,10 +55,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[criteria] Критерии оценки эффективности медицинской реабилитации
-          пациентов с ХОБЛ'
-    - text: '| Качественная оценка | Критерии оценки эффективности медицинской реабилитации
-        |'
+        quote: 'Критерии оценки эффективности реабилитации по ограничениям жизнедеятельности:'
+    - text: незначительное улучшение при снижении степени ограничения категории жизнедеятельности
+        в пределах одного ФК
       logic_group: null
       operator: unknown
       values: []
@@ -81,10 +74,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '| Качественная оценка | Критерии оценки эффективности медицинской
-          реабилитации |'
-    - text: '[criteria] Критерии оценки эффективности медицинской реабилитации пациентов
-        с ХОБЛ'
+        quote: незначительное улучшение при снижении степени ограничения категории
+          жизнедеятельности в пределах одного ФК
+    - text: улучшение при снижении степени ограничения категории жизнедеятельности
+        на 1 ФК
       logic_group: null
       operator: unknown
       values: []
@@ -101,10 +94,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[criteria] Критерии оценки эффективности медицинской реабилитации
-          пациентов с ХОБЛ'
-    - text: '| Качественная оценка | Критерии оценки эффективности медицинской реабилитации
-        |'
+        quote: улучшение при снижении степени ограничения категории жизнедеятельности
+          на 1 ФК
+    - text: значительное улучшение при снижении степени ограничения категории жизнедеятельности
+        на 2 ФК и выше
       logic_group: null
       operator: unknown
       values: []
@@ -121,9 +114,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '| Качественная оценка | Критерии оценки эффективности медицинской
-          реабилитации |'
-    - text: Критерии оценки эффективности медицинской реабилитации пациентов с ХОБЛ
+        quote: значительное улучшение при снижении степени ограничения категории жизнедеятельности
+          на 2 ФК и выше
+    - text: восстановление ограничений при полном восстановлении ограничения категории
+        жизнедеятельности
       logic_group: null
       operator: unknown
       values: []
@@ -140,9 +134,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Критерии оценки эффективности медицинской реабилитации пациентов с
-          ХОБЛ
-    - text: Критерии оценки эффективности медицинской реабилитации
+        quote: восстановление ограничений при полном восстановлении ограничения категории
+          жизнедеятельности
+    - text: без динамики при сохранении степени ограничения категории жизнедеятельности
       logic_group: null
       operator: unknown
       values: []
@@ -159,8 +153,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Критерии оценки эффективности медицинской реабилитации
-    - text: Критерии оценки эффективности медицинской реабилитации пациентов с ХОБЛ
+        quote: без динамики при сохранении степени ограничения категории жизнедеятельности
+    - text: ухудшение при увеличении степени выраженности ограничения категории жизнедеятельности
+        на 1 ФК и выше
       logic_group: null
       operator: unknown
       values: []
@@ -177,9 +172,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Критерии оценки эффективности медицинской реабилитации пациентов с
-          ХОБЛ
-    - text: Критерии оценки эффективности медицинской реабилитации
+        quote: ухудшение при увеличении степени выраженности ограничения категории
+          жизнедеятельности на 1 ФК и выше
+    - text: 'Критерии оценки эффективности реабилитации по нарушениям функций органов
+        и систем:'
       logic_group: null
       operator: unknown
       values: []
@@ -196,14 +192,136 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Критерии оценки эффективности медицинской реабилитации
+        quote: 'Критерии оценки эффективности реабилитации по нарушениям функций органов
+          и систем:'
+    - text: незначительное улучшение при снижении степени выраженности нарушений функций
+        в пределах одной степени
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: незначительное улучшение при снижении степени выраженности нарушений
+          функций в пределах одной степени
+    - text: улучшение при снижении степени выраженности нарушений функций на одну
+        степень
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: улучшение при снижении степени выраженности нарушений функций на одну
+          степень
+    - text: значительное улучшение при снижении степени выраженности нарушений функций
+        на две степени и больше
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: значительное улучшение при снижении степени выраженности нарушений
+          функций на две степени и больше
+    - text: устранение нарушенных функций при полном устранении нарушений функций
+        органов и систем организма пациента
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: устранение нарушенных функций при полном устранении нарушений функций
+          органов и систем организма пациента
+    - text: без динамики при сохранении степени выраженности нарушений функций органов
+        и систем организма пациента
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: без динамики при сохранении степени выраженности нарушений функций
+          органов и систем организма пациента
+    - text: ухудшение при увеличении степени выраженности нарушений функций органов
+        и систем организма пациента на одну степень и больше
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ухудшение при увеличении степени выраженности нарушений функций органов
+          и систем организма пациента на одну степень и больше
     optional: []
     exclusion: []
   required_exams: []
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] 1.5 дозированная лечебная ходьба (стр. 5)'
+    - text: Дозированная лечебная ходьба (индивидуально подобранный темп, шаговая
+        нагрузка, тренировки на тредмиле)
       source_ref:
         protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
         document_url: null
@@ -214,8 +332,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 1.5 дозированная лечебная ходьба (стр. 5)'
-    - text: с индивидуально подобранным темпом
+        quote: Дозированная лечебная ходьба (индивидуально подобранный темп, шаговая
+          нагрузка, тренировки на тредмиле)
+    - text: Гидрокинезотерапия (индивидуально по медицинским показаниям)
       source_ref:
         protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
         document_url: null
@@ -226,8 +345,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: с индивидуально подобранным темпом
-    - text: нагрузка в индивидуально подобранном
+        quote: Гидрокинезотерапия (индивидуально по медицинским показаниям)
+    - text: Рефлексотерапия (в организации здравоохранения, индивидуально по медицинским
+        показаниям)
       source_ref:
         protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
         document_url: null
@@ -238,8 +358,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: нагрузка в индивидуально подобранном
-    - text: медленном темпе (60–80 шагов в 1
+        quote: Рефлексотерапия (в организации здравоохранения, индивидуально по медицинским
+          показаниям)
+    - text: Оксигенотерапия (индивидуально по медицинским показаниям)
       source_ref:
         protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
         document_url: null
@@ -250,8 +371,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: медленном темпе (60–80 шагов в 1
-    - text: минуту) или среднем темпе (80–100
+        quote: Оксигенотерапия (индивидуально по медицинским показаниям)
+    - text: Физиотерапевтические методы (дозирование и кратность индивидуальны)
       source_ref:
         protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
         document_url: null
@@ -262,8 +383,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: минуту) или среднем темпе (80–100
-    - text: на тредмиле длительностью 10 минут.
+        quote: Физиотерапевтические методы (дозирование и кратность индивидуальны)
+    - text: Светотерапия (ультрафиолетовое, видимое, инфракрасное облучение)
       source_ref:
         protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
         document_url: null
@@ -274,105 +395,126 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: на тредмиле длительностью 10 минут.
+        quote: Светотерапия (ультрафиолетовое, видимое, инфракрасное облучение)
+    - text: Лазерная терапия
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Лазерная терапия
+    - text: Чрескожная электростимуляция диафрагмы
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Чрескожная электростимуляция диафрагмы
+    - text: Магнитотерапия (переменное низкочастотное, бегущее, высокоинтенсивное
+        магнитное поле)
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Магнитотерапия (переменное низкочастотное, бегущее, высокоинтенсивное
+          магнитное поле)
+    - text: Гидробальнеотерапия
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Гидробальнеотерапия
+    - text: Нормоксическая баротерапия
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Нормоксическая баротерапия
+    - text: Массаж (индивидуально по медицинским показаниям)
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Массаж (индивидуально по медицинским показаниям)
+    - text: Психотерапия (индивидуально по медицинским показаниям)
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Психотерапия (индивидуально по медицинским показаниям)
+    - text: Диетотерапия (индивидуально по медицинским показаниям)
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Диетотерапия (индивидуально по медицинским показаниям)
+    - text: Школа пациента с ХОБЛ (индивидуально по медицинским показаниям)
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Школа пациента с ХОБЛ (индивидуально по медицинским показаниям)
     drug_groups: []
-    drugs:
-    - drug_name: Брюса
-      active_substance: null
-      drug_group: null
-      dose_text: 1971 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Брюса 1971 г
-    - drug_name: января
-      active_substance: null
-      drug_group: null
-      dose_text: 2026 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: января 2026 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
+    drugs: []
     procedures: []
     surgery: []
     source_refs: []
   follow_up: []
   hospitalization: []
   routing:
-  - text: '[routing] 10. При плановой госпитализации пациентов в организацию здравоохранения
-      (стр. 3)'
+  - text: лечебно-реабилитационный этап
     timing: null
     required_if: []
     source_ref:
@@ -385,36 +527,211 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 10. При плановой госпитализации пациентов в организацию здравоохранения
-        (стр. 3)'
-  red_flags: []
+      quote: лечебно-реабилитационный этап
+  - text: амбулаторный этап
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторный этап
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags:
+  - text: Частота дыхания (ЧД) свыше 30 в минуту
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Проведение ЛФК прекращается при возникновении у пациента одного или
+        нескольких следующих симптомов: ЧД свыше 30 в минуту;'
+  - text: Сатурация SpO2 менее 93%
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: сатурация SpO2 < 93 %;
+  - text: Повышение систолического артериального давления (САД) более 180 мм рт.ст.
+      или снижение САД менее 90 мм рт.ст.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: повышение систолического артериального давления (далее – САД) > 180 мм
+        рт.ст. или снижение САД < 90 мм рт.ст.;
+  - text: Появление аритмии
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: появление аритмии;
+  - text: Повышение температуры тела более 38 °С
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: повышение температуры тела > 38 °С;
+  - text: Усиление респираторных симптомов (затрудненное дыхание, сильный кашель)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: усиление респираторных симптомов, затрудненное дыхание, сильный кашель;
+  - text: Тяжесть, боль в грудной клетке, сердцебиение, головокружение, головная боль,
+      помутнение зрения, резкая слабость, усталость
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: тяжесть, боль в грудной клетке, сердцебиение, головокружение, головная
+        боль, помутнение зрения, резкая слабость, усталость;
+  - text: Потливость, покраснение или побледнение кожных покровов
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: потливость, покраснение или побледнение кожных покровов;
+  - text: Другие неблагоприятные симптомы
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: другие неблагоприятные симптомы.
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: pulmonologiya_ftiziatriya_кп_медицинская_реабилитация_пациентов_хронической_обст
-    document_url: null
-    local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Медицинская_реабилитация_пациентов_хронической_обструктивной_болезнью_легких_вз_нас_пост_МЗ_2026_4.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Медицинская реабилитация пациентов хронической обструктивной болезнью легких
-      вз нас
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:47.154358+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T17:41:28.302770+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:47.155400+00:00'
+  validated_at: '2026-07-20T17:41:28.303166+00:00'

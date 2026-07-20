@@ -1,9 +1,9 @@
 protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Медицинская реабилитация пациентов с инсультом вз нас
+  title: Медицинская реабилитация пациентов с инсультом
   url: null
   local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_инсультом_вз_нас_пост_МЗ_2026_7.pdf
   document_sha256: null
@@ -26,8 +26,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: медицинская_реабилитация_пациентов_с_инсультом_в
-  name: Медицинская реабилитация пациентов с инсультом вз нас
+- condition_id: stroke
+  name: Инсульт
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -42,8 +42,8 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '| Качественная оценка | Критерии оценки эффективности медицинской реабилитации
-        |'
+    - text: Критерии оценки эффективности медицинской реабилитации пациентов с инсультом
+        по степени ограничений базовых категорий жизнедеятельности
       logic_group: null
       operator: unknown
       values: []
@@ -60,9 +60,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '| Качественная оценка | Критерии оценки эффективности медицинской
-          реабилитации |'
-    - text: '[diagnostics] КРИТЕРИИ (стр. 5)'
+        quote: Критерии оценки эффективности медицинской реабилитации пациентов с
+          инсультом по степени ограничений базовых категорий жизнедеятельности
+    - text: Критерии оценки эффективности медицинской реабилитации пациентов с инсультом
+        по степени выраженности нарушений функций органов и систем организма пациента
       logic_group: null
       operator: unknown
       values: []
@@ -79,86 +80,18 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] КРИТЕРИИ (стр. 5)'
-    - text: Критерии оценки эффективности медицинской реабилитации
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_инсультом_вз_нас_пост_МЗ_2026_7.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Критерии оценки эффективности медицинской реабилитации
-    - text: '[diagnostics] КРИТЕРИИ (стр. 5)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_инсультом_вз_нас_пост_МЗ_2026_7.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[diagnostics] КРИТЕРИИ (стр. 5)'
-    - text: Критерии оценки эффективности медицинской реабилитации
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_инсультом_вз_нас_пост_МЗ_2026_7.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Критерии оценки эффективности медицинской реабилитации
-    - text: '[diagnostics] КРИТЕРИИ (стр. 6)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_инсультом_вз_нас_пост_МЗ_2026_7.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[diagnostics] КРИТЕРИИ (стр. 6)'
+        quote: Критерии оценки эффективности медицинской реабилитации пациентов с
+          инсультом по степени выраженности нарушений функций органов и систем организма
+          пациента
     optional: []
     exclusion: []
   required_exams: []
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] МЕРОПРИЯТИЯ (стр. 6)'
+    - text: 'Лечение положением: изменение положения тела (на непораженном боку, на
+        пораженном боку, на спине (изголовье всегда приподнято до 30–45 градусов),
+        на животе) смена каждые 1,5–2 часа.'
       source_ref:
         protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
         document_url: null
@@ -169,8 +102,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] МЕРОПРИЯТИЯ (стр. 6)'
-    - text: медицинской реабилитации пациентов на лечебно-реабилитационном этапе
+        quote: 'Лечение положением: изменение положения тела (на непораженном боку,
+          на пораженном боку, на спине (изголовье всегда приподнято до 30–45 градусов),
+          на животе) смена каждые 1,5–2 часа.'
+    - text: 'Лечение положением: постуральная адаптация (укладка конечностей с использованием
+        ортопедических валиков, фиксация ортезами, лонгетами) смена каждые 1,5–2 часа.'
       source_ref:
         protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
         document_url: null
@@ -181,8 +117,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: медицинской реабилитации пациентов на лечебно-реабилитационном этапе
-    - text: изменение положения тела (на непораженном
+        quote: 'Лечение положением: постуральная адаптация (укладка конечностей с
+          использованием ортопедических валиков, фиксация ортезами, лонгетами) смена
+          каждые 1,5–2 часа.'
+    - text: 'Лечение положением: вертикализующее позиционирование.'
       source_ref:
         protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
         document_url: null
@@ -193,8 +131,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: изменение положения тела (на непораженном
-    - text: боку, на пораженном боку, на спине (изголовье
+        quote: 'Лечение положением: вертикализующее позиционирование.'
+    - text: Подбор вспомогательных технических средств и адаптация к ним пациента.
       source_ref:
         protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
         document_url: null
@@ -205,8 +143,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: боку, на пораженном боку, на спине (изголовье
-    - text: всегда приподнято до 30–45 градусов),
+        quote: Подбор вспомогательных технических средств и адаптация к ним пациента.
+    - text: 'Физиотерапевтическое лечение: аппаратная физиотерапия (по медицинским
+        показаниям, индивидуально).'
       source_ref:
         protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
         document_url: null
@@ -217,8 +156,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: всегда приподнято до 30–45 градусов),
-    - text: постуральная адаптация (укладка конечностей
+        quote: 'Физиотерапевтическое лечение: аппаратная физиотерапия (по медицинским
+          показаниям, индивидуально).'
+    - text: 'Физиотерапевтическое лечение: терапия импульсными токами для купирования
+        болевого синдрома при артропатиях, контрактурах.'
       source_ref:
         protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
         document_url: null
@@ -229,83 +170,147 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: постуральная адаптация (укладка конечностей
+        quote: 'Физиотерапевтическое лечение: терапия импульсными токами для купирования
+          болевого синдрома при артропатиях, контрактурах.'
+    - text: 'Физиотерапевтическое лечение: электрофорез лекарственных веществ, снижающих
+        тонус мышц.'
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_инсультом_вз_нас_пост_МЗ_2026_7.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Физиотерапевтическое лечение: электрофорез лекарственных веществ,
+          снижающих тонус мышц.'
+    - text: 'Физиотерапевтическое лечение: магнитотерапия.'
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_инсультом_вз_нас_пост_МЗ_2026_7.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Физиотерапевтическое лечение: магнитотерапия.'
+    - text: 'Физиотерапевтическое лечение: криотерапия или теплолечение (по медицинским
+        показаниям, индивидуально).'
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_инсультом_вз_нас_пост_МЗ_2026_7.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Физиотерапевтическое лечение: криотерапия или теплолечение (по медицинским
+          показаниям, индивидуально).'
+    - text: 'Физиотерапевтическое лечение: гидробальнеотерапия (по медицинским показаниям).'
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_инсультом_вз_нас_пост_МЗ_2026_7.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Физиотерапевтическое лечение: гидробальнеотерапия (по медицинским
+          показаниям).'
+    - text: Массаж (точечный, лимфодренажный, сегментарный, конечностей) – один из
+        видов.
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_инсультом_вз_нас_пост_МЗ_2026_7.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Массаж (точечный, лимфодренажный, сегментарный, конечностей) – один
+          из видов.
+    - text: Рефлексотерапия (по медицинским показаниям).
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_инсультом_вз_нас_пост_МЗ_2026_7.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Рефлексотерапия (по медицинским показаниям).
+    - text: 'Эрготерапия: сенсомоторная тренировка.'
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_инсультом_вз_нас_пост_МЗ_2026_7.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Эрготерапия: сенсомоторная тренировка.'
+    - text: 'Эрготерапия: тренировка чувствительности.'
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_инсультом_вз_нас_пост_МЗ_2026_7.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Эрготерапия: тренировка чувствительности.'
+    - text: 'Эрготерапия: тренировка манипулятивной функции верхней конечности, точных
+        движений кисти.'
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_инсультом_вз_нас_пост_МЗ_2026_7.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Эрготерапия: тренировка манипулятивной функции верхней конечности,
+          точных движений кисти.'
+    - text: 'Эрготерапия: тренировка моторики орофациальной области.'
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_инсультом_вз_нас_пост_МЗ_2026_7.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Эрготерапия: тренировка моторики орофациальной области.'
     drug_groups: []
-    drugs:
-    - drug_name: сентября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_инсультом_вз_нас_пост_МЗ_2026_7.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: сентября 2011 г
-    - drug_name: февраля
-      active_substance: null
-      drug_group: null
-      dose_text: 2026 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_инсультом_вз_нас_пост_МЗ_2026_7.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: февраля 2026 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_инсультом_вз_нас_пост_МЗ_2026_7.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июня 1993 г
+    drugs: []
     procedures: []
     surgery: []
     source_refs: []
   follow_up: []
   hospitalization: []
   routing:
-  - text: '[routing] 9. При плановой госпитализации пациентов в организацию здравоохранения
-      (стр. 3)'
+  - text: 'Медицинские показания к проведению медицинской реабилитации: инсульт с
+      ограничениями базовых категорий жизнедеятельности.'
     timing: null
     required_if: []
     source_ref:
@@ -318,10 +323,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 9. При плановой госпитализации пациентов в организацию здравоохранения
-        (стр. 3)'
-  - text: '[routing] 17. Направление (перевод) пациентов в остром периоде инсульта
-      и раннем (стр. 4)'
+      quote: 'Медицинские показания к проведению медицинской реабилитации: инсульт
+        с ограничениями базовых категорий жизнедеятельности.'
+  - text: Направление (перевод) пациентов в остром/раннем восстановительном периоде
+      из неврологического отделения на этап ранней медицинской реабилитации в стационарных
+      условиях.
     timing: null
     required_if: []
     source_ref:
@@ -334,9 +340,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 17. Направление (перевод) пациентов в остром периоде инсульта
-        и раннем (стр. 4)'
-  - text: Направление (перевод) пациентов с инсультом на этап ранней медицинской
+      quote: Направление (перевод) пациентов в остром/раннем восстановительном периоде
+        из неврологического отделения на этап ранней медицинской реабилитации в стационарных
+        условиях.
+  - text: Направление (перевод) на этап ранней медицинской реабилитации в стационарных
+      условиях осуществляется, как правило, на 12–14 сутки со дня госпитализации.
     timing: null
     required_if: []
     source_ref:
@@ -349,8 +357,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Направление (перевод) пациентов с инсультом на этап ранней медицинской
-  - text: со дня госпитализации в неврологическое (для инсультных пациентов) отделение.
+      quote: Направление (перевод) на этап ранней медицинской реабилитации в стационарных
+        условиях осуществляется, как правило, на 12–14 сутки со дня госпитализации.
+  - text: Возможно направление на этап ранней медицинской реабилитации в стационарных
+      условиях в более ранние сроки после стабилизации состояния пациента.
     timing: null
     required_if: []
     source_ref:
@@ -363,34 +373,42 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: со дня госпитализации в неврологическое (для инсультных пациентов) отделение.
+      quote: Возможно направление на этап ранней медицинской реабилитации в стационарных
+        условиях в более ранние сроки после стабилизации состояния пациента.
+  - text: Направление (перевод) осуществляется заведующим неврологического отделения
+      по согласованию с заведующим специализированного отделения медицинской реабилитации.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_инсультом_вз_нас_пост_МЗ_2026_7.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Направление (перевод) осуществляется заведующим неврологического отделения
+        по согласованию с заведующим специализированного отделения медицинской реабилитации.
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: nevrologiya_neyrokhirurgiya_кп_медицинская_реабилитация_пациентов_с_инсультом_вз
-    document_url: null
-    local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Медицинская_реабилитация_пациентов_с_инсультом_вз_нас_пост_МЗ_2026_7.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Медицинская реабилитация пациентов с инсультом вз нас
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:43.225585+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T16:51:05.566401+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:43.226570+00:00'
+  validated_at: '2026-07-20T16:51:05.566719+00:00'

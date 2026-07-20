@@ -1,10 +1,10 @@
 {
   "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика и лечение пациентов (взрослое население) с витамин В12 дефицитной анемией",
+    "title": "Диагностика и лечение пациентов с витамин В12 дефицитной анемией",
     "url": null,
     "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
     "document_sha256": null,
@@ -22,7 +22,8 @@
   },
   "applicability": {
     "population": [
-      "adult"
+      "adult",
+      "pregnant"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,24 +33,224 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_и_лечение_пациентов",
-      "name": "Диагностика и лечение пациентов",
+      "condition_id": "vitamin_b12_deficiency_anemia",
+      "name": "витамин-В12-дефицитная анемия",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "D51",
-        "B24"
+        "D51"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
       "diagnostic_criteria": null,
       "required_exams": [],
-      "conditional_exams": [],
+      "conditional_exams": [
+        {
+          "name": "фиброгастродуоденоскопия с биопсией",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятиями при оказании медицинской помощи пациентам с витамин-В12-дефицитной анемией являются (по медицинским показаниям и (или) при неэффективности лечения): фиброгастродуоденоскопия с биопсией;"
+          }
+        },
+        {
+          "name": "рентгенография органов грудной клетки",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятиями при оказании медицинской помощи пациентам с витамин-В12-дефицитной анемией являются (по медицинским показаниям и (или) при неэффективности лечения): рентгенография органов грудной клетки;"
+          }
+        },
+        {
+          "name": "электрокардиография",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятиями при оказании медицинской помощи пациентам с витамин-В12-дефицитной анемией являются (по медицинским показаниям и (или) при неэффективности лечения): электрокардиография;"
+          }
+        },
+        {
+          "name": "анализ кала на яйца гельминтов трехкратно",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятиями при оказании медицинской помощи пациентам с витамин-В12-дефицитной анемией являются (по медицинским показаниям и (или) при неэффективности лечения): анализ кала на яйца гельминтов трехкратно;"
+          }
+        },
+        {
+          "name": "анализ кала на скрытую кровь",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятиями при оказании медицинской помощи пациентам с витамин-В12-дефицитной анемией являются (по медицинским показаниям и (или) при неэффективности лечения): анализ кала на скрытую кровь;"
+          }
+        },
+        {
+          "name": "консультация врача-хирурга",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятиями при оказании медицинской помощи пациентам с витамин-В12-дефицитной анемией являются (по медицинским показаниям и (или) при неэффективности лечения): консультация врача-хирурга;"
+          }
+        },
+        {
+          "name": "консультация врача-невролога",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятиями при оказании медицинской помощи пациентам с витамин-В12-дефицитной анемией являются (по медицинским показаниям и (или) при неэффективности лечения): консультация врача-невролога;"
+          }
+        },
+        {
+          "name": "консультация врача-инфекциониста",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительными диагностическими мероприятиями при оказании медицинской помощи пациентам с витамин-В12-дефицитной анемией являются (по медицинским показаниям и (или) при неэффективности лечения): консультация врача-инфекциониста."
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 4. Системное лечение пациенту с витамин-В12-дефицитной анемией назначается (стр. 2)",
+            "text": "трансфузия эритроцитных компонентов крови (при анемии тяжелой степени, анемии средней степени тяжести с сопутствующей патологией, гемодинамических нарушениях)",
             "source_ref": {
               "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
               "document_url": null,
@@ -60,11 +261,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 4. Системное лечение пациенту с витамин-В12-дефицитной анемией назначается (стр. 2)"
+              "quote": "трансфузия эритроцитных компонентов крови (при анемии тяжелой степени, анемии средней степени тяжести с сопутствующей патологией, гемодинамических нарушениях)"
             }
           },
           {
-            "text": "особенностей пациента (возраст, степень тяжести заболевания, наличие осложнений",
+            "text": "дегельминтизация",
             "source_ref": {
               "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
               "document_url": null,
@@ -75,11 +276,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "особенностей пациента (возраст, степень тяжести заболевания, наличие осложнений"
+              "quote": "дегельминтизация"
             }
           },
           {
-            "text": "противопоказаний, аллергологический и фармакологический анамнез.",
+            "text": "хирургическое вмешательство по устранению анатомических дефектов (слепых карманов, дивертикулеза)",
             "source_ref": {
               "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
               "document_url": null,
@@ -90,11 +291,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "противопоказаний, аллергологический и фармакологический анамнез."
+              "quote": "хирургическое вмешательство по устранению анатомических дефектов (слепых карманов, дивертикулеза)"
             }
           },
           {
-            "text": "Национальный правовой Интернет-портал Республики Беларусь, 16.04.2022, 8/37861",
+            "text": "отмена лекарственных препаратов, нарушающих абсорбцию витамина В12",
             "source_ref": {
               "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
               "document_url": null,
@@ -105,47 +306,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Национальный правовой Интернет-портал Республики Беларусь, 16.04.2022, 8/37861"
-            }
-          },
-          {
-            "text": "[treatment] 7. Дополнительными диагностическими мероприятиями при оказании медицинской (стр. 3)",
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 7. Дополнительными диагностическими мероприятиями при оказании медицинской (стр. 3)"
-            }
-          },
-          {
-            "text": "помощи пациентам с витамин-В12-дефицитной анемией являются (по медицинским",
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "помощи пациентам с витамин-В12-дефицитной анемией являются (по медицинским"
+              "quote": "отмена лекарственных препаратов, нарушающих абсорбцию витамина В12"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "цианокобаламина",
+            "drug_name": "цианокобаламин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1000 мкг",
+            "dose_text": "Парентеральное введение 1000 мкг/сутки внутримышечно или внутривенно 1 раз в день в течение 1 недели, затем – по 500 мкг/сутки внутримышечно или внутривенно 1 раз в день в течение 30 дней либо до норм",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -157,20 +328,20 @@
               "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
-              "page_start": null,
+              "page_start": 3,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "цианокобаламина 1000 мкг/сутки внутримышечно или \nвнутривенно 1 "
+              "quote": "Парентеральное введение цианокобаламина 1000 мкг/сутки внутримышечно или внутривенно 1 раз в день в течение 1 недели, затем – по 500 мкг/сутки внутримышечно или внутривенно 1 раз в день в течение 30 дней либо до нормализации показателей крови."
             }
           },
           {
-            "drug_name": "таблетки",
+            "drug_name": "цианокобаламин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1000 мкг",
+            "dose_text": "500 мкг/сутки в течение 30 дней до нормализации показателей уровня гемоглобина и (или) витамина В12, затем поддерживающее лечение.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -182,20 +353,20 @@
               "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "таблетки  \n1000 мкг 2 раза в сутки ежедневно в течение 4 нед"
+              "quote": "введение лекарственного средства цианокобаламина 500 мкг/сутки в течение 30 дней до нормализации показателей уровня гемоглобина и (или) витамина В12, после чего пациент переводится на поддерживающее лечение;"
             }
           },
           {
-            "drug_name": "таблетка",
+            "drug_name": "цианокобаламин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1000 мкг",
+            "dose_text": "Парентеральное введение внутримышечно или внутривенно по 500–1000 мкг 1 раз в неделю в течение 2 месяцев, затем 2 раза в месяц в течение 2 месяцев (поддерживающее лечение).",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -207,20 +378,20 @@
               "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "таблетка 1000 мкг 1 раз в сутки 2 недели"
+              "quote": "парентеральное введение цианокобаламина внутримышечно или внутривенно по 500–1000 мкг 1 раз в неделю в течение 2 месяцев, а затем 2 раза в месяц в течение 2 месяцев (поддерживающее лечение);"
             }
           },
           {
-            "drug_name": "апреля",
+            "drug_name": "цианокобаламин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2022 г",
+            "dose_text": "Парентеральное введение внутримышечно или внутривенно по 500 мкг 1 раз в месяц в течение 2–3 лет, при необходимости – пожизненно (для пациентов с гастрэктомией, удалением тонкого кишечника, старческог",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -232,20 +403,20 @@
               "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "апреля 2022 г"
+              "quote": "парентеральное введение цианокобаламина внутримышечно или внутривенно по 500 мкг 1 раз в месяц в течение 2–3 лет, при необходимости – пожизненно (пациентам с гастрэктомией, с удалением обширных участков тонкого кишечника, старческого возраста с атрофическим гастритом);"
             }
           },
           {
-            "drug_name": "июня",
+            "drug_name": "витамин В12",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1993 г",
+            "dose_text": "Энтеральный прием: начальная доза 1–2 таблетки 1000 мкг 2 раза в сутки ежедневно в течение 4 недель, далее – поддерживающая терапия 1 таблетка 1000 мкг 1 раз в сутки 2 недели.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -257,20 +428,20 @@
               "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июня \n1993 г"
+              "quote": "энтеральный прием препаратов витамина В12: в начальной дозе 1–2 таблетки 1000 мкг 2 раза в сутки ежедневно в течение 4 недель, далее – поддерживающая терапия 1 таблетка 1000 мкг 1 раз в сутки 2 недели."
             }
           },
           {
-            "drug_name": "октября",
+            "drug_name": "витамин В12",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2011 г",
+            "dose_text": "Профилактическое лечение: 500 мкг 1 раз в месяц (многолетнее/пожизненное введение).",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -282,38 +453,13 @@
               "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          },
-          {
-            "drug_name": "ноября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2010 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "ноября 2010 г"
+              "quote": "Профилактическое лечение включает многолетнее (пожизненное) введение лекарственных средств витамина В12 по 500 мкг 1 раз в месяц."
             }
           }
         ],
@@ -323,7 +469,7 @@
       },
       "follow_up": [
         {
-          "text": "контроль",
+          "text": "Контроль эффективности лечения по ретикулоцитарному кризу через 5–10 дней (повышение ретикулоцитов более 3 %)",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -337,48 +483,249 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
+            "quote": "Контроль эффективности лечения по ретикулоцитарному кризу через 5–10 дней (повышение ретикулоцитов более 3 %)"
+          }
+        },
+        {
+          "text": "Контроль эффективности лечения по нормализации показателей крови: гемоглобин (>120 г/л у женщин, >130 г/л у мужчин, >110 г/л у беременных), тромбоциты (>150,0х109/л), лейкоциты (>4,0х109/л)",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Контроль эффективности лечения по нормализации показателей крови: гемоглобин (>120 г/л у женщин, >130 г/л у мужчин, >110 г/л у беременных), тромбоциты (>150,0х109/л), лейкоциты (>4,0х109/л)"
+          }
+        },
+        {
+          "text": "Контроль эффективности лечения по снижению среднего объема эритроцита не менее, чем на 5 fl",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Контроль эффективности лечения по снижению среднего объема эритроцита не менее, чем на 5 fl"
+          }
+        },
+        {
+          "text": "Контроль эффективности лечения по нормализации содержания витамина В12 (уровень в сыворотке крови, может быть снижен до 99 пг/мл при беременности)",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Контроль эффективности лечения по нормализации содержания витамина В12 (уровень в сыворотке крови, может быть снижен до 99 пг/мл при беременности)"
+          }
+        },
+        {
+          "text": "Контроль показателей общего анализа крови врачом общей практики или врачом-специалистом 1 раз в 6 месяцев",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Контроль показателей общего анализа крови врачом общей практики или врачом-специалистом 1 раз в 6 месяцев"
           }
         }
       ],
       "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
+      "routing": [
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        },
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "анемия тяжелой степени",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинскими показаниями к трансфузии эритроцитных компонентов крови являются: анемия тяжелой степени;"
+          }
+        },
+        {
+          "text": "анемия средней степени тяжести с сопутствующей патологией, требующей поддержания целевого уровня гемоглобина",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинскими показаниями к трансфузии эритроцитных компонентов крови являются: анемия средней степени тяжести с сопутствующей патологией, требующей поддержания целевого уровня гемоглобина;"
+          }
+        },
+        {
+          "text": "гемодинамические нарушения, связанные с анемическим синдромом",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинскими показаниями к трансфузии эритроцитных компонентов крови являются: гемодинамические нарушения, связанные с анемическим синдромом;"
+          }
+        },
+        {
+          "text": "тяжелые неврологические симптомы",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "при наличии тяжелых неврологических симптомов предпочтительно начать парентеральное введение витамина B12."
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "gematologiya_кп_диагностика_и_лечение_пациентов_взрослое_население_с_витамин_в12",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/gematologiya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_витамин-В12-дефицитной_анемией_пост_МЗ_01_04_2022_№23.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика и лечение пациентов (взрослое население) с витамин В12 дефицитной анемией"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:29.754193+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T16:01:54.924236+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-06-23T19:15:29.756509+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[vitamin_b12_deficiency_anemia].treatment.drugs[1]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[vitamin_b12_deficiency_anemia].treatment.drugs[2]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[vitamin_b12_deficiency_anemia].treatment.drugs[3]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[vitamin_b12_deficiency_anemia].treatment.drugs[5]"
+      }
+    ],
+    "validated_at": "2026-07-20T16:01:54.927343+00:00"
   }
 }

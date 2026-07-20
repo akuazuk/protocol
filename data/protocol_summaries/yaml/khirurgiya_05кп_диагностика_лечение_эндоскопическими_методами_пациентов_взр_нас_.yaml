@@ -1,9 +1,9 @@
 protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: 05КП Диагностика лечение эндоскопическими методами пациентов взрослое население
+  title: Диагностика лечение эндоскопическими методами пациентов взрослое население
     повреждениями коленного плечевого суставов
   url: null
   local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
@@ -27,9 +27,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: 05кп_диагностика_лечение_эндоскопическими_метода
-  name: 05КП Диагностика лечение эндоскопическими методами пациентов взрослое население
-    повреждениями коленного плечевого суставов
+- condition_id: knee_shoulder_joint_injuries
+  name: Повреждения коленного и плечевого суставов
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -40,6 +39,7 @@ conditions:
   - J18.9
   - J44.9
   - K21.9
+  - K75.9
   - O26.9
   - O35
   - O72
@@ -47,34 +47,295 @@ conditions:
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria:
-    required:
-    - text: определение группы крови и резус-фактора
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: определение группы крови и резус-фактора
-    optional: []
-    exclusion: []
-  required_exams: []
+  diagnostic_criteria: null
+  required_exams:
+  - name: Общий анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ крови
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ мочи
+  - name: Биохимический анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: биохимический анализ крови (общий белок, общий билирубин, мочевина, креатинин,
+        глюкоза, аланинаминотрансфераза, аспартатаминотрансфераза, С-реактивный белок,
+        калий, общий кальций, натрий, хлор)
+  - name: Определение показателей свертывания крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение показателей свертывания крови (активированное частичное тромбопластиновое
+        время, D-димеры, международное нормализованное отношение (далее – МНО), фибриноген)
+  - name: Серологическое исследование на маркеры сифилиса
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: серологическое исследование на маркеры сифилиса методом иммуноферментного
+        анализа или реакция быстрых плазменных реагинов (RPR) при отсутствии достоверного
+        результата обследования за последний месяц
+  - name: Исследование крови на маркеры гепатитов В и С
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование крови на маркеры гепатитов В и С (HbsAg и anti-HCV)
+  - name: Определение группы крови и резус-фактора
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение группы крови и резус-фактора
+  - name: Электрокардиограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: электрокардиограмма
+  - name: Флюорография легких
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: флюорография легких
+  - name: Онкологический осмотр
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: онкологический осмотр
+  - name: Осмотр врача-акушера-гинеколога (для женщин)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: осмотр врача-акушера-гинеколога (для женщин)
+  - name: Заключение врача-терапевта или врача общей практики
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: заключение врача-терапевта или врача общей практики о состоянии здоровья
+        пациента и отсутствии медицинских противопоказаний к хирургическому вмешательству
+  - name: Заключение врача-специалиста по профилю сопутствующей патологии
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при наличии у пациента хронического заболевания заключение врача-специалиста
+        по профилю сопутствующей патологии об отсутствии медицинских противопоказаний
+        к плановому хирургическому вмешательству
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] 1. Настоящий клинический протокол устанавливает общие требования
-        к объему (стр. 3)'
+    - text: Максимально быстрая активизация пациентов и использование компрессионного
+        (профилактического) трикотажа интраоперационно и в послеоперационном периоде
+        для пациентов с низким риском ВТЭО.
       source_ref:
         protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
         document_url: null
@@ -85,76 +346,16 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 1. Настоящий клинический протокол устанавливает общие
-          требования к объему (стр. 3)'
-    - text: оказания медицинской помощи в стационарных условиях пациентам (взрослое
-        население),
-      source_ref:
-        protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: оказания медицинской помощи в стационарных условиях пациентам (взрослое
-          население),
-    - text: нуждающимся в лечении эндоскопическими методами при повреждениях коленного
-      source_ref:
-        protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: нуждающимся в лечении эндоскопическими методами при повреждениях коленного
-    - text: и плечевого суставов (шифры по Международной статистической классификации
-      source_ref:
-        protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: и плечевого суставов (шифры по Международной статистической классификации
-    - text: М23 Внутрисуставные поражения колена
-      source_ref:
-        protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: М23 Внутрисуставные поражения колена
-    - text: М24 Другие специфические поражения
-      source_ref:
-        protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: М24 Другие специфические поражения
+        quote: Максимально быстрая активизация пациентов и использование компрессионного
+          (профилактического) трикотажа интраоперационно и в послеоперационном периоде
+          для пациентов с низким риском ВТЭО.
     drug_groups: []
     drugs:
-    - drug_name: углом
+    - drug_name: Нефракционный гепарин
       active_substance: null
       drug_group: null
-      dose_text: "90 \nг"
+      dose_text: в профилактических дозах и в сроки, рекомендуемые для пациентов с
+        умеренным риском
       frequency_text: null
       duration_text: null
       route: null
@@ -166,17 +367,19 @@ conditions:
         protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
         document_url: null
         local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
-        page_start: null
+        page_start: 130
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "углом \n90 \nградусов \nдля расслабления \nбедренной \nму"
-    - drug_name: июня
+        quote: Используется нефракционный гепарин ... в профилактических дозах и в
+          сроки, рекомендуемые для пациентов с умеренным риском.
+    - drug_name: Низкомолекулярный гепарин
       active_substance: null
       drug_group: null
-      dose_text: 2024 г
+      dose_text: в профилактических дозах и в сроки, рекомендуемые для пациентов с
+        умеренным риском
       frequency_text: null
       duration_text: null
       route: null
@@ -188,17 +391,19 @@ conditions:
         protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
         document_url: null
         local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
-        page_start: null
+        page_start: 130
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: июня 2024 г
-    - drug_name: октября
+        quote: Используется ... низкомолекулярный гепарин ... в профилактических дозах
+          и в сроки, рекомендуемые для пациентов с умеренным риском.
+    - drug_name: Фондапаринукс натрия
       active_substance: null
       drug_group: null
-      dose_text: 2011 г
+      dose_text: в профилактических дозах и в сроки, рекомендуемые для пациентов с
+        умеренным риском
       frequency_text: null
       duration_text: null
       route: null
@@ -210,27 +415,73 @@ conditions:
         protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
         document_url: null
         local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
-        page_start: null
+        page_start: 130
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: октября 2011 г
+        quote: Используется ... фондапаринукс натрия в профилактических дозах и в
+          сроки, рекомендуемые для пациентов с умеренным риском.
+    - drug_name: Гепарин
+      active_substance: null
+      drug_group: null
+      dose_text: Раствор для внутривенного и подкожного введения (для инъекций) 5000
+        МЕ/мл 5 мл. За 2 часа до хирургического вмешательства по 5000 МЕ подкожно
+        с последующим подкожным введением в послеоперационном пери
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
+        page_start: 131
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Гепарин. Раствор для внутривенного и подкожного введения (для инъекций)
+          5000 МЕ/мл 5 мл. За 2 часа до хирургического вмешательства по 5000 МЕ подкожно
+          с последующим подкожным введением...
+    - drug_name: Дальтепарин
+      active_substance: null
+      drug_group: null
+      dose_text: Раствор для инъекций 2500 МЕ анти-Ха/0,2 мл. Вводится строго подкожно
+        по одному из альтернативных режимов дозирования.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
+        page_start: 131
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Дальтепарин. Раствор для инъекций 2500 МЕ анти-Ха/0,2 мл. ЛП вводится
+          строго подкожно по одному из альтернативных режимов дозирования.
     procedures: []
     surgery: []
     source_refs: []
   follow_up: []
   hospitalization: []
-  routing: []
-  red_flags:
-  - text: "ия \nвенозных \nтромбоэмболических \nосложнений (далее – ВТЭО) осуществляется\
-      \ в соответствии с моделью индивидуальной \nоценки риска развития ВТЭО по"
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
     source_ref:
       protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
       document_url: null
@@ -241,35 +492,73 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: "ия \nвенозных \nтромбоэмболических \nосложнений (далее – ВТЭО) осуществляется\
-        \ в соответствии с моделью индивидуальной \nоценки риска развития ВТЭО по"
+      quote: госпитализация
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags:
+  - text: Активное кровотечение
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
+      page_start: 131
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: активное кровотечение
+  - text: Уровень тромбоцитов <30 х 109/л
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
+      page_start: 131
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: уровень тромбоцитов <30 х 109/л
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: khirurgiya_05кп_диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_
-    document_url: null
-    local_path: minzdrav_protocols/khirurgiya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: 05КП Диагностика лечение эндоскопическими методами пациентов взрослое население
-      повреждениями коленного плечевого сустав
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:31.567335+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T16:33:50.425276+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:31.569162+00:00'
+  validated_at: '2026-07-20T16:33:50.453969+00:00'

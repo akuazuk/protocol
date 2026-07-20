@@ -1,6 +1,6 @@
 protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Диагностика и лечение пациентов взрослое население с болезнью губ хейлитом
@@ -26,20 +26,26 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов_взрослое_населен
-  name: Диагностика и лечение пациентов взрослое население с болезнью губ хейлитом
+- condition_id: lip_disease_cheilitis
+  name: Болезнь губ (хейлит)
   synonyms: []
   abbreviations: []
   icd10_codes:
+  - K13.0
   - K13.00
-  - B24
+  - K13.01
+  - K13.02
+  - K13.03
+  - K13.04
+  - K13.08
+  - K13.09
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[diagnostics] 6. Микробиологические критерии болезни губ (хейлита): (стр.
-        4)'
+    - text: Выявление грибов рода Candida и других дрожжеподобных грибов в титрах
+        более 10^3 КОЕ/мл, стрептококков, стафилококков и иных микроорганизмов.
       logic_group: null
       operator: unknown
       values: []
@@ -56,9 +62,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 6. Микробиологические критерии болезни губ (хейлита):
-          (стр. 4)'
-    - text: определение чувствительности к противомикробным лекарственным средствам
+        quote: Выявление грибов рода Candida и других дрожжеподобных грибов в титрах
+          более 10^3 КОЕ/мл, стрептококков, стафилококков и иных микроорганизмов.
+    - text: Определение чувствительности к противомикробным лекарственным средствам
+        (по медицинским показаниям).
       logic_group: null
       operator: unknown
       values: []
@@ -75,53 +82,129 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение чувствительности к противомикробным лекарственным средствам
-    - text: определение взаимосвязи стоматологического и общего здоровья с состоянием
-        губ
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: определение взаимосвязи стоматологического и общего здоровья с состоянием
-          губ
-    - text: определение уровня стоматологического здоровья пациента с использованием
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: определение уровня стоматологического здоровья пациента с использованием
+        quote: Определение чувствительности к противомикробным лекарственным средствам
+          (по медицинским показаниям).
     optional: []
     exclusion: []
-  required_exams: []
-  conditional_exams: []
+  required_exams:
+  - name: Микробиологическое выявление грибов рода Candida и других дрожжеподобных
+      грибов, стрептококков, стафилококков и иных микроорганизмов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: выявление грибов рода Candida и других дрожжеподобных грибов в титрах
+        более 103 КОЕ/мл, стрептококков, стафилококков и иных микроорганизмов;
+  conditional_exams:
+  - name: Определение чувствительности к противомикробным лекарственным средствам
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение чувствительности к противомикробным лекарственным средствам
+        (по медицинским показаниям).
+  - name: Консультация врача-инфекциониста
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: направление на консультацию и обследование к врачам-специалистам (врачу-инфекционисту,
+        врачу общей практики, врачу-аллергологу-иммунологу и другим) по медицинским
+        показаниям.
+  - name: Консультация врача общей практики
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: направление на консультацию и обследование к врачам-специалистам (врачу-инфекционисту,
+        врачу общей практики, врачу-аллергологу-иммунологу и другим) по медицинским
+        показаниям.
+  - name: Консультация врача-аллерголога-иммунолога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: направление на консультацию и обследование к врачам-специалистам (врачу-инфекционисту,
+        врачу общей практики, врачу-аллергологу-иммунологу и другим) по медицинским
+        показаниям.
   treatment:
     non_drug:
-    - text: '[treatment] 10. Общими принципами лечения и медицинская профилактики
-        рецидивов болезни (стр. 5)'
+    - text: Составление персонализированного плана лечения врачом-стоматологом-терапевтом.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
         document_url: null
@@ -132,9 +215,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 10. Общими принципами лечения и медицинская профилактики
-          рецидивов болезни (стр. 5)'
-    - text: составление персонализированного плана лечения врачом-стоматологом-терапевтом
+        quote: Составление персонализированного плана лечения врачом-стоматологом-терапевтом.
+    - text: Учет стоматологического статуса (наличие факторов риска, вредных привычек,
+        очагов одонтогенной инфекции, других стоматологических заболеваний) и уровня
+        общего здоровья пациента (хронические соматические заболевания, иммунодефицитные
+        состояния, нерациональная антибиотикотерапия) при составлении плана лечения.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
         document_url: null
@@ -145,8 +230,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: составление персонализированного плана лечения врачом-стоматологом-терапевтом
-    - text: при составлении плана лечения учитывается стоматологический статус (наличие
+        quote: Учет стоматологического статуса (наличие факторов риска, вредных привычек,
+          очагов одонтогенной инфекции, других стоматологических заболеваний) и уровня
+          общего здоровья пациента (хронические соматическ
+    - text: Мотивация пациента по факторам риска развития стоматологических заболеваний
+        и болезни губ (хейлита).
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
         document_url: null
@@ -157,9 +245,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: при составлении плана лечения учитывается стоматологический статус
-          (наличие
-    - text: факторов риска, вредных привычек (накусывание, курение), очагов одонтогенной
+        quote: Мотивация пациента по факторам риска развития стоматологических заболеваний
+          и болезни губ (хейлита).
+    - text: Подбор индивидуальных средств гигиены полости рта.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
         document_url: null
@@ -170,9 +258,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: факторов риска, вредных привычек (накусывание, курение), очагов одонтогенной
-    - text: инфекции, других стоматологических заболеваний) и уровень общего здоровья
-        пациента
+        quote: Подбор индивидуальных средств гигиены полости рта.
+    - text: Коррекция гигиенических мероприятий полости рта.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
         document_url: null
@@ -183,9 +270,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: инфекции, других стоматологических заболеваний) и уровень общего здоровья
-          пациента
-    - text: (хронические соматические заболевания, иммунодефицитные состояния, нерациональная
+        quote: Коррекция гигиенических мероприятий полости рта.
+    - text: Устранение местных факторов риска, способствующих развитию болезни губ
+        (хейлита).
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
         document_url: null
@@ -196,14 +283,42 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: (хронические соматические заболевания, иммунодефицитные состояния,
-          нерациональная
+        quote: Устранение местных факторов риска, способствующих развитию болезни
+          губ (хейлита).
+    - text: Устранение очагов одонтогенной инфекции.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Устранение очагов одонтогенной инфекции.
+    - text: Оказание терапевтической стоматологической помощи с учетом состояния слизистой
+        оболочки полости рта.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Оказание терапевтической стоматологической помощи с учетом состояния
+          слизистой оболочки полости рта.
     drug_groups: []
     drugs:
-    - drug_name: Спрей
+    - drug_name: Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 30 мл
+      dose_text: Раствор для местного и наружного применения 0,5 мг/мл. Применяется
+        в виде орошений, полосканий и аппликаций – 5–10 мл раствора на пораженную
+        поверхность или на десну с экспозицией 1–3 мин 2–3 раза в с
       frequency_text: null
       duration_text: null
       route: null
@@ -215,17 +330,22 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "Спрей 30 мл \nОрошение 2–4 раза в день (до 6 раз в ден"
-    - drug_name: тубах
+        quote: Применяется в виде орошений, полосканий и аппликаций – 5–10 мл раствора
+          на пораженную поверхность 2–3 раза в сутки (на тампоне или путем орошения).
+          Для полосканий смешивать с равным количеством воды.
+    - drug_name: Календулы цветков экстракт + Ромашки цветков экстракт + Тысячелистника
+        травы экстракт
       active_substance: null
       drug_group: null
-      dose_text: 5 г
+      dose_text: Экстракт жидкий (1:1) из лекарственного растительного сырья (ромашки
+        цветков, календулы цветков, тысячелистника травы 2:1:1). Местно. Полоскание
+        полости рта (1 чайную ложку настойки разводят в стакане
       frequency_text: null
       duration_text: null
       route: null
@@ -237,17 +357,20 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "тубах 5 г \nМестно"
-    - drug_name: Кортикостероиды
+        quote: Местно. Полоскание полости рта (1 чайную ложку настойки разводят в
+          стакане теплой кипяченой воды).
+    - drug_name: Метилурацил
       active_substance: null
       drug_group: null
-      dose_text: "1 \nГ"
+      dose_text: Мазь для местного и наружного применения 10 % в тубах. Местно. Наносится
+        на пораженные участки слизистой оболочки полости рта или десны тонким слоем
+        1 раз в сутки длительностью до 20 мин. Количество п
       frequency_text: null
       duration_text: null
       route: null
@@ -259,17 +382,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "Кортикостероиды \n1 \nГидрокортизон1 \nМазь глазная 5 мг/г \nАппл"
-    - drug_name: применения
+        quote: Местно. Мазь наносится на пораженные участки слизистой оболочки полости
+          рта или десны тонким слоем 1 раз в сутки длительностью до 20 мин. Количество
+          процедур индивидуально
+    - drug_name: Декспантенол/Мирамистин
       active_substance: null
       drug_group: null
-      dose_text: 5 мг
+      dose_text: Гель для местного применения (50 мг + 5 мг)/1 г в тубах. Аппликации
+        геля тонким слоем на поверхность десен и пораженные участки слизистой 2–3
+        раза в сутки в течение 7–10 дней.
       frequency_text: null
       duration_text: null
       route: null
@@ -281,17 +408,18 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "применения 5 мг/г \nНаносить слегка втирая тонким слоем "
-    - drug_name: Флаконы
+        quote: Аппликации геля тонким слоем на поверхность десен и пораженные участки
+          слизистой 2–3 раза в сутки в течение 7–10 дней
+    - drug_name: Биен/Диоксидин
       active_substance: null
       drug_group: null
-      dose_text: 55 мл
+      dose_text: Мазь для наружного и местного применения в тубах. Местно.
       frequency_text: null
       duration_text: null
       route: null
@@ -303,17 +431,19 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: Флаконы 55 мл | Местно
-    - drug_name: глазная
+        quote: Мазь для наружного и местного применения в тубах Местно.
+    - drug_name: Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 5 мг
+      dose_text: Лекарственное средство применяется в виде орошений, полосканий и
+        аппликаций – 5–10 мл раствора наносят на пораженную поверхность слизистой
+        оболочки полости рта или на десну с экспозицией 1–3 мин 2–3 р
       frequency_text: null
       duration_text: null
       route: null
@@ -325,46 +455,410 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: глазная 5 мг/г | Аппликация мази на очаг поражения н
+        quote: Хлоргексидин. Раствор для местного и наружного применения 0,5 мг/мл
+          во флаконах. Лекарственное средство применяется в виде орошений, полосканий
+          и аппликаций – 5–10 мл раствора наносят на пораженную поверхность.
+    - drug_name: Бензилдиметил-миристоиламино-пропиламмоний
+      active_substance: null
+      drug_group: null
+      dose_text: Полоскание полости рта 10–15 мл лекарственного средства, 3–4 раза
+        в сутки в течение 3–5 дней. Допускается местное применение марлевых или ватных
+        тампонов, смоченных раствором.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Бензилдиметил-миристоиламино-пропиламмоний. Раствор для наружного (местного)
+          применения 0,01 % водного раствора. Рекомендуется полоскание полости рта
+          10–15 мл лекарственного средства, 3–4 раза в сутки.
+    - drug_name: Повидон-йод
+      active_substance: null
+      drug_group: null
+      dose_text: Орошение 2–4 раза в день (до 6 раз в день с интервалами не менее
+        4 часов) по 1–3 впрыска в правую и левую стороны рта или на пораженную область.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Повидон-йод. Спрей 30 мл. Орошение 2–4 раза в день (до 6 раз в день
+          с интервалами не менее 4 часов) по 1–3 впрыска в правую и левую стороны
+          рта или на пораженную область.
+    - drug_name: Календулы цветков экстракт + Ромашки цветков экстракт + Тысячелистника
+        травы экстракт
+      active_substance: null
+      drug_group: null
+      dose_text: Местно. Полоскание полости рта (1 чайную ложку настойки разводят
+        в стакане теплой кипяченой воды). Количество процедур индивидуально.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Календулы цветков экстракт + Ромашки цветков экстракт + Тысячелистника
+          травы экстракт. Экстракт жидкий (1:1). Местно. Полоскание полости рта (1
+          чайную ложку настойки разводят в стакане).
+    - drug_name: Метилурацил
+      active_substance: null
+      drug_group: null
+      dose_text: Местно. Мазь наносится на пораженные участки слизистой оболочки полости
+        рта или десны тонким слоем 1 раз в сутки длительностью до 20 мин. Количество
+        процедур индивидуально.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Метилурацил. Мазь для местного и наружного применения 10 % в тубах.
+          Местно. Мазь наносится на пораженные участки слизистой оболочки полости
+          рта или десны тонким слоем 1 раз в сутки.
+    - drug_name: Декспантенол/Мирамистин
+      active_substance: null
+      drug_group: null
+      dose_text: Аппликации геля тонким слоем на поверхность десен и пораженные участки
+        слизистой 2–3 раза в сутки в течение 7–10 дней.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Декспантенол/Мирамистин. Гель для местного применения (50 мг + 5 мг)/1
+          г в тубах. Аппликации геля тонким слоем на поверхность десен и пораженные
+          участки слизистой 2–3 раза в сутки.
+    - drug_name: Биен/Диоксидин
+      active_substance: null
+      drug_group: null
+      dose_text: 'Мазь наносится в виде аппликаций (на ватных или марлевых пластинках)
+        на эрозивные и язвенные поверхности слизистой оболочки полости рта или десны
+        тонким слоем 1 раз в сутки до завершения эпителизации '
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Биен/Диоксидин. Мазь для наружного и местного применения в тубах. Местно.
+          Мазь наносится в виде аппликаций на эрозивные и язвенные поверхности слизистой
+          оболочки полости рта.
+    - drug_name: Депротеинизированный гемодериват из крови молочных телят
+      active_substance: null
+      drug_group: null
+      dose_text: Местно. Дентальная адгезивная паста наносится на пораженные участки
+        слизистой оболочки полости рта или десны тонким слоем, не втирая, 3–5 раз
+        в день после еды и перед сном. Количество процедур индивид
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Депротеинизированный гемодериват из крови молочных телят. Дентальная
+          адгезивная паста в тубах 5 г. Местно. Паста наносится на пораженные участки
+          слизистой оболочки тонким слоем, не втирая.
+    - drug_name: Облепиховое масло
+      active_substance: null
+      drug_group: null
+      dose_text: Местно. В комплексной терапии в качестве ранозаживляющего средства
+        при поражении слизистых оболочек Масло наносится ватным тампоном на пораженные
+        участки слизистой оболочки полости рта или десны тонки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Облепиховое масло. Масло для приема внутрь, местного и наружного применения
+          во флаконах. Местно. Наносится ватным тампоном на пораженные участки слизистой
+          оболочки полости рта.
+    - drug_name: Гидрокортизон
+      active_substance: null
+      drug_group: null
+      dose_text: Аппликация мази на очаг поражения на 7–10 мин 2–3 раза в день. Длительность
+        применения устанавливается индивидуально.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Гидрокортизон. Мазь глазная 5 мг/г. Аппликация мази на очаг поражения
+          на 7–10 мин 2–3 раза в день. Длительность применения устанавливается индивидуально.
+    - drug_name: Преднизолон
+      active_substance: null
+      drug_group: null
+      dose_text: Наносить слегка втирая тонким слоем 1–3 раза в сутки. Длительность
+        применения устанавливается индивидуально.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Преднизолон. Мазь для наружного применения 5 мг/г. Наносить слегка
+          втирая тонким слоем 1–3 раза в сутки. Длительность применения устанавливается
+          индивидуально.
+    - drug_name: Метилпреднизолона ацепонат
+      active_substance: null
+      drug_group: null
+      dose_text: Наносить на очаг поражения тонким слоем 1 раз в день. Длительность
+        применения устанавливается индивидуально.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Метилпреднизолона ацепонат. Мазь для наружного применения 0,1 %. Наносить
+          на очаг поражения тонким слоем 1 раз в день. Длительность применения устанавливается
+          индивидуально.
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: 'Поддерживающая терапия: устранение факторов риска, вредных привычек, нормализация
+      гигиены путем тщательной индивидуальной чистки зубов, межзубных промежутков,
+      спинки языка, зубных протезов.'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Поддерживающая терапия: устранение факторов риска, вредных привычек,
+        нормализация гигиены путем тщательной индивидуальной чистки зубов, межзубных
+        промежутков, спинки языка, зубных протезов.'
+  - text: Регулярное проведение профессиональной гигиены полости рта не реже двух
+      раз в год.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Регулярное проведение профессиональной гигиены полости рта не реже двух
+        раз в год.
+  - text: Медицинская профилактика рецидивов болезни губ (хейлита) в зависимости от
+      нозологической формы заболевания и степени его тяжести с использованием лекарственных
+      средств местного действия.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинская профилактика рецидивов болезни губ (хейлита) в зависимости
+        от нозологической формы заболевания и степени его тяжести с использованием
+        лекарственных средств местного действия.
   hospitalization: []
-  routing: []
+  routing:
+  - text: Направление на консультацию и обследование к врачам-специалистам по медицинским
+      показаниям
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Направление на консультацию и обследование к врачам-специалистам по медицинским
+        показаниям
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнью_губ_хейлитом_пост_МЗ_11.01.2023_4.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов взрослое население с болезнью губ хейлитом
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:49.798948+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T17:51:35.212108+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:49.803317+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[lip_disease_cheilitis].treatment.drugs[5]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[lip_disease_cheilitis].treatment.drugs[8]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[lip_disease_cheilitis].treatment.drugs[9]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[lip_disease_cheilitis].treatment.drugs[10]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[lip_disease_cheilitis].treatment.drugs[11]
+  validated_at: '2026-07-20T17:51:35.228795+00:00'

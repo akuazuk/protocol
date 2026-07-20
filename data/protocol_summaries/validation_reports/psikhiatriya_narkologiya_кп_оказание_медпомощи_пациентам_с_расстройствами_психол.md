@@ -1,6 +1,76 @@
 # Validation: psikhiatriya_narkologiya_кп_оказание_медпомощи_пациентам_с_расстройствами_психол
 
-- **status:** valid
-- **validated_at:** 2026-06-23T19:16:26.646265+00:00
+- **status:** needs_human_review
+- **validated_at:** 2026-07-20T17:20:34.098419+00:00
 - **review_status:** needs_review
-- **extraction_status:** auto_extracted
+- **extraction_status:** llm_extracted
+
+## Warnings
+- `quote_not_in_source` conditions[expressive_language_disorder].required_exams[5]: Цитата не найдена в исходном тексте
+- `duplicate_exam` conditions[specific_speech_articulation_disorder].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[specific_speech_articulation_disorder].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[specific_speech_articulation_disorder].required_exams[4]: Дублирующееся обследование
+- `duplicate_exam` conditions[specific_speech_articulation_disorder].required_exams[6]: Дублирующееся обследование
+- `duplicate_exam` conditions[expressive_language_disorder].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[expressive_language_disorder].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[expressive_language_disorder].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[expressive_language_disorder].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[expressive_language_disorder].required_exams[4]: Дублирующееся обследование
+- `duplicate_exam` conditions[expressive_language_disorder].required_exams[5]: Дублирующееся обследование
+- `duplicate_exam` conditions[expressive_language_disorder].required_exams[6]: Дублирующееся обследование
+- `duplicate_exam` conditions[specific_spelling_disorder].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[specific_spelling_disorder].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[specific_spelling_disorder].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[specific_spelling_disorder].required_exams[4]: Дублирующееся обследование
+- `duplicate_exam` conditions[specific_spelling_disorder].required_exams[7]: Дублирующееся обследование
+- `duplicate_exam` conditions[specific_arithmetical_skills_disorder].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[specific_arithmetical_skills_disorder].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[specific_arithmetical_skills_disorder].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[specific_arithmetical_skills_disorder].required_exams[4]: Дублирующееся обследование
+- `duplicate_exam` conditions[specific_arithmetical_skills_disorder].required_exams[5]: Дублирующееся обследование
+- `duplicate_exam` conditions[specific_arithmetical_skills_disorder].required_exams[8]: Дублирующееся обследование
+- `duplicate_exam` conditions[specific_motor_functions_disorders].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[specific_motor_functions_disorders].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[specific_motor_functions_disorders].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[childhood_autism].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[childhood_autism].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[childhood_autism].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[childhood_autism].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[childhood_autism].required_exams[4]: Дублирующееся обследование
+- `duplicate_exam` conditions[childhood_autism].required_exams[6]: Дублирующееся обследование
+- `duplicate_drug` conditions[childhood_autism].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[childhood_autism].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[childhood_autism].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[childhood_autism].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[childhood_autism].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[childhood_autism].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[childhood_autism].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[childhood_autism].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_exam` conditions[atypical_autism].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[atypical_autism].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[atypical_autism].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[atypical_autism].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[atypical_autism].required_exams[4]: Дублирующееся обследование
+- `duplicate_exam` conditions[atypical_autism].required_exams[5]: Дублирующееся обследование
+- `duplicate_exam` conditions[atypical_autism].required_exams[6]: Дублирующееся обследование
+- `duplicate_exam` conditions[atypical_autism].required_exams[7]: Дублирующееся обследование
+- `duplicate_drug` conditions[atypical_autism].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[atypical_autism].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[atypical_autism].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[atypical_autism].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[atypical_autism].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[atypical_autism].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[atypical_autism].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_exam` conditions[rett_syndrome].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[rett_syndrome].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[rett_syndrome].required_exams[4]: Дублирующееся обследование
+- `duplicate_exam` conditions[rett_syndrome].required_exams[5]: Дублирующееся обследование
+- `duplicate_exam` conditions[rett_syndrome].required_exams[6]: Дублирующееся обследование
+- `duplicate_drug` conditions[rett_syndrome].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[rett_syndrome].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[rett_syndrome].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[rett_syndrome].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[rett_syndrome].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[rett_syndrome].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[rett_syndrome].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[rett_syndrome].treatment.drugs[8]: Дублирующийся препарат

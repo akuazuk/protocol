@@ -1,7 +1,7 @@
 {
   "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "Диагностика и лечение пациентов с огнестрельными ранениями живота",
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "adult"
+      "adult_and_child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,8 +32,8 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_и_лечение_пациентов_с_огнестрельными",
-      "name": "Диагностика и лечение пациентов с огнестрельными ранениями живота",
+      "condition_id": "gunshot_wounds_abdomen",
+      "name": "Огнестрельные ранения живота",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
@@ -43,66 +43,18 @@
         "S36",
         "S37",
         "S38",
-        "S39",
-        "B24"
+        "S39"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
-      "diagnostic_criteria": {
-        "required": [
-          {
-            "text": "[classification] 6. В клиническом диагнозе у пациентов с огнестрельными ранениями живота (стр. 3)",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с огнестрельными ранениями живота_09.08.2021_№94.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[classification] 6. В клиническом диагнозе у пациентов с огнестрельными ранениями живота (стр. 3)"
-            }
-          },
-          {
-            "text": "Примеры клинических диагнозов:",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с огнестрельными ранениями живота_09.08.2021_№94.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Примеры клинических диагнозов:"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
+      "diagnostic_criteria": null,
       "required_exams": [],
       "conditional_exams": [],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 7. Пациенты с огнестрельными ранениями живота госпитализируются в отделение (стр. 4)",
+            "text": "Основным методом лечения огнестрельных ранений живота является оперативное вмешательство.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
               "document_url": null,
@@ -113,11 +65,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 7. Пациенты с огнестрельными ранениями живота госпитализируются в отделение (стр. 4)"
+              "quote": "Основным методом лечения огнестрельных ранений живота является оперативное вмешательство."
             }
           },
           {
-            "text": "хирургического профиля (при наличии показаний – в отделение анестезиологии",
+            "text": "При слепых непроникающих ранениях живота дробью и отсутствии признаков повреждения органов брюшной полости, забрюшинного пространства и кровеносных сосудов допустимо консервативное лечение в стационарных условиях.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
               "document_url": null,
@@ -128,11 +80,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "хирургического профиля (при наличии показаний – в отделение анестезиологии"
+              "quote": "При слепых непроникающих ранениях живота дробью и отсутствии признаков повреждения органов брюшной полости, забрюшинного пространства и кровеносных сосудов допустимо консервативное лечение в стационар"
             }
           },
           {
-            "text": "и реанимации) ближайшей организации здравоохранения.",
+            "text": "Объем и продолжительность предоперационной подготовки зависит от общего состояния пациента, характера ранения и определяются совместным решением врача-хирурга, врача-анестезиолога-реаниматолога, других врачей-специалистов.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
               "document_url": null,
@@ -143,11 +95,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "и реанимации) ближайшей организации здравоохранения."
+              "quote": "Объем и продолжительность предоперационной подготовки зависит от общего состояния пациента, характера ранения и определяются совместным решением врача-хирурга, врача-анестезиолога-реаниматолога, други"
             }
           },
           {
-            "text": "[treatment] 10. Основным (стр. 4)",
+            "text": "Оперативное вмешательство выполняется в условиях операционной под общей анестезией.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
               "document_url": null,
@@ -158,11 +110,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 10. Основным (стр. 4)"
+              "quote": "Оперативное вмешательство выполняется в условиях операционной под общей анестезией."
             }
           },
           {
-            "text": "оперативное вмешательство. При слепых непроникающих ранениях живота дробью",
+            "text": "Инфузионная (трансфузионная) терапия, профилактика развития столбняка и тромбоэмболии, коррекция расстройств органов и систем проводятся при наличии медицинских показаний согласно клиническим протоколам по профилям заболеваний.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
               "document_url": null,
@@ -173,11 +125,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "оперативное вмешательство. При слепых непроникающих ранениях живота дробью"
+              "quote": "Инфузионная (трансфузионная) терапия, профилактика развития столбняка и тромбоэмболии, коррекция расстройств органов и систем проводятся при наличии медицинских показаний согласно клиническим протокол"
             }
           },
           {
-            "text": "и отсутствии признаков повреждения органов брюшной полости, забрюшинного",
+            "text": "Реконструктивно-восстановительные хирургические вмешательства выполняются только при условии стабилизации общего состояния пациента и заживления ран мягких тканей, при отсутствии признаков раневой инфекции, а в случаях уже развившейся раневой инфекции – после ее ликвидации.",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
               "document_url": null,
@@ -188,17 +140,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "и отсутствии признаков повреждения органов брюшной полости, забрюшинного"
+              "quote": "Реконструктивно-восстановительные хирургические вмешательства выполняются только при условии стабилизации общего состояния пациента и заживления ран мягких тканей, при отсутствии признаков раневой инф"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "цефотаксим",
+            "drug_name": "Цефотаксим + Метронидазол",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1,0 г",
+            "dose_text": "Цефотаксим 1,0 г 3 р/сут в/м, в/в (детям 50–100 мг/кг/сут в 3–4 введения); Метронидазол 0,5 г 3 р/сут в/в (детям 7,5 мг/кг 3 р/сут)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -210,20 +162,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с огнестрельными ранениями живота_09.08.2021_№94.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "цефотаксим 1,0 г 3 р/сут внутримышечно (далее – в/м), вну"
+              "quote": "В послеоперационном периоде пациенту назначается одна из приведенных схем эмпирической антибактериальной терапии."
             }
           },
           {
-            "drug_name": "метронидазол",
+            "drug_name": "Цефтриаксон + Метронидазол",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,5 г",
+            "dose_text": "Цефтриаксон 1,0 г 1–2 р/сут в/м, в/в (детям 50–80 мг/кг/сут в 1–2 введения); Метронидазол 0,5 г 3 р/сут в/в (детям 7,5 мг/кг 3 р/сут)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -235,20 +187,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с огнестрельными ранениями живота_09.08.2021_№94.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "метронидазол 0,5 г 3 р/сут в/в (7,5 мг/кг 3 р/сут)"
+              "quote": "В послеоперационном периоде пациенту назначается одна из приведенных схем эмпирической антибактериальной терапии."
             }
           },
           {
-            "drug_name": "цефтриаксон",
+            "drug_name": "Цефепим + Метронидазол",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1,0 г",
+            "dose_text": "Цефепим 2,0 г 2 р/сут в/м, в/в (детям 50 мг/кг/сут в 2 введения); Метронидозол 0,5 г 3 р/сут в/в (детям 7,5 мг/кг 3 р/сут)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -260,20 +212,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с огнестрельными ранениями живота_09.08.2021_№94.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "цефтриаксон 1,0 г 1–2 р/сут в/м, в/в (50–80 мг/кг/сут в 1–"
+              "quote": "В послеоперационном периоде пациенту назначается одна из приведенных схем эмпирической антибактериальной терапии."
             }
           },
           {
-            "drug_name": "цефепим",
+            "drug_name": "Амоксициллин/Клавуланат + Метронидазол",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2,0 г",
+            "dose_text": "Амоксициллин/Клавуланат 1,0 г 3 р/сут в/в (детям 25 мг/кг/сут в 3 введения); Метронидазол 0,5 г 3 р/сут в/в (детям 7,5 мг/кг 3 р/сут)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -285,20 +237,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с огнестрельными ранениями живота_09.08.2021_№94.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "цефепим 2,0 г 2 р/сут в/м, в/в (50 мг/кг/сут в 2 введе"
+              "quote": "В послеоперационном периоде пациенту назначается одна из приведенных схем эмпирической антибактериальной терапии."
             }
           },
           {
-            "drug_name": "клавуланат",
+            "drug_name": "Ципрофлоксацин + Метронидазол",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1,0 г",
+            "dose_text": "Для пациентов старше 18 лет: Ципрофлоксацин 0,5 г 2 р/сут в/в; Метронидазол 0,5 г 3 р/сут в/в",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -310,20 +262,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с огнестрельными ранениями живота_09.08.2021_№94.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "клавуланат 1,0 г 3 р/сут в/в (25 мг/кг/сут в 3 введения) "
+              "quote": "В послеоперационном периоде пациенту назначается одна из приведенных схем эмпирической антибактериальной терапии."
             }
           },
           {
-            "drug_name": "метронидазолом",
+            "drug_name": "Левофлоксацин + Метронидазол",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,5 г",
+            "dose_text": "Для пациентов старше 18 лет: Левофлоксацин 0,5 г 1 р/сут в/в; Метронидазол 0,5 г 3 р/сут в/в",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -335,20 +287,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с огнестрельными ранениями живота_09.08.2021_№94.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "метронидазолом 0,5 г 3 р/сут в/в (7,5 мг/кг 3 р/сут)"
+              "quote": "В послеоперационном периоде пациенту назначается одна из приведенных схем эмпирической антибактериальной терапии."
             }
           },
           {
-            "drug_name": "ципрофлоксацин",
+            "drug_name": "Имипенем/Циластатин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,5 г",
+            "dose_text": "0,5 г 3 р/сут в/в (детям 15 мг/кг 4 р/сут)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -360,20 +312,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с огнестрельными ранениями живота_09.08.2021_№94.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ципрофлоксацин 0,5 г 2 р/сут в/в, метронидазол 0,5 г 3 р/сут "
+              "quote": "В послеоперационном периоде пациенту назначается одна из приведенных схем эмпирической антибактериальной терапии."
             }
           },
           {
-            "drug_name": "левофлоксацин",
+            "drug_name": "Меропенем",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,5 г",
+            "dose_text": "0,5 г 3 р/сут в/в (детям 10–20 мг/кг 3 р/сут)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -385,20 +337,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с огнестрельными ранениями живота_09.08.2021_№94.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "левофлоксацин 0,5 г 1 р/сут в/в, метронидазол 0,5 г 3 р/сут "
+              "quote": "В послеоперационном периоде пациенту назначается одна из приведенных схем эмпирической антибактериальной терапии."
             }
           },
           {
-            "drug_name": "циластатин",
+            "drug_name": "Эртапенем",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,5 г",
+            "dose_text": "1,0 г 1 р/сут в/в (детям 15 мг/кг 2 р/сут, но не более 1,0 г/сут)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -410,88 +362,13 @@
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с огнестрельными ранениями живота_09.08.2021_№94.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "циластатин 0,5 г 3 р/сут в/в (15 мг/кг 4 р/сут)"
-            }
-          },
-          {
-            "drug_name": "меропенем",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "0,5 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с огнестрельными ранениями живота_09.08.2021_№94.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "меропенем 0,5 г 3 р/сут в/в (10–20 мг/кг 3 р/сут)"
-            }
-          },
-          {
-            "drug_name": "эртапенем",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1,0 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с огнестрельными ранениями живота_09.08.2021_№94.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "эртапенем 1,0 г 1 р/сут в/в (15 мг/кг 2 р/сут, но не бол"
-            }
-          },
-          {
-            "drug_name": "августа",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2021 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с огнестрельными ранениями живота_09.08.2021_№94.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "августа 2021 г"
+              "quote": "В послеоперационном периоде пациенту назначается одна из приведенных схем эмпирической антибактериальной терапии."
             }
           }
         ],
@@ -501,15 +378,11 @@
       },
       "follow_up": [],
       "hospitalization": [],
-      "routing": [],
-      "red_flags": [
+      "routing": [
         {
-          "text": "ка (стр. 8)\nи тромбоэмболии, коррекция расстройств органов и систем проводятся при наличии \nмедицинских показаний согласно клиническим протоколам",
-          "aliases": [],
-          "red_flag_type": "thrombosis",
-          "severity": "high",
-          "expected_actions": [],
-          "cap_if_unhandled": null,
+          "text": "Пациенты с огнестрельными ранениями живота госпитализируются в отделение хирургического профиля (при наличии показаний – в отделение анестезиологии и реанимации) ближайшей организации здравоохранения.",
+          "timing": null,
+          "required_if": [],
           "source_ref": {
             "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
             "document_url": null,
@@ -520,45 +393,75 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "ка (стр. 8)\nи тромбоэмболии, коррекция расстройств органов и систем проводятся при наличии \nмедицинских показаний согласно клиническим протоколам"
+            "quote": "Пациенты с огнестрельными ранениями живота госпитализируются в отделение хирургического профиля (при наличии показаний – в отделение анестезиологии и реанимации) ближайшей организации здравоохранения."
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "При продолжающемся внутрибрюшном кровотечении интенсивная противошоковая терапия проводится одновременно с выполнением экстренной операции.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с огнестрельными ранениями живота_09.08.2021_№94.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При продолжающемся внутрибрюшном кровотечении интенсивная противошоковая терапия проводится одновременно с выполнением экстренной операции."
+          }
+        },
+        {
+          "text": "При признаках перитонита и декомпенсации основных систем жизнедеятельности пациента выполняется предоперационная подготовка в условиях отделения анестезиологии и реанимации.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с огнестрельными ранениями живота_09.08.2021_№94.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При признаках перитонита и декомпенсации основных систем жизнедеятельности пациента выполняется предоперационная подготовка в условиях отделения анестезиологии и реанимации."
           }
         }
       ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_огнестрельными_ранениями_живота_",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с огнестрельными ранениями живота_09.08.2021_№94.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика и лечение пациентов с огнестрельными ранениями живота"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:36.689248+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T16:17:38.420729+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:36.693603+00:00"
+    "validated_at": "2026-07-20T16:17:38.425160+00:00"
   }
 }

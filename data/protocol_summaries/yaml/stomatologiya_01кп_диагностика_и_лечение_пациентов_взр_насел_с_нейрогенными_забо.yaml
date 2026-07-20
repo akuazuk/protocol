@@ -1,10 +1,10 @@
 protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: 01КП Диагностика и лечение пациентов взр насел с нейрогенными заболеваниями
-    челюстно лицевой области
+  title: Диагностика и лечение пациентов взрослого населения с нейрогенными заболеваниями
+    челюстно-лицевой области
   url: null
   local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
   document_sha256: null
@@ -27,24 +27,19 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: 01кп_диагностика_и_лечение_пациентов_взр_насел_с
-  name: 01КП Диагностика и лечение пациентов взр насел с нейрогенными заболеваниями
-    челюстно лицевой области
+- condition_id: trigeminal_neuralgia
+  name: Невралгия тройничного нерва
   synonyms: []
   abbreviations: []
   icd10_codes:
   - G50
   - G50.0
-  - G50.1
-  - G51
-  - B24
-  - K07.9
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: пароксизмального типа), клиники и ответа на терапию – эффект от определенных
+    - text: боль
       logic_group: null
       operator: unknown
       values: []
@@ -61,8 +56,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: пароксизмального типа), клиники и ответа на терапию – эффект от определенных
-    - text: '[diagnostics] 8. Признаки и критерии, определяющие НГЗ ЧЛО: (стр. 3)'
+        quote: боль
+    - text: расстройства чувствительности (отсутствие чувствительности, пониженная
+        или повышенная чувствительность) в области иннервации нерва
       logic_group: null
       operator: unknown
       values: []
@@ -79,10 +75,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 8. Признаки и критерии, определяющие НГЗ ЧЛО: (стр.
-          3)'
-    - text: '[diagnostics] 12. Для постановки диагноза в амбулаторных условиях проводятся:
-        (стр. 5)'
+        quote: расстройства чувствительности (отсутствие чувствительности, пониженная
+          или повышенная чувствительность) в области иннервации нерва
+    - text: параличи и парезы мускулатуры в области иннервации нерва (нервов)
       logic_group: null
       operator: unknown
       values: []
@@ -99,10 +94,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 12. Для постановки диагноза в амбулаторных условиях
-          проводятся: (стр. 5)'
-    - text: оболочки полости рта, тканей периодонта, оценка (определение) степени
-        открывания рта
+        quote: параличи и парезы мускулатуры в области иннервации нерва (нервов)
+    - text: полная или частичная утрата функции нерва (нервов)
       logic_group: null
       operator: unknown
       values: []
@@ -119,16 +112,146 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: оболочки полости рта, тканей периодонта, оценка (определение) степени
-          открывания рта
+        quote: полная или частичная утрата функции нерва (нервов)
     optional: []
     exclusion: []
-  required_exams: []
+  required_exams:
+  - name: Сбор анамнеза
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: сбор анамнеза, выявление причин развития заболевания (одонтогенная или
+        неодонтогенная)
+  - name: Внешний осмотр челюстно-лицевой области
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: внешний осмотр челюстно-лицевой области (конфигурация лица, осмотр кожных
+        покровов)
+  - name: Осмотр и пальпация ЛУ, мышц, желез, ВНЧС, оценка зубов, пломб и протезов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: осмотр, пальпация лимфатических узлов, жевательных и мимических мышц,
+        слюнных желез и височно-нижнечелюстного сустава, оценка зубов, зубных рядов,
+        пломб и протезов с выявлением очагов хронической одонтогенной инфекции...
+  - name: Прицельная внутриротовая контактная рентгенография
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: прицельная внутриротовая контактная рентгенография
+  - name: Ортопантомография челюстей или КЛКТ челюстно-лицевой области
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ортопантомография челюстей или конусно-лучевая компьютерная томография
+        (далее – КЛКТ) челюстно-лицевой области
+  - name: Консультации врачей-специалистов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультации врачей-специалистов
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] 1. Настоящий клинический протокол определяет общие требования
-        к объему (стр. 2)'
+    - text: 'Физиотерапевтическое лечение (1–2 метода по медицинским показаниям):
+        ультрафиолетовое облучение – 3–5 процедур через 1–3 дня'
       source_ref:
         protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
         document_url: null
@@ -139,9 +262,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 1. Настоящий клинический протокол определяет общие требования
-          к объему (стр. 2)'
-    - text: оказания стоматологической хирургической медицинской помощи в амбулаторных
+        quote: 'Физиотерапевтическое лечение (1–2 метода по медицинским показаниям):
+          ультрафиолетовое облучение – 3–5 процедур через 1–3 дня'
+    - text: Токи ультравысокой частоты (УВЧ-терапия) – 5–7 процедур, ежедневно
       source_ref:
         protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
         document_url: null
@@ -152,9 +275,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: оказания стоматологической хирургической медицинской помощи в амбулаторных
-    - text: Национальный правовой Интернет-портал Республики Беларусь, 15.07.2023,
-        8/40135
+        quote: Токи ультравысокой частоты (УВЧ-терапия) – 5–7 процедур, ежедневно
+    - text: Импульсная низкочастотная электротерапия – 10 процедур, ежедневно
       source_ref:
         protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
         document_url: null
@@ -165,9 +287,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Национальный правовой Интернет-портал Республики Беларусь, 15.07.2023,
-          8/40135
-    - text: условиях пациентам (взрослое население) с нейрогенными заболеваниями челюстно-
+        quote: Импульсная низкочастотная электротерапия – 10 процедур, ежедневно
+    - text: Ультразвуковая терапия – 10 процедур, ежедневно
       source_ref:
         protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
         document_url: null
@@ -178,9 +299,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: условиях пациентам (взрослое население) с нейрогенными заболеваниями
-          челюстно-
-    - text: лицевой области (далее – НГЗ ЧЛО) (шифр по Международной статистической
+        quote: Ультразвуковая терапия – 10 процедур, ежедневно
+    - text: Лазеротерапия – 10–12 процедур, ежедневно или через день
       source_ref:
         protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
         document_url: null
@@ -191,9 +311,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: лицевой области (далее – НГЗ ЧЛО) (шифр по Международной статистической
-    - text: классификации болезней и проблем, связанных со здоровьем, десятого пересмотра
-        –
+        quote: Лазеротерапия – 10–12 процедур, ежедневно или через день
+    - text: Электрофорез ЛС – 10 процедур ежедневно
       source_ref:
         protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
         document_url: null
@@ -204,132 +323,1062 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: классификации болезней и проблем, связанных со здоровьем, десятого
-          пересмотра –
+        quote: Электрофорез ЛС – 10 процедур ежедневно
+    - text: Дарсонвализация – 3–10 процедур, ежедневно
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Дарсонвализация – 3–10 процедур, ежедневно
+    - text: Инфракрасное облучение – 10 процедур, ежедневно
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Инфракрасное облучение – 10 процедур, ежедневно
+    - text: Парафинотерапия – 10–15 процедур, ежедневно
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Парафинотерапия – 10–15 процедур, ежедневно
+    - text: Рефлексотерапевтическое лечение (электрорефлексотерапия – 10–12 процедур,
+        ежедневно или через день). Не используется параллельно с физиотерапией, при
+        последовательном применении интервал не менее 2 недель.
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Рефлексотерапевтическое лечение (электрорефлексотерапия – 10–12 процедур,
+          ежедневно или через день). Не используется параллельно с физиотерапией,
+          при последовательном применении интервал не менее 2 не
     drug_groups: []
-    drugs:
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: декабря
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: декабря 2011 г
-    - drug_name: февраля
-      active_substance: null
-      drug_group: null
-      dose_text: 2008 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: февраля 2008 г
+    drugs: []
     procedures: []
     surgery: []
     source_refs: []
   follow_up: []
   hospitalization: []
-  routing: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: 01КП Диагностика и лечение пациентов взр насел с нейрогенными заболеваниями
-      челюстно лицевой области
+  source_refs: []
+- condition_id: atypical_facial_pain
+  name: Атипичная лицевая боль
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - G50
+  - G50.1
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: боль
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: боль
+    - text: расстройства чувствительности
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: расстройства чувствительности
+    - text: параличи и парезы мускулатуры
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: параличи и парезы мускулатуры
+    - text: полная или частичная утрата функции нерва
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: полная или частичная утрата функции нерва
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Сбор анамнеза, выявление причин развития заболевания
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: сбор анамнеза, выявление причин развития заболевания (одонтогенная или
+        неодонтогенная)
+  - name: Внешний осмотр челюстно-лицевой области
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: внешний осмотр челюстно-лицевой области (конфигурация лица, осмотр кожных
+        покровов)
+  - name: Осмотр и пальпация лимфатических узлов, жевательных и мимических мышц, слюнных
+      желез и височно-нижнечелюстного сустава
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: осмотр, пальпация лимфатических узлов, жевательных и мимических мышц,
+        слюнных желез и височно-нижнечелюстного сустава
+  - name: Оценка зубов, зубных рядов, пломб и протезов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: оценка зубов, зубных рядов, пломб и протезов с выявлением очагов хронической
+        одонтогенной инфекции
+  - name: Оценка слизистой оболочки полости рта, тканей периодонта
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: оценка слизистой оболочки полости рта, тканей периодонта
+  - name: Оценка степени открывания рта и болезненности
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: оценка (определение) степени открывания рта и болезненности
+  - name: Прицельная внутриротовая контактная рентгенография
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'лучевые методы исследования: прицельная внутриротовая контактная рентгенография'
+  - name: Ортопантомография челюстей или конусно-лучевая компьютерная томография челюстно-лицевой
+      области
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ортопантомография челюстей или конусно-лучевая компьютерная томография
+        (далее – КЛКТ) челюстно-лицевой области.
+  - name: Консультации врачей-специалистов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Для постановки диагноза в амбулаторных условиях проводятся: консультации
+        врачей-специалистов.'
+  conditional_exams: []
+  treatment:
+    non_drug:
+    - text: Ультрафиолетовое облучение
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ультрафиолетовое облучение
+    - text: Токи ультравысокой частоты (УВЧ-терапия)
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Токи ультравысокой частоты (УВЧ-терапия)
+    - text: Импульсная низкочастотная электротерапия
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Импульсная низкочастотная электротерапия
+    - text: Ультразвуковая терапия
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ультразвуковая терапия
+    - text: Лазеротерапия
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Лазеротерапия
+    - text: Электрофорез ЛС
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Электрофорез ЛС
+    - text: Дарсонвализация
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Дарсонвализация
+    - text: Инфракрасное облучение
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Инфракрасное облучение
+    - text: Парафинотерапия
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Парафинотерапия
+    - text: Электрорефлексотерапия
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Электрорефлексотерапия
+    drug_groups: []
+    drugs: []
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: facial_nerve_neuritis
+  name: Неврит лицевого нерва
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - G51
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: боль
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: боль
+    - text: расстройства чувствительности (отсутствие чувствительности, пониженная
+        или повышенная чувствительность) в области иннервации нерва
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: расстройства чувствительности (отсутствие чувствительности, пониженная
+          или повышенная чувствительность) в области иннервации нерва
+    - text: параличи и парезы мускулатуры в области иннервации нерва (нервов)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: параличи и парезы мускулатуры в области иннервации нерва (нервов)
+    - text: полная или частичная утрата функции нерва (нервов)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: полная или частичная утрата функции нерва (нервов)
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: 'Клиническое обследование пациента: Сбор анамнеза, выявление причин развития
+      заболевания'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: сбор анамнеза, выявление причин развития заболевания (одонтогенная или
+        неодонтогенная)
+  - name: 'Клиническое обследование пациента: Внешний осмотр челюстно-лицевой области'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: внешний осмотр челюстно-лицевой области (конфигурация лица, осмотр кожных
+        покровов)
+  - name: 'Клиническое обследование пациента: Осмотр и пальпация лимфатических узлов,
+      жевательных и мимических мышц, слюнных желез и височно-нижнечелюстного сустава'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: осмотр, пальпация лимфатических узлов, жевательных и мимических мышц,
+        слюнных желез и височно-нижнечелюстного сустава
+  - name: 'Клиническое обследование пациента: Оценка зубов, зубных рядов, пломб и
+      протезов с выявлением очагов хронической одонтогенной инфекции'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: оценка зубов, зубных рядов, пломб и протезов с выявлением очагов хронической
+        одонтогенной инфекции
+  - name: 'Клиническое обследование пациента: Оценка слизистой оболочки полости рта,
+      тканей периодонта'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: оценка слизистой оболочки полости рта, тканей периодонта
+  - name: 'Клиническое обследование пациента: Оценка (определение) степени открывания
+      рта и болезненности'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: оценка (определение) степени открывания рта и болезненности
+  - name: 'Инструментальные исследования: Прицельная внутриротовая контактная рентгенография'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: прицельная внутриротовая контактная рентгенография
+  - name: 'Инструментальные исследования: Ортопантомография челюстей или конусно-лучевая
+      компьютерная томография (КЛКТ) челюстно-лицевой области'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ортопантомография челюстей или конусно-лучевая компьютерная томография
+        (далее – КЛКТ) челюстно-лицевой области.
+  conditional_exams: []
+  treatment:
+    non_drug:
+    - text: 'Физиотерапевтическое лечение (следует использовать 1–2 метода по медицинским
+        показаниям):'
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Физиотерапевтическое лечение (следует использовать 1–2 метода по медицинским
+          показаниям):'
+    - text: Ультрафиолетовое облучение – 3–5 процедур через 1–3 дня.
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ультрафиолетовое облучение – 3–5 процедур через 1–3 дня.
+    - text: Токи ультравысокой частоты (УВЧ-терапия) – 5–7 процедур, ежедневно.
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Токи ультравысокой частоты (УВЧ-терапия) – 5–7 процедур, ежедневно.
+    - text: Импульсная низкочастотная электротерапия – 10 процедур, ежедневно.
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Импульсная низкочастотная электротерапия – 10 процедур, ежедневно.
+    - text: Ультразвуковая терапия – 10 процедур, ежедневно.
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ультразвуковая терапия – 10 процедур, ежедневно.
+    - text: Лазеротерапия – 10–12 процедур, ежедневно или через день.
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Лазеротерапия – 10–12 процедур, ежедневно или через день.
+    - text: Электрофорез ЛС – 10 процедур ежедневно.
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Электрофорез ЛС – 10 процедур ежедневно.
+    - text: Дарсонвализация – 3–10 процедур, ежедневно.
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Дарсонвализация – 3–10 процедур, ежедневно.
+    - text: Инфракрасное облучение – 10 процедур, ежедневно.
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Инфракрасное облучение – 10 процедур, ежедневно.
+    - text: Парафинотерапия – 10–15 процедур, ежедневно.
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Парафинотерапия – 10–15 процедур, ежедневно.
+    - text: 'Рефлексотерапевтическое лечение (не должно использоваться параллельно
+        с физиотерапевтическим лечением; при последовательном применении интервал
+        не менее 2 недель):'
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Рефлексотерапевтическое лечение (не должно использоваться параллельно
+          с физиотерапевтическим лечением; при последовательном применении интервал
+          не менее 2 недель):'
+    - text: Электрорефлексотерапия – 10–12 процедур, ежедневно или через день.
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Электрорефлексотерапия – 10–12 процедур, ежедневно или через день.
+    drug_groups: []
+    drugs: []
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: госпитализация/амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация/амбулаторно
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_забо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_насел_с_нейрогенными_заболеваниями_челюстно-лицевой_области_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:47.593364+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T17:44:48.909011+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=3
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:47.594647+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[atypical_facial_pain].required_exams[1]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[atypical_facial_pain].required_exams[6]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[atypical_facial_pain].required_exams[8]
+  validated_at: '2026-07-20T17:44:48.921522+00:00'

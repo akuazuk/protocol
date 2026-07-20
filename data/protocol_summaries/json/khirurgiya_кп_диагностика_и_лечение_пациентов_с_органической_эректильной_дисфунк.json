@@ -1,7 +1,7 @@
 {
   "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "Диагностика и лечение пациентов с органической эректильной дисфункцией",
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "adult"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,18 +32,23 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_и_лечение_пациентов_с_органической_э",
-      "name": "Диагностика и лечение пациентов с органической эректильной дисфункцией",
+      "condition_id": "organic_erectile_dysfunction",
+      "name": "Органическая эректильная дисфункция",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
+        "N48.4",
         "N48.6",
         "I87.8",
         "I70.8",
+        "E10",
+        "E11.4",
+        "E11.5",
         "S32",
         "S33",
         "S34",
-        "S35.5"
+        "S35.5",
+        "N40"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -51,7 +56,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[criteria] 7. Наличие одного из перечисленных критериев является основанием для (стр. 2)",
+            "text": "Отсутствующая или слабовыраженная тумесценция в ответ на физиологическую или фармакологическую стимуляцию",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -68,11 +73,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 7. Наличие одного из перечисленных критериев является основанием для (стр. 2)"
+              "quote": "Отсутствующая или слабовыраженная тумесценция в ответ на физиологическую или фармакологическую стимуляцию"
             }
           },
           {
-            "text": "установления диагноза органической ЭД:",
+            "text": "Нормально возникающая, но кратковременная тумесценция с быстроисчезающей эрекцией",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -89,11 +94,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "установления диагноза органической ЭД:"
+              "quote": "Нормально возникающая, но кратковременная тумесценция с быстроисчезающей эрекцией"
             }
           },
           {
-            "text": "[criteria] 7. Наличие одного из перечисленных критериев является основанием для (стр. 2)",
+            "text": "Эректильная деформация с девиацией (вентральной, тыльной, латеральной) по стволу полового члена",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -110,11 +115,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 7. Наличие одного из перечисленных критериев является основанием для (стр. 2)"
+              "quote": "Эректильная деформация с девиацией (вентральной, тыльной, латеральной) по стволу полового члена"
             }
           },
           {
-            "text": "установления диагноза органической ЭД:",
+            "text": "Жалобы у пациента с суммой баллов по шкале МИЭФ-5 менее 20",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -131,11 +136,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "установления диагноза органической ЭД:"
+              "quote": "Жалобы у пациента с суммой баллов по шкале МИЭФ-5 менее 20"
             }
           },
           {
-            "text": "[diagnostics] 5. Клинические критерии ЭД: (стр. 2)",
+            "text": "Признаки нарушения артериальной перфузии в бассейне внутренней половой артерии и артериальных сосудах полового члена по данным УЗИ",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -152,11 +157,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 5. Клинические критерии ЭД: (стр. 2)"
+              "quote": "Признаки нарушения артериальной перфузии в бассейне внутренней половой артерии и артериальных сосудах полового члена по данным УЗИ"
             }
           },
           {
-            "text": "тестостерона в крови. Определение белка в суточной моче.",
+            "text": "Признаки стеноза и (или) окклюзии артерий бассейна внутренней половой артерии по данным компьютерной ангиографии или магниторезонансной томографической ангиографии",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -173,11 +178,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "тестостерона в крови. Определение белка в суточной моче."
+              "quote": "Признаки стеноза и (или) окклюзии артерий бассейна внутренней половой артерии по данным компьютерной ангиографии или магниторезонансной томографической ангиографии"
             }
           },
           {
-            "text": "[diagnostics] 5. Клинические критерии ЭД: (стр. 2)",
+            "text": "Признаки венозной утечки при нормальной артериальной перфузии в бассейне внутренней половой артерии и артериальных сосудах полового члена по данным УЗИ сосудов полового члена и кавернозографии",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -194,60 +199,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[diagnostics] 5. Клинические критерии ЭД: (стр. 2)"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "required_exams": [
-        {
-          "name": "УЗИ",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "ультразвукового \nисследования (далее – УЗИ); \nпризнаки стеноза и (или) окклюзии артерий бассейна внутренней половой артери"
-          }
-        }
-      ],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "[treatment] 8. Степень тяжести ЭД определяют в соответствии с выраженностью эрекции (стр. 3)",
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 8. Степень тяжести ЭД определяют в соответствии с выраженностью эрекции (стр. 3)"
+              "quote": "Признаки венозной утечки при нормальной артериальной перфузии в бассейне внутренней половой артерии и артериальных сосудах полового члена по данным УЗИ сосудов полового члена и кавернозографии"
             }
           },
           {
-            "text": "(далее – Е) по шкале Юнема после фармакологической пробы с интракавернозным",
+            "text": "Признаки автономной урогенитальной диабетической или посттравматической нейропатии эректильных нервов (n.erigentes), периферической нейропатии по данным электронейромиографии",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
               "document_url": null,
@@ -258,11 +220,122 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "(далее – Е) по шкале Юнема после фармакологической пробы с интракавернозным"
+              "quote": "Признаки автономной урогенитальной диабетической или посттравматической нейропатии эректильных нервов (n.erigentes), периферической нейропатии по данным электронейромиографии"
+            }
+          },
+          {
+            "text": "Признаки эректильной деформации полового члена в состоянии тумесценции с ультразвуковой верификацией фибропластической трансформации (бляшки) белочной оболочки кавернозных тел",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Признаки эректильной деформации полового члена в состоянии тумесценции с ультразвуковой верификацией фибропластической трансформации (бляшки) белочной оболочки кавернозных тел"
+            }
+          },
+          {
+            "text": "Дисгормональные нарушения у мужчин (андрогенный дефицит с уровнем общего тестостерона крови менее 8 нг/мл; гиперпролактинемия с уровнем пролактина более 15 нг/мл)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Дисгормональные нарушения у мужчин (андрогенный дефицит с уровнем общего тестостерона крови менее 8 нг/мл; гиперпролактинемия с уровнем пролактина более 15 нг/мл)"
+            }
+          },
+          {
+            "text": "Тяжелая степень ЭД (Е0, Е1, Е2 по шкале Юнема)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Тяжелая степень ЭД (Е0, Е1, Е2 по шкале Юнема)"
+            }
+          },
+          {
+            "text": "Умеренная степень ЭД (Е3 по шкале Юнема)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Умеренная степень ЭД (Е3 по шкале Юнема)"
+            }
+          },
+          {
+            "text": "Легкая степень ЭД (Е4 по шкале Юнема)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Легкая степень ЭД (Е4 по шкале Юнема)"
             }
           },
           {
             "text": "Е0 – полное отсутствие эрекции на введение лекарственного средства",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
               "document_url": null,
@@ -277,7 +350,13 @@
             }
           },
           {
-            "text": "Е1 – незначительная тумесценция полового члена на введение лекарственного",
+            "text": "Е1 – незначительная тумесценция полового члена на введение лекарственного средства",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
               "document_url": null,
@@ -288,11 +367,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Е1 – незначительная тумесценция полового члена на введение лекарственного"
+              "quote": "Е1 – незначительная тумесценция полового члена на введение лекарственного средства"
             }
           },
           {
             "text": "Е2 – неполная тумесценция полового члена на введение лекарственного средства",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
               "document_url": null,
@@ -305,9 +390,494 @@
               "row_index": null,
               "quote": "Е2 – неполная тумесценция полового члена на введение лекарственного средства"
             }
-          },
+          }
+        ],
+        "optional": [],
+        "exclusion": []
+      },
+      "required_exams": [
+        {
+          "name": "Общий анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Общий анализ крови."
+          }
+        },
+        {
+          "name": "Общий анализ мочи",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Общий анализ мочи."
+          }
+        },
+        {
+          "name": "Биохимическое исследование крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Биохимическое исследование крови (исследование уровня глюкозы, холестерина, триглицеридов, билирубина, мочевины, креатинина, щелочной фосфотазы, электролитов (калия, кальция)."
+          }
+        },
+        {
+          "name": "Исследование уровня гормонов крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Исследование уровня общего тестостерона в крови, пролактина, эстрадиола, фолликулостимулирующего гормона, лютеинизирующего гормона, тиреотропина, свободного тироксина (св. Т ). 4"
+          }
+        },
+        {
+          "name": "Регистрация электрокардиограммы",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Регистрация электрокардиограммы."
+          }
+        },
+        {
+          "name": "Дуплексное сканирование сосудов мошонки и полового члена с фармакологической пробой",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дуплексное сканирование сосудов мошонки и полового члена в состоянии де- и тумесценции с фармакологической пробой вазоактивных лекарственных средств интракавернозно (простагландины группы Е1 – алпростадил1 10 мкг, папаверин 2 % раствор)"
+          }
+        },
+        {
+          "name": "Фармакологическая проба с интракавернозным введением вазоактивного лекарственного средства (алпростадил 10 мкг) по шкале Юнема",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Степень тяжести ЭД определяют в соответствии с выраженностью эрекции (далее – Е) по шкале Юнема после фармакологической пробы с интракавернозным введением вазоактивного лекарственного средства (простагландин группы Е1 – алпростадил1 10 мкг)"
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Ультразвуковое исследование органов брюшной полости и почек",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Ультразвуковое исследование (далее – УЗИ) органов брюшной полости и почек."
+          }
+        },
+        {
+          "name": "Исследование уровня простатспецифического антигена в крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Исследование уровня простатспецифического антигена в крови (общая и свободная фракции)."
+          }
+        },
+        {
+          "name": "Исследование уровня гликированного гемоглобина в крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Исследование уровня гликированного гемоглобина в крови (при направлении пациентов с сахарным диабетом для планового хирургического лечения)."
+          }
+        },
+        {
+          "name": "Исследование уровня свободного тестостерона в крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Исследование уровня свободного тестостерона в крови."
+          }
+        },
+        {
+          "name": "Определение белка в суточной моче",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Определение белка в суточной моче."
+          }
+        },
+        {
+          "name": "УЗИ предстательной железы с мочевым пузырем",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "УЗИ предстательной железы с мочевым пузырем и определением остаточной мочи трансабдоминально, трансректально."
+          }
+        },
+        {
+          "name": "Компьютерно-томографическая ангиография артерий малого таза",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Компьютерно-томографическая ангиография артерий малого таза в состоянии тумесценции полового члена."
+          }
+        },
+        {
+          "name": "Магнитно-резонансная ангиография артерий малого таза",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Магнитно-резонансная ангиография артерий малого таза с контрастированием."
+          }
+        },
+        {
+          "name": "Фармакокавернозография",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Фармакокавернозография с интракавернозным введением алпростадила1 10 мкг."
+          }
+        },
+        {
+          "name": "Ангиография артерий малого таза",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Ангиография артерий малого таза."
+          }
+        },
+        {
+          "name": "Электронейромиография полового нерва",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Электронейромиография стимуляционная, игольчатая полового нерва."
+          }
+        },
+        {
+          "name": "Консультация врача-эндокринолога",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Консультация врача-эндокринолога (при нарушении углеводного обмена, изменении гормонального статуса)."
+          }
+        }
+      ],
+      "treatment": {
+        "non_drug": [
           {
-            "text": "Е3 – полная тумесценция полового члена на введение лекарственного средства",
+            "text": "Рекомендации по образу жизни (питание, отказ от табакокурения, злоупотребления алкоголем, нормализация массы тела, физическая активность, нормализация условий труда)",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
               "document_url": null,
@@ -318,17 +888,92 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Е3 – полная тумесценция полового члена на введение лекарственного средства"
+              "quote": "Рекомендации по образу жизни (питание, отказ от табакокурения, злоупотребления алкоголем, нормализация массы тела, физическая активность, нормализация условий труда)"
+            }
+          },
+          {
+            "text": "Использование вспомогательных приспособлений (вакуумные устройства локального отрицательного давления, сдавливающие кольца)",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Использование вспомогательных приспособлений (вакуумные устройства локального отрицательного давления, сдавливающие кольца)"
+            }
+          },
+          {
+            "text": "Хирургическое лечение (III линия): операции реваскуляризации полового члена (открытые по методике Virag, Michal, Goldstein, Hauri, Furlow и др.; эндоваскулярные – рентгенэндоваскулярная селективная баллонная дилатация, ангиопластика, стентирование a.pudenda interna)",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Хирургическое лечение (III линия): операции реваскуляризации полового члена (открытые по методике Virag, Michal, Goldstein, Hauri, Furlow и др.; эндоваскулярные – рентгенэндоваскулярная селективная ба"
+            }
+          },
+          {
+            "text": "Хирургическая коррекция «венозной утечки» (открытые хирургические вмешательства: резекция глубокой тыльной вены, перевязка эмиссарных вен, спонгиолиз, лигирование пубопростатической связки; эндоваскулярные: рентгенэндоваскулярная окклюзия вен простатического сплетения через глубокую тыльную вену)",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Хирургическая коррекция «венозной утечки» (открытые хирургические вмешательства: резекция глубокой тыльной вены, перевязка эмиссарных вен, спонгиолиз, лигирование пубопростатической связки; эндоваскул"
+            }
+          },
+          {
+            "text": "Хирургическая коррекция ЭД в сочетании с эректильной деформацией полового члена (укорачивающие по методу Nesbit, Yachia и др.; удлиняющие: иссечение белочной оболочки с фибропластической бляшкой и замещение дефекта графтами)",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Хирургическая коррекция ЭД в сочетании с эректильной деформацией полового члена (укорачивающие по методу Nesbit, Yachia и др.; удлиняющие: иссечение белочной оболочки с фибропластической бляшкой и зам"
+            }
+          },
+          {
+            "text": "Эндофаллопротезирование (полужесткие, сгибаемые, гидравлические протезы; доступы: дорсальный субкоронарный, перинеальный, пеноскротальный, инфрапубикальный)",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Эндофаллопротезирование (полужесткие, сгибаемые, гидравлические протезы; доступы: дорсальный субкоронарный, перинеальный, пеноскротальный, инфрапубикальный)"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "доза",
+            "drug_name": "Алпростадил",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "50 мг",
+            "dose_text": "10 мкг",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -340,20 +985,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "доза 50 мг в сутки \nвнутрь с увеличением дозы до 10"
+              "quote": "алпростадил1 10 мкг"
             }
           },
           {
-            "drug_name": "таблетки",
+            "drug_name": "Папаверин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "20 мг",
+            "dose_text": "2 % раствор",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -365,20 +1010,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "таблетки 20 мг) – начальная рекомендуемая доза 10 мг в"
+              "quote": "папаверин 2 % раствор"
             }
           },
           {
-            "drug_name": "цефазолин",
+            "drug_name": "Силденафил",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2,0 г",
+            "dose_text": "Таблетки 50, 100 мг. Начальная рекомендуемая доза 50 мг в сутки внутрь с увеличением дозы до 100 мг в сутки (I линия)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -390,20 +1035,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
-              "page_start": null,
+              "page_start": 3,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "цефазолин 2,0 г (при массе тела пациента более 120 кг – "
+              "quote": "силденафил (таблетки 50, 100 мг) – начальная рекомендуемая доза 50 мг в сутки внутрь с увеличением дозы до 100 мг в сутки"
             }
           },
           {
-            "drug_name": "дозе",
+            "drug_name": "Тадалафил",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "5 мг",
+            "dose_text": "Таблетки 20 мг. Начальная рекомендуемая доза 10 мг в сутки внутрь (I линия)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -415,20 +1060,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
-              "page_start": null,
+              "page_start": 3,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "дозе 5 мг/кг/сут"
+              "quote": "тадалафил (таблетки 20 мг) – начальная рекомендуемая доза 10 мг в сутки внутрь"
             }
           },
           {
-            "drug_name": "цефуроксим",
+            "drug_name": "Варденафил",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1,5 г",
+            "dose_text": "5, 10, 20 мг. Начальная рекомендуемая доза 10 мг (I линия)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -440,20 +1085,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
-              "page_start": null,
+              "page_start": 3,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "цефуроксим 1,5 г в сочетании с гентамицином в дозе \n5 мг/"
+              "quote": "варденафил 5, 10, 20 мг, начальная рекомендуемая доза 10 мг"
             }
           },
           {
-            "drug_name": "сульбактам",
+            "drug_name": "Алпростадил",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "3,0 г",
+            "dose_text": "5–20 мкг 1 раз в сутки (интракавернозно или внутриуретрально) (II линия)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -465,20 +1110,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
-              "page_start": null,
+              "page_start": 3,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "сульбактам 3,0 г"
+              "quote": "II линия – интракавернозное (внутриуретральным) ведение простагландинов группы Е1 (алпростадил1 5–20 мкг 1 раз в сутки)."
             }
           },
           {
-            "drug_name": "ванкомицин",
+            "drug_name": "Цефазолин + Гентамицин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "15 мг",
+            "dose_text": "Цефазолин 2,0 г (при массе тела >120 кг – 3,0 г) в сочетании с гентамицином в дозе 5 мг/кг/сут, однократно внутривенно за 30–60 минут до операции (периоперационная профилактика при эндофаллопротезиров",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -490,20 +1135,20 @@
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
-              "page_start": null,
+              "page_start": 1,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ванкомицин 15 мг/кг (не более 2,0 г за одно введение) в "
+              "quote": "цефазолин 2,0 г (при массе тела пациента более 120 кг – 3,0 г) в сочетании с гентамицином в дозе 5 мг/кг/сут"
             }
           },
           {
-            "drug_name": "июня",
+            "drug_name": "Цефуроксим + Гентамицин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1993 г",
+            "dose_text": "Цефуроксим 1,5 г в сочетании с гентамицином в дозе 5 мг/кг/сут, однократно внутривенно за 30–60 минут до операции (периоперационная профилактика при эндофаллопротезировании)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -515,13 +1160,138 @@
               "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
               "document_url": null,
               "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
-              "page_start": null,
+              "page_start": 1,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июня \n1993 года «О здравоохранении» (Ведамасці Вярхо"
+              "quote": "цефуроксим 1,5 г в сочетании с гентамицином в дозе 5 мг/кг/сут"
+            }
+          },
+          {
+            "drug_name": "Ампициллин/Сульбактам",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "3,0 г, однократно внутривенно за 30–60 минут до операции (периоперационная профилактика при эндофаллопротезировании)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+              "page_start": 1,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ампициллин/сульбактам 3,0 г"
+            }
+          },
+          {
+            "drug_name": "Ванкомицин + Гентамицин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Ванкомицин 15 мг/кг (не более 2,0 г за одно введение) в сочетании с гентамицином в дозе 5 мг/кг/сут, однократно внутривенно за 30–60 минут до операции (при аллергии на β-лактамные антибиотики)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+              "page_start": 1,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При аллергии на бета-лактамные антибиотики по I типу назначают ванкомицин 15 мг/кг (не более 2,0 г за одно введение) в сочетании с гентамицином в дозе 5 мг/кг/сут."
+            }
+          },
+          {
+            "drug_name": "Папаверина гидрохлорид",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "В/м (с целью профилактики спазма донорской артерии в послеоперационном периоде после реваскуляризирующих операций)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "с целью профилактики спазма донорской артерии назначают миотропные спазмолитики в/м (папаверина гидрохлорид)"
+            }
+          },
+          {
+            "drug_name": "Цилостазол",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "100 мг внутрь 2 раза в сутки (с целью профилактики тромбоза и спазма в сосудистых анастомозах после реваскуляризирующих операций)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "с целью профилактики тромбоза и спазма в сосудистых анастомозах назначают ингибиторы фосфодиэстеразы III типа (цилостазол2 100 мг внутрь 2 раза в сутки)"
+            }
+          },
+          {
+            "drug_name": "Низкомолекулярные гепарины (бемипарин натрия, надропарин кальция, далтепарин натрия, эноксапарин натрия)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "В стандартных дозах (с целью профилактики тромбоэмболических осложнений после реваскуляризирующих операций)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "с целью профилактики тромбоэмболических осложнений назначают антикоагулянты (низкомолекулярные гепарины: бемипарин натрия, надропарин кальция, далтепарин натрия, эноксапарин натрия)."
             }
           }
         ],
@@ -529,17 +1299,12 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [
+      "follow_up": [
         {
-          "text": "целью профилактики \nтромбоза и спазма в сосудистых анастомозах назначают ингибиторы фосфодиэстеразы \nIII типа (цилостазол2 100 мг внутрь 2 раза в с",
-          "aliases": [],
-          "red_flag_type": "thrombosis",
-          "severity": "high",
+          "text": "В послеоперационном периоде продолжают введение антибактериальных лекарственных средств, которые использовались для периоперационной антибиотикопрофилактики, не более 24 ч.",
+          "timing": null,
+          "required_if": [],
           "expected_actions": [],
-          "cap_if_unhandled": null,
           "source_ref": {
             "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
             "document_url": null,
@@ -550,16 +1315,14 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "целью профилактики \nтромбоза и спазма в сосудистых анастомозах назначают ингибиторы фосфодиэстеразы \nIII типа (цилостазол2 100 мг внутрь 2 раза в с"
+            "quote": "В послеоперационном периоде продолжают введение антибактериальных лекарственных средств, которые использовались для периоперационной антибиотикопрофилактики, не более 24 ч."
           }
         },
         {
-          "text": "профилактики \nтромбоэмболических \nосложнений \nназначают \nантикоагулянты \n(низкомолекулярные \nгепарины: бемипарин натрия, надропарин кальция, далте",
-          "aliases": [],
-          "red_flag_type": "thrombosis",
-          "severity": "high",
+          "text": "После эндофаллопротезирования в случае отсутствия желаемого эффекта возможно только репротезирование.",
+          "timing": null,
+          "required_if": [],
           "expected_actions": [],
-          "cap_if_unhandled": null,
           "source_ref": {
             "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
             "document_url": null,
@@ -570,45 +1333,78 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "профилактики \nтромбоэмболических \nосложнений \nназначают \nантикоагулянты \n(низкомолекулярные \nгепарины: бемипарин натрия, надропарин кальция, далте"
+            "quote": "После эндофаллопротезирования в случае отсутствия желаемого эффекта возможно только репротезирование."
           }
         }
       ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "Амбулаторно (для медикаментозного лечения I линии, рекомендаций по образу жизни, использования вспомогательных приспособлений)",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Амбулаторно (для медикаментозного лечения I линии, рекомендаций по образу жизни, использования вспомогательных приспособлений)"
+          }
+        },
+        {
+          "text": "Госпитализация (для интракавернозного введения простагландинов II линии, хирургического лечения III линии)",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация (для интракавернозного введения простагландинов II линии, хирургического лечения III линии)"
+          }
+        }
+      ],
+      "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "khirurgiya_кп_диагностика_и_лечение_пациентов_с_органической_эректильной_дисфунк",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/khirurgiya/КП Диагностика и лечение пациентов с органической эректильной дисфункцией 25.05.2018 № 45.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика и лечение пациентов с органической эректильной дисфункцией"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:36.767713+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T16:40:24.149433+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-06-23T19:15:36.774676+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[organic_erectile_dysfunction].treatment.drugs[5]"
+      }
+    ],
+    "validated_at": "2026-07-20T16:40:24.175457+00:00"
   }
 }

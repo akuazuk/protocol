@@ -1,9 +1,10 @@
 protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: 07КП Диагностика и лечение пациентов взр насел с гипертрофией десны эпулисом
+  title: Диагностика и лечение пациентов взрослого населения с гипертрофией десны
+    и эпулисом
   url: null
   local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
   document_sha256: null
@@ -26,25 +27,21 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: 07кп_диагностика_и_лечение_пациентов_взр_насел_с
-  name: 07КП Диагностика и лечение пациентов взр насел с гипертрофией десны эпулисом
+- condition_id: gingival_hypertrophy
+  name: Гипертрофия десны
   synonyms: []
   abbreviations: []
   icd10_codes:
   - K06.1
   - K06.2
   - K06.8
-  - K06.81
-  - K06.82
-  - B24
-  - K07.9
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[diagnostics] 8. Признаки и критерии, определяющие гипертрофию десны,
-        эпулис: (стр. 4)'
+    - text: Деформация мягких тканей альвеолярного отростка на верхней челюсти и альвеолярной
+        части на нижней челюсти
       logic_group: null
       operator: unknown
       values: []
@@ -61,9 +58,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 8. Признаки и критерии, определяющие гипертрофию десны,
-          эпулис: (стр. 4)'
-    - text: '[diagnostics] 11. Для постановки диагноза осуществляются: (стр. 5)'
+        quote: Деформация мягких тканей альвеолярного отростка на верхней челюсти
+          и альвеолярной части на нижней челюсти
+    - text: Нарушение конфигурации альвеолярного отростка на верхней челюсти и альвеолярной
+        части на нижней челюсти
       logic_group: null
       operator: unknown
       values: []
@@ -80,115 +78,223 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 11. Для постановки диагноза осуществляются: (стр. 5)'
-    - text: '[diagnostics] 15. Для постановки диагноза осуществляются: (стр. 5)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[diagnostics] 15. Для постановки диагноза осуществляются: (стр. 5)'
+        quote: Нарушение конфигурации альвеолярного отростка на верхней челюсти и
+          альвеолярной части на нижней челюсти
     optional: []
     exclusion: []
-  required_exams: []
-  conditional_exams: []
+  required_exams:
+  - name: Клиническое обследование пациента
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Для постановки диагноза осуществляются: клиническое обследование пациента;'
+  conditional_exams:
+  - name: Общий анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями в амбулаторных условиях,
+        осуществляемыми по медицинским показаниям, являются: лабораторные исследования:
+        общий анализ крови;'
+  - name: Биохимический анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями в амбулаторных условиях,
+        осуществляемыми по медицинским показаниям, являются: лабораторные исследования:
+        биохимический анализ крови;'
+  - name: Коагулограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями в амбулаторных условиях,
+        осуществляемыми по медицинским показаниям, являются: лабораторные исследования:
+        коагулограмма;'
+  - name: Цитологическое исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями в амбулаторных условиях,
+        осуществляемыми по медицинским показаниям, являются: лабораторные исследования:
+        цитологическое исследование;'
+  - name: Консультация врача-эндокринолога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями в амбулаторных условиях...
+        являются: консультация врача-специалиста (врача-эндокринолога...);'
+  - name: Консультация врача лучевой диагностики
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями в амбулаторных условиях...
+        являются: консультация врача-специалиста (...врача лучевой диагностики...);'
+  - name: Консультация врача клинической лабораторной диагностики
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями в амбулаторных условиях...
+        являются: консультация врача-специалиста (...врача клинической лабораторной
+        диагностики...);'
+  - name: Консультация других врачей-специалистов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями в амбулаторных условиях...
+        являются: консультация врача-специалиста (...других).'
   treatment:
-    non_drug:
-    - text: '[treatment] 1. Настоящий клинический протокол определяет общие требования
-        к объему (стр. 3)'
-      source_ref:
-        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 1. Настоящий клинический протокол определяет общие требования
-          к объему (стр. 3)'
-    - text: оказания стоматологической хирургической медицинской помощи в амбулаторных
-      source_ref:
-        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: оказания стоматологической хирургической медицинской помощи в амбулаторных
-    - text: и стационарных условиях пациентам (взрослое население) с гипертрофией
-        десны,
-      source_ref:
-        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: и стационарных условиях пациентам (взрослое население) с гипертрофией
-          десны,
-    - text: фиброзным, гигантоклеточным эпулисом (шифр по Международной статистической
-      source_ref:
-        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: фиброзным, гигантоклеточным эпулисом (шифр по Международной статистической
-    - text: классификации болезней и проблем, связанных со здоровьем, десятого пересмотра
-        – K06.1
-      source_ref:
-        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: классификации болезней и проблем, связанных со здоровьем, десятого
-          пересмотра – K06.1
-    - text: K06.2 Поражения десны и беззубого альвеолярного края,
-      source_ref:
-        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: K06.2 Поражения десны и беззубого альвеолярного края,
+    non_drug: []
     drug_groups: []
     drugs:
-    - drug_name: капсулы
+    - drug_name: Артикаин/Эпинефрин
       active_substance: null
       drug_group: null
-      dose_text: 250 мг
+      dose_text: Раствор для инъекций (40 мг + 0,005 мг)/мл. Длительность применения
+        устанавливают индивидуально.
       frequency_text: null
       duration_text: null
       route: null
@@ -200,17 +306,20 @@ conditions:
         protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
+        page_start: 10
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: капсулы 250 мг, капсулы 500 мг, таблетки, покрытые обо
-    - drug_name: метронидазол
+        quote: 2.2 Артикаин/Эпинефрин Раствор для инъекций (40 мг + 0,005 мг)/мл Длительность
+          применения устанавливают индивидуально
+    - drug_name: Амоксициллин/клавулановая кислота
       active_substance: null
       drug_group: null
-      dose_text: 500 мг
+      dose_text: Таблетки 875 мг/125 мг или 500 мг/125 мг. Порошок для в/в введения
+        1000 мг/200 мг или 500 мг/100 мг. В/в по 1000 мг/200 мг 3 р/сут. Таблетки
+        500 мг+125 мг 3 р/сут или 875 мг+125 мг 2 р/сут.
       frequency_text: null
       duration_text: null
       route: null
@@ -222,178 +331,882 @@ conditions:
         protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
+        page_start: 10
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "метронидазол 500 мг в/в, или \nцефуроксим 1,5 г в/в + метрони"
-    - drug_name: дазол
-      active_substance: null
-      drug_group: null
-      dose_text: 500 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'дазол 500 мг в/в, или ампициллин/сульбактам 3 г в/в, '
-    - drug_name: клавуланат
-      active_substance: null
-      drug_group: null
-      dose_text: 1,2 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: клавуланат 1,2 г в/в или клиндамицин 900 мг в/в
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: декабря
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: декабря 2011 г
-    - drug_name: февраля
-      active_substance: null
-      drug_group: null
-      dose_text: 2008 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: февраля 2008 г
+        quote: Амоксициллин/клавулановая кислота ... Внутривенно медленно (1 г ЛС
+          растворяется в 20,0 мл воды для инъекций) по 1000 мг/200 мг 3 раза в сутки.
+          По 1 таблетке 500 мг + 125 мг 3 раза/сутки или по 1 таблетке 875 мг + 125
+          мг 2 раза/сутки.
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Медицинское наблюдение врачом-стоматологом-хирургом амбулаторно-поликлинической
+      организации по месту жительства 1 раз в 6 месяцев, включающее медицинский осмотр,
+      выполнение лабораторных и инструментальных исследований по медицинским показаниям.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение врачом-стоматологом-хирургом амбулаторно-поликлинической
+        организации по месту жительства 1 раз в 6 месяцев, включающее медицинский
+        осмотр, выполнение лабораторных и инструментал
   hospitalization: []
-  routing: []
+  routing:
+  - text: Амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторно
+  - text: Стационарно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Стационарно
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: 07КП Диагностика и лечение пациентов взр насел с гипертрофией десны эпулисом
+  source_refs: []
+- condition_id: epulis
+  name: Эпулис
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - K06.81
+  - K06.82
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: деформация мягких тканей альвеолярного отростка на верхней челюсти и альвеолярной
+        части на нижней челюсти
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: деформация мягких тканей альвеолярного отростка на верхней челюсти
+          и альвеолярной части на нижней челюсти
+    - text: нарушение конфигурации альвеолярного отростка на верхней челюсти и альвеолярной
+        части на нижней челюсти
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: нарушение конфигурации альвеолярного отростка на верхней челюсти и
+          альвеолярной части на нижней челюсти
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Клиническое обследование пациента
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Для постановки диагноза осуществляются: клиническое обследование пациента'
+  - name: Обязательные лабораторные и инструментальные исследования
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Для постановки диагноза осуществляются: обязательные и дополнительные
+        лабораторные и инструментальные исследования'
+  - name: Консультации врачей-специалистов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Для постановки диагноза осуществляются: консультации врачей-специалистов'
+  - name: Патогистологическое исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Осуществляют удаление образования в пределах здоровых тканей (эксцизионная
+        биопсия) с последующим патогистологическим исследованием
+  conditional_exams:
+  - name: Общий анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями в амбулаторных условиях...
+        являются: лабораторные исследования: общий анализ крови'
+  - name: Биохимический анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями в амбулаторных условиях...
+        являются: лабораторные исследования: биохимический анализ крови'
+  - name: Коагулограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями в амбулаторных условиях...
+        являются: лабораторные исследования: коагулограмма'
+  - name: Цитологическое исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями в амбулаторных условиях...
+        являются: лабораторные исследования: цитологическое исследование'
+  - name: Консультация врача-эндокринолога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультация врача-специалиста (врача-эндокринолога, врача лучевой диагностики,
+        врача клинической лабораторной диагностики, других).
+  - name: Консультация врача лучевой диагностики
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультация врача-специалиста (врача-эндокринолога, врача лучевой диагностики,
+        врача клинической лабораторной диагностики, других).
+  - name: Консультация врача клинической лабораторной диагностики
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультация врача-специалиста (врача-эндокринолога, врача лучевой диагностики,
+        врача клинической лабораторной диагностики, других).
+  treatment:
+    non_drug:
+    - text: Хирургическое лечение гипертрофии десны (при размерах образования менее
+        2 см - под местным обезболиванием)
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хирургическое лечение гипертрофии десны (при размерах образования менее
+          2 см - под местным обезболиванием)
+    - text: Удаление образования в пределах здоровых тканей (эксцизионная биопсия)
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Удаление образования в пределах здоровых тканей (эксцизионная биопсия)
+    - text: Наложение швов
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наложение швов
+    - text: Перевязка послеоперационной раны
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Перевязка послеоперационной раны
+    - text: Хирургическое лечение фиброзного эпулиса (при размерах образования до
+        2,0 см - под местным обезболиванием)
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хирургическое лечение фиброзного эпулиса (при размерах образования
+          до 2,0 см - под местным обезболиванием)
+    - text: Удаление прилежащего зуба (по медицинским показаниям)
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Удаление прилежащего зуба (по медицинским показаниям)
+    - text: Физиотерапевтическое лечение (ультрафиолетовое облучение – 5–6 процедур,
+        через день; лазеротерапия, магнитолазерная терапия – 5–6 процедур, ежедневно;
+        магнитотерапия – 5–6 процедур, ежедневно)
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Физиотерапевтическое лечение (ультрафиолетовое облучение – 5–6 процедур,
+          через день; лазеротерапия, магнитолазерная терапия – 5–6 процедур, ежедневно;
+          магнитотерапия – 5–6 процедур, ежедневно)
+    - text: Хирургическое лечение гипертрофии десны (при размерах образования более
+        2 см - под местной/потенцированной/общей анестезией в стационаре)
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хирургическое лечение гипертрофии десны (при размерах образования более
+          2 см - под местной/потенцированной/общей анестезией в стационаре)
+    - text: Гемостаз – электродиатермокоагуляция
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Гемостаз – электродиатермокоагуляция
+    - text: Пластическое устранение дефекта местными тканями
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Пластическое устранение дефекта местными тканями
+    - text: Хирургическое лечение фиброзного эпулиса (при размерах образования более
+        2 см - под местной/потенцированной/общей анестезией)
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хирургическое лечение фиброзного эпулиса (при размерах образования
+          более 2 см - под местной/потенцированной/общей анестезией)
+    drug_groups: []
+    drugs:
+    - drug_name: Артикаин/Эпинефрин
+      active_substance: null
+      drug_group: null
+      dose_text: Раствор для инъекций (40 мг + 0,005 мг)/мл. Длительность применения
+        устанавливают индивидуально.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Артикаин/Эпинефрин Раствор для инъекций (40 мг + 0,005 мг)/мл
+    - drug_name: Амоксициллин/клавулановая кислота
+      active_substance: null
+      drug_group: null
+      dose_text: Таблетки, покрытые оболочкой, 875 мг/125 мг; таблетки, покрытые оболочкой,
+        500 мг/125 мг; порошок для приготовления раствора для внутривенного введения
+        (для инъекций) 1000 мг/200 мг; порошок для приго
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Амоксициллин/клавулановая кислота Таблетки, покрытые оболочкой, 875
+          мг/125 мг; порошок для приготовления раствора для внутривенного введения
+          1000 мг/200 мг
+    - drug_name: Амоксициллин
+      active_substance: null
+      drug_group: null
+      dose_text: 2 г однократно за 30–60 минут до хирургического вмешательства
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: амоксициллин (капсулы 250 мг, капсулы 500 мг, таблетки, покрытые оболочкой,
+          1000 мг; таблетки, покрытые оболочкой, 500 мг) 2 г однократно за 30–60 минут
+          до хирургического вмешательства
+    - drug_name: Клиндамицин
+      active_substance: null
+      drug_group: null
+      dose_text: 600 мг внутрь за 1 час до проведения хирургического вмешательства
+        (при аллергии на пенициллины)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: при аллергии на пенициллины) клиндамицин (капсулы 300 мг, капсулы 150
+          мг) 600 мг внутрь за 1 час до проведения хирургического вмешательства
+    - drug_name: Цефазолин
+      active_substance: null
+      drug_group: null
+      dose_text: 2 г внутривенно (в/в) при весе менее 120 кг; 3 г в/в при весе более
+        120 кг (для периоперационной антибиотикопрофилактики)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'цефазолин (при весе менее 120 кг: 2 г внутривенно (далее – в/в); при
+          весе более 120 кг: 3 г в/в + метронидазол 500 мг в/в...'
+    - drug_name: Метронидазол
+      active_substance: null
+      drug_group: null
+      dose_text: 500 мг в/в (в комбинации с цефазолином при весе >120 кг или цефуроксимом)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'при весе более 120 кг: 3 г в/в + метронидазол 500 мг в/в, или цефуроксим
+          1,5 г в/в + метронидазол 500 мг в/в'
+    - drug_name: Цефуроксим
+      active_substance: null
+      drug_group: null
+      dose_text: 1,5 г в/в (в комбинации с метронидазолом для периоперационной антибиотикопрофилактики)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: цефуроксим 1,5 г в/в + метронидазол 500 мг в/в
+    - drug_name: Ампициллин/сульбактам
+      active_substance: null
+      drug_group: null
+      dose_text: 3 г в/в (для периоперационной антибиотикопрофилактики)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: или ампициллин/сульбактам 3 г в/в
+    - drug_name: Амоксициллин/клавуланат
+      active_substance: null
+      drug_group: null
+      dose_text: 1,2 г в/в (для периоперационной антибиотикопрофилактики)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: или амоксициллин/клавуланат 1,2 г в/в
+    - drug_name: Клиндамицин
+      active_substance: null
+      drug_group: null
+      dose_text: 900 мг в/в (альтернатива для периоперационной антибиотикопрофилактики)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: или клиндамицин 900 мг в/в. Антибиотик вводится внутривенно за 60 минут
+          до хирургического доступа.
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Медицинское наблюдение в амбулаторных условиях врачом-стоматологом-хирургом.
+      Включает медицинский осмотр, выполнение лабораторных и инструментальных исследований
+      по медицинским показаниям. Периодичность медицинского наблюдения – 1 раз в 6
+      месяцев.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение в амбулаторных условиях врачом-стоматологом-хирургом.
+        Включает медицинский осмотр, выполнение лабораторных и инструментальных исследований
+        по медицинским показаниям. Периодичнос
+  - text: Снятие швов на 7–10 сутки
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Снятие швов на 7–10 сутки
+  hospitalization: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: Амбулаторно (при размерах образования менее 2 см)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторно (при размерах образования менее 2 см)
+  - text: Госпитализация (при размерах образования более 2 см)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десн
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_насел_с_гипертрофией_десны_эпулисом_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация (при размерах образования более 2 см)
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:48.149389+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T17:49:18.693579+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=2
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:48.153345+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[epulis].required_exams[0]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[epulis].treatment.drugs[0]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[epulis].treatment.drugs[1]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[epulis].treatment.drugs[9]
+  validated_at: '2026-07-20T17:49:18.706392+00:00'

@@ -1,7 +1,7 @@
 {
   "protocol_id": "anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "Анестезиологическое обеспечение хирургических вмешательств",
@@ -22,7 +22,8 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "adult",
+      "pregnant"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,445 +33,58 @@
   },
   "conditions": [
     {
-      "condition_id": "анестезиологическое_обеспечение_хирургических_вм",
+      "condition_id": "anesthesia_surgical_interventions",
       "name": "Анестезиологическое обеспечение хирургических вмешательств",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
+        "N02",
         "B24",
         "E66.9",
         "I21.9",
+        "I50.9",
         "I64",
         "J44.9",
         "K04.7",
         "O26.9",
         "O72",
-        "O88.2"
+        "O88.2",
+        "A10"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
-      "diagnostic_criteria": {
-        "required": [
-          {
-            "text": "выявление наличия СД у пациента, определение степени поражения органов-",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "выявление наличия СД у пациента, определение степени поражения органов-"
-            }
-          },
-          {
-            "text": "лабораторные исследования: определение уровня глюкозы в крови, электролитов,",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "лабораторные исследования: определение уровня глюкозы в крови, электролитов,"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "required_exams": [
-        {
-          "name": "ЭКГ",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "с СД установлен согласно приложению 12;\nЭКГ.\n\n[diagnostics] 15. Предоперационное обследование пациентов с заболеваниями щит"
-          }
-        }
-      ],
+      "diagnostic_criteria": null,
+      "required_exams": [],
       "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "[treatment] ПОСТАНОВЛЯЕТ: (стр. 1)",
-            "source_ref": {
-              "protocol_id": "anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] ПОСТАНОВЛЯЕТ: (стр. 1)"
-            }
-          },
-          {
-            "text": "1.  Утвердить  клинический  протокол  «Анестезиологическое  обеспечение",
-            "source_ref": {
-              "protocol_id": "anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "1.  Утвердить  клинический  протокол  «Анестезиологическое  обеспечение"
-            }
-          },
-          {
-            "text": "хирургических  вмешательств»  (прилагается).",
-            "source_ref": {
-              "protocol_id": "anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "хирургических  вмешательств»  (прилагается)."
-            }
-          },
-          {
-            "text": "[treatment] 19.04.2023 № 57 (стр. 3)",
-            "source_ref": {
-              "protocol_id": "anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 19.04.2023 № 57 (стр. 3)"
-            }
-          },
-          {
-            "text": "«Анестезиологическое обеспечение хирургических вмешательств»",
-            "source_ref": {
-              "protocol_id": "anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "«Анестезиологическое обеспечение хирургических вмешательств»"
-            }
-          },
-          {
-            "text": "[treatment] 1. Настоящий клинический протокол устанавливает общие требования к объему (стр. 3)",
-            "source_ref": {
-              "protocol_id": "anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 1. Настоящий клинический протокол устанавливает общие требования к объему (стр. 3)"
-            }
-          }
-        ],
-        "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "менее",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "60 мл",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "менее 60 мл/мин"
-            }
-          },
-          {
-            "drug_name": "апреля",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2023 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "апреля 2023 г"
-            }
-          },
-          {
-            "drug_name": "ноября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2023  г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "ноября  2023  г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня 1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011  г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября\n2011  г"
-            }
-          }
-        ],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
+      "treatment": null,
       "follow_up": [],
       "hospitalization": [],
       "routing": [],
-      "red_flags": [
-        {
-          "text": "масс-эффектом, мезотромбоз в сочетании с выраженной сердечной\nпатологией, полиорганная дисфункция);\nкласс VI – умерший донор.\n\n[classification] 11",
-          "aliases": [],
-          "red_flag_type": "thrombosis",
-          "severity": "high",
-          "expected_actions": [],
-          "cap_if_unhandled": null,
-          "source_ref": {
-            "protocol_id": "anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "масс-эффектом, мезотромбоз в сочетании с выраженной сердечной\nпатологией, полиорганная дисфункция);\nкласс VI – умерший донор.\n\n[classification] 11"
-          }
-        },
-        {
-          "text": "масс-эффектом, мезотромбоз в сочетании с выраженной сердечной\nпатологией, полиорганная дисфункция);\nкласс VI – умерший донор.\n\n[classification] 11",
-          "aliases": [],
-          "red_flag_type": "thrombosis",
-          "severity": "high",
-          "expected_actions": [],
-          "cap_if_unhandled": null,
-          "source_ref": {
-            "protocol_id": "anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "масс-эффектом, мезотромбоз в сочетании с выраженной сердечной\nпатологией, полиорганная дисфункция);\nкласс VI – умерший донор.\n\n[classification] 11"
-          }
-        },
-        {
-          "text": "инсульта  и  тромбоэмболических  осложнений\nпри  фибрилляции  предсердий  по  шкале  оценки  риска  инсульта  и  системной\nтромбоэмболии  у  паци",
-          "aliases": [],
-          "red_flag_type": "thrombosis",
-          "severity": "high",
-          "expected_actions": [],
-          "cap_if_unhandled": null,
-          "source_ref": {
-            "protocol_id": "anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "инсульта  и  тромбоэмболических  осложнений\nпри  фибрилляции  предсердий  по  шкале  оценки  риска  инсульта  и  системной\nтромбоэмболии  у  паци"
-          }
-        },
-        {
-          "text": "и  системной\nтромбоэмболии  у  пациентов  с  фибрилляцией  предсердий  CHA2DS2-VASc  согласно\nприложению 8;\nопределение функциональных резервов с",
-          "aliases": [],
-          "red_flag_type": "thrombosis",
-          "severity": "high",
-          "expected_actions": [],
-          "cap_if_unhandled": null,
-          "source_ref": {
-            "protocol_id": "anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "и  системной\nтромбоэмболии  у  пациентов  с  фибрилляцией  предсердий  CHA2DS2-VASc  согласно\nприложению 8;\nопределение функциональных резервов с"
-          }
-        }
-      ],
+      "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Анестезиологическое обеспечение хирургических вмешательств"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:04.895371+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T15:38:14.704958+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:04.901097+00:00"
+    "validated_at": "2026-07-20T15:38:14.705362+00:00"
   }
 }

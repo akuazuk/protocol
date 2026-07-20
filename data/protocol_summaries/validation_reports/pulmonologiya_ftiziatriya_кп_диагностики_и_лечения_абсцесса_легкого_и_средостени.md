@@ -1,6 +1,6 @@
 # Validation: pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостени
 
 - **status:** valid
-- **validated_at:** 2026-06-23T19:16:26.647799+00:00
+- **validated_at:** 2026-07-20T18:01:26.501573+00:00
 - **review_status:** needs_review
-- **extraction_status:** auto_extracted
+- **extraction_status:** llm_extracted

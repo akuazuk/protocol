@@ -1,9 +1,9 @@
 protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зуб
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов детс население с крапчатыми зубами
+  title: Диагностика и лечение пациентов детского населения с крапчатыми зубами
   url: null
   local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зубами_пост_МЗ_30.11.2022_112.pdf
   document_sha256: null
@@ -19,26 +19,29 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов_детс_население_с
-  name: Диагностика и лечение пациентов детс население с крапчатыми зубами
+- condition_id: kraptchatye_zuby
+  name: Крапчатые зубы
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B24
+  - K00.3
+  - K00.30
+  - K00.31
+  - K00.39
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[criteria] 6. Признаками и критериями, определяющими крапчатые зубы,
-        являются: (стр. 4)'
+    - text: 'Эндемическая крапчатость: избыток фторидов в анамнезе до 6 лет, постоянные
+        зубы с измененным цветом эмали (меловидный, коричневатый, полоски/пятна).'
       logic_group: null
       operator: unknown
       values: []
@@ -55,9 +58,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[criteria] 6. Признаками и критериями, определяющими крапчатые зубы,
-          являются: (стр. 4)'
-    - text: КЛАССИФИКАЦИЯ, ПРИЗНАКИ И КРИТЕРИИ КРАПЧАТЫХ ЗУБОВ
+        quote: 'Эндемическая крапчатость: избыток фторидов в анамнезе до 6 лет, постоянные
+          зубы с измененным цветом эмали (меловидный, коричневатый, полоски/пятна).'
+    - text: 'Неэндемическая крапчатость: нарушения формирования твердых тканей (1-4
+        моляров/резцов), участки непрозрачной эмали, помутнение с четкой границей
+        (опаковость), желтоватые ''сырные'' моляры, белые пятна на резцах, чувствительность
+        зубов.'
       logic_group: null
       operator: unknown
       values: []
@@ -74,15 +80,61 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: КЛАССИФИКАЦИЯ, ПРИЗНАКИ И КРИТЕРИИ КРАПЧАТЫХ ЗУБОВ
+        quote: 'Неэндемическая крапчатость: нарушения формирования твердых тканей
+          (1-4 моляров/резцов), участки непрозрачной эмали, помутнение с четкой границей
+          (опаковость), желтоватые ''сырные'' моляры, белые пятна н'
     optional: []
     exclusion: []
-  required_exams: []
+  required_exams:
+  - name: Сбор анамнеза
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зуб
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зубами_пост_МЗ_30.11.2022_112.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: сбор анамнеза и выявление факторов, влияющих на возникновение крапчатости
+        зубов в период закладки и минерализации (в течение первых 6 лет жизни);
+  - name: Дифференциальная диагностика
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зуб
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зубами_пост_МЗ_30.11.2022_112.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Дифференциальную диагностику крапчатых зубов проводят с кариесом эмали,
+        кариесом дентина, гипоплазией эмали, с наследственным несовершенным амелогенезом.
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] 12. Планирование комплексного лечения пациентов с крапчатыми
-        зубами включает (стр. 5)'
+    - text: Оценка формы заболевания (при сомнительной, очень слабой и слабой форме
+        эндемического флюороза лечение не проводится)
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зуб
         document_url: null
@@ -93,9 +145,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 12. Планирование комплексного лечения пациентов с крапчатыми
-          зубами включает (стр. 5)'
-    - text: оценка формы заболевания (при сомнительной, очень слабой и слабой форме
+        quote: Оценка формы заболевания (при сомнительной, очень слабой и слабой форме
+          эндемического флюороза лечение не проводится)
+    - text: Терапевтическое лечение – при наличии дефектов твердых тканей зубов
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зуб
         document_url: null
@@ -106,32 +158,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: оценка формы заболевания (при сомнительной, очень слабой и слабой форме
-    - text: эндемического флюороза лечение не проводится)
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зуб
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зубами_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: эндемического флюороза лечение не проводится)
-    - text: терапевтическое лечение – при наличии дефектов твердых тканей зубов
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зуб
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зубами_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: терапевтическое лечение – при наличии дефектов твердых тканей зубов
-    - text: хирургическое лечение – при быстром разрушении моляров в возрасте 6–8
+        quote: Терапевтическое лечение – при наличии дефектов твердых тканей зубов
+    - text: Хирургическое лечение – при быстром разрушении моляров в возрасте 6–8
         лет
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зуб
@@ -143,9 +171,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: хирургическое лечение – при быстром разрушении моляров в возрасте 6–8
+        quote: Хирургическое лечение – при быстром разрушении моляров в возрасте 6–8
           лет
-    - text: ортодонтическое лечение – при дефектах зубов и зубочелюстных аномалиях
+    - text: Ортодонтическое лечение – при дефектах зубов и зубочелюстных аномалиях
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зуб
         document_url: null
@@ -156,13 +184,29 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: ортодонтическое лечение – при дефектах зубов и зубочелюстных аномалиях
+        quote: Ортодонтическое лечение – при дефектах зубов и зубочелюстных аномалиях
+    - text: Ортопедическое лечение – при тяжелой форме эндемического флюороза и при
+        наличии жалоб на эстетический недостаток
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зуб
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зубами_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ортопедическое лечение – при тяжелой форме эндемического флюороза и
+          при наличии жалоб на эстетический недостаток
     drug_groups: []
     drugs:
-    - drug_name: применения
+    - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: 100 мг
+      dose_text: Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию
+        (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку
+        полости рта или десну. Лекарственное средство можно нан
       frequency_text: null
       duration_text: null
       route: null
@@ -174,17 +218,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зуб
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зубами_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 5
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: применения 100 мг/мл во флаконах 50 мл | Одну порцию (1–3
-    - drug_name: ноября
+        quote: Лидокаин Спрей для местного применения 100 мг/мл. Одну порцию (1–3
+          нажатия на клапан) аэрозоля наносят на слизистую оболочку полости рта или
+          десну. Можно наносить смазыванием ватным тампоном.
+    - drug_name: Лидокаин/Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 2022 г
+      dose_text: Анестезирующий гель в шприцах 12,5 г; анестезирующий гель в шприцах
+        8,5 г. Для аппликационной анестезии слизистой оболочки полости рта, а также
+        перед инъекционной анестезией.
       frequency_text: null
       duration_text: null
       route: null
@@ -196,17 +244,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зуб
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зубами_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: ноября 2022 г
-    - drug_name: июня
+        quote: Лидокаин/Хлоргексидин Анестезирующий гель в шприцах 12,5 г или 8,5
+          г. Применяется для аппликационной анестезии слизистой оболочки полости рта,
+          а также перед инъекционной анестезией.
+    - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: 'Спрей для местного применения 100 мг/мл во флаконах 50 мл. Способ
+        применения, режим дозирования: Одну порцию (1–3 нажатия на дозирующий клапан)
+        аэрозоля наносят на слизистую оболочку полости рта или д'
       frequency_text: null
       duration_text: null
       route: null
@@ -218,90 +270,111 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зуб
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зубами_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 5
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зуб
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зубами_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: марта
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зуб
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зубами_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: марта 2023 г
+        quote: 'Лидокаин: Спрей для местного применения 100 мг/мл во флаконах 50 мл.
+          Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую
+          оболочку полости рта или десну.'
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Медицинское наблюдение при эндемическом флюорозе сомнительной, очень слабой
+      и слабой форм – 1 раз в год.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зуб
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зубами_пост_МЗ_30.11.2022_112.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение при эндемическом флюорозе сомнительной, очень
+        слабой и слабой форм – 1 раз в год.
+  - text: Медицинское наблюдение при эндемическом флюорозе умеренной и тяжелой форм
+      – 1 раз в 6 месяцев.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зуб
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зубами_пост_МЗ_30.11.2022_112.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение при эндемическом флюорозе умеренной и тяжелой
+        форм – 1 раз в 6 месяцев.
+  - text: Медицинское наблюдение при неэндемической крапчатости эмали – 1 раз в 3
+      месяца.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зуб
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зубами_пост_МЗ_30.11.2022_112.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение при неэндемической крапчатости эмали – 1 раз в
+        3 месяца.
   hospitalization: []
   routing: []
-  red_flags: []
+  red_flags:
+  - text: Применение Лидокаина/Хлоргексидина у детей до 2 лет противопоказано.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зуб
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зубами_пост_МЗ_30.11.2022_112.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: У детей до 2 лет применение [Лидокаин/Хлоргексидин] противопоказано.
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зуб
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зубами_пост_МЗ_30.11.2022_112.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов детс население с крапчатыми зубами
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:51.404018+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T18:34:09.401845+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:51.405757+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[kraptchatye_zuby].treatment.drugs[2]
+  validated_at: '2026-07-20T18:34:09.405289+00:00'

@@ -1,7 +1,7 @@
 {
   "protocol_id": "travmatologiya_ortopediya_кп_диагностика_лечение_пациентов_с_деформациями_позвон",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "Диагностика лечение пациентов с деформациями позвоночника в амбулаторных условиях",
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,12 +32,22 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_лечение_пациентов_с_деформациями_поз",
-      "name": "Диагностика лечение пациентов с деформациями позвоночника в амбулаторных условиях",
+      "condition_id": "spinal_deformities",
+      "name": "Деформации позвоночника",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "O33"
+        "M41",
+        "M41.0",
+        "M41.1",
+        "M41.2",
+        "M41.3",
+        "M41.4",
+        "M42",
+        "Q67.5",
+        "Q76.1",
+        "Q76.3",
+        "Q76.4"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -45,7 +55,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[classification] 8. Формулировка клинического диагноза включает: (стр. 4)",
+            "text": "Выставление клинического диагноза с указанием вида, анатомического типа, степени тяжести, компенсированности и стадии ростковой костной зрелости.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -62,11 +72,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 8. Формулировка клинического диагноза включает: (стр. 4)"
+              "quote": "Выставление клинического диагноза с указанием вида, анатомического типа, степени тяжести, компенсированности и стадии ростковой костной зрелости."
             }
           },
           {
-            "text": "[classification] 9. Примеры построения клинического диагноза: (стр. 5)",
+            "text": "Определение анатомического типа сколиотической деформации по локализации основных дуг согласно рентгенанатомическим критериям (Таблица 1).",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -83,11 +93,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 9. Примеры построения клинического диагноза: (стр. 5)"
+              "quote": "Определение анатомического типа сколиотической деформации по локализации основных дуг согласно рентгенанатомическим критериям (Таблица 1)."
             }
           },
           {
-            "text": "[classification] 8. Формулировка клинического диагноза включает: (стр. 4)",
+            "text": "Различение анатомических типов по стороне расположения основных патологических дуг деформации.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -104,11 +114,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 8. Формулировка клинического диагноза включает: (стр. 4)"
+              "quote": "Различение анатомических типов по стороне расположения основных патологических дуг деформации."
             }
           },
           {
-            "text": "[classification] 9. Примеры построения клинического диагноза: (стр. 5)",
+            "text": "Оценка выраженности сколиотической деформации в трех плоскостях по клинико-рентгенологическим критериям (Таблица 2).",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -125,11 +135,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 9. Примеры построения клинического диагноза: (стр. 5)"
+              "quote": "Оценка выраженности сколиотической деформации в трех плоскостях по клинико-рентгенологическим критериям (Таблица 2)."
             }
           },
           {
-            "text": "необходимых для постановки диагноза, выявления признаков обострения болезни,",
+            "text": "Определение степени тяжести деформации по угловой величине α дуги (по Коббу) во фронтальной плоскости (1–4 ст. тяжести).",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -146,11 +156,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "необходимых для постановки диагноза, выявления признаков обострения болезни,"
+              "quote": "Определение степени тяжести деформации по угловой величине α дуги (по Коббу) во фронтальной плоскости (1–4 ст. тяжести)."
             }
           },
           {
-            "text": "определения темпов прогрессирования деформации и состоит из обязательной и",
+            "text": "Разделение 4 ст. тяжести на подгруппы (4а, 4b, 4c, 4d) с учетом стадии развития синдрома сколиотической диспропорциональности.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -167,11 +177,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "определения темпов прогрессирования деформации и состоит из обязательной и"
+              "quote": "Разделение 4 ст. тяжести на подгруппы (4а, 4b, 4c, 4d) с учетом стадии развития синдрома сколиотической диспропорциональности."
             }
           },
           {
-            "text": "невозможна верификация диагноза и назначение адекватного лечения, и включает",
+            "text": "Оценка относительно компенсированной формы деформации (сохранение формы и угловых параметров кифоза/лордоза в норме).",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -188,11 +198,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "невозможна верификация диагноза и назначение адекватного лечения, и включает"
+              "quote": "Оценка относительно компенсированной формы деформации (сохранение формы и угловых параметров кифоза/лордоза в норме)."
             }
           },
           {
-            "text": "исследований пациенту выставляется клинический диагноз с указанием вида и",
+            "text": "Оценка субкомпенсированной формы деформации (сохранение профиля тел позвонков, но угловые параметры вышли за нижнюю границу нормы).",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -209,320 +219,113 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "исследований пациенту выставляется клинический диагноз с указанием вида и"
+              "quote": "Оценка субкомпенсированной формы деформации (сохранение профиля тел позвонков, но угловые параметры вышли за нижнюю границу нормы)."
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "[treatment] 5. Положения настоящего клинического протокола предназначены для врачей- (стр. 2)",
-            "source_ref": {
-              "protocol_id": "travmatologiya_ortopediya_кп_диагностика_лечение_пациентов_с_деформациями_позвон",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 5. Положения настоящего клинического протокола предназначены для врачей- (стр. 2)"
-            }
-          },
-          {
-            "text": "травматологов-ортопедов и врачей – детских хирургов, осуществляющих прием и",
-            "source_ref": {
-              "protocol_id": "travmatologiya_ortopediya_кп_диагностика_лечение_пациентов_с_деформациями_позвон",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "травматологов-ортопедов и врачей – детских хирургов, осуществляющих прием и"
-            }
-          },
-          {
-            "text": "диспансерное наблюдение детей в возрасте до 18 лет с ортопедотравматологическими",
-            "source_ref": {
-              "protocol_id": "travmatologiya_ortopediya_кп_диагностика_лечение_пациентов_с_деформациями_позвон",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "диспансерное наблюдение детей в возрасте до 18 лет с ортопедотравматологическими"
-            }
-          },
-          {
-            "text": "заболеваниями в амбулаторных условиях.",
-            "source_ref": {
-              "protocol_id": "travmatologiya_ortopediya_кп_диагностика_лечение_пациентов_с_деформациями_позвон",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "заболеваниями в амбулаторных условиях."
-            }
-          },
-          {
-            "text": "[treatment] 10. Выбор метода консервативного лечения в амбулаторных условиях, в том числе с (стр. 5)",
-            "source_ref": {
-              "protocol_id": "travmatologiya_ortopediya_кп_диагностика_лечение_пациентов_с_деформациями_позвон",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 10. Выбор метода консервативного лечения в амбулаторных условиях, в том числе с (стр. 5)"
-            }
-          },
-          {
-            "text": "использованием корсетной технологии и лекарственной терапии, осуществляет врач-",
-            "source_ref": {
-              "protocol_id": "travmatologiya_ortopediya_кп_диагностика_лечение_пациентов_с_деформациями_позвон",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "использованием корсетной технологии и лекарственной терапии, осуществляет врач-"
-            }
-          }
-        ],
-        "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2017 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "travmatologiya_ortopediya_кп_диагностика_лечение_пациентов_с_деформациями_позвон",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня 2017 г"
-            }
-          },
-          {
-            "drug_name": "августа",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2025 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "travmatologiya_ortopediya_кп_диагностика_лечение_пациентов_с_деформациями_позвон",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "августа 2025 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "travmatologiya_ortopediya_кп_диагностика_лечение_пациентов_с_деформациями_позвон",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          }
-        ],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [
+      "required_exams": [
         {
-          "text": "контроль",
-          "timing": null,
+          "name": "Рентгенография позвоночника в 2 проекциях (прямая и боковая)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
           "required_if": [],
-          "expected_actions": [],
+          "timing": null,
+          "comment": null,
           "source_ref": {
             "protocol_id": "travmatologiya_ortopediya_кп_диагностика_лечение_пациентов_с_деформациями_позвон",
             "document_url": null,
             "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf",
-            "page_start": null,
+            "page_start": 2,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
-          }
-        },
-        {
-          "text": "контроль",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "travmatologiya_ortopediya_кп_диагностика_лечение_пациентов_с_деформациями_позвон",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "контроль"
-          }
-        },
-        {
-          "text": "контроль",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "travmatologiya_ortopediya_кп_диагностика_лечение_пациентов_с_деформациями_позвон",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "контроль"
-          }
-        },
-        {
-          "text": "контроль",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "travmatologiya_ortopediya_кп_диагностика_лечение_пациентов_с_деформациями_позвон",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "контроль"
-          }
-        },
-        {
-          "text": "динамическом наблюден",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "travmatologiya_ortopediya_кп_диагностика_лечение_пациентов_с_деформациями_позвон",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "динамическом наблюден"
+            "quote": "Обязательная диагностика... включает выполнение рентгенографии позвоночника в 2 проекциях (прямая и боковая) в положении стоя. Пациентам в возрасте до 3 лет рентгенограммы выполняются в положении лежа."
           }
         }
       ],
+      "conditional_exams": [
+        {
+          "name": "Дополнительная диагностика (уточняющие исследования)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_кп_диагностика_лечение_пациентов_с_деформациями_позвон",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительная диагностика включает исследования, позволяющие уточнить характер поражения органов и систем при выявлении изменений в обязательных исследованиях, а также выявить или исключить другие схожие по симптоматике болезни."
+          }
+        }
+      ],
+      "treatment": null,
+      "follow_up": [],
       "hospitalization": [],
-      "routing": [],
+      "routing": [
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_кп_диагностика_лечение_пациентов_с_деформациями_позвон",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        }
+      ],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "travmatologiya_ortopediya_кп_диагностика_лечение_пациентов_с_деформациями_позвон",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика лечение пациентов с деформациями позвоночника в амбулаторных условиях"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:53.447679+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T18:07:41.176232+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:53.449049+00:00"
+    "validated_at": "2026-07-20T18:07:41.178057+00:00"
   }
 }

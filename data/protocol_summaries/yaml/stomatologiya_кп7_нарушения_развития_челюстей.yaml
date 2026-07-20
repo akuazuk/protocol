@@ -1,70 +1,400 @@
 protocol_id: stomatologiya_кп7_нарушения_развития_челюстей
-summary_version: '1.0'
-extraction_status: auto_extracted
-review_status: not_reviewed
+summary_version: '2.0'
+extraction_status: llm_extracted
+review_status: needs_review
 source:
-  title: КП7 нарушения развития челюстей
-  url: https://minzdrav.gov.by/upload/dadvfiles/CProtokol/КП7_нарушения_развития_челюстей.pdf
+  title: Нарушения развития челюстей
+  url: null
   local_path: minzdrav_protocols/stomatologiya/КП7_нарушения_развития_челюстей.pdf
-  document_sha256: ce36108f3d1fc5934df6182c0c2a5912e3ea6a076990aab576152be22c14e8dc
-  approval_date: '2026-01-01'
-  approval_number: '24'
+  document_sha256: null
+  approval_date: null
+  approval_number: null
   valid_from: null
   valid_to: null
-  document_year: 2026
+  document_year: null
   pages_total: null
 rubric:
-  name: Стоматология
+  name: Stomatologiya
   slug: stomatologiya
-  specialty_slugs:
-  - stomatologiya
+  specialty_slugs: []
 applicability:
   population:
-  - adult
-  - child
+  - adult_and_child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: кп7_нарушения_развития_челюстей
-  name: КП7 нарушения развития челюстей
+- condition_id: narusheniya_razvitiya_chelyustey
+  name: Нарушения развития челюстей
   synonyms: []
   abbreviations: []
-  icd10_codes: []
+  icd10_codes:
+  - K01.1
+  - K04.5
+  - K04.7
+  - K06.2
+  - K07.9
+  - K12.2
+  - K10.0
+  - K10.8
   condition_applicability: null
   diagnosis_structure: null
-  clinical_criteria:
+  clinical_criteria: null
+  diagnostic_criteria:
     required:
-    - text: соответствие протоколу «КП7 нарушения развития челюстей»
+    - text: Дифференциальная диагностика атрофии беззубого альвеолярного края, гипертрофии
+        альвеолярного края, неправильной формы альвеолярного отростка, экзостозов
+        и торуса с врожденными аномалиями развития челюстей, идиопатическим остеосклерозом,
+        доброкачественным новообразованием, злокачественным новообразованием.
       logic_group: null
-      operator: present
+      operator: unknown
       values: []
       numeric_value: null
       unit: null
-      evidence_targets:
-      - diagnosis
+      evidence_targets: []
       source_ref:
         protocol_id: stomatologiya_кп7_нарушения_развития_челюстей
         document_url: null
-        local_path: null
-        page_start: 1
+        local_path: minzdrav_protocols/stomatologiya/КП7_нарушения_развития_челюстей.pdf
+        page_start: null
         page_end: null
-        section_title: Протокол
+        section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: КП7 нарушения развития челюстей
+        quote: Дифференциальная диагностика атрофии беззубого альвеолярного края,
+          гипертрофии альвеолярного края, неправильной формы альвеолярного отростка,
+          экзостозов и торуса с врожденными аномалиями развития челю
+    - text: Торус нижней челюсти
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп7_нарушения_развития_челюстей
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП7_нарушения_развития_челюстей.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Торус нижней челюсти
+    - text: Торус твердого неба
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп7_нарушения_развития_челюстей
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП7_нарушения_развития_челюстей.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Торус твердого неба
+    - text: Экзостозы челюсти
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп7_нарушения_развития_челюстей
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП7_нарушения_развития_челюстей.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Экзостозы челюсти
     optional: []
     exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
+  required_exams:
+  - name: Инструментальные диагностические исследования (лучевые методы исследования)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп7_нарушения_развития_челюстей
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП7_нарушения_развития_челюстей.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: обязательные и дополнительные инструментальные диагностические исследования
+        (лучевые методы исследования), врачебные консультации врачей-специалистов
+        по профилю сопутствующей патолог проводятся на догоспитальном этапе.
+  - name: Врачебные консультации врачей-специалистов по профилю сопутствующей патологии
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп7_нарушения_развития_челюстей
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП7_нарушения_развития_челюстей.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: врачебные консультации врачей-специалистов по профилю сопутствующей патолог
+        проводятся на догоспитальном этапе.
   conditional_exams: []
-  treatment: null
-  follow_up: []
+  treatment:
+    non_drug:
+    - text: Устранение дефицита костной ткани при атрофии.
+      source_ref:
+        protocol_id: stomatologiya_кп7_нарушения_развития_челюстей
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП7_нарушения_развития_челюстей.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Устранение дефицита костной ткани при атрофии.
+    - text: Создание благоприятных условий для восстановления функции зубочелюстной
+        системы посредством ортопедического лечения.
+      source_ref:
+        protocol_id: stomatologiya_кп7_нарушения_развития_челюстей
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП7_нарушения_развития_челюстей.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Создание благоприятных условий для восстановления функции зубочелюстной
+          системы посредством ортопедического лечения.
+    - text: В период лечения следует придерживаться умеренной интенсивности физических
+        нагрузок.
+      source_ref:
+        protocol_id: stomatologiya_кп7_нарушения_развития_челюстей
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП7_нарушения_развития_челюстей.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: В период лечения следует придерживаться умеренной интенсивности физических
+          нагрузок.
+    - text: Хирургические лечебные мероприятия
+      source_ref:
+        protocol_id: stomatologiya_кп7_нарушения_развития_челюстей
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП7_нарушения_развития_челюстей.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хирургические лечебные мероприятия
+    - text: Создание условий для протезирования
+      source_ref:
+        protocol_id: stomatologiya_кп7_нарушения_развития_челюстей
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП7_нарушения_развития_челюстей.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Создание условий для протезирования
+    drug_groups: []
+    drugs:
+    - drug_name: Артикаин/Эпинефрин
+      active_substance: null
+      drug_group: null
+      dose_text: 'Раствор для инъекций (40 мг + 0,005 мг)/мл в картриджах 1,7 мл (1,8
+        мл), в ампулах 2 мл; раствор для инъекций (40 мг + 0,006 мг)/мл в картриджах
+        1,7 мл (в ампулах 2 мл); раствор для инъекций (40 мг + '
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп7_нарушения_развития_челюстей
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП7_нарушения_развития_челюстей.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Артикаин/Эпинефрин Раствор для инъекций (40 мг + 0,005 мг)/мл в картриджах
+          1,7 мл (1,8 мл)... При выполнении одной лечебной процедуры взрослым можно
+          вводить артикаин в дозе до 7 мг на 1 кг массы тела
+    - drug_name: Лидокаин
+      active_substance: null
+      drug_group: null
+      dose_text: Раствор для инъекций 10 мг/мл в ампулах 5 мл; раствор для инъекций
+        20 мг/мл в ампулах 2 мл. Местная анестезия (инфильтрационная, проводниковая).
+        Режим дозирования устанавливают индивидуально.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп7_нарушения_развития_челюстей
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП7_нарушения_развития_челюстей.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Лидокаин Раствор для инъекций 10 мг/мл в ампулах 5 мл; раствор для
+          инъекций 20 мг/мл в ампулах 2 мл. Режим дозирования устанавливают индивидуально
+          в зависимости от вида анестезии и места введения...
+    - drug_name: Нимесулид
+      active_substance: null
+      drug_group: null
+      dose_text: Таблетки 100 мг. Порошок (гранулы) для приготовления суспензии для
+        приема внутрь 100 мг в пакетах. Внутрь после еды по 100 мг 2 раза в сутки.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп7_нарушения_развития_челюстей
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП7_нарушения_развития_челюстей.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Нимесулид Таблетки 100 мг. Порошок (гранулы) для приготовления суспензии
+          для приема внутрь 100 мг в пакетах. Внутрь после еды по 100 мг 2 раза в
+          сутки.
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Медицинское наблюдение в амбулаторных условиях после проведенного лечения.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп7_нарушения_развития_челюстей
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП7_нарушения_развития_челюстей.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение в амбулаторных условиях после проведенного лечения.
+  - text: Медицинское наблюдение врачом-стоматологом-хирургом 1 раз в 6 месяцев в
+      течение 1 года.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп7_нарушения_развития_челюстей
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП7_нарушения_развития_челюстей.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение врачом-стоматологом-хирургом 1 раз в 6 месяцев
+        в течение 1 года.
   hospitalization: []
-  routing: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_кп7_нарушения_развития_челюстей
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП7_нарушения_развития_челюстей.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: Амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_кп7_нарушения_развития_челюстей
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП7_нарушения_развития_челюстей.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторно
+  - text: Госпитализация (при торусах и экзостозах большой протяженностью)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_кп7_нарушения_развития_челюстей
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП7_нарушения_развития_челюстей.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация (при торусах и экзостозах большой протяженностью)
   red_flags: []
   contraindications: []
   complications: []
@@ -74,18 +404,15 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-05-31T18:30:13.774879+00:00'
-  extractor: builder.heuristic_v2
-  extractor_version: '2.0'
-  source_document_sha256: ce36108f3d1fc5934df6182c0c2a5912e3ea6a076990aab576152be22c14e8dc
+  extracted_at: '2026-07-01T22:24:58.810989+00:00'
+  extractor: llm_extractor
+  extractor_version: '1.0'
+  source_document_sha256: null
   notes:
-  - aggregated from 28 protocol_cards, 87 chunks
+  - llm_pipeline_v1
+  - conditions=1
 validation:
-  status: needs_human_review
+  status: valid
   errors: []
-  warnings:
-  - level: warning
-    code: missing_icd10
-    message: Нет icd10_codes у condition
-    path: conditions[кп7_нарушения_развития_челюстей]
-  validated_at: '2026-05-31T18:30:13.774891+00:00'
+  warnings: []
+  validated_at: '2026-07-01T22:24:58.814182+00:00'

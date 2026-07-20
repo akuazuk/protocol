@@ -1,31 +1,28 @@
 {
   "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-  "summary_version": "1.0",
-  "extraction_status": "auto_extracted",
-  "review_status": "not_reviewed",
+  "summary_version": "2.0",
+  "extraction_status": "llm_extracted",
+  "review_status": "needs_review",
   "source": {
-    "title": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
+    "title": "Алгоритмы диагностики и лечения злокачественных новообразований",
     "url": null,
     "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
     "document_sha256": null,
-    "approval_date": "2018-07-06",
-    "approval_number": "60",
+    "approval_date": null,
+    "approval_number": null,
     "valid_from": null,
     "valid_to": null,
-    "document_year": 2018,
+    "document_year": null,
     "pages_total": null
   },
   "rubric": {
-    "name": "Онкология",
+    "name": "Novoobrazovaniya",
     "slug": "novoobrazovaniya",
-    "specialty_slugs": [
-      "novoobrazovaniya"
-    ]
+    "specialty_slugs": []
   },
   "applicability": {
     "population": [
-      "adult",
-      "child"
+      "adult_and_child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -35,8 +32,33 @@
   },
   "conditions": [
     {
-      "condition_id": "c06_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
+      "condition_id": "malignant_oral_cavity_lip_neoplasms",
+      "name": "Злокачественные новообразования слизистой оболочки ротовой полости и губы",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "C02.0",
+        "C02.1"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": null,
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "malignant_salivary_gland_neoplasms",
+      "name": "Злокачественные новообразования слюнных желез",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
@@ -44,149 +66,405 @@
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
-      "clinical_criteria": {
+      "clinical_criteria": null,
+      "diagnostic_criteria": {
         "required": [
           {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C06)",
+            "text": "TNM классификация и стадии, установленные однажды, должны оставаться неизменными в медицинских документах.",
             "logic_group": null,
-            "operator": "present",
+            "operator": "unknown",
             "values": [],
             "numeric_value": null,
             "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
+            "evidence_targets": [],
             "source_ref": {
               "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
               "document_url": null,
               "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 12,
-              "page_end": 12,
-              "section_title": "Таблица 3.4",
-              "section_type": "table_block",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
+              "quote": "TNM классификация и стадии, установленные однажды, должны оставаться неизменными в медицинских документах."
+            }
+          },
+          {
+            "text": "При сомнении в правильности оценки Т, N или М категории должно быть выбрано меньшее значение категории.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При сомнении в правильности оценки Т, N или М категории должно быть выбрано меньшее значение категории."
+            }
+          },
+          {
+            "text": "В случае множественных опухолевых очагов в органе классифицируется опухоль с более высокой Т категорией, а в скобках указывается множественность (т) или количество опухолей.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "В случае множественных опухолевых очагов в органе классифицируется опухоль с более высокой Т категорией, а в скобках указывается множественность (т) или количество опухолей."
+            }
+          },
+          {
+            "text": "При одновременном поражении парных органов каждая опухоль должна классифицироваться отдельно.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При одновременном поражении парных органов каждая опухоль должна классифицироваться отдельно."
+            }
+          },
+          {
+            "text": "При опухолях печени, яичников и фаллопиевой трубы множественные очаги поражения являются критерием Т классификации.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При опухолях печени, яичников и фаллопиевой трубы множественные очаги поражения являются критерием Т классификации."
+            }
+          },
+          {
+            "text": "Выявление второй опухоли в одном органе в течение 2 месяцев с момента выявления первой расценивается как синхронное поражение.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Выявление второй опухоли в одном органе в течение 2 месяцев с момента выявления первой расценивается как синхронное поражение."
+            }
+          },
+          {
+            "text": "При оценке распространения опухоли до начала комбинированного лечения символ «у» не исключается.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При оценке распространения опухоли до начала комбинированного лечения символ «у» не исключается."
+            }
+          },
+          {
+            "text": "r – рецидив опухоли после радикального лечения обозначается префиксом «r» (rcTNM или rpTNM).",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "r – рецидив опухоли после радикального лечения обозначается префиксом «r» (rcTNM или rpTNM)."
+            }
+          },
+          {
+            "text": "а – применяется для обозначения классификации опухолей, впервые выявленных при аутопсии.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "а – применяется для обозначения классификации опухолей, впервые выявленных при аутопсии."
+            }
+          },
+          {
+            "text": "L – инвазия лимфатических сосудов. Классифицируется как LX, L0 и L1.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "L – инвазия лимфатических сосудов. Классифицируется как LX, L0 и L1."
+            }
+          },
+          {
+            "text": "V – инвазия вен. Классифицируется как VX, VO, VI (микроскопическая инвазия) и V2 (макроскопическая инвазия).",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "V – инвазия вен. Классифицируется как VX, VO, VI (микроскопическая инвазия) и V2 (макроскопическая инвазия)."
+            }
+          },
+          {
+            "text": "Макроскопическое вовлечение стенки вены при отсутствии опухоли в просвете сосуда классифицируется как V2.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Макроскопическое вовлечение стенки вены при отсутствии опухоли в просвете сосуда классифицируется как V2."
+            }
+          },
+          {
+            "text": "При R-классификации оценивается не только первичная опухоль, но и остающиеся отдаленные метастазы, она может применяться после хирургического лечения, лучевой или химиотерапии, а также после комбинированного лечения.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При R-классификации оценивается не только первичная опухоль, но и остающиеся отдаленные метастазы, она может применяться после хирургического лечения, лучевой или химиотерапии, а также после комбиниро"
+            }
+          },
+          {
+            "text": "После консервативного лечения остаточная опухоль оценивается клиническими методами.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "После консервативного лечения остаточная опухоль оценивается клиническими методами."
+            }
+          },
+          {
+            "text": "Случаи с макроскопически определяемой остаточной опухолью (R2) могут подразделяться на R2a (без микроскопического подтверждения) и R2b (микроскопически подтвержденные).",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Случаи с макроскопически определяемой остаточной опухолью (R2) могут подразделяться на R2a (без микроскопического подтверждения) и R2b (микроскопически подтвержденные)."
+            }
+          },
+          {
+            "text": "R0 группа может включать пациентов как с М0, так и с Ml, где отдаленные метастазы и первичная опухоль должны быть полностью удалены.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "R0 группа может включать пациентов как с М0, так и с Ml, где отдаленные метастазы и первичная опухоль должны быть полностью удалены."
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c07_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C07"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C07)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 23,
-              "page_end": 23,
-              "section_title": "Таблица 3.8",
-              "section_type": "table_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c15_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C15"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C15)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 69,
-              "page_end": 69,
-              "section_title": "в течение первого года после завершения лечения – каждые 1–3 месяца;",
-              "section_type": "treatment",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
       "required_exams": [
+        {
+          "name": "Клиническое описание опухоли и регионарных лимфоузлов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "четкое клиническое описание опухоли и регионарных лимфатических узлов (локализация, размеры опухоли и каждого клинически пораженного узла, число лимфатических узлов);"
+          }
+        },
+        {
+          "name": "Морфологическая верификация опухолевого процесса",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "морфологическая верификация опухолевого процесса;"
+          }
+        },
         {
           "name": "УЗИ",
           "aliases": [],
-          "exam_type": "instrumental",
-          "requirement_level": "recommended",
+          "exam_type": "unknown",
+          "requirement_level": "required",
           "accepted_statuses": [
             "performed",
             "recommended"
@@ -198,720 +476,47 @@
             "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
             "document_url": null,
             "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-            "page_start": 69,
-            "page_end": 69,
-            "section_title": "в течение первого года после завершения лечения – каждые 1–3 месяца;",
-            "section_type": "treatment",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "УЗИ"
-          }
-        }
-      ],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c15_0_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C15.0"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C15.0)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 70,
-              "page_end": 70,
-              "section_title": "7.3. TNM классификация рака пищевода.",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c15_1_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C15.1"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C15.1)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 70,
-              "page_end": 70,
-              "section_title": "7.3. TNM классификация рака пищевода.",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c15_2_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C15.2"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C15.2)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 70,
-              "page_end": 70,
-              "section_title": "7.3. TNM классификация рака пищевода.",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c16_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C16"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C16)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 80,
-              "page_end": 80,
-              "section_title": "8.5. Классификация TNM. (ICD-O-3 C16, 8-ое издание, 2016 г.).",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c17_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C17"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C17)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 536,
-              "page_end": 536,
-              "section_title": "ТАБЛИЦЫ СООТВЕТСТВИЯ «СТАДИЯ-TNM» ДЛЯ РЯДА ЛОКАЛИЗАЦИЙ:",
-              "section_type": "table_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c24_1_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C24.1"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C24.1)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 536,
-              "page_end": 536,
-              "section_title": "Таблица 1",
-              "section_type": "table_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [],
-        "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "Таблица",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1\nГ",
-            "frequency_text": "руппировка по стадиям\nСтадия 0\nTis\nN0\nM0",
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 536,
-              "page_end": 536,
-              "section_title": "Таблица 1",
-              "section_type": "table_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "Таблица 1\nГруппировка по стадиям\nСтадия 0\nTis\nN0\nM0"
-            }
-          }
-        ],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c34_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C34"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C34)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 165,
-              "page_end": 165,
-              "section_title": "16.7. Наблюдение, сроки и объем обследования.",
-              "section_type": "dispensary",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [
-        {
-          "name": "КТ",
-          "aliases": [],
-          "exam_type": "instrumental",
-          "requirement_level": "recommended",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-            "page_start": 165,
-            "page_end": 165,
-            "section_title": "16.7. Наблюдение, сроки и объем обследования.",
-            "section_type": "dispensary",
-            "table_index": null,
-            "row_index": null,
-            "quote": "КТ"
-          }
-        }
-      ],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [
-        {
-          "text": "контроль",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-            "page_start": 165,
-            "page_end": 165,
-            "section_title": "16.7. Наблюдение, сроки и объем обследования.",
-            "section_type": "dispensary",
-            "table_index": null,
-            "row_index": null,
-            "quote": "контроль"
-          }
-        }
-      ],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c37_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C37"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C37)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 536,
-              "page_end": 536,
-              "section_title": "Таблица 2",
-              "section_type": "table_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [],
-        "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "Таблица",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2\nГ",
-            "frequency_text": "руппировка по стадиям\nСтадия 0\nTis\nN0\nM0",
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 536,
-              "page_end": 536,
-              "section_title": "Таблица 2",
-              "section_type": "table_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "Таблица 2\nГруппировка по стадиям\nСтадия 0\nTis\nN0\nM0"
-            }
-          }
-        ],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c38_1_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C38.1"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C38.1)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 536,
-              "page_end": 536,
-              "section_title": "Таблица 2",
-              "section_type": "table_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [],
-        "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "Таблица",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2\nГ",
-            "frequency_text": "руппировка по стадиям\nСтадия 0\nTis\nN0\nM0",
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 536,
-              "page_end": 536,
-              "section_title": "Таблица 2",
-              "section_type": "table_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "Таблица 2\nГруппировка по стадиям\nСтадия 0\nTis\nN0\nM0"
-            }
-          }
-        ],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c40_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C40"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C40)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 195,
-              "page_end": 195,
-              "section_title": "18.15.1. Диспансерное наблюдение осуществляется после окончания лечения в",
-              "section_type": "treatment",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [
-        {
-          "name": "КТ",
-          "aliases": [],
-          "exam_type": "instrumental",
-          "requirement_level": "recommended",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-            "page_start": 195,
-            "page_end": 195,
-            "section_title": "18.15.1. Диспансерное наблюдение осуществляется после окончания лечения в",
-            "section_type": "treatment",
-            "table_index": null,
-            "row_index": null,
-            "quote": "КТ"
+            "quote": "объективное подтверждение клинической информации с помощью УЗИ, КТ, МРТ (при необходимости), ПЭТ (при необходимости)."
           }
         },
+        {
+          "name": "КТ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "объективное подтверждение клинической информации с помощью УЗИ, КТ, МРТ (при необходимости), ПЭТ (при необходимости)."
+          }
+        }
+      ],
+      "conditional_exams": [
         {
           "name": "МРТ",
           "aliases": [],
-          "exam_type": "instrumental",
-          "requirement_level": "recommended",
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
           "accepted_statuses": [
             "performed",
             "recommended"
@@ -923,372 +528,20 @@
             "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
             "document_url": null,
             "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-            "page_start": 195,
-            "page_end": 195,
-            "section_title": "18.15.1. Диспансерное наблюдение осуществляется после окончания лечения в",
-            "section_type": "treatment",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "МРТ"
-          }
-        }
-      ],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [
-        {
-          "text": "опухолев",
-          "aliases": [],
-          "red_flag_type": "possible_malignancy",
-          "severity": "critical",
-          "expected_actions": [
-            "дообследование",
-            "маршрутизация"
-          ],
-          "cap_if_unhandled": 45,
-          "source_ref": {
-            "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-            "page_start": 195,
-            "page_end": 195,
-            "section_title": "18.15.1. Диспансерное наблюдение осуществляется после окончания лечения в",
-            "section_type": "treatment",
-            "table_index": null,
-            "row_index": null,
-            "quote": "опухолев"
-          }
-        }
-      ],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c44_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C44"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C44)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 537,
-              "page_end": 537,
-              "section_title": "Таблица 4",
-              "section_type": "table_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [],
-        "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "Таблица",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "4\nГ",
-            "frequency_text": "руппировка по стадиям\nСтадия IA\nТ1\nN0\nM0",
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 537,
-              "page_end": 537,
-              "section_title": "Таблица 4",
-              "section_type": "table_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "Таблица 4\nГруппировка по стадиям\nСтадия IA\nТ1\nN0\nM0"
-            }
-          }
-        ],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c45_0_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C45.0"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C45.0)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 536,
-              "page_end": 537,
-              "section_title": "Таблица 3",
-              "section_type": "table_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [],
-        "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "Таблица",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "3\nГ",
-            "frequency_text": "руппировка по стадиям\nСтадия I\nТ1\nN0\nM0",
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 536,
-              "page_end": 537,
-              "section_title": "Таблица 3",
-              "section_type": "table_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "Таблица 3\nГруппировка по стадиям\nСтадия I\nТ1\nN0\nM0"
-            }
-          }
-        ],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c56_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C56"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C56)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 310,
-              "page_end": 310,
-              "section_title": "1 Морфологические коды установлены Международной Классификацией Болезней, рубрика",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [
-        {
-          "text": "злокачествен",
-          "aliases": [],
-          "red_flag_type": "possible_malignancy",
-          "severity": "critical",
-          "expected_actions": [
-            "дообследование",
-            "маршрутизация"
-          ],
-          "cap_if_unhandled": 45,
-          "source_ref": {
-            "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-            "page_start": 310,
-            "page_end": 310,
-            "section_title": "1 Морфологические коды установлены Международной Классификацией Болезней, рубрика",
-            "section_type": "classification",
-            "table_index": null,
-            "row_index": null,
-            "quote": "злокачествен"
-          }
-        }
-      ],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c58_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C58"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C58)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 324,
-              "page_end": 325,
-              "section_title": "27.10.1. Режим наблюдения:",
-              "section_type": "criteria_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [
-        {
-          "name": "УЗИ",
-          "aliases": [],
-          "exam_type": "instrumental",
-          "requirement_level": "recommended",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-            "page_start": 324,
-            "page_end": 325,
-            "section_title": "27.10.1. Режим наблюдения:",
-            "section_type": "criteria_block",
-            "table_index": null,
-            "row_index": null,
-            "quote": "УЗИ"
+            "quote": "объективное подтверждение клинической информации с помощью УЗИ, КТ, МРТ (при необходимости), ПЭТ (при необходимости)."
           }
         },
         {
-          "name": "КТ",
+          "name": "ПЭТ",
           "aliases": [],
-          "exam_type": "instrumental",
-          "requirement_level": "recommended",
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
           "accepted_statuses": [
             "performed",
             "recommended"
@@ -1300,52 +553,267 @@
             "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
             "document_url": null,
             "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-            "page_start": 324,
-            "page_end": 325,
-            "section_title": "27.10.1. Режим наблюдения:",
-            "section_type": "criteria_block",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "КТ"
-          }
-        },
-        {
-          "name": "МРТ",
-          "aliases": [],
-          "exam_type": "instrumental",
-          "requirement_level": "recommended",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-            "page_start": 324,
-            "page_end": 325,
-            "section_title": "27.10.1. Режим наблюдения:",
-            "section_type": "criteria_block",
-            "table_index": null,
-            "row_index": null,
-            "quote": "МРТ"
+            "quote": "объективное подтверждение клинической информации с помощью УЗИ, КТ, МРТ (при необходимости), ПЭТ (при необходимости)."
           }
         }
       ],
-      "conditional_exams": [],
       "treatment": {
-        "non_drug": [],
+        "non_drug": [
+          {
+            "text": "Лечение зависит от характеристик опухоли и общего состояния пациента, основные цели – излечение, сохранение/восстановление функций органов полости рта, уменьшение осложнений.",
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лечение зависит от характеристик опухоли и общего состояния пациента, основные цели – излечение, сохранение/восстановление функций органов полости рта, уменьшение осложнений."
+            }
+          },
+          {
+            "text": "Для успешного исхода лечения требуется мультидисциплинарный подход.",
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Для успешного исхода лечения требуется мультидисциплинарный подход."
+            }
+          },
+          {
+            "text": "Выбор стратегии лечения осуществляется между хирургическим лечением, лучевой терапией и комбинированными методами.",
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Выбор стратегии лечения осуществляется между хирургическим лечением, лучевой терапией и комбинированными методами."
+            }
+          },
+          {
+            "text": "Хирургический метод допустим при опухолях I стадии, которые можно радикально удалить с хорошим функциональным исходом.",
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Хирургический метод допустим при опухолях I стадии, которые можно радикально удалить с хорошим функциональным исходом."
+            }
+          },
+          {
+            "text": "Рак I–II стадии в остальных случаях лечится лучевым методом и комбинированно.",
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Рак I–II стадии в остальных случаях лечится лучевым методом и комбинированно."
+            }
+          },
+          {
+            "text": "Пациенты с распространенным раком всегда требуют комбинированного лечения.",
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Пациенты с распространенным раком всегда требуют комбинированного лечения."
+            }
+          },
+          {
+            "text": "Неотъемлемой частью лечения являются расширенные резекции с выполнением реконструктивно-восстановительных операций.",
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Неотъемлемой частью лечения являются расширенные резекции с выполнением реконструктивно-восстановительных операций."
+            }
+          },
+          {
+            "text": "Применение неоадъювантной химиотерапии или одновременной химиотерапии и лучевого лечения позволяет увеличить число органосохраняющих вмешательств и перевести нерезектабельные опухоли в резектабельное состояние.",
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Применение неоадъювантной химиотерапии или одновременной химиотерапии и лучевого лечения позволяет увеличить число органосохраняющих вмешательств и перевести нерезектабельные опухоли в резектабельное "
+            }
+          },
+          {
+            "text": "У всех пациентов, подлежащих лучевой терапии, должна быть санирована полость рта.",
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "У всех пациентов, подлежащих лучевой терапии, должна быть санирована полость рта."
+            }
+          },
+          {
+            "text": "При необходимости удаления зубов в зоне объема облучения заживление раны должно произойти до начала облучения.",
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При необходимости удаления зубов в зоне объема облучения заживление раны должно произойти до начала облучения."
+            }
+          },
+          {
+            "text": "При лучевом лечении опухолей головы и шеи используют традиционный режим (РОД 2 Гр, СОД 66–70 Гр) или нетрадиционные режимы фракционирования (гиперфракционирование или варианты ускоренного режима).",
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При лучевом лечении опухолей головы и шеи используют традиционный режим (РОД 2 Гр, СОД 66–70 Гр) или нетрадиционные режимы фракционирования (гиперфракционирование или варианты ускоренного режима)."
+            }
+          },
+          {
+            "text": "Гиперфракционирование: РОД 1.2 Гр/2 фракции в день, СОД 81,6 Гр.",
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Гиперфракционирование: РОД 1.2 Гр/2 фракции в день, СОД 81,6 Гр."
+            }
+          },
+          {
+            "text": "Ускоренный режим фракционирования: РОД 1.2 Гр/2 фракции в день на первичную опухоль и зоны регионарного метастазирования (большое поле) до 36 Гр, затем на 4 и 5 неделе – первую фракцию РОД 1.8 Гр на эту же зону до 18 Гр и вторую фракцию в день локально на опухоль (буст) РОД 1.6 Гр до 16 Гр.",
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ускоренный режим фракционирования: РОД 1.2 Гр/2 фракции в день на первичную опухоль и зоны регионарного метастазирования (большое поле) до 36 Гр, затем на 4 и 5 неделе – первую фракцию РОД 1.8 Гр на э"
+            }
+          },
+          {
+            "text": "Применение расщепленного курса (7–14-дневный интервал) осуществляется после дозы 40 Гр у пожилых, ослабленных пациентов или при наличии некупируемых лучевых реакций 3–4-й степени.",
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Применение расщепленного курса (7–14-дневный интервал) осуществляется после дозы 40 Гр у пожилых, ослабленных пациентов или при наличии некупируемых лучевых реакций 3–4-й степени."
+            }
+          },
+          {
+            "text": "Послеоперационная лучевая терапия проводится при высоком риске развития рецидива (наличие двух или более регионарных метастазов, нарушение целостности капсулы лимфоузла, опухолевые клетки в краях отсечения тканей, периневральная и лимфососудистая инвазия).",
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Послеоперационная лучевая терапия проводится при высоком риске развития рецидива (наличие двух или более регионарных метастазов, нарушение целостности капсулы лимфоузла, опухолевые клетки в краях отсе"
+            }
+          },
+          {
+            "text": "Применение брахитерапии рекомендуется при опухолях губы и полости рта в изолированном виде или в сочетании с дистанционным облучением зон регионарного метастазирования.",
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Применение брахитерапии рекомендуется при опухолях губы и полости рта в изолированном виде или в сочетании с дистанционным облучением зон регионарного метастазирования."
+            }
+          }
+        ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "ГЛАВА",
+            "drug_name": "Паклитаксел",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "28\nГ",
-            "frequency_text": "ЕСТАЦИОННЫЕ ТРОФОБЛАСТИЧЕСКИЕ ОПУХОЛИ (O",
+            "dose_text": "175 мг/м2 внутривенно 3-х часовая инфузия в 1-й день с премедикацией, интервалы между курсами 4 недели.",
+            "frequency_text": null,
             "duration_text": null,
             "route": null,
             "indication": null,
@@ -1356,13 +824,63 @@
               "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
               "document_url": null,
               "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 324,
-              "page_end": 325,
-              "section_title": "27.10.1. Режим наблюдения:",
-              "section_type": "criteria_block",
+              "page_start": 17,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ГЛАВА 28\nГЕСТАЦИОННЫЕ ТРОФОБЛАСТИЧЕСКИЕ ОПУХОЛИ (O"
+              "quote": "Паклитаксел 175 мг/м2 внутривенно 3-х часовая инфузия в 1-й день с премедикацией, затем карбоплатин (расчет дозы на AUC 6) внутривенно в течение 15–30 мин в 1-й день, интервалы между курсами 4 недели."
+            }
+          },
+          {
+            "drug_name": "Карбоплатин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "расчет дозы на AUC 6 внутривенно в течение 15–30 мин в 1-й день, интервалы между курсами 4 недели.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": 17,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Паклитаксел 175 мг/м2 внутривенно 3-х часовая инфузия в 1-й день с премедикацией, затем карбоплатин (расчет дозы на AUC 6) внутривенно в течение 15–30 мин в 1-й день, интервалы между курсами 4 недели."
+            }
+          },
+          {
+            "drug_name": "Метотрексат",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "30–40 мг внутрь 1 раз в неделю.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
+              "page_start": 17,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Метотрексат 30–40 мг внутрь 1 раз в неделю."
             }
           }
         ],
@@ -1375,478 +893,26 @@
       "routing": [],
       "red_flags": [
         {
-          "text": "злокачествен",
+          "text": "Доза облучения спинного мозга не должна превышать 45 Гр за 4,5 недели у пациентов, получающих только лучевую терапию, и 35 Гр за 4,5 недели у пациентов, получающих химиолучевое лечение.",
           "aliases": [],
-          "red_flag_type": "possible_malignancy",
-          "severity": "critical",
-          "expected_actions": [
-            "дообследование",
-            "маршрутизация"
-          ],
-          "cap_if_unhandled": 45,
-          "source_ref": {
-            "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-            "page_start": 324,
-            "page_end": 325,
-            "section_title": "27.10.1. Режим наблюдения:",
-            "section_type": "criteria_block",
-            "table_index": null,
-            "row_index": null,
-            "quote": "злокачествен"
-          }
-        }
-      ],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c63_2_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C63.2"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C63.2)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 537,
-              "page_end": 537,
-              "section_title": "Таблица 4",
-              "section_type": "table_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [],
-        "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "Таблица",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "4\nГ",
-            "frequency_text": "руппировка по стадиям\nСтадия IA\nТ1\nN0\nM0",
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 537,
-              "page_end": 537,
-              "section_title": "Таблица 4",
-              "section_type": "table_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "Таблица 4\nГруппировка по стадиям\nСтадия IA\nТ1\nN0\nM0"
-            }
-          }
-        ],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c67_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C67"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C67)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 390,
-              "page_end": 391,
-              "section_title": "33.5.3. Органосохраняющее лечение.",
-              "section_type": "treatment",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [
-        {
-          "name": "УЗИ",
-          "aliases": [],
-          "exam_type": "instrumental",
-          "requirement_level": "recommended",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-            "page_start": 390,
-            "page_end": 391,
-            "section_title": "33.5.3. Органосохраняющее лечение.",
-            "section_type": "treatment",
-            "table_index": null,
-            "row_index": null,
-            "quote": "УЗИ"
-          }
-        }
-      ],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [
-        {
-          "text": "через 3 мес",
-          "timing": null,
-          "required_if": [],
+          "red_flag_type": "other",
+          "severity": "high",
           "expected_actions": [],
+          "cap_if_unhandled": null,
           "source_ref": {
             "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
             "document_url": null,
             "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-            "page_start": 390,
-            "page_end": 391,
-            "section_title": "33.5.3. Органосохраняющее лечение.",
-            "section_type": "treatment",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "через 3 мес"
+            "quote": "Доза облучения спинного мозга не должна превышать 45 Гр за 4,5 недели у пациентов, получающих только лучевую терапию, и 35 Гр за 4,5 недели у пациентов, получающих химиолучевое лечение."
           }
         }
       ],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c69_3_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C69.3"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C69.3)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 427,
-              "page_end": 427,
-              "section_title": "лечения принимается консилиумом в составе врача-нейрохирурга, врача-радиационного",
-              "section_type": "treatment",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c70_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C70"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C70)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 404,
-              "page_end": 404,
-              "section_title": "34.8.3. Наблюдение после отведения мочи с созданием резервуаров (ортотопическая",
-              "section_type": "criteria_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c74_0_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C74.0"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C74.0)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 537,
-              "page_end": 537,
-              "section_title": "Таблица 5б",
-              "section_type": "table_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c75_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C75"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C75)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 404,
-              "page_end": 404,
-              "section_title": "34.8.3. Наблюдение после отведения мочи с созданием резервуаров (ортотопическая",
-              "section_type": "criteria_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "c79_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по",
-      "name": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "C79"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60 (МКБ C79)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "novoobrazovaniya_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_пост_мз_рб_от",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/novoobrazovaniya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf",
-              "page_start": 404,
-              "page_end": 404,
-              "section_title": "34.8.3. Наблюдение после отведения мочи с созданием резервуаров (ортотопическая",
-              "section_type": "criteria_block",
-              "table_index": null,
-              "row_index": null,
-              "quote": "КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
@@ -1857,127 +923,19 @@
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-05-31T18:30:08.930413+00:00",
-    "extractor": "builder.heuristic_v2",
-    "extractor_version": "2.0",
+    "extracted_at": "2026-07-20T17:03:47.075556+00:00",
+    "extractor": "llm_extractor",
+    "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "aggregated from 4 protocol_cards, 6016 chunks"
+      "llm_pipeline_v1",
+      "conditions=2"
     ]
   },
   "validation": {
-    "status": "needs_human_review",
+    "status": "valid",
     "errors": [],
-    "warnings": [
-      {
-        "level": "warning",
-        "code": "required_exam_level",
-        "message": "required_exams содержит элемент не с level=required",
-        "path": "conditions[c15_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по].required_exams[0]"
-      },
-      {
-        "level": "warning",
-        "code": "required_exam_level",
-        "message": "required_exams содержит элемент не с level=required",
-        "path": "conditions[c34_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по].required_exams[0]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_drug",
-        "message": "Дублирующийся препарат",
-        "path": "conditions[c37_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по].treatment.drugs[0]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_drug",
-        "message": "Дублирующийся препарат",
-        "path": "conditions[c38_1_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_].treatment.drugs[0]"
-      },
-      {
-        "level": "warning",
-        "code": "required_exam_level",
-        "message": "required_exams содержит элемент не с level=required",
-        "path": "conditions[c40_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по].required_exams[0]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_exam",
-        "message": "Дублирующееся обследование",
-        "path": "conditions[c40_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по].required_exams[0]"
-      },
-      {
-        "level": "warning",
-        "code": "required_exam_level",
-        "message": "required_exams содержит элемент не с level=required",
-        "path": "conditions[c40_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по].required_exams[1]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_drug",
-        "message": "Дублирующийся препарат",
-        "path": "conditions[c44_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по].treatment.drugs[0]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_drug",
-        "message": "Дублирующийся препарат",
-        "path": "conditions[c45_0_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_].treatment.drugs[0]"
-      },
-      {
-        "level": "warning",
-        "code": "required_exam_level",
-        "message": "required_exams содержит элемент не с level=required",
-        "path": "conditions[c58_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по].required_exams[0]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_exam",
-        "message": "Дублирующееся обследование",
-        "path": "conditions[c58_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по].required_exams[0]"
-      },
-      {
-        "level": "warning",
-        "code": "required_exam_level",
-        "message": "required_exams содержит элемент не с level=required",
-        "path": "conditions[c58_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по].required_exams[1]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_exam",
-        "message": "Дублирующееся обследование",
-        "path": "conditions[c58_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по].required_exams[1]"
-      },
-      {
-        "level": "warning",
-        "code": "required_exam_level",
-        "message": "required_exams содержит элемент не с level=required",
-        "path": "conditions[c58_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по].required_exams[2]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_exam",
-        "message": "Дублирующееся обследование",
-        "path": "conditions[c58_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по].required_exams[2]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_drug",
-        "message": "Дублирующийся препарат",
-        "path": "conditions[c63_2_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_].treatment.drugs[0]"
-      },
-      {
-        "level": "warning",
-        "code": "required_exam_level",
-        "message": "required_exams содержит элемент не с level=required",
-        "path": "conditions[c67_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по].required_exams[0]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_exam",
-        "message": "Дублирующееся обследование",
-        "path": "conditions[c67_кп_алгоритмы_диагностики_и_лечения_злокач_новообр_по].required_exams[0]"
-      }
-    ],
-    "validated_at": "2026-05-31T18:30:08.930517+00:00"
+    "warnings": [],
+    "validated_at": "2026-07-20T17:03:47.089996+00:00"
   }
 }

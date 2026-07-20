@@ -1,10 +1,10 @@
 {
   "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Оказание медпомощи пациентам дет возр со спинальной мышечной атрофией",
+    "title": "Оказание медицинской помощи пациентам детского возраста со спинальной мышечной атрофией",
     "url": null,
     "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,15 +32,14 @@
   },
   "conditions": [
     {
-      "condition_id": "оказание_медпомощи_пациентам_дет_возр_со_спиналь",
-      "name": "Оказание медпомощи пациентам дет возр со спинальной мышечной атрофией",
+      "condition_id": "spinal_muscular_atrophy",
+      "name": "спинальная мышечная атрофия",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
         "G12",
         "G12.0",
-        "G12.1",
-        "B24"
+        "G12.1"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -48,7 +47,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[criteria] 11. Для определения СМА используется количественный анализ генов SMN1 (стр. 3)",
+            "text": "Количественный анализ генов SMN1 и SMN2 с помощью MLPA, ПЦР или NGS",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -65,19 +64,117 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 11. Для определения СМА используется количественный анализ генов SMN1 (стр. 3)"
+              "quote": "Количественный анализ генов SMN1 и SMN2 с помощью MLPA, ПЦР или NGS"
+            }
+          },
+          {
+            "text": "Диагноз СМА устанавливается только после получения положительных результатов генетического обследования на СМА.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Диагноз СМА устанавливается только после получения положительных результатов генетического обследования на СМА."
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
-      "conditional_exams": [],
+      "required_exams": [
+        {
+          "name": "молекулярно-генетическое обследование генов SMN1/SMN2",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Диагностика СМА 5q основывается на молекулярно-генетическом обследовании генов SMN1/SMN2 и используется в качестве диагностического метода первой линии при подозрении на СМА."
+          }
+        },
+        {
+          "name": "Генетическое обследование на СМА",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Диагноз СМА устанавливается только после получения положительных результатов генетического обследования на СМА, далее принимается решение о назначении патогенетической терапии."
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "клиническое обследование с оценкой эффективности откашливания и проверкой на наличие признаков ночной гиповентиляции легких",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "клиническое обследование с оценкой эффективности откашливания и проверкой на наличие признаков ночной гиповентиляции легких при ее подозрении"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 15. Диагноз СМА устанавливается только после получения положительных (стр. 3)",
+            "text": "использование жестких ортезов-корсетов на позвоночник для сидячих и ходящих пациентов",
             "source_ref": {
               "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
               "document_url": null,
@@ -88,11 +185,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 15. Диагноз СМА устанавливается только после получения положительных (стр. 3)"
+              "quote": "использование жестких ортезов-корсетов на позвоночник для сидячих и ходящих пациентов"
             }
           },
           {
-            "text": "результатов генетического обследования на СМА, далее принимается решение",
+            "text": "Хирургическое лечение деформации позвоночника проводить после достижения возраста 4 лет.",
             "source_ref": {
               "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
               "document_url": null,
@@ -103,11 +200,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "результатов генетического обследования на СМА, далее принимается решение"
+              "quote": "Хирургическое лечение деформации позвоночника проводить после достижения возраста 4 лет."
             }
           },
           {
-            "text": "о назначении патогенетической терапии.",
+            "text": "Хирургическое устранение односторонней и двусторонней неустойчивости бедра только в случаях, когда она доставляет пациенту сильную боль.",
             "source_ref": {
               "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
               "document_url": null,
@@ -118,11 +215,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "о назначении патогенетической терапии."
+              "quote": "Хирургическое устранение односторонней и двусторонней неустойчивости бедра только в случаях, когда она доставляет пациенту сильную боль."
             }
           },
           {
-            "text": "[treatment] 16. Медикаментозная терапия СМА 5q подразделяется на два направления: (стр. 3)",
+            "text": "При переломах у лежачих пациентов преимущественно использовать закрытое лечение с наружной иммобилизацией, избегать длительной гипсовой иммобилизации (более 4 недель).",
             "source_ref": {
               "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
               "document_url": null,
@@ -133,11 +230,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 16. Медикаментозная терапия СМА 5q подразделяется на два направления: (стр. 3)"
+              "quote": "При переломах у лежачих пациентов преимущественно использовать закрытое лечение с наружной иммобилизацией, избегать длительной гипсовой иммобилизации (более 4 недель)."
             }
           },
           {
-            "text": "патогенетическая терапия, направленная на восполнение дефицита белка SMN",
+            "text": "При переломах длинных костей нижних конечностей у ходячих пациентов и переломах бедра у лежачих проводить хирургическую стабилизацию интрамедуллярными штифтами.",
             "source_ref": {
               "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
               "document_url": null,
@@ -148,11 +245,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "патогенетическая терапия, направленная на восполнение дефицита белка SMN"
+              "quote": "При переломах длинных костей нижних конечностей у ходячих пациентов и переломах бедра у лежачих проводить хирургическую стабилизацию интрамедуллярными штифтами."
             }
           },
           {
-            "text": "симптоматическая терапия (коррекция отдельных симптомов заболевания).",
+            "text": "Определение типа рациона и способа питания на основании индивидуальной переносимости пациента.",
             "source_ref": {
               "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
               "document_url": null,
@@ -163,17 +260,62 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "симптоматическая терапия (коррекция отдельных симптомов заболевания)."
+              "quote": "Определение типа рациона и способа питания на основании индивидуальной переносимости пациента."
+            }
+          },
+          {
+            "text": "Надлежащее восполнение потерь жидкости.",
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Надлежащее восполнение потерь жидкости."
+            }
+          },
+          {
+            "text": "Избегание голодания для предотвращения развития метаболического ацидоза, нарушений обмена жирных кислот и гипер-/гипогликемии.",
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Избегание голодания для предотвращения развития метаболического ацидоза, нарушений обмена жирных кислот и гипер-/гипогликемии."
+            }
+          },
+          {
+            "text": "Обеспечение питания пациента каждые 6 часов с включением в рацион источника белка при острых нарушениях, требующих оказания неотложной медицинской помощи.",
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Обеспечение питания пациента каждые 6 часов с включением в рацион источника белка при острых нарушениях, требующих оказания неотложной медицинской помощи."
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "июня",
+            "drug_name": "лекарственные средства для лечения обструктивных заболеваний дыхательных путей",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2017 г",
+            "dose_text": "использовать в небулизированном (распыленном) виде при бронхиальной астме или положительной реакции на бронхолитики",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -185,20 +327,20 @@
               "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
               "document_url": null,
               "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
-              "page_start": null,
+              "page_start": 9,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июня 2017 г"
+              "quote": "лекарственные средства для лечения обструктивных заболеваний дыхательных путей (у пациентов со СМА при бронхиальной астме или положительной реакции на бронхолитики использовать их в небулизированном (распыленном) виде."
             }
           },
           {
-            "drug_name": "октября",
+            "drug_name": "Nusinersen (Спинраза)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2011 г",
+            "dose_text": "Вводится интратекально. Зарегистрирован для лечения всех типов СМА 5q.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -210,13 +352,263 @@
               "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
               "document_url": null,
               "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "октября 2011 г"
+              "quote": "лекарственный препарат с механизмом действия антисмыслового олигонуклеотида Спинраза1 международное непатентованное наименование (далее – МНН) Nusinersen зарегистрирован для лечения всех типов СМА 5q, вводится интратекально"
+            }
+          },
+          {
+            "drug_name": "Risdiplam (Эврисди)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Путь введения пероральный. Применяется при лечении 1, 2, 3 типов СМА 5q.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+              "page_start": 4,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "лекарственный препарат Эврисди1 (МНН Risdiplam) (путь введения пероральный) при лечении 1, 2, 3 типов СМА 5q;"
+            }
+          },
+          {
+            "drug_name": "Onasemnogene abeparvovec (Золгенсма)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Однократное внутривенное введение. Функциональная копия гена SMN для остановки прогрессирования заболевания.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+              "page_start": 4,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "лекарственный препарат вирус-вектор для генной терапии для доставки в клетки гена SMN1 – Золгенсма1 (МНН онасемноген абепарвовек) с однократным внутривенным введением."
+            }
+          },
+          {
+            "drug_name": "Системные кортикостероиды",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Вводятся всем пациентам до и после инфузии Золгенсма. Схема, доза, режим и длительность определяются руководителем Центра.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+              "page_start": 4,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Всем пациентам до и после инфузии лекарственного препарата Золгенсма вводятся системные кортикостероиды. Схема, доза, режим и длительность стероидной терапии определяется руководителем Центра"
+            }
+          },
+          {
+            "drug_name": "Антибиотики",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Назначаются для коррекции сопутствующих заболеваний по медицинским показаниям.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+              "page_start": 4,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Симптоматическая терапия при СМА включает лекарственные препараты, назначаемые для коррекции сопутствующих заболеваний по медицинским показаниям, в том числе: антибиотики;"
+            }
+          },
+          {
+            "drug_name": "Витамин D",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Применяют для минерализации костей, преимущественно при явной необходимости (наличии дефицита).",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+              "page_start": 4,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "лекарственные средства (пищевые добавки), обеспечивающие минерализацию костей: витамин D, кальций и бисфосфонат (витамин D преимущественно применяют при явной необходимости (наличии дефицита)"
+            }
+          },
+          {
+            "drug_name": "Кальций",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Применяют для минерализации костей.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+              "page_start": 4,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "лекарственные средства (пищевые добавки), обеспечивающие минерализацию костей: витамин D, кальций и бисфосфонат"
+            }
+          },
+          {
+            "drug_name": "Бисфосфонат",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Применяют для минерализации костей.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+              "page_start": 4,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "лекарственные средства (пищевые добавки), обеспечивающие минерализацию костей: витамин D, кальций и бисфосфонат"
+            }
+          },
+          {
+            "drug_name": "Лекарственные средства для лечения функциональных нарушений ЖКТ",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Для лечения гастроэзофагеального рефлюкса и других нарушений.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+              "page_start": 4,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "лекарственные средства для лечения функциональных нарушений желудочно-кишечного тракта (далее – ЖКТ) (гастроэзофагеальный рефлюкс)."
+            }
+          },
+          {
+            "drug_name": "Прокинетики",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Для облегчения симптомов запора и нарушения моторики ЖКТ.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+              "page_start": 8,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "прием лекарственных средств для лечения функциональных нарушений ЖКТ, прокинетиков и пробиотиков для облегчения симптомов запора и нарушения моторики ЖКТ;"
+            }
+          },
+          {
+            "drug_name": "Пробиотики",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Для облегчения симптомов запора и нарушения моторики ЖКТ.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+              "page_start": 8,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "прием лекарственных средств для лечения функциональных нарушений ЖКТ, прокинетиков и пробиотиков для облегчения симптомов запора и нарушения моторики ЖКТ;"
             }
           }
         ],
@@ -226,7 +618,7 @@
       },
       "follow_up": [
         {
-          "text": "контроль",
+          "text": "Оценку дисфункции ЖКТ, контроль массы тела у пациентов со СМА осуществляют врач-гастроэнтеролог и (или) врач-диетолог, врач-педиатр.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -240,20 +632,14 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
+            "quote": "Оценку дисфункции ЖКТ, контроль массы тела у пациентов со СМА осуществляют врач-гастроэнтеролог и (или) врач-диетолог, врач-педиатр."
           }
-        }
-      ],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [
+        },
         {
-          "text": "требующих оказания неотложной медицинской помощи;\n\n[other] Описание протокола (стр. 1)\nКлинический протокол: Оказание медпомощи пациентам дет возр",
-          "aliases": [],
-          "red_flag_type": "urgent_referral",
-          "severity": "high",
+          "text": "Оценку нарушения глотания осуществляют с привлечением врача-оториноларинголога и врача – детского невролога.",
+          "timing": null,
+          "required_if": [],
           "expected_actions": [],
-          "cap_if_unhandled": null,
           "source_ref": {
             "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
             "document_url": null,
@@ -264,45 +650,150 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "требующих оказания неотложной медицинской помощи;\n\n[other] Описание протокола (стр. 1)\nКлинический протокол: Оказание медпомощи пациентам дет возр"
+            "quote": "Оценку нарушения глотания осуществляют с привлечением врача-оториноларинголога и врача – детского невролога."
+          }
+        },
+        {
+          "text": "Уточняются и вносятся в медицинские документы сведения, касающиеся симптомов, связанных с ЖКТ: наличие гастроэзофагеального рефлюкса, запора; прием лекарственных препаратов, регулирующих работу пищеварительного тракта; наличие задержки опорожнения желудка, рвоты, другие.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Уточняются и вносятся в медицинские документы сведения, касающиеся симптомов, связанных с ЖКТ: наличие гастроэзофагеального рефлюкса, запора; прием лекарственных препаратов, регулирующих работу пищева"
+          }
+        }
+      ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "Проведение люмбальной пункции (для Nusinersen) может быть выполнено под местной или общей анестезией (по решению врачебного консилиума).",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Проведение люмбальной пункции (для Nusinersen) может быть выполнено под местной или общей анестезией (по решению врачебного консилиума)."
+          }
+        },
+        {
+          "text": "Однократное внутривенное введение лекарственного препарата Золгенсма.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Однократное внутривенное введение лекарственного препарата Золгенсма."
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Не применять комбинированную терапию с назначением двух лекарственных препаратов патогенетической терапии.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "не применять комбинированную терапию с назначением двух лекарственных препаратов патогенетической терапии, при этом однократное введение лекарственного препарата Золгенсма считать законченным курсом"
+          }
+        },
+        {
+          "text": "Не применять лекарственные препараты патогенетической терапии на любой стадии СМА 5q с генетически подтвержденным диагнозом и с количеством копий гена SMN2 0 или 1.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "не применять лекарственные препараты патогенетической терапии на любой стадии СМА 5q с генетически подтвержденным диагнозом и с количеством копий гена SMN2 0 или 1;"
+          }
+        },
+        {
+          "text": "Отсутствие положительной клинической динамики через год с отсутствием эффективности проводимой терапии является основанием для решения о целесообразности дальнейшей патогенетической терапии.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "отсутствие положительной клинической динамики через год с отсутствием эффективности проводимой терапии... является основанием для решения о целесообразности дальнейшей патогенетической терапии"
           }
         }
       ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "nevrologiya_neyrokhirurgiya_кп_оказание_медпомощи_пациентам_дет_возр_со_спинальн",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Оказание_медпомощи_пациентам_дет_возр_со_спинальной_мышечной_атрофией_пост_МЗ_05.05.2023_№73.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Оказание медпомощи пациентам дет возр со спинальной мышечной атрофией"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:43.394497+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T17:00:14.394130+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:43.394973+00:00"
+    "validated_at": "2026-07-20T17:00:14.401686+00:00"
   }
 }

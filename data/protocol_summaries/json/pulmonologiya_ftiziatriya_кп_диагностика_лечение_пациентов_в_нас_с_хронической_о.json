@@ -1,7 +1,7 @@
 {
   "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "Диагностика лечение пациентов взрослое население с хронической обструктивной болезнью легких",
@@ -32,17 +32,13 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_лечение_пациентов_взрослое_население",
-      "name": "Диагностика лечение пациентов взрослое население с хронической обструктивной болезнью легких",
+      "condition_id": "chronic_obstructive_pulmonary_disease",
+      "name": "Хроническая обструктивная болезнь легких",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
         "J44",
-        "I50.9",
-        "J06.9",
-        "J40",
-        "J44.9",
-        "J45.9"
+        "J44.9"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -50,7 +46,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "(в соответствии с критериями степени тяжести обострения ХОБЛ, установленными",
+            "text": "Наличие респираторных симптомов в анамнезе (факторы риска, кашель с/без мокроты, одышка, снижение толерантности к физической нагрузке)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -67,11 +63,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "(в соответствии с критериями степени тяжести обострения ХОБЛ, установленными"
+              "quote": "Наличие респираторных симптомов в анамнезе (факторы риска, кашель с/без мокроты, одышка, снижение толерантности к физической нагрузке)"
             }
           },
           {
-            "text": "[classification] 7. В формулировке диагноза указываются фенотип ХОБЛ, тяжесть течения (стр. 3)",
+            "text": "Подтвержденное персистирующей необратимой (частично обратимой) бронхообструкции (ОФВ1/ФЖЕЛ <0,7, повышение ОФВ1 на <12% и <200 мл после бронходилатационного теста)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -88,11 +84,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 7. В формулировке диагноза указываются фенотип ХОБЛ, тяжесть течения (стр. 3)"
+              "quote": "Подтвержденное персистирующей необратимой (частично обратимой) бронхообструкции (ОФВ1/ФЖЕЛ <0,7, повышение ОФВ1 на <12% и <200 мл после бронходилатационного теста)"
             }
           },
           {
-            "text": "Примеры формулировок диагноза:",
+            "text": "Исключение других патологических состояний",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -109,11 +105,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Примеры формулировок диагноза:"
+              "quote": "Исключение других патологических состояний"
             }
           },
           {
-            "text": "[classification] 9. Диагноз ХОБЛ устанавливается на основании жалоб и анамнеза пациента, (стр. 4)",
+            "text": "Обострение ХОБЛ легкой степени тяжести: ЧД < 24 в минуту, ЧСС < 100 в минуту, SpO2 > 92%, С-реактивный белок < 10 мг/л",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -130,11 +126,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 9. Диагноз ХОБЛ устанавливается на основании жалоб и анамнеза пациента, (стр. 4)"
+              "quote": "Обострение ХОБЛ легкой степени тяжести: ЧД < 24 в минуту, ЧСС < 100 в минуту, SpO2 > 92%, С-реактивный белок < 10 мг/л"
             }
           },
           {
-            "text": "[criteria] Критерии степени тяжести обострения ХОБЛ (стр. 12)",
+            "text": "Обострение ХОБЛ средней степени тяжести: ЧД > 24 в минуту, ЧСС > 100 в минуту, SpO2 < 92% (или изменение > 3%), С-реактивный белок > 10 мг/л, PaO2 < 60 мм рт.ст.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -151,11 +147,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] Критерии степени тяжести обострения ХОБЛ (стр. 12)"
+              "quote": "Обострение ХОБЛ средней степени тяжести: ЧД > 24 в минуту, ЧСС > 100 в минуту, SpO2 < 92% (или изменение > 3%), С-реактивный белок > 10 мг/л, PaO2 < 60 мм рт.ст."
             }
           },
           {
-            "text": "| № п/п | Степень тяжести | Критерии |",
+            "text": "Тяжелое обострение ХООБЛ: Тяжелая одышка; ЧД, ЧСС, SpO2, С-реактивный белок соответствуют средней тяжести; PaO2 < 60 мм рт.ст., PaCO2 > 45 мм рт.ст. и ацидоз (рН <7,35)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -172,49 +168,7 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "| № п/п | Степень тяжести | Критерии |"
-            }
-          },
-          {
-            "text": "[criteria] Диагностические критерии ХОБЛ (стр. 14)",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[criteria] Диагностические критерии ХОБЛ (стр. 14)"
-            }
-          },
-          {
-            "text": "| № п/п | Диагностические критерии | Описание |",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "| № п/п | Диагностические критерии | Описание |"
+              "quote": "Тяжелое обострение ХООБЛ: Тяжелая одышка; ЧД, ЧСС, SpO2, С-реактивный белок соответствуют средней тяжести; PaO2 < 60 мм рт.ст., PaCO2 > 45 мм рт.ст. и ацидоз (рН <7,35)"
             }
           }
         ],
@@ -223,7 +177,7 @@
       },
       "required_exams": [
         {
-          "name": "КТ",
+          "name": "Пульсоксиметрия (SpO2)",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -238,17 +192,17 @@
             "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
             "document_url": null,
             "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
-            "page_start": null,
+            "page_start": 4,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "тоды обследования | Рентгенография ОГК, КТ ОГК; определение диффузионной способности легких |\n\n[diagnostics] ПОСТАНОВЛЯЕТ:"
+            "quote": "У пациентов с ХОБЛ проводится пульсоксиметрия для оценки насыщения гемоглобина кислородом (далее – SpO2)."
           }
         },
         {
-          "name": "ЭКГ",
+          "name": "Сбор анамнеза",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -263,117 +217,302 @@
             "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
             "document_url": null,
             "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
-            "page_start": null,
+            "page_start": 5,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "аз в год; \nэлектрокардиография (далее – ЭКГ) – 1 раз в год.\n\n[diagnostics] 17. Обязательными диагностическими исследованиям"
+            "quote": "Обязательными диагностическими исследованиями в амбулаторных условиях являются: сбор анамнеза – однократно;"
+          }
+        },
+        {
+          "name": "Физикальное обследование с оценкой индекса массы тела",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обязательными диагностическими исследованиями в амбулаторных условиях являются: физикальное обследование с оценкой индекса массы тела – при каждом посещении;"
+          }
+        },
+        {
+          "name": "Общий анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "общий анализ крови – однократно, повторно при наличии клинически значимых изменений в исходном анализе, далее по медицинским показаниям;"
+          }
+        },
+        {
+          "name": "Биохимический анализ крови (общий белок, билирубин и его фракции, мочевина, креатинин, АЛТ, АСТ, глюкоза, калий, натрий, хлор, С-реактивный белок)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "биохимический анализ крови (исследование уровней общего белка, билирубина и его фракций, мочевины, креатинина, аланинаминотрансферазы, аспартатаминотрансферазы, глюкозы, калия, натрия, хлора, С-реактивного белка) – однократно..."
+          }
+        },
+        {
+          "name": "Спирометрия с бронходилатационным тестом с 400 мкг сальбутамола",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "спирометрия с бронходилатационным тестом с 400 мкг сальбутамола – при первичной диагностике, далее не реже 1 раза в год;"
+          }
+        },
+        {
+          "name": "Рентгенография ОГК",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "рентгенография ОГК – 1 раз в год;"
+          }
+        },
+        {
+          "name": "Электрокардиография (ЭКГ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "электрокардиография (далее – ЭКГ) – 1 раз в год."
+          }
+        },
+        {
+          "name": "Общий анализ мочи",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обязательными диагностическими исследованиями в стационарных условиях являются: общий анализ мочи – однократно, повторно при наличии клинически значимых изменений в исходном, далее по медицинским показаниям;"
           }
         }
       ],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "[treatment] 3. Для целей настоящего клинического протокола используются основные термины (стр. 2)",
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 3. Для целей настоящего клинического протокола используются основные термины (стр. 2)"
-            }
-          },
-          {
-            "text": "«О здравоохранении», а также следующие термины и их определения:",
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "«О здравоохранении», а также следующие термины и их определения:"
-            }
-          },
-          {
-            "text": "фармакологических классов, объединяемые в одну группу по общей для них способности",
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "фармакологических классов, объединяемые в одну группу по общей для них способности"
-            }
-          },
-          {
-            "text": "устранять бронхоспазм, действующие на тонус бронхиальных мышц и различные звенья",
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "устранять бронхоспазм, действующие на тонус бронхиальных мышц и различные звенья"
-            }
-          },
-          {
-            "text": "обострение ХОБЛ – событие, характеризующееся одышкой и (или) кашлем",
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "обострение ХОБЛ – событие, характеризующееся одышкой и (или) кашлем"
-            }
-          },
-          {
-            "text": "с отделением мокроты, которые ухудшаются в течение 14 дней и менее, сопровождаются",
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "с отделением мокроты, которые ухудшаются в течение 14 дней и менее, сопровождаются"
-            }
+      "conditional_exams": [
+        {
+          "name": "Компьютерная томография (КТ) органов грудной клетки (ОГК)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Компьютерная томография (далее – КТ) органов грудной клетки (далее – ОГК) проводится с целью уточнения фенотипа ХОБЛ, определения целесообразности проведения хирургической редукции легочных объемов..."
           }
-        ],
+        },
+        {
+          "name": "Рентгенография ОГК в передней прямой проекции",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Пациентам с подозрением на ХОБЛ выполняется рентгенография ОГК в передней прямой проекции для исключения других заболеваний органов дыхания."
+          }
+        },
+        {
+          "name": "Определение диффузионной способности легких",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Определение диффузионной способности легких при ХОБЛ выполняется у пациентов с одышкой, не соответствующей имеющейся степени бронхиальной обструкции, а также с признаками панацинарной эмфиземы по данным КТ ОГК."
+          }
+        },
+        {
+          "name": "Нагрузочное тестирование (тест с шестиминутной ходьбой или велоэргометрия)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Для определения переносимости физической нагрузки пациентам с ХОБЛ рекомендуется проведение нагрузочного тестирования, например, теста с шестиминутной ходьбой или велоэргометрии."
+          }
+        }
+      ],
+      "treatment": {
+        "non_drug": [],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "таблетки",
+            "drug_name": "Сальбутамол",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "500 мг",
+            "dose_text": "400 мкг для бронходилатационного теста",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -385,163 +524,13 @@
               "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
               "document_url": null,
               "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "таблетки 500 мг – по 1 таблетке каждый третий день до до"
-            }
-          },
-          {
-            "drug_name": "ингаляций",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "ингаляций 1 мг/1 мл (для небулайзерной терапии)"
-            }
-          },
-          {
-            "drug_name": "доза",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "900 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "доза \n900 мг)"
-            }
-          },
-          {
-            "drug_name": "марта",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2025 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "марта 2025 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          },
-          {
-            "drug_name": "июля",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2012 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июля 2012 г"
+              "quote": "спирометрия с бронходилатационным тестом с 400 мкг сальбутамола – при первичной диагностике, далее не реже 1 раза в год;"
             }
           }
         ],
@@ -549,13 +538,12 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [
+      "follow_up": [
         {
-          "text": "[routing] 24. Медицинскими показаниями для госпитализации пациентов с обострением (стр. 8)",
+          "text": "Спирометрия с бронходилатационным тестом: не реже 1 раза в год",
           "timing": null,
           "required_if": [],
+          "expected_actions": [],
           "source_ref": {
             "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
             "document_url": null,
@@ -566,11 +554,104 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "[routing] 24. Медицинскими показаниями для госпитализации пациентов с обострением (стр. 8)"
+            "quote": "Спирометрия с бронходилатационным тестом: не реже 1 раза в год"
           }
         },
         {
-          "text": "невозможность купировать обострение ХОБЛ в амбулаторных условиях.",
+          "text": "Рентгенография ОГК: 1 раз в год",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Рентгенография ОГК: 1 раз в год"
+          }
+        },
+        {
+          "text": "ЭКГ: 1 раз в год (амбулаторно), однократно далее по показаниям (стационарно)",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ЭКГ: 1 раз в год (амбулаторно), однократно далее по показаниям (стационарно)"
+          }
+        },
+        {
+          "text": "Общий анализ крови: повторно при наличии клинически значимых изменений, далее по медицинским показаниям",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Общий анализ крови: повторно при наличии клинически значимых изменений, далее по медицинским показаниям"
+          }
+        },
+        {
+          "text": "Биохимический анализ крови: повторно при наличии клинически значимых изменений, далее по медицинским показаниям",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Биохимический анализ крови: повторно при наличии клинически значимых изменений, далее по медицинским показаниям"
+          }
+        },
+        {
+          "text": "Общий анализ мочи (в стационаре): повторно при наличии клинически значимых изменений, далее по медицинским показаниям",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Общий анализ мочи (в стационаре): повторно при наличии клинически значимых изменений, далее по медицинским показаниям"
+          }
+        }
+      ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "Амбулаторно: первичную диагностику осуществляют врачи общей практики, врачи-терапевты.",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -583,46 +664,160 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "невозможность купировать обострение ХОБЛ в амбулаторных условиях."
+            "quote": "Амбулаторно: первичную диагностику осуществляют врачи общей практики, врачи-терапевты."
+          }
+        },
+        {
+          "text": "Консультация пульмонолога: при необходимости уточнения диагноза, коррекции лечения врач общей практики/терапевт направляет пациента к врачу-пульмонологу.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Консультация пульмонолога: при необходимости уточнения диагноза, коррекции лечения врач общей практики/терапевт направляет пациента к врачу-пульмонологу."
+          }
+        },
+        {
+          "text": "Стационарно: проводятся обязательные диагностические исследования, указанные для стационарных условий.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Стационарно: проводятся обязательные диагностические исследования, указанные для стационарных условий."
+          }
+        },
+        {
+          "text": "Значительное увеличение интенсивности или появление новых симптомов (например, тяжелая одышка)",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Значительное увеличение интенсивности или появление новых симптомов (например, тяжелая одышка)"
+          }
+        },
+        {
+          "text": "Частота дыхания (ЧД) >24 вдохов и выдохов в минуту",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Частота дыхания (ЧД) >24 вдохов и выдохов в минуту"
+          }
+        },
+        {
+          "text": "Частота сердечных сокращений (ЧСС) >100 ударов в минуту",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Частота сердечных сокращений (ЧСС) >100 ударов в минуту"
           }
         }
       ],
-      "red_flags": [],
+      "red_flags": [
+        {
+          "text": "Высокий риск бактериальной инфекции при обострении ХОБЛ: сывороточный С-реактивный белок >40 мг/л, длительность прогрессирования симптомов более 1 дня, количество нейтрофилов в крови >9500 кл/мкл, наличие гнойной мокроты.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Критериями высокого риска бактериальной инфекции при обострении ХОБЛ являются сочетания следующих клинико-лабораторных показателей: сывороточный С-реактивный белок >40 мг/л..."
+          }
+        },
+        {
+          "text": "Тяжелое обострение ХОБЛ: Тяжелая одышка; ЧД, ЧСС, SpO2, С-реактивный белок соответствуют средней тяжести обострения ХОБЛ; PaO2 < 60 мм рт.ст., PaCO2 > 45 мм рт.ст. и ацидоз (рН <7,35)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
+            "page_start": 12,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Тяжелое обострение ХОБЛ: Тяжелая одышка; ЧД, ЧСС, SpO2, С-реактивный белок соответствуют средней тяжести обострения ХОБЛ; PaO2* < 60 мм рт.ст., PaCO* > 45 мм рт.ст. и ацидоз (рН <7,35)"
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностика_лечение_пациентов_в_нас_с_хронической_о",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_лечение_пациентов_в-нас_с_хронической_обструктивной_болезнью_легких_пост_МЗ_2025_31.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика лечение пациентов взрослое население с хронической обструктивной болезнью легких"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:47.065058+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T17:37:41.152267+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:47.071773+00:00"
+    "validated_at": "2026-07-20T17:37:41.166061+00:00"
   }
 }

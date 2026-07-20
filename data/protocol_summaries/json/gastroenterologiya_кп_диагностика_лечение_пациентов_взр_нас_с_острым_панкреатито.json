@@ -1,10 +1,10 @@
 {
   "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика лечение пациентов взрослое население с острым панкреатитом в стационарных условияхиях",
+    "title": "Диагностика и лечение пациентов с острым панкреатитом в стационарных условиях",
     "url": null,
     "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
     "document_sha256": null,
@@ -32,16 +32,13 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_лечение_пациентов_взрослое_население",
-      "name": "Диагностика лечение пациентов взрослое население с острым панкреатитом в стационарных условияхиях",
+      "condition_id": "ostryi_pankreatit",
+      "name": "Острый панкреатит",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "B24",
-        "K81.9",
-        "K86.1",
-        "N30.0",
-        "O72"
+        "K85",
+        "K85.9"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -49,7 +46,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[criteria] 6. Для определения тяжести ОП используются следующие признаки: (стр. 3)",
+            "text": "Диагноз тяжелый ОП устанавливается при наличии двух или более признаков из клинических, лабораторных или инструментальных критериев.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -66,11 +63,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 6. Для определения тяжести ОП используются следующие признаки: (стр. 3)"
+              "quote": "Диагноз тяжелый ОП устанавливается при наличии двух или более признаков из клинических, лабораторных или инструментальных критериев."
             }
           },
           {
-            "text": "При наличии двух или более признаков устанавливается диагноз тяжелый ОП.",
+            "text": "Клинические признаки тяжелого ОП: кожные симптомы (гиперемия лица, «мраморность»), перитонеальные симптомы, гемодинамические нарушения (ЧСС >120 или <70 уд/мин, АД <100 мм рт.ст.), энцефалопатия (заторможенность или возбуждение, делирий).",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -87,11 +84,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "При наличии двух или более признаков устанавливается диагноз тяжелый ОП."
+              "quote": "Клинические признаки тяжелого ОП: кожные симптомы (гиперемия лица, «мраморность»), перитонеальные симптомы, гемодинамические нарушения (ЧСС >120 или <70 уд/мин, АД <100 мм рт.ст.), энцефалопатия (зато"
             }
           },
           {
-            "text": "[criteria] 6. Для определения тяжести ОП используются следующие признаки: (стр. 3)",
+            "text": "Лабораторные признаки тяжелого ОП: уровень гемоглобина >150 г/л, количество лейкоцитов >9х10^9/л, уровень глюкозы >10 ммоль/л, концентрация мочевины >10 ммоль/л.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -108,11 +105,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 6. Для определения тяжести ОП используются следующие признаки: (стр. 3)"
+              "quote": "Лабораторные признаки тяжелого ОП: уровень гемоглобина >150 г/л, количество лейкоцитов >9х10^9/л, уровень глюкозы >10 ммоль/л, концентрация мочевины >10 ммоль/л."
             }
           },
           {
-            "text": "При наличии двух или более признаков устанавливается диагноз тяжелый ОП.",
+            "text": "Инструментальные признаки тяжелого ОП: свободная жидкость в брюшной/плевральных полостях, признаки отека поджелудочной железы/клетчатки (УЗИ), признаки кишечной непроходимости (рентгенография брюшной полости).",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -129,91 +126,7 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "При наличии двух или более признаков устанавливается диагноз тяжелый ОП."
-            }
-          },
-          {
-            "text": "[criteria] 6. Для определения тяжести ОП используются следующие признаки: (стр. 3)",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[criteria] 6. Для определения тяжести ОП используются следующие признаки: (стр. 3)"
-            }
-          },
-          {
-            "text": "При наличии двух или более признаков устанавливается диагноз тяжелый ОП.",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "При наличии двух или более признаков устанавливается диагноз тяжелый ОП."
-            }
-          },
-          {
-            "text": "определение параметров кислотно-основного состояния",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "определение параметров кислотно-основного состояния"
-            }
-          },
-          {
-            "text": "определение групп крови по системам АВ0 и Rh-фактор",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "определение групп крови по системам АВ0 и Rh-фактор"
+              "quote": "Инструментальные признаки тяжелого ОП: свободная жидкость в брюшной/плевральных полостях, признаки отека поджелудочной железы/клетчатки (УЗИ), признаки кишечной непроходимости (рентгенография брюшной "
             }
           }
         ],
@@ -222,7 +135,7 @@
       },
       "required_exams": [
         {
-          "name": "УЗИ",
+          "name": "Определение параметров кислотно-основного состояния",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -237,21 +150,297 @@
             "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
             "document_url": null,
             "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
-            "page_start": null,
+            "page_start": 5,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "при наличии медицинских показаний после УЗИ \nи в соответствии с результатами клинико-лабораторных исследований: при лапарос"
+            "quote": "12.1. клинико-лабораторные исследования: определение параметров кислотно-основного состояния;"
+          }
+        },
+        {
+          "name": "Фиброэзофагогастродуоденоскопия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "12.2. инструментальные методы исследования: фиброэзофагогастродуоденоскопия;"
+          }
+        },
+        {
+          "name": "Рентгенография органов грудной клетки",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "12.2. инструментальные методы исследования: рентгенография органов грудной клетки;"
+          }
+        },
+        {
+          "name": "Компьютерная томография органов брюшной полости",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "12.2. инструментальные методы исследования: компьютерная томография органов брюшной полости;"
+          }
+        },
+        {
+          "name": "Консультации врачей-специалистов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "12.3. консультации врачей-специалистов;"
+          }
+        },
+        {
+          "name": "Определение групп крови по системам АВ0 и Rh-фактор",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "14.1. клинико-лабораторные исследования: определение групп крови по системам АВ0 и Rh-фактор;"
+          }
+        },
+        {
+          "name": "Коагулограмма (определение фибриногена, АЧТВ, ПТВ, МНО)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "коагулограмма (определение фибриногена, активированного частичного тромбопластинового времени, протромбированого времени, международного нормализованного отношения);"
+          }
+        },
+        {
+          "name": "Повторный общий и биохимический анализы крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "14.1. клинико-лабораторные исследования: повторный общий и биохимический анализы крови;"
           }
         }
       ],
-      "conditional_exams": [],
+      "conditional_exams": [
+        {
+          "name": "Лапароскопия (видеолапароскопия)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "лапароскопия (видеолапароскопия) при наличии медицинских показаний после УЗИ и в соответствии с результатами клинико-лабораторных исследований"
+          }
+        },
+        {
+          "name": "Забор экссудата для бактериологического исследования и определения концентрации альфа-амилазы",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "при лапароскопии необходим забор экссудата для бактериологического исследования и определения концентрации альфа-амилазы;"
+          }
+        },
+        {
+          "name": "Компьютерная томография органов брюшной полости (при тяжелом ОП)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "компьютерная томография органов брюшной полости;"
+          }
+        },
+        {
+          "name": "Магнитно-резонансная томография органов брюшной полости",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "магнитно-резонансная томография органов брюшной полости."
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 8. Наличие ОП или подозрение на ОП является основанием для экстренной (стр. 4)",
+            "text": "голодание (не менее 1–2 суток) с постепенным переходом на режимы щадящего лечебного питания естественным путем после купирования болевого синдрома, тошноты, рвоты",
             "source_ref": {
               "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
               "document_url": null,
@@ -262,92 +451,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 8. Наличие ОП или подозрение на ОП является основанием для экстренной (стр. 4)"
-            }
-          },
-          {
-            "text": "госпитализации пациента в хирургическое отделение (при легкой форме ОП) или",
-            "source_ref": {
-              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "госпитализации пациента в хирургическое отделение (при легкой форме ОП) или"
-            }
-          },
-          {
-            "text": "отделение анестезиологии и реанимации (при тяжелой форме ОП) больничной",
-            "source_ref": {
-              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "отделение анестезиологии и реанимации (при тяжелой форме ОП) больничной"
-            }
-          },
-          {
-            "text": "осуществляется в положении лежа.",
-            "source_ref": {
-              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "осуществляется в положении лежа."
-            }
-          },
-          {
-            "text": "В приемном отделении больничной организации пациента с ОП или подозрением",
-            "source_ref": {
-              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "В приемном отделении больничной организации пациента с ОП или подозрением"
-            }
-          },
-          {
-            "text": "на ОП в экстренном порядке осматривает и оценивает степень тяжести состояния",
-            "source_ref": {
-              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "на ОП в экстренном порядке осматривает и оценивает степень тяжести состояния"
+              "quote": "голодание (не менее 1–2 суток) с постепенным переходом на режимы щадящего лечебного питания естественным путем после купирования болевого синдрома, тошноты, рвоты"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "превышать",
+            "drug_name": "Диклофенак",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "150 мг",
+            "dose_text": "раствор для внутримышечного введения, 25 мг/мл 3 мл, внутримышечно по 75 мг через 12 часов; суппозитории ректальные 50 мг и 100 мг, по 1 суппозиторию в прямую кишку, не более 150 мг в сутки",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -359,20 +473,20 @@
               "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
               "document_url": null,
               "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "превышать \n150 мг"
+              "quote": "Для обезболивания используется диклофенак, раствор для внутримышечного введения, 25 мг/мл 3 мл, внутримышечно по 75 мг через 12 часов; суппозитории ректальные 50 мг и 100 мг, не более 150 мг в сутки."
             }
           },
           {
-            "drug_name": "ректальные",
+            "drug_name": "Метамизол натрия",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "50 мг",
+            "dose_text": "раствор для внутривенного и внутримышечного введения 500 мг/мл 2 мл, внутривенно или внутримышечно, по 500–1000 мг, через 8–12 часов, не более 2000 мг в сутки",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -384,20 +498,20 @@
               "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
               "document_url": null,
               "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ректальные 50 мг и 100 мг,  \nпо 1 суппозиторию в прямую к"
+              "quote": "Для обезболивания используется метамизол натрия, раствор для внутривенного и внутримышечного введения 500 мг/мл 2 мл, по 500–1000 мг, через 8–12 часов, не более 2000 мг в сутки."
             }
           },
           {
-            "drug_name": "более",
+            "drug_name": "Кеторолак",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "150 мг",
+            "dose_text": "раствор для внутримышечного введения 30 мг/мл в ампулах 1 мл, внутримышечно по 10–30 мг, каждые 4–6 часов, не более 90 мг в сутки",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -409,20 +523,20 @@
               "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
               "document_url": null,
               "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "более 150 мг в сутки"
+              "quote": "Для обезболивания используется кеторолак, раствор для внутримышечного введения 30 мг/мл в ампулах 1 мл, по 10–30 мг, каждые 4–6 часов, не более 90 мг в сутки."
             }
           },
           {
-            "drug_name": "введения",
+            "drug_name": "Лорноксикам",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "500 мг",
+            "dose_text": "лиофилизат для приготовления раствора для внутривенного и внутримышечного введения 8 мг, парентерально 8 мг внутривенно или внутримышечно, максимальная суточная доза не должна превышать 16 мг",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -434,20 +548,20 @@
               "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
               "document_url": null,
               "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "введения \n500 мг/мл 2 мл, внутривенно или внутримышечно,"
+              "quote": "Для обезболивания используется лорноксикам, лиофилизат для приготовления раствора для внутривенного и внутримышечного введения 8 мг, парентерально 8 мг внутривенно или внутримышечно, максимальная суточная доза не должна превышать 16 мг."
             }
           },
           {
-            "drug_name": "инфузий",
+            "drug_name": "Натрия хлорид",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "9 мг",
+            "dose_text": "раствор для инфузий 9 мг/мл, среднесуточная доза 1000 мл, внутривенно капельно",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -459,20 +573,20 @@
               "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
               "document_url": null,
               "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "инфузий 9 мг/мл, среднесуточная доза 1000 мл, \nвнутр"
+              "quote": "Пациентам с легкой формой ОП назначается инфузионная терапия: натрия хлорид, раствор для инфузий 9 мг/мл, среднесуточная доза 1000 мл, внутривенно капельно."
             }
           },
           {
-            "drug_name": "доза",
+            "drug_name": "Раствор Рингера",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "800 мл",
+            "dose_text": "раствор для инфузий 200 мл, 400 мл, внутривенно капельно, максимальный суточный объем 500–3000 мл в сутки",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -484,20 +598,20 @@
               "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
               "document_url": null,
               "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "доза 800 мл"
+              "quote": "Пациентам с легкой формой ОП назначается инфузионная терапия: раствор Рингера, раствор для инфузий 200 мл, 400 мл, внутривенно капельно, максимальный суточный объем 500–3000 мл в сутки."
             }
           },
           {
-            "drug_name": "оболочкой",
+            "drug_name": "Глюкоза",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "10 мг",
+            "dose_text": "раствор для инфузий 50 мг/мл, 100 мг/мл, внутривенно капельно, не более 6 г/кг массы тела в сутки",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -509,20 +623,20 @@
               "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
               "document_url": null,
               "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "оболочкой 10 мг"
+              "quote": "Пациентам с легкой формой ОП назначаются растворы глюкозы, раствор для инфузий 50 мг/мл, 100 мг/мл, внутривенно капельно, не более 6 г/кг массы тела в сутки (с целью дезинтоксикационной терапии)."
             }
           },
           {
-            "drug_name": "ноября",
+            "drug_name": "Меглюмина натрия сукцинат",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2023 г",
+            "dose_text": "раствор для инфузий 1,5 % 400 мл, внутривенно, капельно, 90 капель в минуту, максимальная суточная доза 800 мл",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -534,20 +648,20 @@
               "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
               "document_url": null,
               "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ноября 2023 г"
+              "quote": "Пациентам с легкой формой ОП назначается меглюмина натрия сукцинат, раствор для инфузий 1,5 % 400 мл, внутривенно, капельно, 90 капель в минуту, максимальная суточная доза 800 мл."
             }
           },
           {
-            "drug_name": "июня",
+            "drug_name": "Метоклопрамид",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1993 г",
+            "dose_text": "раствор для инъекций, 10 мг/2 мл. Применяется внутримышечно или внутривенно в дозе 10–20 мг 1–3 раза в сутки (максимальная суточная доза 60 мг)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -559,20 +673,20 @@
               "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
               "document_url": null,
               "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июня \n1993 г"
+              "quote": "При жалобах на тошноту и рвоту назначается метоклопрамид, раствор для инъекций, 10 мг/2 мл. Применяется внутримышечно или внутривенно в дозе 10–20 мг 1–3 раза в сутки."
             }
           },
           {
-            "drug_name": "октября",
+            "drug_name": "Домперидон",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2011 г",
+            "dose_text": "таблетки, покрытые оболочкой 10 мг. За 15–30 минут до еды или натощак, по 1 таблетке до 3 раз в сутки, при тошноте и возможности принимать таблетированные формы",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -584,13 +698,163 @@
               "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
               "document_url": null,
               "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "октября 2011 г"
+              "quote": "При жалобах на тошноту и рвоту назначается домперидон, таблетки, покрытые оболочкой 10 мг. За 15–30 минут до еды или натощак, по 1 таблетке до 3 раз в сутки."
+            }
+          },
+          {
+            "drug_name": "Ондансетрон",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "раствор для внутривенного и внутримышечного введения (для инъекций) 2 мг/мл 2 мл. Внутримышечно или внутривенно от 4 мг. Максимальная суточная доза 32 мг",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При выраженной рвоте назначается ондансетрон, раствор для внутривенного и внутримышечного введения 2 мг/мл 2 мл. Внутримышечно или внутривенно от 4 мг. Максимальная суточная доза 32 мг."
+            }
+          },
+          {
+            "drug_name": "Омепразол",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "В/в 40 мг инфузия. Переход на пероральный прием 20 мг 2 раза в сутки натощак.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Омепразол: лиофил. порошок 40 мг или капсулы 20 мг. Доза 40 мг в/в инфузия. Переход на пероральный прием 20 мг 2 раза в сутки натощак."
+            }
+          },
+          {
+            "drug_name": "Лансопразол",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Внутрь по 30 мг 2 раза в сутки за 30 минут до еды или через 2 часа после еды.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лансопразол: капсулы 30 мг, внутрь по 30 мг 2 раза в сутки за 30 минут до еды или через 2 часа после еды."
+            }
+          },
+          {
+            "drug_name": "Пантопразол",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "В/в 40 мг (1 флакон) в сутки. Переход на пероральный прием 40 мг в сутки.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Пантопразол: порошок для в/в 40 мг или таблетки 40 мг. Доза в/в 40 мг в сутки. Переход на пероральный прием 40 мг в сутки."
+            }
+          },
+          {
+            "drug_name": "Ранитидин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "В/в медленно 50 мг (разведение), повторно через 6–8 ч. В/в капельно 25 мг/ч в течение 2 ч, повторно через 6–8 ч. В/м 50 мг 3–4 раза в сутки.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ранитидин, р-р для инъекций 25 мг/мл. В/в медленно 50 мг, повторно через 6–8 ч. В/в капельно 25 мг/ч в течение 2 ч. В/м 50 мг 3–4 раза в сутки."
+            }
+          },
+          {
+            "drug_name": "Фамотидин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "В/в капельно по 20 мг каждые 12 часов.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 8,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Фамотидин: лиофил. порошок для инъекций 20 мг, в/в капельно по 20 мг каждые 12 часов."
             }
           }
         ],
@@ -600,7 +864,7 @@
       },
       "follow_up": [
         {
-          "text": "Контроль",
+          "text": "Контроль эффективности консервативного лечения тяжелого ОП осуществляется методами инструментального и лабораторного контроля.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -614,48 +878,415 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Контроль"
+            "quote": "Контроль эффективности консервативного лечения тяжелого ОП осуществляется методами инструментального и лабораторного контроля."
+          }
+        },
+        {
+          "text": "УЗИ органов брюшной полости и забрюшинного пространства (для контроля тяжелого ОП).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "УЗИ органов брюшной полости и забрюшинного пространства (для контроля тяжелого ОП)."
+          }
+        },
+        {
+          "text": "Компьютерная томография органов брюшной полости и забрюшинного пространства (для контроля тяжелого ОП).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Компьютерная томография органов брюшной полости и забрюшинного пространства (для контроля тяжелого ОП)."
+          }
+        },
+        {
+          "text": "Ангиографические исследования (для контроля тяжелого ОП).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Ангиографические исследования (для контроля тяжелого ОП)."
+          }
+        },
+        {
+          "text": "Фиброэзофагогастродуоденоскопия (для контроля тяжелого ОП).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Фиброэзофагогастродуоденоскопия (для контроля тяжелого ОП)."
+          }
+        },
+        {
+          "text": "Биохимический анализ крови (для контроля тяжелого ОП).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Биохимический анализ крови (для контроля тяжелого ОП)."
+          }
+        },
+        {
+          "text": "Определение параметров кислотно-основного состояния (для контроля тяжелого ОП).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Определение параметров кислотно-основного состояния (для контроля тяжелого ОП)."
+          }
+        },
+        {
+          "text": "Общий анализ крови (для контроля тяжелого ОП).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Общий анализ крови (для контроля тяжелого ОП)."
           }
         }
       ],
       "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
+      "routing": [
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        },
+        {
+          "text": "экстренная госпитализация пациента в хирургическое отделение (при легкой форме ОП) или отделение анестезиологии и реанимации (при тяжелой форме ОП); медицинская транспортировка пациента с ОП в больничную организацию осуществляется в положении лежа",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "экстренная госпитализация пациента в хирургическое отделение (при легкой форме ОП) или отделение анестезиологии и реанимации (при тяжелой форме ОП); медицинская транспортировка пациента с ОП в больнич"
+          }
+        },
+        {
+          "text": "перевод пациента в отделение анестезиологии и реанимации (при прогрессировании заболевания и развитии тяжелой формы ОП)",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "перевод пациента в отделение анестезиологии и реанимации (при прогрессировании заболевания и развитии тяжелой формы ОП)"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Кожные симптомы (гиперемия лица, «мраморность» кожных покровов)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "наличие кожных симптомов (гиперемия лица, «мраморность» кожных покровов и иные);"
+          }
+        },
+        {
+          "text": "Перитонеальные симптомы",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "перитонеальные симптомы;"
+          }
+        },
+        {
+          "text": "Гемодинамические нарушения (ЧСС более 120 или менее 70 ударов в минуту)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "гемодинамические нарушения (частота сердечных сокращений (далее – ЧСС) более 120 ударов в минуту или ЧСС менее 70 ударов в минуту"
+          }
+        },
+        {
+          "text": "Снижение систолического артериального давления ниже 100 мм рт.ст.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "снижение систолического артериального давления (далее – АД) ниже 100 мм рт.ст.);"
+          }
+        },
+        {
+          "text": "Энцефалопатия (заторможенность или возбуждение, делирий)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "энцефалопатия (заторможенность или возбуждение, делирий);"
+          }
+        },
+        {
+          "text": "Уровень гемоглобина выше 150 г/л",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "уровень гемоглобина выше 150 г/л;"
+          }
+        },
+        {
+          "text": "Количество лейкоцитов более 9х10^9/л",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "количество лейкоцитов более 9х109/л;"
+          }
+        },
+        {
+          "text": "Уровень глюкозы выше 10 ммоль/л",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "уровень глюкозы выше 10 ммоль/л;"
+          }
+        },
+        {
+          "text": "Концентрация мочевины выше 10 ммоль/л",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "концентрация мочевины выше 10 ммоль/л;"
+          }
+        },
+        {
+          "text": "Наличие свободной жидкости в брюшной и (или) плевральных полостях (по УЗИ)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "наличие свободной жидкости в брюшной и (или) плевральных полостях, и (или) признаки отека ткани поджелудочной железы [...] по результатам ультразвукового исследования;"
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатито",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика лечение пациентов взрослое население с острым панкреатитом в стационарных условияхиях"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:28.820027+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T15:36:27.508429+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:28.827264+00:00"
+    "validated_at": "2026-07-20T15:36:27.536409+00:00"
   }
 }

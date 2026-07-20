@@ -1,6 +1,41 @@
 # Validation: zabolevaniya_perinatalnogo_perioda_кп_оказание_медицинской_помощи_в_неонатологии
 
-- **status:** valid
-- **validated_at:** 2026-06-23T19:16:26.664806+00:00
+- **status:** needs_human_review
+- **validated_at:** 2026-07-20T18:30:59.256534+00:00
 - **review_status:** needs_review
-- **extraction_status:** auto_extracted
+- **extraction_status:** llm_extracted
+
+## Warnings
+- `duplicate_exam` conditions[p11_birth_trauma_cranial_nerve_injury].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[p11_birth_trauma_cranial_nerve_injury].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[p11_birth_trauma_cranial_nerve_injury].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[p11_birth_trauma_cranial_nerve_injury].required_exams[4]: Дублирующееся обследование
+- `duplicate_exam` conditions[p11_birth_trauma_cranial_nerve_injury].required_exams[6]: Дублирующееся обследование
+- `duplicate_exam` conditions[p11_birth_trauma_cranial_nerve_injury].required_exams[7]: Дублирующееся обследование
+- `duplicate_exam` conditions[p11_birth_trauma_cranial_nerve_injury].required_exams[8]: Дублирующееся обследование
+- `duplicate_exam` conditions[p11_birth_trauma_cranial_nerve_injury].required_exams[9]: Дублирующееся обследование
+- `duplicate_exam` conditions[p11_birth_trauma_cranial_nerve_injury].required_exams[10]: Дублирующееся обследование
+- `duplicate_exam` conditions[p12_scalp_birth_trauma].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[p12_scalp_birth_trauma].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[p12_scalp_birth_trauma].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[p12_scalp_birth_trauma].required_exams[5]: Дублирующееся обследование
+- `duplicate_exam` conditions[p12_scalp_birth_trauma].required_exams[6]: Дублирующееся обследование
+- `duplicate_exam` conditions[p12_scalp_birth_trauma].required_exams[7]: Дублирующееся обследование
+- `duplicate_exam` conditions[p12_scalp_birth_trauma].required_exams[8]: Дублирующееся обследование
+- `duplicate_exam` conditions[p12_scalp_birth_trauma].required_exams[9]: Дублирующееся обследование
+- `duplicate_exam` conditions[p12_scalp_birth_trauma].required_exams[10]: Дублирующееся обследование
+- `duplicate_exam` conditions[p14_birth_trauma_peripheral_nerve].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[p14_birth_trauma_peripheral_nerve].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[p14_birth_trauma_peripheral_nerve].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[p14_birth_trauma_peripheral_nerve].required_exams[4]: Дублирующееся обследование
+- `duplicate_exam` conditions[p14_birth_trauma_peripheral_nerve].required_exams[5]: Дублирующееся обследование
+- `duplicate_exam` conditions[p14_birth_trauma_peripheral_nerve].required_exams[6]: Дублирующееся обследование
+- `duplicate_exam` conditions[p14_birth_trauma_peripheral_nerve].required_exams[7]: Дублирующееся обследование
+- `duplicate_exam` conditions[p14_birth_trauma_peripheral_nerve].required_exams[8]: Дублирующееся обследование
+- `duplicate_exam` conditions[p14_birth_trauma_peripheral_nerve].required_exams[9]: Дублирующееся обследование
+- `duplicate_exam` conditions[p14_birth_trauma_peripheral_nerve].required_exams[10]: Дублирующееся обследование
+- `duplicate_exam` conditions[p24_neonatal_aspiration_syndromes].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[p24_neonatal_aspiration_syndromes].required_exams[6]: Дублирующееся обследование
+- `duplicate_exam` conditions[p24_neonatal_aspiration_syndromes].required_exams[8]: Дублирующееся обследование
+- `duplicate_exam` conditions[p24_neonatal_aspiration_syndromes].required_exams[9]: Дублирующееся обследование
+- `duplicate_exam` conditions[p24_neonatal_aspiration_syndromes].required_exams[10]: Дублирующееся обследование

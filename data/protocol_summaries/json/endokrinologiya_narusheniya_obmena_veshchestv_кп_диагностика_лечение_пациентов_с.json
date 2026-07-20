@@ -1,10 +1,10 @@
 {
   "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика лечение пациентов с эндокринологическими заболеваниями детское население",
+    "title": "Диагностика и лечение эндокринологических заболеваний у детей",
     "url": null,
     "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,18 +32,12 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_лечение_пациентов_с_эндокринологичес",
-      "name": "Диагностика лечение пациентов с эндокринологическими заболеваниями детское население",
+      "condition_id": "diabetes_mellitus_type_1",
+      "name": "Сахарный диабет 1 типа",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "R73.0",
-        "E01.1",
-        "N25.8",
-        "C90.0",
-        "E11.9",
-        "L93.0",
-        "M32.9"
+        "E10"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -51,7 +45,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[classification] 5. Диагноз СД формулируется согласно следующей последовательности: (стр. 6)",
+            "text": "Симптомы: полиурия, полидипсия, снижение массы тела",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -68,11 +62,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 5. Диагноз СД формулируется согласно следующей последовательности: (стр. 6)"
+              "quote": "Симптомы: полиурия, полидипсия, снижение массы тела"
             }
           },
           {
-            "text": "6.1. используется следующее определение СД1: СД1 развивается вследствие",
+            "text": "Гипергликемия с концентрацией глюкозы в плазме > 11,1 ммоль/л при наличии характерных симптомов",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -89,11 +83,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "6.1. используется следующее определение СД1: СД1 развивается вследствие"
+              "quote": "Гипергликемия с концентрацией глюкозы в плазме > 11,1 ммоль/л при наличии характерных симптомов"
             }
           },
           {
-            "text": "11.1. используется следующее определение для инсулиннезависимого сахарного",
+            "text": "Уровень глюкозы в плазме натощак > 7,0 ммоль/л (не менее 8 часов без приема пищи)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -110,11 +104,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "11.1. используется следующее определение для инсулиннезависимого сахарного"
+              "quote": "Уровень глюкозы в плазме натощак > 7,0 ммоль/л (не менее 8 часов без приема пищи)"
             }
           },
           {
-            "text": "[classification] 12. По результатам обследования диагноз СД2 у детей и подростков устанавливается (стр. 14)",
+            "text": "Уровень глюкозы в плазме через 2 часа после нагрузки при проведении ОГТТ > 11,1 ммоль/л",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -131,11 +125,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 12. По результатам обследования диагноз СД2 у детей и подростков устанавливается (стр. 14)"
+              "quote": "Уровень глюкозы в плазме через 2 часа после нагрузки при проведении ОГТТ > 11,1 ммоль/л"
             }
           },
           {
-            "text": "на основании следующих критериев:",
+            "text": "Повышенный уровень глюкозы и кетонов в моче (может сопровождаться)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -152,11 +146,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "на основании следующих критериев:"
+              "quote": "Повышенный уровень глюкозы и кетонов в моче (может сопровождаться)"
             }
           },
           {
-            "text": "показатель гликированного гемоглобина более 6,5 % при двукратном определении",
+            "text": "ДКА: гипергликемия > 11 ммоль/л",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -173,11 +167,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "показатель гликированного гемоглобина более 6,5 % при двукратном определении"
+              "quote": "ДКА: гипергликемия > 11 ммоль/л"
             }
           },
           {
-            "text": "крови: ТТГ. ЭКГ. Определение костного возраста:",
+            "text": "ДКА: pH венозной крови < 7,3 или бикарбонаты < 15 ммоль/л",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -194,11 +188,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "крови: ТТГ. ЭКГ. Определение костного возраста:"
+              "quote": "ДКА: pH венозной крови < 7,3 или бикарбонаты < 15 ммоль/л"
             }
           },
           {
-            "text": "[criteria] 13. Определение (стр. 2)",
+            "text": "ДКА: кетонемия или кетонурия",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -215,7 +209,49 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 13. Определение (стр. 2)"
+              "quote": "ДКА: кетонемия или кетонурия"
+            }
+          },
+          {
+            "text": "Повышенный уровень глюкозы и кетонов в моче",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Повышенный уровень глюкозы и кетонов в моче"
+            }
+          },
+          {
+            "text": "Гликированный гемоглобин (HbA1c) > 6,5%",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Гликированный гемоглобин (HbA1c) > 6,5%"
             }
           }
         ],
@@ -224,7 +260,7 @@
       },
       "required_exams": [
         {
-          "name": "УЗИ",
+          "name": "Консультация врача – детского эндокринолога",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -239,17 +275,17 @@
             "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
             "document_url": null,
             "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
-            "page_start": null,
+            "page_start": 1,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Подострый тиреоидит\n\n[classification] УЗИ ЩЖ (стр. 45)\nТ3, ТТГ \n1 раз \n  \nТаблица 5 \n  \nОбъем оказания медицинской помощи"
+            "quote": "Для уточнения диагноза, коррекции лечения врач общей практики, врач-педиатр, врач-педиатр участковый направляет пациента на консультацию к врачу – детскому эндокринологу."
           }
         },
         {
-          "name": "ЭКГ",
+          "name": "Определение уровня глюкозы в плазме",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -264,21 +300,347 @@
             "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
             "document_url": null,
             "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
-            "page_start": null,
+            "page_start": 3,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Гормональное исследование \nкрови: ТТГ. ЭКГ. Определение костного возраста: \nЛевотироксин натрия внутрь: \n0–3 месяца жизни"
+            "quote": "Характерные симптомы СД или гипергликемия с концентрацией глюкозы в плазме > 11,1 ммоль/л, или уровень глюкозы в плазме натощак > 7,0 ммоль/л"
+          }
+        },
+        {
+          "name": "Лабораторные показатели при ДКА: глюкоза плазмы, калий, амилаза, лейкоциты, газовый состав крови (рСО2, рН)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "основные лабораторные показатели при развитии ДКА представлены в таблице 5: глюкоза плазмы; калий; амилаза; лейкоциты; газовый состав крови: рСО2; рН"
+          }
+        },
+        {
+          "name": "Исследование глазного дна с фундус-линзой или офтальмоскопия при расширенных зрачках",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ретинопатия; ежегодно, с 11 лет, при стаже СД – 2 и более лет; исследование глазного дна с фундус-линзой; или офтальмоскопия при расширенных зрачках"
+          }
+        },
+        {
+          "name": "Определение отношения уровня альбумин/креатинин в моче",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "нефропатия; ежегодно, с 11 лет, при стаже СД – 2 и более лет; отношение уровня альбумин/креатинин в моче"
+          }
+        },
+        {
+          "name": "Анамнез, объективное обследование, функциональные тесты",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "невропатия; ежегодно, с 11 лет, при стаже СД – 2 и более лет; анамнез; и объективное обследование; функциональные тесты"
+          }
+        },
+        {
+          "name": "Липидограмма",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "макроангиопатии. ежегодно, с 11 лет, при стаже СД – 2 и более лет. липидограмма каждые 2 года"
+          }
+        },
+        {
+          "name": "Ежегодное определение показателей артериального давления (АД)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "макроангиопатии. ежегодно, с 11 лет, при стаже СД – 2 и более лет. ... ежегодное определение показателей АД."
+          }
+        },
+        {
+          "name": "Расчет скорости клубочковой фильтрации (СКФ) по формуле Шварца или электронному калькулятору",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "при диагностике нефропатии у детей с СД используется расчет скорости клубочковой фильтрации (далее – СКФ): по формуле Шварца: ... при помощи электронного калькулятора."
+          }
+        },
+        {
+          "name": "Определение HbA1c",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "определение HbA1c не реже 1 раза в 3 месяца"
+          }
+        },
+        {
+          "name": "Самоконтроль гликемии / CGM",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "самоконтроль гликемии или ее мониторинг помощью систем CGM до 6–10 раз в сутки"
           }
         }
       ],
-      "conditional_exams": [],
+      "conditional_exams": [
+        {
+          "name": "Оральный тест на толерантность к глюкозе (ОГТТ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "уровень глюкозы в плазме через 2 часа после нагрузки при проведении орального теста на толерантность к глюкозе (далее – ОГТТ) > 11,1 ммоль/ла."
+          }
+        },
+        {
+          "name": "Определение маркеров аутоиммунитета против бета-клеток",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "с целью лабораторной диагностики доклинической фазы СД1 используются следующие методы: определение маркеров аутоиммунитета против бета-клеток"
+          }
+        },
+        {
+          "name": "Генетические маркеры СД1 (HLA)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "с целью лабораторной диагностики доклинической фазы СД1 используются следующие методы: ... генетические маркеры СД1 (HLA)"
+          }
+        },
+        {
+          "name": "Внутривенный тест на толерантность к глюкозе (для оценки 1-й фазы секреции инсулина)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "снижение 1-й фазы секреции инсулина (менее 10-го перцентиля для соответствующего возраста и пола) при внутривенном тесте на толерантность к глюкозе"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 7. Фармакотерапию (стр. 2)",
+            "text": "Регулярное ведение дневника самоконтроля с коррекцией терапии",
             "source_ref": {
               "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
               "document_url": null,
@@ -289,11 +651,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 7. Фармакотерапию (стр. 2)"
+              "quote": "Регулярное ведение дневника самоконтроля с коррекцией терапии"
             }
           },
           {
-            "text": "протоколом, с учетом всех индивидуальных особенностей пациента, тяжести заболевания,",
+            "text": "Диетическое питание (стол Д) с учетом возрастной суточной потребности в углеводах",
             "source_ref": {
               "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
               "document_url": null,
@@ -304,11 +666,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "протоколом, с учетом всех индивидуальных особенностей пациента, тяжести заболевания,"
+              "quote": "Диетическое питание (стол Д) с учетом возрастной суточной потребности в углеводах"
             }
           },
           {
-            "text": "лекарственного средства. При этом необходимо учитывать наличие аллергологического",
+            "text": "Изменение образа жизни",
             "source_ref": {
               "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
               "document_url": null,
@@ -319,62 +681,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "лекарственного средства. При этом необходимо учитывать наличие аллергологического"
-            }
-          },
-          {
-            "text": "[treatment] 8. Доза, путь введения и кратность применения лекарственных средств определяются (стр. 2)",
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 8. Доза, путь введения и кратность применения лекарственных средств определяются (стр. 2)"
-            }
-          },
-          {
-            "text": "[treatment] 2.3. СД может сопровождаться повышенным уровнем глюкозы и кетонов в моче",
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 2.3. СД может сопровождаться повышенным уровнем глюкозы и кетонов в моче"
-            }
-          },
-          {
-            "text": "Для нагрузки используется эквивалент",
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Для нагрузки используется эквивалент"
+              "quote": "Изменение образа жизни"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "эквивалент",
+            "drug_name": "Каптоприл",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "75 г",
+            "dose_text": "0,3–0,5 мг/кг/сутки",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -386,20 +703,20 @@
               "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
               "document_url": null,
               "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
-              "page_start": null,
+              "page_start": 10,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "эквивалент \n75 г безводной глюкозы, растворенной в воде ("
+              "quote": "ингибиторы АПФ: каптоприл 0,3–0,5 мг/кг/сутки"
             }
           },
           {
-            "drug_name": "дозы",
+            "drug_name": "Эналаприл",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "75 г",
+            "dose_text": "0,1–0,6 мг/кг/сутки",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -411,20 +728,20 @@
               "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
               "document_url": null,
               "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
-              "page_start": null,
+              "page_start": 10,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "дозы 75 г)"
+              "quote": "ингибиторы АПФ: ... эналаприл 0,1–0,6 мг/кг/сутки"
             }
           },
           {
-            "drug_name": "дозе",
+            "drug_name": "Лизиноприл",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "10 мг",
+            "dose_text": "0,08–0,6 мг/сутки",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -436,20 +753,20 @@
               "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
               "document_url": null,
               "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
-              "page_start": null,
+              "page_start": 10,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "дозе 10 мг в сутки"
+              "quote": "ингибиторы АПФ: ... лизиноприл 0,08–0,6 мг/сутки"
             }
           },
           {
-            "drug_name": "августа",
+            "drug_name": "Аторвастатин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2019 г",
+            "dose_text": "начальная доза 10 мг в сутки, с возможностью увеличения до 20 мг в сутки внутрь",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -461,63 +778,13 @@
               "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
               "document_url": null,
               "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
-              "page_start": null,
+              "page_start": 10,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "августа 2019 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
+              "quote": "статины: детям старше 10 лет; аторвастатин в начальной дозе 10 мг в сутки; при необходимости через 2–4 недели после начала терапии дозу увеличивают до 20 мг в сутки внутрь."
             }
           }
         ],
@@ -527,7 +794,7 @@
       },
       "follow_up": [
         {
-          "text": "контроль",
+          "text": "Наблюдение за состоянием пациента и его лечением осуществляет врач – детский эндокринолог или врач общей практики, врач-педиатр, врач-педиатр участковый в соответствии с рекомендациями врача – детского эндокринолога.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -541,14 +808,122 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
+            "quote": "Наблюдение за состоянием пациента и его лечением осуществляет врач – детский эндокринолог или врач общей практики, врач-педиатр, врач-педиатр участковый в соответствии с рекомендациями врача – детског"
+          }
+        },
+        {
+          "text": "Скрининг на ретинопатию, нефропатию, невропатию и макроангиопатии ежегодно, с 11 лет, при стаже СД – 2 и более лет.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Скрининг на ретинопатию, нефропатию, невропатию и макроангиопатии ежегодно, с 11 лет, при стаже СД – 2 и более лет."
+          }
+        },
+        {
+          "text": "Липидограмма каждые 2 года (для скрининга макроангиопатий).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Липидограмма каждые 2 года (для скрининга макроангиопатий)."
+          }
+        },
+        {
+          "text": "Ежегодное определение показателей АД (для скрининга макроангиопатий).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Ежегодное определение показателей АД (для скрининга макроангиопатий)."
+          }
+        },
+        {
+          "text": "Определение HbA1c не реже 1 раза в 3 месяца",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Определение HbA1c не реже 1 раза в 3 месяца"
+          }
+        },
+        {
+          "text": "Самоконтроль гликемии или ее мониторинг с помощью систем CGM до 6-10 раз в сутки",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Самоконтроль гликемии или ее мониторинг с помощью систем CGM до 6-10 раз в сутки"
+          }
+        },
+        {
+          "text": "Регулярное ведение дневника самоконтроля с коррекцией терапии по необходимости",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Регулярное ведение дневника самоконтроля с коррекцией терапии по необходимости"
           }
         }
       ],
       "hospitalization": [],
       "routing": [
         {
-          "text": "[routing] 6. Направление пациентов с заболеваниями эндокринной системы для оказания им (стр. 2)",
+          "text": "госпитализация",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -561,15 +936,83 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "[routing] 6. Направление пациентов с заболеваниями эндокринной системы для оказания им (стр. 2)"
+            "quote": "госпитализация"
+          }
+        },
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        },
+        {
+          "text": "Госпитализация при острой диабетической декомпенсации (ДКА)",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация при острой диабетической декомпенсации (ДКА)"
+          }
+        },
+        {
+          "text": "Амбулаторно и стационарно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Амбулаторно и стационарно"
+          }
+        },
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
           }
         }
       ],
       "red_flags": [
         {
-          "text": "ы с ДКА нуждаются в неотложной терапии и оказании специализированной \nмедицинской помощи;\n\n[classification] 11. Инсулиннезависимый сахарный диабет (",
+          "text": "Развитие отека мозга при выраженной вазоконстрикции сосудов мозга, возможно при рСО2 менее 25 мм рт. ст. и сопутствующей гипервентиляции при ДКА.",
           "aliases": [],
-          "red_flag_type": "urgent_referral",
+          "red_flag_type": "other",
           "severity": "high",
           "expected_actions": [],
           "cap_if_unhandled": null,
@@ -577,51 +1020,2759 @@
             "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
             "document_url": null,
             "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
-            "page_start": null,
+            "page_start": 7,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "ы с ДКА нуждаются в неотложной терапии и оказании специализированной \nмедицинской помощи;\n\n[classification] 11. Инсулиннезависимый сахарный диабет ("
+            "quote": "при сопутствующей гипервентиляции рСО2 – менее 25 мм рт. ст., развивается выраженная вазоконстрикция сосудов мозга, возможно развитие отека мозга."
+          }
+        },
+        {
+          "text": "Острая диабетическая декомпенсация обмена веществ (ДКА)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ДКА определяется как острая диабетическая декомпенсация обмена веществ, проявляющаяся резким повышением уровня глюкозы и концентрации кетоновых тел в крови... требующая экстренной госпитализации пациента"
           }
         }
       ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
+      "source_refs": []
+    },
+    {
+      "condition_id": "diabetes_mellitus_type_2",
+      "name": "Сахарный диабет 2 типа",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "E11.0"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": {
+        "required": [
+          {
+            "text": "Наличие характерных клинических симптомов СД (полиурия, полидипсия и снижение массы тела).",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Наличие характерных клинических симптомов СД (полиурия, полидипсия и снижение массы тела)."
+            }
+          },
+          {
+            "text": "Повышенный уровень глюкозы и кетонов в моче.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Повышенный уровень глюкозы и кетонов в моче."
+            }
+          },
+          {
+            "text": "Концентрация глюкозы в плазме > 11,1 ммоль/л при наличии характерных симптомов СД или гипергликемии.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Концентрация глюкозы в плазме > 11,1 ммоль/л при наличии характерных симптомов СД или гипергликемии."
+            }
+          },
+          {
+            "text": "Уровень глюкозы в плазме натощак > 7,0 ммоль/л (состояние натощак - не менее 8 часов без приема пищи).",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Уровень глюкозы в плазме натощак > 7,0 ммоль/л (состояние натощак - не менее 8 часов без приема пищи)."
+            }
+          },
+          {
+            "text": "Уровень глюкозы в плазме через 2 часа после нагрузки при проведении ОГТТ > 11,1 ммоль/л.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Уровень глюкозы в плазме через 2 часа после нагрузки при проведении ОГТТ > 11,1 ммоль/л."
+            }
+          },
+          {
+            "text": "Нарушение толерантности к глюкозе (НТГ): уровень глюкозы в плазме через 2 часа после нагрузки 7,8–11,0 ммоль/л.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Нарушение толерантности к глюкозе (НТГ): уровень глюкозы в плазме через 2 часа после нагрузки 7,8–11,0 ммоль/л."
+            }
+          },
+          {
+            "text": "Биохимические критерии диабетического кетоацидоза (ДКА): гипергликемия > 11 ммоль/л; pH венозной крови < 7,3 или бикарбонаты < 15 ммоль/л; кетонемия или кетонурия.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Биохимические критерии диабетического кетоацидоза (ДКА): гипергликемия > 11 ммоль/л; pH венозной крови < 7,3 или бикарбонаты < 15 ммоль/л; кетонемия или кетонурия."
+            }
+          }
+        ],
+        "optional": [],
+        "exclusion": []
+      },
+      "required_exams": [
         {
-          "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика лечение пациентов с эндокринологическими заболеваниями детское население"
+          "name": "Оральный тест на толерантность к глюкозе (ОГТТ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "уровень глюкозы в плазме через 2 часа после нагрузки при проведении орального теста на толерантность к глюкозе (далее – ОГТТ) > 11,1 ммоль/ла."
+          }
+        },
+        {
+          "name": "Исследование глазного дна с фундус-линзой или офтальмоскопия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ретинопатия; ежегодно, с 11 лет, при стаже СД – 2 и более лет; исследование глазного дна с фундус-линзой; или офтальмоскопия при расширенных зрачках"
+          }
+        },
+        {
+          "name": "Отношение уровня альбумин/креатинин в моче",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "нефропатия; ежегодно, с 11 лет, при стаже СД – 2 и более лет; отношение уровня альбумин/креатинин в моче"
+          }
+        },
+        {
+          "name": "Анамнез, объективное обследование, функциональные тесты (для невропатии)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "невропатия; ежегодно, с 11 лет, при стаже СД – 2 и более лет; анамнез; и объективное обследование; функциональные тесты"
+          }
+        },
+        {
+          "name": "Липидограмма",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "макроангиопатии. ежегодно, с 11 лет, при стаже СД – 2 и более лет. липидограмма каждые 2 года"
+          }
+        },
+        {
+          "name": "Ежегодное определение показателей артериального давления (АД)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "макроангиопатии. ежегодно, с 11 лет, при стаже СД – 2 и более лет. ежегодное определение показателей АД."
+          }
+        },
+        {
+          "name": "Расчет скорости клубочковой фильтрации (СКФ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "при диагностике нефропатии у детей с СД используется расчет скорости клубочковой фильтрации (далее – СКФ)"
+          }
         }
-      ]
+      ],
+      "conditional_exams": [],
+      "treatment": null,
+      "follow_up": [
+        {
+          "text": "Наблюдение за состоянием пациента и его лечением осуществляет врач – детский эндокринолог или врач общей практики, врач-педиатр, врач-педиатр участковый по рекомендациям детского эндокринолога.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Наблюдение за состоянием пациента и его лечением осуществляет врач – детский эндокринолог или врач общей практики, врач-педиатр, врач-педиатр участковый по рекомендациям детского эндокринолога."
+          }
+        },
+        {
+          "text": "Ежегодный скрининг хронических осложнений СД (ретинопатия, нефропатия, невропатия, макроангиопатии) с 11 лет при стаже СД 2 и более лет.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Ежегодный скрининг хронических осложнений СД (ретинопатия, нефропатия, невропатия, макроангиопатии) с 11 лет при стаже СД 2 и более лет."
+          }
+        }
+      ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "Первичная диагностика проводится в амбулаторных условиях (врачи общей практики, педиатры).",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Первичная диагностика проводится в амбулаторных условиях (врачи общей практики, педиатры)."
+          }
+        },
+        {
+          "text": "Направление пациента на консультацию к врачу – детскому эндокринологу для уточнения диагноза и коррекции лечения.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Направление пациента на консультацию к врачу – детскому эндокринологу для уточнения диагноза и коррекции лечения."
+          }
+        },
+        {
+          "text": "Диагностика и лечение пациентов с СД проводится в амбулаторных и стационарных условиях.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Диагностика и лечение пациентов с СД проводится в амбулаторных и стационарных условиях."
+          }
+        },
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Диабетический кетоацидоз (ДКА), определяемый как острая диабетическая декомпенсация обмена веществ.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ДКА определяется как острая диабетическая декомпенсация обмена веществ"
+          }
+        }
+      ],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "impaired_glucose_tolerance",
+      "name": "Нарушение толерантности к глюкозе и нарушение гликемии натощак",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "R73.0"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": {
+        "required": [
+          {
+            "text": "Уровень глюкозы в плазме через 2 ч после нагрузки при ОГТТ (ГП2) 7,8–11,0 ммоль/л (НТГ)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Уровень глюкозы в плазме через 2 ч после нагрузки при ОГТТ (ГП2) 7,8–11,0 ммоль/л (НТГ)"
+            }
+          },
+          {
+            "text": "Повышенный уровень глюкозы и кетонов в моче (для СД)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Повышенный уровень глюкозы и кетонов в моче (для СД)"
+            }
+          },
+          {
+            "text": "Гликированный гемоглобин (HbA1c) > 6,5%",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Гликированный гемоглобин (HbA1c) > 6,5%"
+            }
+          },
+          {
+            "text": "Диагноз диабета при отсутствии четких симптомов гипергликемии следует подтвердить повторным тестированием",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Диагноз диабета при отсутствии четких симптомов гипергликемии следует подтвердить повторным тестированием"
+            }
+          },
+          {
+            "text": "Диагноз СД1 у детей не выставляется на основании единственного показателя HbA1c",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Диагноз СД1 у детей не выставляется на основании единственного показателя HbA1c"
+            }
+          },
+          {
+            "text": "Ремиссия СД: потребность в инсулине < 0,5 ЕД/кг, HbA1c < 7%",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ремиссия СД: потребность в инсулине < 0,5 ЕД/кг, HbA1c < 7%"
+            }
+          },
+          {
+            "text": "Диабетический кетоацидоз (ДКА): резкое повышение глюкозы и кетоновых тел в крови, кетоны в моче, метаболический ацидоз, возможно нарушение сознания",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Диабетический кетоацидоз (ДКА): резкое повышение глюкозы и кетоновых тел в крови, кетоны в моче, метаболический ацидоз, возможно нарушение сознания"
+            }
+          },
+          {
+            "text": "Степень тяжести ДКА: легкий (pH < 7,3 или бикарбонаты < 15), умеренный (pH < 7,2 или бикарбонаты < 10), тяжелый (pH < 7,1 или бикарбонаты < 5)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Степень тяжести ДКА: легкий (pH < 7,3 или бикарбонаты < 15), умеренный (pH < 7,2 или бикарбонаты < 10), тяжелый (pH < 7,1 или бикарбонаты < 5)"
+            }
+          }
+        ],
+        "optional": [],
+        "exclusion": []
+      },
+      "required_exams": [
+        {
+          "name": "Оральный тест на толерантность к глюкозе (ОГТТ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "диагностические критерии результатов ОГТТ (уровень глюкозы в плазме через 2 ч после нагрузки глюкозой (далее – ГП2)) оцениваются согласно: ГП2 7,8–11,0 ммоль/л – нарушение толерантности к глюкозе (НТГ);"
+          }
+        },
+        {
+          "name": "Измерение уровня глюкозы в плазме натощак",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "уровень глюкозы в плазме натощак > 7,0 ммоль/ла. Состояние натощак определяется как прием пищи не менее 8 часов назад"
+          }
+        },
+        {
+          "name": "HbA1c",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "определение HbA1c не реже 1 раза в 3 месяца;"
+          }
+        },
+        {
+          "name": "Самоконтроль гликемии/CGM",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "самоконтроль гликемии или ее мониторинг помощью систем CGM до 6–10 раз в сутки;"
+          }
+        },
+        {
+          "name": "Нагрузочный тест с глюкозой",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Для нагрузки используется эквивалент 75 г безводной глюкозы, растворенной в воде (или 1,75 г/кг до максимальной дозы 75 г)."
+          }
+        },
+        {
+          "name": "Венозный pH и бикарбонаты",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "легкий ДКА – венозный pH < 7,3 или бикарбонаты < 15 ммоль/л;"
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Измерение случайного уровня глюкозы в плазме",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ОГТТ не проводится в тех случаях, когда случайное исследование уровня глюкозы плазмы в течение дня или после еды подтверждает диагноз СД;"
+          }
+        },
+        {
+          "name": "Лактат",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "лактат; < 1,8 ммоль/л; N или ; лактат-ацидоз вызывается активным синтезом лактата печенью а также гипоперфузией периферических тканей"
+          }
+        },
+        {
+          "name": "Креатинфосфокиназа (КФК)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "креатинфосфокиназа (далее – КФК); ; как признак протеолиза."
+          }
+        },
+        {
+          "name": "Аспартатаминотрансфераза (АСТ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "аспарагин-аминорансфераза (далее – АСТ). ."
+          }
+        }
+      ],
+      "treatment": {
+        "non_drug": [
+          {
+            "text": "Регулярное ведение дневника самоконтроля с коррекцией терапии по необходимости.",
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Регулярное ведение дневника самоконтроля с коррекцией терапии по необходимости."
+            }
+          },
+          {
+            "text": "Изменение образа жизни (для контроля АД).",
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Изменение образа жизни (для контроля АД)."
+            }
+          },
+          {
+            "text": "Здоровое питание с ограничением животных жиров (при высоком холестерине).",
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Здоровое питание с ограничением животных жиров (при высоком холестерине)."
+            }
+          },
+          {
+            "text": "Диетическое питание (стол Д) с учетом возрастной суточной потребности в углеводах.",
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Диетическое питание (стол Д) с учетом возрастной суточной потребности в углеводах."
+            }
+          }
+        ],
+        "drug_groups": [],
+        "drugs": [
+          {
+            "drug_name": "Каптоприл",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,3–0,5 мг/кг/сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ингибиторы АПФ: каптоприл 0,3–0,5 мг/кг/сутки;"
+            }
+          },
+          {
+            "drug_name": "Эналаприл",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,1–0,6 мг/кг/сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ингибиторы АПФ: ... эналаприл 0,1–0,6 мг/кг/сутки;"
+            }
+          },
+          {
+            "drug_name": "Лизиноприл",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,08–0,6 мг/сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ингибиторы АПФ: ... или лизиноприл 0,08–0,6 мг/сутки;"
+            }
+          },
+          {
+            "drug_name": "Аторвастатин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "начальная доза 10 мг в сутки; при необходимости через 2–4 недели после начала терапии дозу увеличивают до 20 мг в сутки внутрь.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "статины: детям старше 10 лет; аторвастатин в начальной дозе 10 мг в сутки; при необходимости через 2–4 недели после начала терапии дозу увеличивают до 20 мг в сутки внутрь."
+            }
+          },
+          {
+            "drug_name": "Инсулин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "потребность в инсулине составляет менее 0,5 ЕД/кг (в фазе ремиссии)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "в фазе ремиссии потребность в инсулине составляет менее 0,5 ЕД/кг, уровень HbA 1c в крови – менее 7 %."
+            }
+          }
+        ],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [
+        {
+          "text": "Наблюдение за состоянием пациента и его лечением детским эндокринологом или врачами общей практики/педиатрами в соответствии с рекомендациями детского эндокринолога.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Наблюдение за состоянием пациента и его лечением детским эндокринологом или врачами общей практики/педиатрами в соответствии с рекомендациями детского эндокринолога."
+          }
+        },
+        {
+          "text": "Определение HbA1c не реже 1 раза в 3 месяца.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Определение HbA1c не реже 1 раза в 3 месяца."
+          }
+        },
+        {
+          "text": "Самоконтроль гликемии или мониторинг с помощью CGM до 6–10 раз в сутки.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Самоконтроль гликемии или мониторинг с помощью CGM до 6–10 раз в сутки."
+          }
+        },
+        {
+          "text": "Регулярное ведение дневника самоконтроля с коррекцией терапии по необходимости.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Регулярное ведение дневника самоконтроля с коррекцией терапии по необходимости."
+          }
+        }
+      ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "амбулаторно: первичная диагностика врачами общей практики/педиатрами",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно: первичная диагностика врачами общей практики/педиатрами"
+          }
+        },
+        {
+          "text": "амбулаторно: консультация детского эндокринолога для уточнения диагноза и коррекции лечения",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно: консультация детского эндокринолога для уточнения диагноза и коррекции лечения"
+          }
+        },
+        {
+          "text": "Госпитализация при диабетическом кетоацидозе (ДКА).",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация при диабетическом кетоацидозе (ДКА)."
+          }
+        },
+        {
+          "text": "Лечение СД1 может осуществляться в амбулаторных и стационарных условиях.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Лечение СД1 может осуществляться в амбулаторных и стационарных условиях."
+          }
+        },
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Полиурия, полидипсия и снижение массы тела (характерные клинические симптомы сахарного диабета)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "характерными клиническими симптомами СД у детей являются: полиурия, полидипсия и снижение массы тела;"
+          }
+        },
+        {
+          "text": "Гипергликемия (> 11 ммоль/л), pH венозной крови < 7,3 или бикарбонаты < 15 ммоль/л, кетонемия или кетонурия (биохимические критерии диабетического кетоацидоза)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "биохимическими критериями диагностики ДКА являются: гипергликемия > 11 ммоль/л; pH венозной крови < 7,3 или бикарбонаты < 15 ммоль/л; кетонемия или кетонурия;"
+          }
+        },
+        {
+          "text": "Необходимость учета аллергологического и фармакологического анамнеза при назначении фармакотерапии.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При этом необходимо учитывать наличие аллергологического и фармакологического анамнеза."
+          }
+        },
+        {
+          "text": "Диабетический кетоацидоз (ДКА), требующий экстренной госпитализации.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ДКА определяется как острая диабетическая декомпенсация обмена веществ, ... требующая экстренной госпитализации пациента;"
+          }
+        },
+        {
+          "text": "Снижение pH до 6,8 в крови (при ДКА).",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "pH снижается до 6,8;"
+          }
+        }
+      ],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "thyroiditis",
+      "name": "Тиреоидиты",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": {
+        "required": [
+          {
+            "text": "Наличие в анамнезе облучения головы и шеи (показание к ТАБ объемных образований ЩЖ)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Наличие в анамнезе облучения головы и шеи (показание к ТАБ объемных образований ЩЖ)"
+            }
+          },
+          {
+            "text": "Семейный анамнез рака ЩЖ (показание к ТАБ объемных образований ЩЖ)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Семейный анамнез рака ЩЖ (показание к ТАБ объемных образований ЩЖ)"
+            }
+          },
+          {
+            "text": "Наличие заболеваний, ассоциированных в рамках синдромов множественных эндокринных неоплазий (показание к ТАБ объемных образований ЩЖ)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Наличие заболеваний, ассоциированных в рамках синдромов множественных эндокринных неоплазий (показание к ТАБ объемных образований ЩЖ)"
+            }
+          },
+          {
+            "text": "Плотный узел ЩЖ (показание к ТАБ объемных образований ЩЖ)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Плотный узел ЩЖ (показание к ТАБ объемных образований ЩЖ)"
+            }
+          },
+          {
+            "text": "Быстрорастущий узел ЩЖ (увеличение объема на 50% за 6 месяцев) (показание к ТАБ объемных образований ЩЖ)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Быстрорастущий узел ЩЖ (увеличение объема на 50% за 6 месяцев) (показание к ТАБ объемных образований ЩЖ)"
+            }
+          },
+          {
+            "text": "Узел ЩЖ, фиксированный к соседним анатомическим структурам (показание к ТАБ объемных образований ЩЖ)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Узел ЩЖ, фиксированный к соседним анатомическим структурам (показание к ТАБ объемных образований ЩЖ)"
+            }
+          },
+          {
+            "text": "Узел ЩЖ, сочетающийся с увеличением регионарных лимфатических узлов (показание к ТАБ объемных образований ЩЖ)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Узел ЩЖ, сочетающийся с увеличением регионарных лимфатических узлов (показание к ТАБ объемных образований ЩЖ)"
+            }
+          },
+          {
+            "text": "Гипоэхогенный узел ЩЖ с нечеткими контурами (показание к ТАБ объемных образований ЩЖ)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Гипоэхогенный узел ЩЖ с нечеткими контурами (показание к ТАБ объемных образований ЩЖ)"
+            }
+          },
+          {
+            "text": "Узел ЩЖ неправильной формы (показание к ТАБ объемных образований ЩЖ)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Узел ЩЖ неправильной формы (показание к ТАБ объемных образований ЩЖ)"
+            }
+          },
+          {
+            "text": "Узел ЩЖ с микрокальцинатами (показание к ТАБ объемных образований ЩЖ)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Узел ЩЖ с микрокальцинатами (показание к ТАБ объемных образований ЩЖ)"
+            }
+          },
+          {
+            "text": "Узел ЩЖ с выраженным интранодулярным кровотоком (показание к ТАБ объемных образований ЩЖ)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Узел ЩЖ с выраженным интранодулярным кровотоком (показание к ТАБ объемных образований ЩЖ)"
+            }
+          },
+          {
+            "text": "Распространение узлового образования ЩЖ за пределы капсулы (показание к ТАБ объемных образований ЩЖ)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Распространение узлового образования ЩЖ за пределы капсулы (показание к ТАБ объемных образований ЩЖ)"
+            }
+          },
+          {
+            "text": "Деформирование контура ЩЖ (показание к ТАБ объемных образований ЩЖ)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Деформирование контура ЩЖ (показание к ТАБ объемных образований ЩЖ)"
+            }
+          },
+          {
+            "text": "Увеличение размеров узлового образования ЩЖ в динамике (увеличение объема узла на 50% за 6 месяцев) (показание к ТАБ объемных образований ЩЖ)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Увеличение размеров узлового образования ЩЖ в динамике (увеличение объема узла на 50% за 6 месяцев) (показание к ТАБ объемных образований ЩЖ)"
+            }
+          },
+          {
+            "text": "СД: Гликированный гемоглобин (HbA1c) > 6,5%, при отсутствии четких симптомов гипергликемии диагноз следует подтвердить повторным тестированием. Диагноз СД1 у детей не выставляется на основании единственного показателя HbA1c.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "СД: Гликированный гемоглобин (HbA1c) > 6,5%, при отсутствии четких симптомов гипергликемии диагноз следует подтвердить повторным тестированием. Диагноз СД1 у детей не выставляется на основании единств"
+            }
+          },
+          {
+            "text": "Диабетический кетоацидоз (ДКА): острая диабетическая декомпенсация обмена веществ, проявляющаяся резким повышением уровня глюкозы и концентрации кетоновых тел в крови, появлением их в моче и развитием метаболического ацидоза.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Диабетический кетоацидоз (ДКА): острая диабетическая декомпенсация обмена веществ, проявляющаяся резким повышением уровня глюкозы и концентрации кетоновых тел в крови, появлением их в моче и развитием"
+            }
+          }
+        ],
+        "optional": [],
+        "exclusion": []
+      },
+      "required_exams": [
+        {
+          "name": "Тонкоигольная аспирационная биопсия (ТАБ) щитовидной железы",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 35,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Основным методом дифференциальной диагностики объемных образований ЩЖ является тонкоигольная аспирационная биопсия (далее – ТАБ)."
+          }
+        },
+        {
+          "name": "Гликированный гемоглобин (HbA1c)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "определение HbA1c не реже 1 раза в 3 месяца;"
+          }
+        },
+        {
+          "name": "Самоконтроль гликемии / мониторинг с CGM",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "самоконтроль гликемии или ее мониторинг помощью систем CGM до 6–10 раз в сутки;"
+          }
+        },
+        {
+          "name": "Измерение артериального давления (АД)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "АД < 90-го перцентиля для возраста, пола и роста; изменение образа жизни; АД > 90-го перцентиля, на фоне модификации образа жизни;"
+          }
+        },
+        {
+          "name": "Глюкоза в крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "проявляющаяся резким повышением уровня глюкозы и концентрации кетоновых тел в крови, появлением их в моче"
+          }
+        },
+        {
+          "name": "Кетоновые тела в крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "проявляющаяся резким повышением уровня глюкозы и концентрации кетоновых тел в крови, появлением их в моче"
+          }
+        },
+        {
+          "name": "pH венозной крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "легкий ДКА – венозный pH < 7,3 или бикарбонаты < 15 ммоль/л;"
+          }
+        },
+        {
+          "name": "Бикарбонаты",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "легкий ДКА – венозный pH < 7,3 или бикарбонаты < 15 ммоль/л;"
+          }
+        },
+        {
+          "name": "Лактат",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "лактат; < 1,8 ммоль/л; N или ; лактат-ацидоз вызывается активным синтезом лактата печенью а также гипоперфузией периферических тканей, в условиях снижения рН < 7,0;"
+          }
+        },
+        {
+          "name": "Креатинфосфокиназа (КФК)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "креатинфосфокиназа (далее – КФК); ; как признак протеолиза."
+          }
+        },
+        {
+          "name": "Аспартатаминотрансфераза (АСТ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "аспарагин-аминорансфераза (далее – АСТ). ."
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Уровень ЛПНП-холестерина",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "уровень ЛПНП – холестерина > 2,6 ммоль/л;"
+          }
+        },
+        {
+          "name": "Фракция ЛПВП-холестерина",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "фракция ЛПВП – холестерина > 3,4 ммоль/л в сочетании с одним или более фактором риска сердечно-сосудистых заболеваний."
+          }
+        },
+        {
+          "name": "Глюкоза в моче",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "СД может сопровождаться повышенным уровнем глюкозы и кетонов в моче;"
+          }
+        },
+        {
+          "name": "Кетоны в моче",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "СД может сопровождаться повышенным уровнем глюкозы и кетонов в моче;"
+          }
+        }
+      ],
+      "treatment": {
+        "non_drug": [
+          {
+            "text": "Диетическое питание в пределах стола Д с учетом возрастной суточной потребности в углеводах.",
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Диетическое питание в пределах стола Д с учетом возрастной суточной потребности в углеводах."
+            }
+          },
+          {
+            "text": "Изменение образа жизни при АД > 90-го перцентиля.",
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Изменение образа жизни при АД > 90-го перцентиля."
+            }
+          },
+          {
+            "text": "Здоровое питание с ограничением животных жиров при уровне ЛПНП-холестерина > 2,6 ммоль/л или фракции ЛПВП-холестерина > 3,4 ммоль/л с факторами риска.",
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Здоровое питание с ограничением животных жиров при уровне ЛПНП-холестерина > 2,6 ммоль/л или фракции ЛПВП-холестерина > 3,4 ммоль/л с факторами риска."
+            }
+          },
+          {
+            "text": "Регулярное ведение дневника самоконтроля с коррекцией терапии по необходимости.",
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Регулярное ведение дневника самоконтроля с коррекцией терапии по необходимости."
+            }
+          }
+        ],
+        "drug_groups": [],
+        "drugs": [
+          {
+            "drug_name": "Каптоприл",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,3–0,5 мг/кг/сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ингибиторы АПФ: каптоприл 0,3–0,5 мг/кг/сутки;"
+            }
+          },
+          {
+            "drug_name": "Эналаприл",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,1–0,6 мг/кг/сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "эналаприл 0,1–0,6 мг/кг/сутки;"
+            }
+          },
+          {
+            "drug_name": "Лизиноприл",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,08–0,6 мг/сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "или лизиноприл 0,08–0,6 мг/сутки;"
+            }
+          },
+          {
+            "drug_name": "Аторвастатин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Начальная доза 10 мг в сутки, при необходимости через 2–4 недели после начала терапии дозу увеличивают до 20 мг в сутки внутрь (для детей старше 10 лет)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "статины: детям старше 10 лет; аторвастатин в начальной дозе 10 мг в сутки; при необходимости через 2–4 недели после начала терапии дозу увеличивают до 20 мг в сутки внутрь."
+            }
+          }
+        ],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [
+        {
+          "text": "Определение HbA1c не реже 1 раза в 3 месяца.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Определение HbA1c не реже 1 раза в 3 месяца."
+          }
+        },
+        {
+          "text": "Самоконтроль гликемии или ее мониторинг с помощью систем CGM до 6–10 раз в сутки.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Самоконтроль гликемии или ее мониторинг с помощью систем CGM до 6–10 раз в сутки."
+          }
+        },
+        {
+          "text": "Регулярное ведение дневника самоконтроля с коррекцией терапии по необходимости.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Регулярное ведение дневника самоконтроля с коррекцией терапии по необходимости."
+          }
+        },
+        {
+          "text": "Коррекция дозы аторвастатина при необходимости через 2–4 недели после начала терапии.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Коррекция дозы аторвастатина при необходимости через 2–4 недели после начала терапии."
+          }
+        }
+      ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "Амбулаторно: Первичная диагностика заболеваний эндокринной системы у врачей общей практики, врачей-педиатров, врачей-педиатров участковых.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Амбулаторно: Первичная диагностика заболеваний эндокринной системы у врачей общей практики, врачей-педиатров, врачей-педиатров участковых."
+          }
+        },
+        {
+          "text": "Амбулаторно: Направление пациента к врачу – детскому эндокринологу для уточнения диагноза и коррекции лечения.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Амбулаторно: Направление пациента к врачу – детскому эндокринологу для уточнения диагноза и коррекции лечения."
+          }
+        },
+        {
+          "text": "Госпитализация (при диабетическом кетоацидозе)",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация (при диабетическом кетоацидозе)"
+          }
+        },
+        {
+          "text": "Амбулаторно/стационарно (для лечения СД1)",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Амбулаторно/стационарно (для лечения СД1)"
+          }
+        },
+        {
+          "text": "Госпитализация пациентов с заболеваниями эндокринной системы для оказания медицинской помощи в стационарных условиях.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация пациентов с заболеваниями эндокринной системы для оказания медицинской помощи в стационарных условиях."
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Быстрорастущий узел ЩЖ (увеличение объема на 50% за 6 месяцев)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 35,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "быстрорастущий узел (увеличение объема узла на 50 % за 6 месяцев.);"
+          }
+        },
+        {
+          "text": "Узел ЩЖ, фиксированный к соседним анатомическим структурам",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 35,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "узел ЩЖ, фиксированный к соседним анатомическим структурам;"
+          }
+        },
+        {
+          "text": "Узел ЩЖ, сочетающийся с увеличением регионарных лимфатических узлов",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 35,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "узел ЩЖ, сочетающийся с увеличением регионарных лимфатических узлов, превышающим возрастные нормы"
+          }
+        },
+        {
+          "text": "Распространение узлового образования за пределы капсулы, деформирование контура ЩЖ",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 35,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "распространение узлового образования за пределы капсулы, деформирование контура ЩЖ;"
+          }
+        },
+        {
+          "text": "Диабетический кетоацидоз (ДКА)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ДКА определяется как острая диабетическая декомпенсация обмена веществ, ... требующая экстренной госпитализации пациента;"
+          }
+        }
+      ],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "congenital_hypothyroidism_iodine_def",
+      "name": "Врожденный гипотиреоз, связанный с йодной недостаточностью",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "E01.1"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": null,
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        },
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        },
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностика_лечение_пациентов_с",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП_Диагностика_лечение_пациентов_с_эндокринологическими_заболеваниями_дет_нас_пост_МЗ_2019_90.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        }
+      ],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:23.203369+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T15:55:47.563067+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=5"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-06-23T19:15:23.208704+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[diabetes_mellitus_type_2].required_exams[4]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[diabetes_mellitus_type_2].required_exams[5]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[impaired_glucose_tolerance].required_exams[0]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[impaired_glucose_tolerance].treatment.drugs[0]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[impaired_glucose_tolerance].treatment.drugs[1]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[impaired_glucose_tolerance].treatment.drugs[2]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[impaired_glucose_tolerance].treatment.drugs[3]"
+      },
+      {
+        "level": "warning",
+        "code": "missing_icd10",
+        "message": "Нет icd10_codes у condition",
+        "path": "conditions[thyroiditis]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[thyroiditis].treatment.drugs[0]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[thyroiditis].treatment.drugs[1]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[thyroiditis].treatment.drugs[2]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[thyroiditis].treatment.drugs[3]"
+      }
+    ],
+    "validated_at": "2026-07-20T15:55:47.613077+00:00"
   }
 }

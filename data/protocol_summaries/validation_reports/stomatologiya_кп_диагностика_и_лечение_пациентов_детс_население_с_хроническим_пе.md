@@ -1,6 +1,10 @@
 # Validation: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_хроническим_пе
 
-- **status:** valid
-- **validated_at:** 2026-06-23T19:16:26.659463+00:00
+- **status:** needs_human_review
+- **validated_at:** 2026-07-20T18:35:22.127457+00:00
 - **review_status:** needs_review
-- **extraction_status:** auto_extracted
+- **extraction_status:** llm_extracted
+
+## Warnings
+- `duplicate_drug` conditions[chronic_periodontitis].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[chronic_periodontitis].treatment.drugs[3]: Дублирующийся препарат

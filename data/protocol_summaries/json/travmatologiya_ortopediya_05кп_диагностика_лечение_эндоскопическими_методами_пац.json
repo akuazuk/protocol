@@ -1,10 +1,10 @@
 {
   "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "05КП Диагностика лечение эндоскопическими методами пациентов взрослое население повреждениями коленного плечевого суставов",
+    "title": "Диагностика лечение эндоскопическими методами пациентов повреждениями коленного плечевого суставов",
     "url": null,
     "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
     "document_sha256": null,
@@ -32,22 +32,13 @@
   },
   "conditions": [
     {
-      "condition_id": "05кп_диагностика_лечение_эндоскопическими_метода",
-      "name": "05КП Диагностика лечение эндоскопическими методами пациентов взрослое население повреждениями коленного плечевого суставов",
+      "condition_id": "knee_shoulder_joint_injuries",
+      "name": "Повреждения коленного и плечевого суставов",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "C90.0",
-        "I21.9",
-        "I50.9",
-        "I64",
-        "J18.9",
-        "J44.9",
-        "K21.9",
-        "O26.9",
-        "O35",
-        "O72",
-        "O88.2"
+        "M23",
+        "M24"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -55,7 +46,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "определение группы крови и резус-фактора",
+            "text": "Медицинские показания к частичной резекции мениска: свежий разрыв в «белой» зоне, застарелое повреждение, киста мениска, дискоидный (врожденный) или дегенеративно измененный мениск.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -72,19 +63,617 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "определение группы крови и резус-фактора"
+              "quote": "Медицинские показания к частичной резекции мениска: свежий разрыв в «белой» зоне, застарелое повреждение, киста мениска, дискоидный (врожденный) или дегенеративно измененный мениск."
+            }
+          },
+          {
+            "text": "Медицинские показания к рефиксации мениска: свежий продольный разрыв в «красной» зоне, отсутствие дегенеративных процессов в тканях мениска, возраст пациента до 45 лет.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Медицинские показания к рефиксации мениска: свежий продольный разрыв в «красной» зоне, отсутствие дегенеративных процессов в тканях мениска, возраст пациента до 45 лет."
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
-      "conditional_exams": [],
+      "required_exams": [
+        {
+          "name": "Общий анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "общий анализ крови"
+          }
+        },
+        {
+          "name": "Общий анализ мочи",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "общий анализ мочи"
+          }
+        },
+        {
+          "name": "Биохимический анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "биохимический анализ крови (общий белок, общий билирубин, мочевина, креатинин, глюкоза, аланинаминотрансфераза, аспартатаминотрансфераза, С-реактивный белок, калий, общий кальций, натрий, хлор)"
+          }
+        },
+        {
+          "name": "Определение показателей свертывания крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "определение показателей свертывания крови (активированное частичное тромбопластиновое время, D-димеры, международное нормализованное отношение (далее – МНО), фибриноген)"
+          }
+        },
+        {
+          "name": "Исследование крови на маркеры гепатитов В и С",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "исследование крови на маркеры гепатитов В и С (HbsAg и anti-HCV)"
+          }
+        },
+        {
+          "name": "Определение группы крови и резус-фактора",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "определение группы крови и резус-фактора"
+          }
+        },
+        {
+          "name": "Электрокардиограмма",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "электрокардиограмма"
+          }
+        },
+        {
+          "name": "Флюорография легких",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "флюорография легких"
+          }
+        },
+        {
+          "name": "Онкологический осмотр",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "онкологический осмотр"
+          }
+        },
+        {
+          "name": "Заключение врача-терапевта или врача общей практики",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "заключение врача-терапевта или врача общей практики о состоянии здоровья пациента и отсутствии медицинских противопоказаний к хирургическому вмешательству"
+          }
+        },
+        {
+          "name": "Рентгенография коленного сустава в 2 проекциях (боковая и прямая)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "К обязательным диагностическим исследованиям при лечении повреждений менисков коленного сустава в стационарных условиях относятся: рентгенография коленного сустава в 2 проекциях (боковая и прямая);"
+          }
+        },
+        {
+          "name": "Магнитно-резонансная томография коленного сустава",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "К обязательным диагностическим исследованиям при лечении повреждений менисков коленного сустава в стационарных условиях относятся: ... магнитно-резонансная томография коленного сустава."
+          }
+        },
+        {
+          "name": "Осмотр врачом-анестезиологом-реаниматологом",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "В ходе предоперационной подготовки пациент осматривается врачом-анестезиологом-реаниматологом, по медицинским показаниям повторно могут выполняться лабораторные и функциональные исследования."
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Серологическое исследование на маркеры сифилиса",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "серологическое исследование на маркеры сифилиса методом иммуноферментного анализа или реакция быстрых плазменных реагинов (RPR) при отсутствии достоверного результата обследования за последний месяц"
+          }
+        },
+        {
+          "name": "Осмотр врача-акушера-гинеколога",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "осмотр врача-акушера-гинеколога (для женщин)"
+          }
+        },
+        {
+          "name": "Заключение врача-специалиста по профилю сопутствующей патологии",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "при наличии у пациента хронического заболевания заключение врача-специалиста по профилю сопутствующей патологии об отсутствии медицинских противопоказаний к плановому хирургическому вмешательству"
+          }
+        },
+        {
+          "name": "Рентгеновская компьютерная томография коленного сустава",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "К дополнительным диагностическим исследованиям при лечении повреждений менисков коленного сустава в стационарных условиях (по медицинским показаниям) относятся: рентгеновская компьютерная томография коленного сустава;"
+          }
+        },
+        {
+          "name": "УЗИ органов брюшной полости и почек",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "К дополнительным диагностическим исследованиям при лечении повреждений менисков коленного сустава в стационарных условиях (по медицинским показаниям) относятся: ... ультразвуковое исследование (далее – УЗИ) органов брюшной полости и почек;"
+          }
+        },
+        {
+          "name": "Трансторакальная эхокардиография сердца",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "К дополнительным диагностическим исследованиям при лечении повреждений менисков коленного сустава в стационарных условиях (по медицинским показаниям) относятся: ... трансторакальная эхокардиография сердца;"
+          }
+        },
+        {
+          "name": "Эзофагогастродуоденоскопия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "К дополнительным диагностическим исследованиям при лечении повреждений менисков коленного сустава в стационарных условиях (по медицинским показаниям) относятся: ... эзофагогастродуоденоскопия;"
+          }
+        },
+        {
+          "name": "Электромиографическое исследование функций конечностей",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "К дополнительным диагностическим исследованиям при лечении повреждений менисков коленного сустава в стационарных условиях (по медицинским показаниям) относятся: ... электромиографическое исследование функций конечностей;"
+          }
+        },
+        {
+          "name": "Исследование состояния сосудов нижних конечностей (УЗИ артерий и вен, флебография, ангиография)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "К дополнительным диагностическим исследованиям при лечении повреждений менисков коленного сустава в стационарных условиях (по медицинским показаниям) относятся: ... исследование состояния сосудов нижних конечностей (в том числе, УЗИ артерий и вен, флебография, ангиография);"
+          }
+        },
+        {
+          "name": "Консультации врачей-специалистов (терапевт, невролог, кардиолог, эндокринолог, уролог, нефролог и иных)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "К дополнительным диагностическим исследованиям при лечении повреждений менисков коленного сустава в стационарных условиях (по медицинским показаниям) относятся: ... консультации врачей-специалистов (врача-терапевта, врача-невролога, врача-кардиолога, врача-эндокринолога, врача-уролога, врача-нефролога и иных);"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 1. Настоящий клинический протокол устанавливает общие требования к объему (стр. 3)",
+            "text": "Максимально быстро активизировать пациентов, целесообразно использовать компрессионный (профилактический) трикотаж интраоперационно и в послеоперационном периоде.",
             "source_ref": {
               "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
               "document_url": null,
@@ -95,11 +684,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 1. Настоящий клинический протокол устанавливает общие требования к объему (стр. 3)"
+              "quote": "Максимально быстро активизировать пациентов, целесообразно использовать компрессионный (профилактический) трикотаж интраоперационно и в послеоперационном периоде."
             }
           },
           {
-            "text": "оказания медицинской помощи в стационарных условиях пациентам (взрослое население),",
+            "text": "Выполнение артроскопического вмешательства",
             "source_ref": {
               "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
               "document_url": null,
@@ -110,11 +699,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "оказания медицинской помощи в стационарных условиях пациентам (взрослое население),"
+              "quote": "Выполнение артроскопического вмешательства"
             }
           },
           {
-            "text": "нуждающимся в лечении эндоскопическими методами при повреждениях коленного",
+            "text": "Частичная резекция мениска",
             "source_ref": {
               "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
               "document_url": null,
@@ -125,11 +714,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "нуждающимся в лечении эндоскопическими методами при повреждениях коленного"
+              "quote": "Частичная резекция мениска"
             }
           },
           {
-            "text": "и плечевого суставов (шифры по Международной статистической классификации",
+            "text": "Рефиксация поврежденных фрагментов мениска",
             "source_ref": {
               "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
               "document_url": null,
@@ -140,11 +729,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "и плечевого суставов (шифры по Международной статистической классификации"
+              "quote": "Рефиксация поврежденных фрагментов мениска"
             }
           },
           {
-            "text": "М23 Внутрисуставные поражения колена",
+            "text": "Измельчение ткани мениска с постоянным вымыванием и заключительной аспирацией мелких фрагментов при артроскопии",
             "source_ref": {
               "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
               "document_url": null,
@@ -155,11 +744,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "М23 Внутрисуставные поражения колена"
+              "quote": "Измельчение ткани мениска с постоянным вымыванием и заключительной аспирацией мелких фрагментов при артроскопии"
             }
           },
           {
-            "text": "М24 Другие специфические поражения",
+            "text": "Отсечение и удаление больших фрагментов мениска при артроскопии",
             "source_ref": {
               "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
               "document_url": null,
@@ -170,17 +759,32 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "М24 Другие специфические поражения"
+              "quote": "Отсечение и удаление больших фрагментов мениска при артроскопии"
+            }
+          },
+          {
+            "text": "Накладывание пневмоманжеты на среднюю и верхнюю треть бедра с давлением 350–400 мм рт. ст. для уменьшения кровопотери и улучшения визуализации",
+            "source_ref": {
+              "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Накладывание пневмоманжеты на среднюю и верхнюю треть бедра с давлением 350–400 мм рт. ст. для уменьшения кровопотери и улучшения визуализации"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "углом",
+            "drug_name": "Гепарин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "90 \nг",
+            "dose_text": "За 2 часа до хирургического вмешательства по 5000 МЕ подкожно с последующим подкожным введением в послеоперационном периоде (после оценки состояния гемостаза) каждые 8–12 часов по 5000 МЕ для пациенто",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -192,20 +796,20 @@
               "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
               "document_url": null,
               "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
-              "page_start": null,
+              "page_start": 1,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "углом \n90 \nградусов \nдля расслабления \nбедренной \nму"
+              "quote": "Гепарин. Раствор для внутривенного и подкожного введения... За 2 часа до хирургического вмешательства по 5000 МЕ подкожно с последующим введением в послеоперационном периоде каждые 8–12 часов по 5000–7500 МЕ в течение 7–10 дней."
             }
           },
           {
-            "drug_name": "июня",
+            "drug_name": "Дальтепарин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2024 г",
+            "dose_text": "ЛП вводится строго подкожно по одному из альтернативных режимов дозирования.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -217,20 +821,20 @@
               "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
               "document_url": null,
               "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
-              "page_start": null,
+              "page_start": 1,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июня 2024 г"
+              "quote": "Дальтепарин. Раствор для инъекций 2500 МЕ анти-Ха/0,2 мл. Вводится строго подкожно по одному из альтернативных режимов дозирования."
             }
           },
           {
-            "drug_name": "октября",
+            "drug_name": "0,9 % раствор хлорида натрия",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2011 г",
+            "dose_text": "в водной среде",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -242,13 +846,13 @@
               "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
               "document_url": null,
               "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
-              "page_start": null,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "октября 2011 г"
+              "quote": "Хирургическое вмешательство выполняется, как правило, в водной среде (0,9 % раствор хлорида натрия)."
             }
           }
         ],
@@ -256,17 +860,12 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [
+      "follow_up": [
         {
-          "text": "ия \nвенозных \nтромбоэмболических \nосложнений (далее – ВТЭО) осуществляется в соответствии с моделью индивидуальной \nоценки риска развития ВТЭО по",
-          "aliases": [],
-          "red_flag_type": "thrombosis",
-          "severity": "high",
+          "text": "Медицинское наблюдение пациентов после артроскопического вмешательства",
+          "timing": null,
+          "required_if": [],
           "expected_actions": [],
-          "cap_if_unhandled": null,
           "source_ref": {
             "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
             "document_url": null,
@@ -277,45 +876,245 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "ия \nвенозных \nтромбоэмболических \nосложнений (далее – ВТЭО) осуществляется в соответствии с моделью индивидуальной \nоценки риска развития ВТЭО по"
+            "quote": "Медицинское наблюдение пациентов после артроскопического вмешательства"
+          }
+        },
+        {
+          "text": "После завершения хирургического вмешательства пациент переводится в ортопедо-травматологическое отделение или в отделение анестезиологии и реанимации для медицинского наблюдения.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "После завершения хирургического вмешательства пациент переводится в ортопедо-травматологическое отделение или в отделение анестезиологии и реанимации для медицинского наблюдения."
+          }
+        },
+        {
+          "text": "Осмотр лечащим врачом в ортопедо-травматологическом отделении.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Осмотр лечащим врачом в ортопедо-травматологическом отделении."
+          }
+        }
+      ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        },
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        },
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Активное кровотечение",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 1,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "С целью медицинской профилактики ВТЭО при отсутствии медицинских противопоказаний (активное кровотечение..."
+          }
+        },
+        {
+          "text": "Уровень тромбоцитов менее 30 х 10^9/л",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 1,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "С целью медицинской профилактики ВТЭО при отсутствии медицинских противопоказаний (...уровень тромбоцитов <30 х 109/л)"
+          }
+        },
+        {
+          "text": "Наличие индивидуальных медицинских противопоказаний",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При этом учитывается наличие индивидуальных медицинских противопоказаний, аллергологический и фармакологический анамнез."
+          }
+        },
+        {
+          "text": "Аллергологический и фармакологический анамнез",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При этом учитывается наличие индивидуальных медицинских противопоказаний, аллергологический и фармакологический анамнез."
+          }
+        },
+        {
+          "text": "Послеоперационные осложнения",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Продолжительность лечения пациента в стационарных условиях определяется в индивидуальном порядке в зависимости от характера повреждения, вида хирургического вмешательства и наличия послеоперационных осложнений."
+          }
+        },
+        {
+          "text": "Риск развития венозных тромбоэмболических осложнений (ВТЭО)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Индивидуальная оценка риска развития венозных тромбоэмболических осложнений (далее – ВТЭО) осуществляется в соответствии с моделью индивидуальной оценки риска развития ВТЭО по J. Caprini..."
           }
         }
       ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "travmatologiya_ortopediya_05кп_диагностика_лечение_эндоскопическими_методами_пац",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/travmatologiya-ortopediya/05КП_Диагностика_лечение_эндоскопическими_методами_пациентов_взр_нас_повреждениями_коленного_плечевого_суставов_пост_МЗ_2024_109.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "05КП Диагностика лечение эндоскопическими методами пациентов взрослое население повреждениями коленного плечевого сустав"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:53.123480+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T18:06:35.224146+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:53.125481+00:00"
+    "validated_at": "2026-07-20T18:06:35.242020+00:00"
   }
 }

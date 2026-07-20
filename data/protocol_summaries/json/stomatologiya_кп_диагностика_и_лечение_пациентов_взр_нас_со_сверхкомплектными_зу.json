@@ -1,7 +1,7 @@
 {
   "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "Диагностика и лечение пациентов взрослое население со сверхкомплектными зубами",
@@ -32,12 +32,16 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_и_лечение_пациентов_взрослое_населен",
-      "name": "Диагностика и лечение пациентов взрослое население со сверхкомплектными зубами",
+      "condition_id": "supernumerary_teeth",
+      "name": "сверхкомплектные зубы",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "B24"
+        "K00.1",
+        "K00.10",
+        "K00.11",
+        "K00.12",
+        "K00.19"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -45,7 +49,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[criteria] 5. Признаками и критериями, определяющими сверхкомплектные зубы, являются: (стр. 4)",
+            "text": "наличие одного или более зубов сверх природного комплекта, которые определяются визуально или при лучевых методах исследования",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -62,11 +66,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 5. Признаками и критериями, определяющими сверхкомплектные зубы, являются: (стр. 4)"
+              "quote": "наличие одного или более зубов сверх природного комплекта, которые определяются визуально или при лучевых методах исследования"
             }
           },
           {
-            "text": "выявление факторов, приведших к возникновению заболевания, а также определение",
+            "text": "покраснение и отечность в месте залегания сверхкомплектного ретенированного зуба",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -83,19 +87,196 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "выявление факторов, приведших к возникновению заболевания, а также определение"
+              "quote": "покраснение и отечность в месте залегания сверхкомплектного ретенированного зуба"
+            }
+          },
+          {
+            "text": "нарушение откусывания пищи и жевания",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "нарушение откусывания пищи и жевания"
+            }
+          },
+          {
+            "text": "травма мягких тканей полости рта",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "травма мягких тканей полости рта"
+            }
+          },
+          {
+            "text": "нарушение положения комплектных зубов (дистопия) и формирование неправильного прикуса",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "нарушение положения комплектных зубов (дистопия) и формирование неправильного прикуса"
+            }
+          },
+          {
+            "text": "нарушение артикуляции – нарушение произношения шипящих звуков",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "нарушение артикуляции – нарушение произношения шипящих звуков"
+            }
+          },
+          {
+            "text": "подвижность рядом стоящих комплектных зубов",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "подвижность рядом стоящих комплектных зубов"
+            }
+          },
+          {
+            "text": "костные деформации",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "костные деформации"
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
+      "required_exams": [
+        {
+          "name": "Визуальный осмотр",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "наличие одного или более зубов сверх природного комплекта, которые определяются визуально или при лучевых методах исследования"
+          }
+        },
+        {
+          "name": "Лучевые методы исследования",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "наличие одного или более зубов сверх природного комплекта, которые определяются визуально или при лучевых методах исследования"
+          }
+        }
+      ],
       "conditional_exams": [],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 1. Настоящий клинический протокол определяет общие требования к объему (стр. 4)",
+            "text": "Общепринятым эффективным методом лечения является хирургическое и ортодонтическое лечение.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
               "document_url": null,
@@ -106,11 +287,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 1. Настоящий клинический протокол определяет общие требования к объему (стр. 4)"
+              "quote": "Общепринятым эффективным методом лечения является хирургическое и ортодонтическое лечение."
             }
           },
           {
-            "text": "оказания медицинской помощи на терапевтическом, ортодонтическом и хирургическом",
+            "text": "Обязательному удалению подлежат временные зубы, препятствующие нормальному росту постоянных.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
               "document_url": null,
@@ -121,11 +302,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "оказания медицинской помощи на терапевтическом, ортодонтическом и хирургическом"
+              "quote": "Обязательному удалению подлежат временные зубы, препятствующие нормальному росту постоянных."
             }
           },
           {
-            "text": "стоматологических приемах в амбулаторных условиях пациентам (взрослое население)",
+            "text": "Обязательному удалению подлежат значительно дистопированные зубы (на небе или под большим углом к альвеолярному отростку).",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
               "document_url": null,
@@ -136,11 +317,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "стоматологических приемах в амбулаторных условиях пациентам (взрослое население)"
+              "quote": "Обязательному удалению подлежат значительно дистопированные зубы (на небе или под большим углом к альвеолярному отростку)."
             }
           },
           {
-            "text": "со сверхкомплектными зубами (шифр по Международной статистической классификации",
+            "text": "Обязательному удалению подлежат ретенированные образования, оказывающие давление на корни или провоцирующие воспаление.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
               "document_url": null,
@@ -151,11 +332,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "со сверхкомплектными зубами (шифр по Международной статистической классификации"
+              "quote": "Обязательному удалению подлежат ретенированные образования, оказывающие давление на корни или провоцирующие воспаление."
             }
           },
           {
-            "text": "К00 Нарушения развития и прорезывания зубов",
+            "text": "Удаление не проводится, если сверхкомплектный зуб не вызывает дискомфорта и не нарушает развитие зубных рядов.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
               "document_url": null,
@@ -166,11 +347,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "К00 Нарушения развития и прорезывания зубов"
+              "quote": "Удаление не проводится, если сверхкомплектный зуб не вызывает дискомфорта и не нарушает развитие зубных рядов."
             }
           },
           {
-            "text": "К00.10 Областей резца и клыка (мезиодентия (срединный зуб)",
+            "text": "Сверхкомплектный зуб может быть установлен в зубной ряд при повреждении соседних комплектных зубов.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
               "document_url": null,
@@ -181,17 +362,92 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "К00.10 Областей резца и клыка (мезиодентия (срединный зуб)"
+              "quote": "Сверхкомплектный зуб может быть установлен в зубной ряд при повреждении соседних комплектных зубов."
+            }
+          },
+          {
+            "text": "Хирургическое лечение включает обезболивание и удаление сверхкомплектного зуба.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Хирургическое лечение включает обезболивание и удаление сверхкомплектного зуба."
+            }
+          },
+          {
+            "text": "Ортодонтическое лечение проводится в зависимости от клинической ситуации, после удаления зуба или вместо него.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ортодонтическое лечение проводится в зависимости от клинической ситуации, после удаления зуба или вместо него."
+            }
+          },
+          {
+            "text": "Для ортодонтического лечения применяют несъемную (брекет-системы) и съемную (элайнеры, каппы) аппаратуру.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Для ортодонтического лечения применяют несъемную (брекет-системы) и съемную (элайнеры, каппы) аппаратуру."
+            }
+          },
+          {
+            "text": "Дополнительные лечебные мероприятия (удаление) показаны при травме слизистой, интерференции, риске резорбции корней, деформации, риске новообразований, затрудненном прорезывании.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Дополнительные лечебные мероприятия (удаление) показаны при травме слизистой, интерференции, риске резорбции корней, деформации, риске новообразований, затрудненном прорезывании."
+            }
+          },
+          {
+            "text": "Дополнительные лечебные мероприятия (ортодонтическое лечение) показаны при зубочелюстной аномалии после удаления сверхкомплектного зуба.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Дополнительные лечебные мероприятия (ортодонтическое лечение) показаны при зубочелюстной аномалии после удаления сверхкомплектного зуба."
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "применения",
+            "drug_name": "Лидокаин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "100 мг",
+            "dose_text": "Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну. Лекарственное средство можно также наносить путем смазывания смоченным в нем ватным тампоно",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -203,20 +459,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "применения 100 мг/мл во \nфлаконах 50 мл \nОдну порцию (1–3"
+              "quote": "Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну. Лекарственное средство можно также наносить путем смазывания смоченным в нем ватным тампоном"
             }
           },
           {
-            "drug_name": "шприцах",
+            "drug_name": "Лидокаин/Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "12,5 г",
+            "dose_text": "Разовую дозу врач-специалист назначает индивидуально, учитывая состояние области нанесения лекарственного средства и общее состояние пациента.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -228,20 +484,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "шприцах 12,5 г \nДля аппликационной анестезии слизистой \n"
+              "quote": "Для аппликационной анестезии слизистой оболочки полости рта, в т. ч. перед инъекционной анестезией. Разовую дозу врач-специалист назначает индивидуально, учитывая состояние области нанесения лекарственного средства и общее состояние пациента"
             }
           },
           {
-            "drug_name": "картриджах",
+            "drug_name": "Артикаин/Эпинефрин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1,7 мл",
+            "dose_text": "До 7 мг на 1 кг массы тела при одной процедуре. Максимально до 500 мг (соответствует 12,5 мл раствора для инъекций).",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -253,138 +509,13 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "картриджах \n1,7 мл (1,8 мл), в ампулах 2 мл"
-            }
-          },
-          {
-            "drug_name": "соответствует",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "12,5 мл",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "соответствует 12,5 мл раствора для инъекций)\n\n[treatment] Лека"
-            }
-          },
-          {
-            "drug_name": "января",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2023 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "января 2023 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          },
-          {
-            "drug_name": "марта",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2023 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "марта 2023 г"
+              "quote": "При выполнении одной лечебной процедуры взрослым можно вводить артикаин в дозе до 7 мг на 1 кг массы тела. Отмечено, что пациенты хорошо переносили дозы до 500 мг (соответствует 12,5 мл раствора для инъекций)"
             }
           }
         ],
@@ -394,7 +525,7 @@
       },
       "follow_up": [
         {
-          "text": "через \n6 \nмес",
+          "text": "Медицинское наблюдение за результатами лечения через 6 месяцев после завершения лечения.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -408,48 +539,153 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "через \n6 \nмес"
+            "quote": "Медицинское наблюдение за результатами лечения через 6 месяцев после завершения лечения."
+          }
+        },
+        {
+          "text": "Последующее медицинское наблюдение за состоянием зубов и зубных протезов (при их наличии) 2 раза в год (каждые 6 месяцев).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Последующее медицинское наблюдение за состоянием зубов и зубных протезов (при их наличии) 2 раза в год (каждые 6 месяцев)."
           }
         }
       ],
       "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
+      "routing": [
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Временные зубы, препятствующие нормальному росту и формированию постоянных зубов.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обязательному удалению подлежат: временные зубы, которые препятствуют нормальному росту и формированию постоянных зубов..."
+          }
+        },
+        {
+          "text": "Значительно дистопированные зубы (расположенные на небе или под большим углом к альвеолярному отростку).",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "...значительно дистопированные зубы – расположенные на небе или под большим углом к боковой поверхности альвеолярного отростка..."
+          }
+        },
+        {
+          "text": "Ретенированные образования, оказывающие давление на прилегающие корни комплектных зубов и провоцирующие периодические воспалительные процессы мягких тканей.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "...ретенированные образования, которые оказывают давление на прилегающие корни комплектных зубов и провоцируют периодические воспалительные процессы мягких тканей."
+          }
+        },
+        {
+          "text": "Травма слизистой оболочки полости рта, интерференция, риск резорбции корней, деформация зубов и зубных рядов, риск новообразований, затрудненное прорезывание.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "при травме слизистой оболочки полости рта, интерференции, риске резорбции корней рядом стоящих зубов, деформации зубов и зубных рядов, риске новообразований, затрудненном прорезывании зубов – удаление..."
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зу",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_сверхкомплектными_зубами_пост_МЗ_11.01.2023_4.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика и лечение пациентов взрослое население со сверхкомплектными зубами"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:50.968343+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T17:57:03.228721+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:50.971688+00:00"
+    "validated_at": "2026-07-20T17:57:03.232074+00:00"
   }
 }

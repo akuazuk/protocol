@@ -1,10 +1,10 @@
 {
   "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Оказание медпомощи пациентам взр дет население с болезнью Виллебранда",
+    "title": "Болезнь Виллебранда",
     "url": null,
     "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "adult_and_child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,15 +32,12 @@
   },
   "conditions": [
     {
-      "condition_id": "оказание_медпомощи_пациентам_взр_дет_население_с",
-      "name": "Оказание медпомощи пациентам взр дет население с болезнью Виллебранда",
+      "condition_id": "von_willebrand_disease",
+      "name": "Болезнь Виллебранда",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "D68.0",
-        "B24",
-        "D66",
-        "O72"
+        "D68.0"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -48,7 +45,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[classification] 6. Пациенты с установленным диагнозом БВ: (стр. 4)",
+            "text": "нарушение первичного (сосудисто-тромбоцитарного) звена свертывания крови со снижением содержания (активности) vWF",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -65,11 +62,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 6. Пациенты с установленным диагнозом БВ: (стр. 4)"
+              "quote": "нарушение первичного (сосудисто-тромбоцитарного) звена свертывания крови со снижением содержания (активности) vWF"
             }
           },
           {
-            "text": "[classification] 16. Диагноз (стр. 5)",
+            "text": "приобретенный синдром Виллебранда",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -86,11 +83,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 16. Диагноз (стр. 5)"
+              "quote": "приобретенный синдром Виллебранда"
             }
           },
           {
-            "text": "Критерии установления диагноза БВ:",
+            "text": "обнаружение больших делеций у пациентов с БВ типа 3, которые определяют высокий риск развития нейтрализующих антител и анафилактические реакции при лечении лекарственными препаратами, содержащими vWF",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -107,11 +104,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Критерии установления диагноза БВ:"
+              "quote": "обнаружение больших делеций у пациентов с БВ типа 3, которые определяют высокий риск развития нейтрализующих антител и анафилактические реакции при лечении лекарственными препаратами, содержащими vWF"
             }
           },
           {
-            "text": "Диагноз устанавливается при наличии двух из трех критериев.",
+            "text": "Для диагностики БВ сумма баллов > 4 имеет чувствительность 100 %, специфичность – 87 %",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -128,237 +125,323 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Диагноз устанавливается при наличии двух из трех критериев."
-            }
-          },
-          {
-            "text": "определения типа БВ и риска наследования.",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "определения типа БВ и риска наследования."
-            }
-          },
-          {
-            "text": "для всех пациентов обязательно определение группы крови по системе АВ0.",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "для всех пациентов обязательно определение группы крови по системе АВ0."
+              "quote": "Для диагностики БВ сумма баллов > 4 имеет чувствительность 100 %, специфичность – 87 %"
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "[treatment] 3. Для целей настоящего клинического протокола используются термины и их (стр. 3)",
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 3. Для целей настоящего клинического протокола используются термины и их (стр. 3)"
-            }
-          },
-          {
-            "text": "введение гемостатического лекарственного средства (далее – ЛС) – вид лечения, при",
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "введение гемостатического лекарственного средства (далее – ЛС) – вид лечения, при"
-            }
-          },
-          {
-            "text": "котором введение концентрата фактора (факторов) свертывания крови (далее – КФСК)",
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "котором введение концентрата фактора (факторов) свертывания крови (далее – КФСК)"
-            }
-          },
-          {
-            "text": "VIII или VIII+vWF осуществляют по факту возникновения кровотечения с целью",
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "VIII или VIII+vWF осуществляют по факту возникновения кровотечения с целью"
-            }
-          },
-          {
-            "text": "гемостазиопатия – нарушение свертывания крови, обусловленное врожденным,",
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "гемостазиопатия – нарушение свертывания крови, обусловленное врожденным,"
-            }
-          },
-          {
-            "text": "наследственным или приобретенным дефицитом и (или) поражением тромбоцитов,",
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "наследственным или приобретенным дефицитом и (или) поражением тромбоцитов,"
-            }
+      "required_exams": [
+        {
+          "name": "Медицинский осмотр",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинский осмотр с целью выявления и/или дифференциальной диагностики БВ проводят по факту первичного обращения (подозрения), вне приема ЛС, влияющих на свертывание крови, исключив психоэмоциональное возбуждение."
           }
-        ],
-        "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "июля",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2022 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июля 2022 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
+        },
+        {
+          "name": "Определение группы крови по системе АВ0",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "для всех пациентов обязательно определение группы крови по системе АВ0."
           }
-        ],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
+        },
+        {
+          "name": "Диагностика тяжелой формы БВ (тип 3) у новорожденных",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "у новорожденных сразу же после рождения можно диагностировать тяжелую форму БВ (тип 3) по образцу пуповинной крови."
+          }
+        },
+        {
+          "name": "vWF:Ag (антиген фактора Виллебранда)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
+            "page_start": 16,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Лабораторные изменения, ассоциированные с БВ: vWF:Ag - снижен или значительно снижен при Типе 1, <3% при Типе 3, снижен при Типах 2А, 2В, 2М, норма или снижен при Типе 2N."
+          }
+        },
+        {
+          "name": "vWF:RCo (активность кофактора ристоцетина фактора Виллебранда)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
+            "page_start": 16,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Лабораторные изменения, ассоциированные с БВ: vWF:RCo - снижен или значительно снижен при Типе 1, <3% при Типе 3, значительно или очень значительно снижен при Типе 2А, значительно снижен при 2В, 2М, норма или снижен при Типе 2N."
+          }
+        },
+        {
+          "name": "FVIII:C (активность фактора VIII)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
+            "page_start": 16,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Лабораторные изменения, ассоциированные с БВ: FVIII:C - норма или снижен при Типе 1, <10% при Типе 3, норма или значительно снижен при Типах 2А, 2В, 2М, значительно или очень значительно снижен при Типе 2N."
+          }
+        },
+        {
+          "name": "vWF:RCo/vWF:Ag (соотношение активности к антигену vWF)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
+            "page_start": 16,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Лабораторные изменения, ассоциированные с БВ: vWF:RCo/vWF:Ag - >0,6 при Типе 1, <0,6 при Типах 2А, 2В, 2М, >0,6 при Типе 2N."
+          }
+        },
+        {
+          "name": "RIPA (ристоцетин-индуцированная агрегация тромбоцитов)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
+            "page_start": 16,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Лабораторные изменения, ассоциированные с БВ: RIPA - норма или снижен при Типе 1, снижен при Типе 2А, норма или повышен при Типе 2В, снижен при Типе 2М, норма при Типе 2N."
+          }
+        },
+        {
+          "name": "Тромбоциты",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
+            "page_start": 16,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Лабораторные изменения, ассоциированные с БВ: Тромбоциты - норма при Типах 1, 3, 2А, 2М, 2N, норма или снижен при Типе 2В."
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Генетическое исследование",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Генетическое исследование выполняют для дифференциальной диагностики БВ, определения типа БВ и риска наследования."
+          }
+        },
+        {
+          "name": "Дородовая диагностика БВ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "дородовую диагностику БВ обычно не проводят, поскольку риск развития кровотечений у новорожденных с БВ в большинстве случаев невелик."
+          }
+        },
+        {
+          "name": "Диагностика легких форм БВ у новорожденных",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Диагностику БВ новорожденных следует отложить на несколько месяцев, при отсутствии геморрагического синдрома желательно до достижения возраста 1 года."
+          }
+        }
+      ],
+      "treatment": null,
       "follow_up": [],
       "hospitalization": [],
       "routing": [
         {
-          "text": "оформляет этапный эпикриз, включающий выписку из медицинской карты амбулаторного",
+          "text": "Медицинское наблюдение осуществляется по месту жительства пациента.",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -371,18 +454,13 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "оформляет этапный эпикриз, включающий выписку из медицинской карты амбулаторного"
+            "quote": "Медицинское наблюдение осуществляется по месту жительства пациента."
           }
-        }
-      ],
-      "red_flags": [
+        },
         {
-          "text": "ализующих антител и анафилактические реакции при \nлечении лекарственными препаратами, содержащими vWF. \nМедицинский осмотр с целью выявления и (или)",
-          "aliases": [],
-          "red_flag_type": "severe_infection",
-          "severity": "high",
-          "expected_actions": [],
-          "cap_if_unhandled": null,
+          "text": "Врачебная консультация (консилиум) с участием врачей-специалистов областного кабинета патологии гемостаза (Республиканского Центра патологии гемостаза).",
+          "timing": null,
+          "required_if": [],
           "source_ref": {
             "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
             "document_url": null,
@@ -393,45 +471,62 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "ализующих антител и анафилактические реакции при \nлечении лекарственными препаратами, содержащими vWF. \nМедицинский осмотр с целью выявления и (или)"
+            "quote": "Врачебная консультация (консилиум) с участием врачей-специалистов областного кабинета патологии гемостаза (Республиканского Центра патологии гемостаза)."
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Антитела к vWF зарегистрированы как редкое осложнение трансфузионной терапии у 3–10 % пациентов с БВ 3 типа. У детей с доказанным лабораторно присутствием ингибиторов к vWF часто в анамнезе регистрируются аллергические реакции на трансфузию ЛС, содержащих vWF.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
+            "page_start": 12,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Антитела к vWF зарегистрированы как редкое осложнение трансфузионной терапии у 3–10 % пациентов с БВ 3 типа. У детей с доказанным лабораторно присутствием ингибиторов к vWF часто в анамнезе регистрируются аллергические реакции на трансфузию ЛС, содержащих vWF."
           }
         }
       ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "gematologiya_кп_оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_виллеб",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/gematologiya/КП_Оказание_медпомощи_пациентам_взр_дет_население_с_болезнью_Виллебранда_пост_МЗ_29.07.2022_80.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Оказание медпомощи пациентам взр дет население с болезнью Виллебранда"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:30.324606+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T15:59:06.747439+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-06-23T19:15:30.325411+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "quote_not_in_source",
+        "message": "Цитата не найдена в исходном тексте",
+        "path": "conditions[von_willebrand_disease].required_exams[6]"
+      }
+    ],
+    "validated_at": "2026-07-20T15:59:06.756220+00:00"
   }
 }

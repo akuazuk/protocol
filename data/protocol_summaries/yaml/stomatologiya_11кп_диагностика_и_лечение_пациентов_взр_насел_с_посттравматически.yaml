@@ -1,9 +1,9 @@
 protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: 11КП Диагностика и лечение пациентов взр насел с посттравматическими осложнениями
+  title: Диагностика и лечение пациентов взр насел с посттравматическими осложнениями
   url: null
   local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
   document_sha256: null
@@ -26,24 +26,22 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: 11кп_диагностика_и_лечение_пациентов_взр_насел_с
-  name: 11КП Диагностика и лечение пациентов взр насел с посттравматическими осложнениями
+- condition_id: post_traumatic_complications_head_face
+  name: Посттравматические осложнения и деформации челюстно-лицевой области и головы
   synonyms: []
   abbreviations: []
   icd10_codes:
   - M84.0
   - M84.1
+  - M84.2
   - M95.0
   - M95.2
-  - B24
-  - K07.9
-  - O72
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: ПРИЗНАКИ, КРИТЕРИИ И КЛАССИФИКАЦИЯ ПОСТТРАВМАТИЧЕСКИХ
+    - text: боль
       logic_group: null
       operator: unknown
       values: []
@@ -60,8 +58,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: ПРИЗНАКИ, КРИТЕРИИ И КЛАССИФИКАЦИЯ ПОСТТРАВМАТИЧЕСКИХ
-    - text: '[diagnostics] 12. Для постановки диагноза осуществляются: (стр. 6)'
+        quote: боль
+    - text: расстройства чувствительности (отсутствие, пониженная или повышенная чувствительность)
+        в зоне поражения
       logic_group: null
       operator: unknown
       values: []
@@ -78,8 +77,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 12. Для постановки диагноза осуществляются: (стр. 6)'
-    - text: на определение чувствительности к антибактериальным ЛС
+        quote: расстройства чувствительности (отсутствие, пониженная или повышенная
+          чувствительность) в зоне поражения
+    - text: деформация тканей
       logic_group: null
       operator: unknown
       values: []
@@ -96,8 +96,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: на определение чувствительности к антибактериальным ЛС
-    - text: на определение чувствительности к противогрибковым ЛС.
+        quote: деформация тканей
+    - text: нарушение конфигурации челюстно-лицевой области
       logic_group: null
       operator: unknown
       values: []
@@ -114,15 +114,324 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: на определение чувствительности к противогрибковым ЛС.
+        quote: нарушение конфигурации челюстно-лицевой области
+    - text: разнообразная локализация, протяженность и глубина деформаций
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: разнообразная локализация, протяженность и глубина деформаций
     optional: []
     exclusion: []
-  required_exams: []
-  conditional_exams: []
+  required_exams:
+  - name: Клиническое обследование пациента
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Для постановки диагноза осуществляются: клиническое обследование пациента;
+        обязательные и дополнительные лабораторные и инструментальные исследования;
+        консультации врачей-специалистов.'
+  - name: Обязательные и дополнительные лабораторные и инструментальные исследования
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Для постановки диагноза осуществляются: обязательные и дополнительные
+        лабораторные и инструментальные исследования.'
+  - name: Консультации врачей-специалистов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Для постановки диагноза осуществляются: консультации врачей-специалистов.'
+  - name: Сбор анамнеза
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями в стационарных условиях
+        являются: клиническое обследование пациента: сбор анамнеза, установка причины
+        возникновения и развития заболевания.'
+  - name: Внешний осмотр челюстно-лицевой области
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями в стационарных условиях
+        являются: внешний осмотр челюстно-лицевой области (конфигурация лица, кожные
+        покровы).'
+  - name: Осмотр и пальпация регионарных лимфатических узлов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями в стационарных условиях
+        являются: осмотр, пальпация регионарных лимфатических узлов, жевательных мышц,
+        слюнных желез, височно-нижнечелюстного сустава.'
+  - name: Осмотр полости рта с помощью дополнительных инструментов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими мероприятиями в стационарных условиях
+        являются: осмотр полости рта с помощью дополнительных инструментов: оценка
+        состояния зубных рядов, прикуса, слизистой оболочки.'
+  conditional_exams:
+  - name: Ортопантомография челюстей или КЛКТ
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'инструментальные диагностические исследования (по медицинским показаниям):
+        лучевые методы исследования: ортопантомография челюстей или КЛКТ.'
+  - name: Общий анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'лабораторные диагностические исследования (по медицинским показаниям):
+        общий анализ крови.'
+  - name: Биохимический анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'лабораторные диагностические исследования (по медицинским показаниям):
+        биохимический анализ крови.'
+  - name: Коагулограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'лабораторные диагностические исследования (по медицинским показаниям):
+        коагулограмма.'
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'лабораторные диагностические исследования (по медицинским показаниям):
+        общий анализ мочи.'
+  - name: Бактериологическое исследование (при наличии экссудата)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'лабораторные диагностические исследования (по медицинским показаниям):
+        бактериологическое исследование (при наличии экссудата): на определение чувствительности
+        к антибактериальным ЛС; на определение чувствительности к противогрибковым
+        ЛС.'
   treatment:
     non_drug:
-    - text: '[treatment] 1. Настоящий клинический протокол определяет общие требования
-        к объему (стр. 3)'
+    - text: Перевязка послеоперационной раны с заменой дренажей
       source_ref:
         protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
         document_url: null
@@ -133,9 +442,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 1. Настоящий клинический протокол определяет общие требования
-          к объему (стр. 3)'
-    - text: оказания стоматологической хирургической медицинской помощи в амбулаторных
+        quote: Перевязка послеоперационной раны с заменой дренажей
+    - text: Физиотерапевтическое лечение (УФ облучение, УВЧ-терапия, ультразвуковая
+        терапия, лазеротерапия, магнитотерапия, микроволновая терапия)
       source_ref:
         protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
         document_url: null
@@ -146,8 +455,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: оказания стоматологической хирургической медицинской помощи в амбулаторных
-    - text: и стационарных условиях пациентам (взрослое население) с посттравматическими
+        quote: Физиотерапевтическое лечение (УФ облучение, УВЧ-терапия, ультразвуковая
+          терапия, лазеротерапия, магнитотерапия, микроволновая терапия)
+    - text: Лечебная физическая культура (ЛФК)
       source_ref:
         protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
         document_url: null
@@ -158,8 +468,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: и стационарных условиях пациентам (взрослое население) с посттравматическими
-    - text: по Международной статистической классификации болезней и проблем, связанных
+        quote: Лечебная физическая культура (ЛФК)
+    - text: 'Хирургические лечебные мероприятия при плохом срастании перелома и замедленном
+        сращении перелома: редрессация, репозиция фрагментов в области перелома с
+        остеосинтезом'
       source_ref:
         protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
         document_url: null
@@ -170,8 +482,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: по Международной статистической классификации болезней и проблем, связанных
-    - text: со здоровьем, десятого пересмотра – M84.0 Плохое срастание перелома
+        quote: 'Хирургические лечебные мероприятия при плохом срастании перелома и
+          замедленном сращении перелома: редрессация, репозиция фрагментов в области
+          перелома с остеосинтезом'
+    - text: 'Хирургические лечебные мероприятия при несрастании перелома (псевдоартрозе):
+        остеотомия, редрессация, репозиция фрагментов с остеосинтезом; пластическое
+        устранение дефекта костной ткани'
       source_ref:
         protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
         document_url: null
@@ -182,8 +498,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: со здоровьем, десятого пересмотра – M84.0 Плохое срастание перелома
-    - text: Несрастание перелома [псевдоартроз]
+        quote: 'Хирургические лечебные мероприятия при несрастании перелома (псевдоартрозе):
+          остеотомия, редрессация, репозиция фрагментов с остеосинтезом; пластическое
+          устранение дефекта костной ткани'
+    - text: 'Реконструктивные операции на костях носа при приобретенной деформации
+        носа: остеотомия, редрессация, репозиция, контурная пластика имплантатами
+        и аутотрансплантатами (костными, хрящевыми, мягкотканными), септо- и ринохондропластика'
       source_ref:
         protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
         document_url: null
@@ -194,13 +514,29 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Несрастание перелома [псевдоартроз]
+        quote: 'Реконструктивные операции на костях носа при приобретенной деформации
+          носа: остеотомия, редрессация, репозиция, контурная пластика имплантатами
+          и аутотрансплантатами (костными, хрящевыми, мягкотканным'
+    - text: Наложение швов
+      source_ref:
+        protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наложение швов
     drug_groups: []
     drugs:
-    - drug_name: капсулы
+    - drug_name: Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 250 мг
+      dose_text: 'Раствор для наружного (местного) применения 0,5 мг/мл. Местно или
+        наружно, неразведенный раствор в виде орошений, полосканий и аппликаций. 5–10
+        мл раствора с экспозицией 1–3 мин 2–3 раза в сутки. Для '
       frequency_text: null
       duration_text: null
       route: null
@@ -212,17 +548,22 @@ conditions:
         protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
+        page_start: 11
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: капсулы 250 мг, капсулы 500 мг, таблетки, покрытые обо
-    - drug_name: метронидазол
+        quote: Местно или наружно, неразведенный раствор в виде орошений, полосканий
+          и аппликаций. Для антисептической обработки ран наносят на пораженную поверхность
+          кожи или слизистых оболочек 5–10 мл раствора с экспозицией 1–3 мин 2–3 раза
+          в сутки.
+    - drug_name: Амоксициллин/клавулановая кислота
       active_substance: null
       drug_group: null
-      dose_text: 500 мг
+      dose_text: Таблетки 875 мг/125 мг; 500 мг/125 мг; порошок для в/в введения 1000
+        мг/200 мг; 500 мг/100 мг. Дозу следует корректировать исходя из максимальной
+        дозы амоксициллина. При клиренсе креатинина > 30 мл/ми
       frequency_text: null
       duration_text: null
       route: null
@@ -234,17 +575,22 @@ conditions:
         protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
+        page_start: 11
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "метронидазол 500 мг в/в, или \nцефуроксим 1,5 г в/в + метрони"
-    - drug_name: дазол
+        quote: Дозу следует корректировать, исходя из максимальной рекомендуемой дозы
+          амоксициллина. Пациентам с клиренсом креатинина выше 30 мл/мин коррекция
+          дозы не требуется. Продолжительность лечения в зависимости от формы и тяжести
+          заболевания составляет 7–14 дней.
+    - drug_name: Нимесулид
       active_substance: null
       drug_group: null
-      dose_text: 500 мг
+      dose_text: Таблетки 100 мг; порошок для приготовления суспензии 100 мг в пакетах.
+        Внутрь после еды по 100 мг 2 раза в сутки. Максимальная длительность приема
+        15 суток.
       frequency_text: null
       duration_text: null
       route: null
@@ -256,17 +602,20 @@ conditions:
         protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
+        page_start: 13
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: 'дазол 500 мг в/в, или ампициллин/сульбактам 3 г в/в, '
-    - drug_name: клавуланат
+        quote: Внутрь после еды по 100 мг 2 раза в сутки. Максимальная длительность
+          приема 15 суток.
+    - drug_name: Кеторолак
       active_substance: null
       drug_group: null
-      dose_text: 1,2 г
+      dose_text: Раствор для в/в и в/м введения 30 мг/мл; таблетки 10 мг. При в/м
+        или в/в введении разовая доза может варьировать от 30 мг до 60 мг. Продолжительность
+        применения определяется врачом индивидуально.
       frequency_text: null
       duration_text: null
       route: null
@@ -278,17 +627,18 @@ conditions:
         protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
+        page_start: 13
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: клавуланат 1,2 г в/в или клиндамицин 900 мг в/в
-    - drug_name: июня
+        quote: При внутримышечном или внутривенном введении разовая доза может варьировать
+          от 30 мг до 60 мг. Продолжительность применения определяется врачом индивидуально.
+    - drug_name: Антисептические ЛС
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: Согласно приложению 1
       frequency_text: null
       duration_text: null
       route: null
@@ -300,17 +650,18 @@ conditions:
         protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
+        quote: перевязка послеоперационной раны с инстилляцией антисептическими ЛС
+          и заменой дренажей с применением ЛС согласно приложению 1
+    - drug_name: Антибактериальные ЛС
       active_substance: null
       drug_group: null
-      dose_text: 2011 г
+      dose_text: По медицинским показаниям, согласно приложению 2
       frequency_text: null
       duration_text: null
       route: null
@@ -322,17 +673,18 @@ conditions:
         protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: октября 2011 г
-    - drug_name: декабря
+        quote: при возникновении инфекционных осложнений – антибактериальные ЛС согласно
+          приложению 2 по медицинским показаниям
+    - drug_name: Нестероидные противовоспалительные ЛС
       active_substance: null
       drug_group: null
-      dose_text: 2011 г
+      dose_text: Согласно приложению 3
       frequency_text: null
       duration_text: null
       route: null
@@ -344,17 +696,18 @@ conditions:
         protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: декабря 2011 г
-    - drug_name: февраля
+        quote: с целью снижения болевого синдрома – нестероидные противовоспалительные
+          ЛС согласно приложению 3
+    - drug_name: ЛС, улучшающие микроциркуляцию
       active_substance: null
       drug_group: null
-      dose_text: 2008 г
+      dose_text: Согласно приложению 4
       frequency_text: null
       duration_text: null
       route: null
@@ -366,28 +719,246 @@ conditions:
         protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: февраля 2008 г
+        quote: ЛС, улучшающие микроциркуляцию, согласно приложению 4
+    - drug_name: ЛС на основе кальция
+      active_substance: null
+      drug_group: null
+      dose_text: Согласно приложению 5
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ЛС на основе кальция согласно приложению 5
+    - drug_name: Амоксициллин
+      active_substance: null
+      drug_group: null
+      dose_text: 2 г однократно за 30–60 минут до хирургического вмешательства
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: амоксициллин (капсулы 250 мг, капсулы 500 мг, таблетки, покрытые оболочкой,
+          1000 мг; таблетки, покрытые оболочкой, 500 мг) 2 г однократно за 30–60 минут
+          до хирургического вмешательства
+    - drug_name: Клиндамицин
+      active_substance: null
+      drug_group: null
+      dose_text: 600 мг внутрь за 1 час до проведения хирургического вмешательства
+        (при аллергии на пенициллины)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: (при аллергии на пенициллины) клиндамицин (капсулы 300 мг, капсулы
+          150 мг) 600 мг внутрь за 1 час до проведения хирургического вмешательства
+    - drug_name: Цефазолин + Метронидазол
+      active_substance: null
+      drug_group: null
+      dose_text: 'Цефазолин (при весе менее 120 кг: 2 г в/в; при весе более 120 кг:
+        3 г в/в) + Метронидазол 500 мг в/в (при весе более 120 кг). Вводится в/в за
+        60 минут до хирургического доступа.'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Периоперационная антибиотикопрофилактика при условно чистых операциях:
+          цефазолин (при весе менее 120 кг: 2 г в/в; при весе более 120 кг: 3 г в/в
+          + метронидазол 500 мг в/в'
+    - drug_name: Цефуроксим + Метронидазол
+      active_substance: null
+      drug_group: null
+      dose_text: 1,5 г в/в + 500 мг в/в. Вводится в/в за 60 минут до хирургического
+        доступа.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: цефуроксим 1,5 г в/в + метронидазол 500 мг в/в
+    - drug_name: Ампициллин/сульбактам
+      active_substance: null
+      drug_group: null
+      dose_text: 3 г в/в. Вводится в/в за 60 минут до хирургического доступа.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ампициллин/сульбактам 3 г в/в
+    - drug_name: Амоксициллин/клавуланат
+      active_substance: null
+      drug_group: null
+      dose_text: 1,2 г в/в. Вводится в/в за 60 минут до хирургического доступа.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: амоксициллин/клавуланат 1,2 г в/в
+    - drug_name: Клиндамицин (периоперационная)
+      active_substance: null
+      drug_group: null
+      dose_text: 900 мг в/в. Вводится внутривенно за 60 минут до хирургического доступа.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: клиндамицин 900 мг в/в. Антибиотик вводится внутривенно за 60 минут
+          до хирургического доступа.
+    - drug_name: ЛС для местной анестезии
+      active_substance: null
+      drug_group: null
+      dose_text: По медицинским показаниям
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: местная анестезия с использованием ЛС согласно приложению 6; местное
+          потенцированное обезболивание; общее обезболивание
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Снятие швов на 7–10 сутки
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Снятие швов на 7–10 сутки
   hospitalization: []
-  routing: []
-  red_flags:
-  - text: "й инфекции: \nнома; \nволчанка; \nсифилис; \nостеомиелит; \nоспа; \nрожа;\
-      \ \nнекрозы тканей на почве выраженных расстройств кровообращения; \nоперации\
-      \ по по"
-    aliases: []
-    red_flag_type: systemic_autoimmune
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
+  routing:
+  - text: госпитализация для постановки или подтверждения диагноза
+    timing: null
+    required_if: []
     source_ref:
       protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
       document_url: null
@@ -398,16 +969,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: "й инфекции: \nнома; \nволчанка; \nсифилис; \nостеомиелит; \nоспа; \n\
-        рожа; \nнекрозы тканей на почве выраженных расстройств кровообращения; \n\
-        операции по по"
-  - text: "туберкулез, лепра, волчанка); \nдеформации, возникающие вследствие нарушения\
-      \ морфогенеза пирамиды носа, \nприводящего к деформациям костного, хрящев"
-    aliases: []
-    red_flag_type: systemic_autoimmune
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
+      quote: госпитализация для постановки или подтверждения диагноза
+  - text: госпитализация
+    timing: null
+    required_if: []
     source_ref:
       protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
       document_url: null
@@ -418,34 +983,39 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: "туберкулез, лепра, волчанка); \nдеформации, возникающие вследствие нарушения\
-        \ морфогенеза пирамиды носа, \nприводящего к деформациям костного, хрящев"
+      quote: госпитализация
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_11кп_диагностика_и_лечение_пациентов_взр_насел_с_посттравматически
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/11КП_Диагностика_и_лечение_пациентов_взр_насел_с_посттравматическими_осложнениями_пост_МЗ_02.05.2023_66.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: 11КП Диагностика и лечение пациентов взр насел с посттравматическими осложнениями
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:48.548299+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T18:20:27.275763+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:48.553399+00:00'
+  validated_at: '2026-07-20T18:20:27.300241+00:00'

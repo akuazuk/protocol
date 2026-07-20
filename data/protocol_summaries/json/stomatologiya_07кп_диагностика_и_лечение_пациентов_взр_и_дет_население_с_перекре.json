@@ -1,10 +1,10 @@
 {
   "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "07КП Диагностика и лечение пациентов взр и дет население с перекрестным прикусом",
+    "title": "Диагностика и лечение пациентов взр и дет население с перекрестным прикусом",
     "url": null,
     "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "adult_and_child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,12 +32,19 @@
   },
   "conditions": [
     {
-      "condition_id": "07кп_диагностика_и_лечение_пациентов_взр_и_дет_н",
-      "name": "07КП Диагностика и лечение пациентов взр и дет население с перекрестным прикусом",
+      "condition_id": "perekrastny_prikus",
+      "name": "Перекрестный прикус",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "B24"
+        "K07.25",
+        "K07.26",
+        "K07.27",
+        "K07.2",
+        "K07.5",
+        "K07.51",
+        "K07.54",
+        "K07.55"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -45,7 +52,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "на зубоальвеолярном и (или) гнатическом уровне, определение степени выраженности",
+            "text": "Выявление факторов возникновения и развития ПП на зубоальвеолярном и (или) гнатическом уровне, определение степени выраженности патологии, показаний к лечению и тактики врача-специалиста.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -62,11 +69,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "на зубоальвеолярном и (или) гнатическом уровне, определение степени выраженности"
+              "quote": "Выявление факторов возникновения и развития ПП на зубоальвеолярном и (или) гнатическом уровне, определение степени выраженности патологии, показаний к лечению и тактики врача-специалиста."
             }
           },
           {
-            "text": "патологии, а также определение медицинских показаний к лечению, выбору метода",
+            "text": "Проведение дифференциальной диагностики ПП.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -83,19 +90,263 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "патологии, а также определение медицинских показаний к лечению, выбору метода"
+              "quote": "Проведение дифференциальной диагностики ПП."
+            }
+          },
+          {
+            "text": "Выявление взаимосвязи стоматологического и общего здоровья с ПП.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Выявление взаимосвязи стоматологического и общего здоровья с ПП."
+            }
+          },
+          {
+            "text": "Определение желания лечиться или отказа от лечения.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Определение желания лечиться или отказа от лечения."
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
-      "conditional_exams": [],
+      "required_exams": [
+        {
+          "name": "Общесоматическое состояние пациентов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При диагностике ПП также определяют общесоматическое состояние пациентов, в первую очередь с выявлением патологии, которая может повлиять на выбор метода лечения (бронхиальная астма, эпилепсия, состояние эндокринной системы, аллергические реакции)"
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Консультации врачей-специалистов соответствующего профиля",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "консультации врачей-специалистов соответствующего профиля (врача-стоматолога-терапевта, врача-стоматолога-ортопеда, врача-стоматолога-хирурга; врача-челюстно-лицевого хирурга и др.) при нарушениях осанки, функции дыхания, глотания, смыкания губ, речи, жевания и наличии вредных привычек."
+          }
+        },
+        {
+          "name": "Конусно-лучевая компьютерная томография челюстно-лицевой области",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "конусно-лучевая компьютерная томография челюстно-лицевой области (детям с ПП в возрасте 6 лет и старше, детям младше 6 лет для исключения врожденной аномалии)"
+          }
+        },
+        {
+          "name": "Телерентгенография головы в боковой проекции",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "телерентгенография головы в боковой проекции (детям с ПП в возрасте 6 лет и старше, детям младше 6 лет для исключения врожденной аномалии)"
+          }
+        },
+        {
+          "name": "Прицельная внутриротовая контактная рентгенография или радиовизиография зубов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "прицельная внутриротовая контактная рентгенография или радиовизиография зубов"
+          }
+        },
+        {
+          "name": "Конусно-лучевая компьютерная томография височно-нижнечелюстных суставов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "конусно-лучевая компьютерная томография височно-нижнечелюстных суставов (детям с ПП в возрасте 6 лет и старше, детям младше 6 лет для исключения врожденной аномалии)"
+          }
+        },
+        {
+          "name": "Функциональные методы исследования (функциональные пробы; электромиография, миотонометрия)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "функциональные методы исследования (функциональные пробы; электромиография, миотонометрия)"
+          }
+        },
+        {
+          "name": "Фотографирование для оценки эстетики лица",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "фотографирование для оценки эстетики лица, симметрии лица, вида профиля, ширины улыбки, наличия или отсутствия «десневой» улыбки"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 8. Дополнительные диагностические мероприятия (по медицинским показаниям) (стр. 6)",
+            "text": "Ортодонтическое лечение ПП у детей для создания условий для роста верхней и нижней челюстей, расширения и удлинения верхнего и нижнего зубного ряда, устранения привычного смещения нижней челюсти.",
             "source_ref": {
               "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
               "document_url": null,
@@ -106,11 +357,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 8. Дополнительные диагностические мероприятия (по медицинским показаниям) (стр. 6)"
+              "quote": "Ортодонтическое лечение ПП у детей для создания условий для роста верхней и нижней челюстей, расширения и удлинения верхнего и нижнего зубного ряда, устранения привычного смещения нижней челюсти."
             }
           },
           {
-            "text": "стоматолога-терапевта, врача-стоматолога-ортопеда, врача-стоматолога-хирурга",
+            "text": "Применение одночелюстных или двучелюстных, механически-действующих, функционально-направляющих или комбинированного действия ортодонтических аппаратов у детей.",
             "source_ref": {
               "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
               "document_url": null,
@@ -121,11 +372,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "стоматолога-терапевта, врача-стоматолога-ортопеда, врача-стоматолога-хирурга"
+              "quote": "Применение одночелюстных или двучелюстных, механически-действующих, функционально-направляющих или комбинированного действия ортодонтических аппаратов у детей."
             }
           },
           {
-            "text": "врача-психотерапевта, врача-психиатра-нарколога, врача-стоматолога детского, врача-",
+            "text": "Ортодонтическое лечение ПП у взрослых для нормализации положения зубов и окклюзионных контактов с использованием несъемной (брекет-системы) и съемной (элайнеры, каппы) ортодонтической аппаратуры.",
             "source_ref": {
               "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
               "document_url": null,
@@ -136,11 +387,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "врача-психотерапевта, врача-психиатра-нарколога, врача-стоматолога детского, врача-"
+              "quote": "Ортодонтическое лечение ПП у взрослых для нормализации положения зубов и окклюзионных контактов с использованием несъемной (брекет-системы) и съемной (элайнеры, каппы) ортодонтической аппаратуры."
             }
           },
           {
-            "text": "психиатра детского) при нарушениях осанки, функции дыхания, глотания, смыкания губ,",
+            "text": "Комбинированное «ортогнатическое» лечение у взрослых с включением хирургического этапа (реконструктивные операции на челюстях) для нормализации размеров, формы и соотношения челюстей.",
             "source_ref": {
               "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
               "document_url": null,
@@ -151,11 +402,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "психиатра детского) при нарушениях осанки, функции дыхания, глотания, смыкания губ,"
+              "quote": "Комбинированное «ортогнатическое» лечение у взрослых с включением хирургического этапа (реконструктивные операции на челюстях) для нормализации размеров, формы и соотношения челюстей."
             }
           },
           {
-            "text": "речи, жевания и наличии вредных привычек для выяснения причины нарушения(ий)",
+            "text": "Зубоальвеолярная компенсация ПП у взрослых при отказе пациента от реконструктивной операции, допускающая удаление отдельных зубов и использование временных ортодонтических имплантатов.",
             "source_ref": {
               "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
               "document_url": null,
@@ -166,11 +417,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "речи, жевания и наличии вредных привычек для выяснения причины нарушения(ий)"
+              "quote": "Зубоальвеолярная компенсация ПП у взрослых при отказе пациента от реконструктивной операции, допускающая удаление отдельных зубов и использование временных ортодонтических имплантатов."
             }
           },
           {
-            "text": "[treatment] 10. Общими принципами лечения и медицинской профилактики ПП являются: (стр. 7)",
+            "text": "Комплексное лечение при значительном сужении верхней челюсти и выраженном ПП, включающее ортодонтический и хирургический (реконструктивные ортогнатические операции) этапы, и ретенцию.",
             "source_ref": {
               "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
               "document_url": null,
@@ -181,156 +432,291 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 10. Общими принципами лечения и медицинской профилактики ПП являются: (стр. 7)"
+              "quote": "Комплексное лечение при значительном сужении верхней челюсти и выраженном ПП, включающее ортодонтический и хирургический (реконструктивные ортогнатические операции) этапы, и ретенцию."
+            }
+          },
+          {
+            "text": "Ретенция результатов ортодонтического лечения ПП с использованием съемных и/или несъемных ретенционных аппаратов; сроки ретенции не менее 2 лет, у взрослых может быть пожизненной.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ретенция результатов ортодонтического лечения ПП с использованием съемных и/или несъемных ретенционных аппаратов; сроки ретенции не менее 2 лет, у взрослых может быть пожизненной."
+            }
+          },
+          {
+            "text": "Избирательное пришлифовывание зубов и/или удаление отдельных зубов для сокращения размеров зубного ряда.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Избирательное пришлифовывание зубов и/или удаление отдельных зубов для сокращения размеров зубного ряда."
+            }
+          },
+          {
+            "text": "Временные ортодонтические имплантаты для корпусного перемещения зубов и/или группы зубов.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Временные ортодонтические имплантаты для корпусного перемещения зубов и/или группы зубов."
+            }
+          },
+          {
+            "text": "Окклюзионная шина для лечения заболевания височно-нижнечелюстного сустава в сочетании с ПП.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Окклюзионная шина для лечения заболевания височно-нижнечелюстного сустава в сочетании с ПП."
+            }
+          },
+          {
+            "text": "Местосохраняющее, восстановительное и эстетическое протезирование для сохранения места в зубном ряду при раннем удалении зубов, а также для устранения дефектов зубного ряда.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Местосохраняющее, восстановительное и эстетическое протезирование для сохранения места в зубном ряду при раннем удалении зубов, а также для устранения дефектов зубного ряда."
+            }
+          },
+          {
+            "text": "Компактостеотомия для уменьшения сопротивления кости альвеолярного отростка перед исправлением выраженных зубочелюстных деформаций в постоянном прикусе.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Компактостеотомия для уменьшения сопротивления кости альвеолярного отростка перед исправлением выраженных зубочелюстных деформаций в постоянном прикусе."
             }
           }
         ],
         "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "августа",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2022 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "августа 2022 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          },
-          {
-            "drug_name": "марта",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2023 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "марта 2023 г"
-            }
-          }
-        ],
+        "drugs": [],
         "procedures": [],
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
+      "follow_up": [
+        {
+          "text": "Медицинское наблюдение за результатами лечения врачом-стоматологом-хирургом (челюстно-лицевым хирургом), далее ортодонтом: первые 3 месяца – не реже 1 раза; в последующем до года – не реже 1 раза в 6 месяцев. Затем пациент в наблюдении не нуждается.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинское наблюдение за результатами лечения врачом-стоматологом-хирургом (челюстно-лицевым хирургом), далее ортодонтом: первые 3 месяца – не реже 1 раза; в последующем до года – не реже 1 раза в 6 "
+          }
+        }
+      ],
       "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
+      "routing": [
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Неадекватное психоэмоциональное состояние пациента",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "целенаправленно выявляют: неадекватное психоэмоциональное состояние пациента"
+          }
+        },
+        {
+          "text": "Острые поражения слизистой оболочки полости рта и красной каймы губ",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "целенаправленно выявляют: острые поражения слизистой оболочки полости рта и красной каймы губ"
+          }
+        },
+        {
+          "text": "Острые воспалительные заболевания органов и тканей рта",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "целенаправленно выявляют: острые воспалительные заболевания органов и тканей рта"
+          }
+        },
+        {
+          "text": "Болезни периодонта в стадии обострения",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "целенаправленно выявляют: болезни периодонта в стадии обострения"
+          }
+        },
+        {
+          "text": "Неудовлетворительное гигиеническое состояние полости рта",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "целенаправленно выявляют: неудовлетворительное гигиеническое состояние полости рта"
+          }
+        },
+        {
+          "text": "Состояния, при которых противопоказано ортодонтическое лечение (состояние на учете у врача-психиатра-нарколога, врача-психиатра детского)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "целенаправленно выявляют: состояния, при которых противопоказано ортодонтическое лечение (состояние на учете у врача-психиатра-нарколога, врача-психиатра детского, другое)."
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "stomatologiya_07кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекре",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/stomatologiya/07КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_перекрестным_прикусом_пост_МЗ_10.08.2022_84.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "07КП Диагностика и лечение пациентов взр и дет население с перекрестным прикусом"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:48.138625+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T18:18:03.247761+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:48.140003+00:00"
+    "validated_at": "2026-07-20T18:18:03.249114+00:00"
   }
 }

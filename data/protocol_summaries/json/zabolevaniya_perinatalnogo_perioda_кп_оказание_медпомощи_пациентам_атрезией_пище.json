@@ -1,10 +1,10 @@
 {
   "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Оказание медпомощи пациентам атрезией пищевода детское население",
+    "title": "Оказание медицинской помощи пациентам с атрезией пищевода (детское население)",
     "url": null,
     "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
     "document_sha256": null,
@@ -22,7 +22,8 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child",
+      "pregnant"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,14 +33,13 @@
   },
   "conditions": [
     {
-      "condition_id": "оказание_медпомощи_пациентам_атрезией_пищевода_д",
-      "name": "Оказание медпомощи пациентам атрезией пищевода детское население",
+      "condition_id": "atresia_esophagus",
+      "name": "Атрезия пищевода",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
         "Q39.0",
-        "Q39.1",
-        "J18.9"
+        "Q39.1"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -47,7 +47,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[classification] 7. Диагноз АП у плода может быть установлен в ходе медицинского наблюдения (стр. 3)",
+            "text": "обильное пенистое отделяемое изо рта и носа",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -64,11 +64,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 7. Диагноз АП у плода может быть установлен в ходе медицинского наблюдения (стр. 3)"
+              "quote": "обильное пенистое отделяемое изо рта и носа"
             }
           },
           {
-            "text": "[classification] 7. Диагноз АП у плода может быть установлен в ходе медицинского наблюдения (стр. 3)",
+            "text": "явления респираторного дистресс-синдрома",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -85,11 +85,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 7. Диагноз АП у плода может быть установлен в ходе медицинского наблюдения (стр. 3)"
+              "quote": "явления респираторного дистресс-синдрома"
             }
           },
           {
-            "text": "[classification] 7. Диагноз АП у плода может быть установлен в ходе медицинского наблюдения (стр. 3)",
+            "text": "невозможность постановки назогастрального зонда",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -106,124 +106,346 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 7. Диагноз АП у плода может быть установлен в ходе медицинского наблюдения (стр. 3)"
-            }
-          },
-          {
-            "text": "[classification] 7. Диагноз АП у плода может быть установлен в ходе медицинского наблюдения (стр. 3)",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[classification] 7. Диагноз АП у плода может быть установлен в ходе медицинского наблюдения (стр. 3)"
-            }
-          },
-          {
-            "text": "Энтеральное питание новорожденного до исключения диагноза АП не выполняется.",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Энтеральное питание новорожденного до исключения диагноза АП не выполняется."
-            }
-          },
-          {
-            "text": "определение группы крови по системам AB0 и резус-фактору",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "определение группы крови по системам AB0 и резус-фактору"
-            }
-          },
-          {
-            "text": "Энтеральное питание новорожденного до исключения диагноза АП не выполняется.",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Энтеральное питание новорожденного до исключения диагноза АП не выполняется."
-            }
-          },
-          {
-            "text": "определение группы крови по системам AB0 и резус-фактору",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "определение группы крови по системам AB0 и резус-фактору"
+              "quote": "невозможность постановки назогастрального зонда"
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
-      "conditional_exams": [],
+      "required_exams": [
+        {
+          "name": "общий (клинический) анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обязательными лабораторными исследованиями являются: общий (клинический) анализ крови"
+          }
+        },
+        {
+          "name": "определение группы крови по системам AB0 и резус-фактору",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обязательными лабораторными исследованиями являются: определение группы крови по системам AB0 и резус-фактору"
+          }
+        },
+        {
+          "name": "биохимический анализ крови (общий билирубин, глюкоза, мочевина, креатинин, общий белок, альбумин, аланинаминотрансфераза, аспартатаминотрансфераза, С-реактивный белок, электролиты: калий, натрий, магн",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обязательными лабораторными исследованиями являются: биохимический анализ крови (общий билирубин, глюкоза, мочевина, креатинин, общий белок, альбумин, аланинаминотрансфераза, аспартатаминотрансфераза, С-реактивный белок, электролиты: калий, натрий, магний, кальций)"
+          }
+        },
+        {
+          "name": "коагулограмма (протромбиновое время, фибриноген, активированное частичное (парциальное) тромбопластиновое время, международное нормализованное отношение)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обязательными лабораторными исследованиями являются: коагулограмма (протромбиновое время, фибриноген, активированное частичное (парциальное) тромбопластиновое время, международное нормализованное отношение)"
+          }
+        },
+        {
+          "name": "общеклиническая оценка состояния",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "общеклиническую оценку состояния"
+          }
+        },
+        {
+          "name": "контрольное взвешивание",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "контрольное взвешивание"
+          }
+        },
+        {
+          "name": "общий (клинический) анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "общий (клинический) анализ крови"
+          }
+        },
+        {
+          "name": "общий анализ мочи",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "общий анализ мочи"
+          }
+        },
+        {
+          "name": "рентгеноскопия трахеи",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "рентгеноскопию трахеи"
+          }
+        },
+        {
+          "name": "рентгеноскопия пищевода и желудка с водорастворимым контрастом",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "рентгеноскопию пищевода и желудка с водорастворимым контрастом"
+          }
+        },
+        {
+          "name": "эзофагогастродуоденоскопия с лестничной биопсией пищевода",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "эзофагогастродуоденоскопию с лестничной биопсией пищевода"
+          }
+        },
+        {
+          "name": "суточная рН-импедансометрия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "суточную рН-импедансометрию"
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "бронхоскопия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "бронхоскопию при наличии кашля во время еды"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 3. Для целей настоящего клинического протокола используются термины и их (стр. 2)",
+            "text": "Энтеральное питание новорожденного до исключения диагноза АП не выполняется.",
             "source_ref": {
               "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
               "document_url": null,
@@ -234,11 +456,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 3. Для целей настоящего клинического протокола используются термины и их (стр. 2)"
+              "quote": "Энтеральное питание новорожденного до исключения диагноза АП не выполняется."
             }
           },
           {
-            "text": "«Об обращении лекарственных средств», Законом Республики Беларусь от 19 ноября",
+            "text": "Объем инфузионной терапии у новорожденных рассчитывается индивидуально с учетом клинико-лабораторных показателей состояния пациента.",
             "source_ref": {
               "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
               "document_url": null,
@@ -249,11 +471,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "«Об обращении лекарственных средств», Законом Республики Беларусь от 19 ноября"
+              "quote": "Объем инфузионной терапии у новорожденных рассчитывается индивидуально с учетом клинико-лабораторных показателей состояния пациента."
             }
           },
           {
-            "text": "1993 г. № 2570-XII «О правах ребенка», а также следующие термины и их определения:",
+            "text": "Инфузионная терапия должна обеспечивать нормоволемию и нормативные показатели гликемии и водно-электролитного баланса. Суточная потребность корректируется по результатам мониторинга.",
             "source_ref": {
               "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
               "document_url": null,
@@ -264,62 +486,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "1993 г. № 2570-XII «О правах ребенка», а также следующие термины и их определения:"
-            }
-          },
-          {
-            "text": "АП – врожденный порок развития с нарушением формирования пищевода, при",
-            "source_ref": {
-              "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "АП – врожденный порок развития с нарушением формирования пищевода, при"
-            }
-          },
-          {
-            "text": "котором его отделы разобщены и могут сообщаться с трахеей по отдельности и (или)",
-            "source_ref": {
-              "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "котором его отделы разобщены и могут сообщаться с трахеей по отдельности и (или)"
-            }
-          },
-          {
-            "text": "одновременно (проксимальный, дистальный и двусторонний трахеопищеводный свищ",
-            "source_ref": {
-              "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "одновременно (проксимальный, дистальный и двусторонний трахеопищеводный свищ"
+              "quote": "Инфузионная терапия должна обеспечивать нормоволемию и нормативные показатели гликемии и водно-электролитного баланса. Суточная потребность корректируется по результатам мониторинга."
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "июля",
+            "drug_name": "натрия хлорид, раствор для инъекций изотонический, 9 мг/мл",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2006 г",
+            "dose_text": "один или два раза из расчета 10–20 мл/кг",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -331,263 +508,13 @@
               "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
               "document_url": null,
               "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июля 2006 г"
-            }
-          },
-          {
-            "drug_name": "ноября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "ноября \n1993 г"
-            }
-          },
-          {
-            "drug_name": "амикацин",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "250 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "амикацин 250 мг/мл, раствор для внутривенного и внутрим"
-            }
-          },
-          {
-            "drug_name": "дозе",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "25 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "дозе \n25 мг + 5 мг/кг 3 раза в сутки) в сочетании с "
-            }
-          },
-          {
-            "drug_name": "введения",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "0,05 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "введения 0,05 мг/мл"
-            }
-          },
-          {
-            "drug_name": "доза",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "30 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "доза 30 мг/кг"
-            }
-          },
-          {
-            "drug_name": "возраста",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "0,03 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "возраста 0,03 мг/кг"
-            }
-          },
-          {
-            "drug_name": "месяцев",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "0,06 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "месяцев 0,06 мг/кг в час"
-            }
-          },
-          {
-            "drug_name": "февраля",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2025 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "февраля 2025 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня 1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября \n2011 г"
+              "quote": "При наличии гипотензии или сниженной перфузии внутривенно вводится натрия хлорид, раствор для инъекций изотонический, 9 мг/мл, один или два раза из расчета 10–20 мл/кг."
             }
           }
         ],
@@ -597,7 +524,7 @@
       },
       "follow_up": [
         {
-          "text": "контроль",
+          "text": "Медицинское наблюдение за пациентом, оперированным по поводу АП, при госпитализации в возрасте 1 года жизни.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -611,32 +538,14 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
-          }
-        },
-        {
-          "text": "контроль",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "контроль"
+            "quote": "Медицинское наблюдение за пациентом, оперированным по поводу АП, при госпитализации в возрасте 1 года жизни."
           }
         }
       ],
       "hospitalization": [],
       "routing": [
         {
-          "text": "при госпитализации в возрасте 1 года жизни включает:",
+          "text": "госпитализация",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -649,63 +558,62 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "при госпитализации в возрасте 1 года жизни включает:"
-          }
-        },
-        {
-          "text": "при госпитализации в возрасте 1 года жизни включает:",
-          "timing": null,
-          "required_if": [],
-          "source_ref": {
-            "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "при госпитализации в возрасте 1 года жизни включает:"
+            "quote": "госпитализация"
           }
         }
       ],
-      "red_flags": [],
+      "red_flags": [
+        {
+          "text": "гипотензия или сниженная перфузия",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При наличии гипотензии или сниженной перфузии внутривенно вводится натрия хлорид, раствор для инъекций изотонический, 9 мг/мл."
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "zabolevaniya_perinatalnogo_perioda_кп_оказание_медпомощи_пациентам_атрезией_пище",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Оказание_медпомощи_пациентам_атрезией_пищевода_д-нас_пост_МЗ_2025_20.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Оказание медпомощи пациентам атрезией пищевода детское население"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:16:00.465168+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T19:07:38.078745+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-06-23T19:16:00.472327+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[atresia_esophagus].required_exams[6]"
+      }
+    ],
+    "validated_at": "2026-07-20T19:07:38.091616+00:00"
   }
 }

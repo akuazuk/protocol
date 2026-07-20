@@ -1,6 +1,6 @@
 protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Хирургическое лечение эпилепсии
@@ -20,29 +20,135 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - adult_and_child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: хирургическое_лечение_эпилепсии
-  name: Хирургическое лечение эпилепсии
+- condition_id: epilepsy
+  name: Эпилепсия
   synonyms: []
   abbreviations: []
   icd10_codes:
+  - G40
+  - G40.1
   - G40.2
   - G40.4
   - G40.5
-  - G40
-  - G40.1
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Выявление фокуса эпилептогенной активности
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+          лечение эпилепсии 14.07.2017 № 75.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выявление фокуса эпилептогенной активности
+    - text: Наличие на ЭЭГ эпилептогенных паттернов с фокальным началом, сопровождающихся
+        приступами.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+          лечение эпилепсии 14.07.2017 № 75.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие на ЭЭГ эпилептогенных паттернов с фокальным началом, сопровождающихся
+          приступами.
+    - text: Наличие структурных изменений головного мозга при нейровизуализации (КТ,
+        МРТ, ПЭТ) в зонах с эпилептогенными ЭЭГ паттернами.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+          лечение эпилепсии 14.07.2017 № 75.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие структурных изменений головного мозга при нейровизуализации
+          (КТ, МРТ, ПЭТ) в зонах с эпилептогенными ЭЭГ паттернами.
+    - text: Совпадение семиологии приступа с зоной фокального начала на ЭЭГ и структурными
+        изменениями мозга.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+          лечение эпилепсии 14.07.2017 № 75.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Совпадение семиологии приступа с зоной фокального начала на ЭЭГ и структурными
+          изменениями мозга.
+    - text: Функциональная возможность резекции фокуса без значимого послеоперационного
+        неврологического дефицита.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+          лечение эпилепсии 14.07.2017 № 75.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Функциональная возможность резекции фокуса без значимого послеоперационного
+          неврологического дефицита.
+    optional: []
+    exclusion: []
   required_exams:
-  - name: МРТ
+  - name: Видео-электроэнцефалография
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -57,225 +163,554 @@ conditions:
       document_url: null
       local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
         лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: располагающих возможностью выполнения видео-электроэнцефалографии
+  - name: Магнитно-резонансная томография (не менее 1.5 Тл)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: магнитно-резонансной томографии (далее – МРТ) с мощностью аппарата не
+        менее 1.5 Тл
+  - name: Клиническое исследование семиологии приступов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: клиническое исследование семиологии приступов (получение информации о
+        симптоматике приступов, выявление этиологии приступов, оценка «адекватности»
+        противосудорожной лекарственной терапии...
+  - name: Длительный скальповый видео-ЭЭГ мониторинг
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: длительный скальповый видео-электроэнцефалографический (далее – видео-ЭЭГ)
+        мониторинг с регистрацией пароксизмов каждого вида приступа для локализации
+        эпилептогенного очага...
+  - name: МРТ головного мозга по эпилептологической программе
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: МРТ головного мозга по эпилептологической программе с внутривенным контрастным
+        усилением (проводится на томографах высокого разрешения с магнитом не менее
+        1.5 Тл, аппараты с магнитом 3 Тл предпочтительнее)...
+  - name: Нейропсихологическое тестирование
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: нейропсихологическое тестирование (исследование различных видов праксиса,
+        зрительного и слухового гнозиса, мнестической деятельности, речи и зрительно-пространственных
+        функций);
+  - name: Заключение врача-терапевта (педиатра) о соматическом статусе
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: заключение врача-терапевта (врача-педиатра) о соматическом статусе пациента,
+        наличии сопутствующих заболеваний;
+  - name: Электрокардиограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: электрокардиограмма;
+  - name: Термометрия
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: термометрия за три дня до предполагаемой даты хирургического вмешательства;
+  - name: Определение групп крови по системам АВО и резус
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение групп крови по системам АВО и резус;
+  - name: Общий анализ крови с исследованием уровня тромбоцитов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ крови с исследованием уровня тромбоцитов;
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ мочи;
+  - name: Биохимическое исследование крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: биохимическое исследование крови с определением уровня билирубина, мочевины,
+        общего белка, аспартатаминотрансферазы, аланинаминотрансферазы, электролитов
+        (калий, кальций, натрий, хлор), глюкозы;
+  - name: Исследование показателей гемостаза
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование показателей гемостаза с определением активированного частичного
+        тромбопластинового времени, протромбинового индекса, международного нормализованного
+        отношения, уровня фибриногена;
+  conditional_exams:
+  - name: Функциональная МРТ
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'функциональная МРТ (выполняется при расположении патологической (эпилептогенной)
+        зоны вблизи функциональных зон мозга: моторных центров и центров речи);'
+  - name: Позитронная эмиссионная томография (ПЭТ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: позитронная эмиссионная томография (далее – ПЭТ) выполняется при недостаточной
+        информативности МРТ и видео-ЭЭГ мониторинга, затрудняющих уточнить локализацию
+        и латерализацию эпилептогенной зоны;
+  - name: Инвазивные методы исследования (субдуральный мониторинг, имплантация глубинных
+      электродов, картирование функционально значимых зон коры)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: инвазивные методы исследования (при несовпадении данных клинического
+        обследования, МРТ, ПЭТ и видео-ЭЭГ мониторинга, затрудняющих уточнить локализацию
+        и латерализацию эпилептогенной зоны)...
+  - name: Консультации врачей-специалистов по медицинским показаниям
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультации врачей-специалистов по медицинским показаниям.
+  treatment:
+    non_drug:
+    - text: Хирургическое лечение эпилепсии.
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+          лечение эпилепсии 14.07.2017 № 75.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хирургическое лечение эпилепсии.
+    drug_groups: []
+    drugs: []
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
       page_start: null
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "гнитно-резонансной \nтомографии (далее – МРТ) с мощностью аппарата не\
-        \ менее 1.5 Тл.\n\n[diagnostics] 5. Предоперационное (стр."
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: '[treatment] ПОСТАНОВЛЕНИЕ МИНИСТЕРСТВА ЗДРАВООХРАНЕНИЯ (стр. 1)'
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
-          лечение эпилепсии 14.07.2017 № 75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] ПОСТАНОВЛЕНИЕ МИНИСТЕРСТВА ЗДРАВООХРАНЕНИЯ (стр. 1)'
-    - text: Об утверждении клинического протокола
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
-          лечение эпилепсии 14.07.2017 № 75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Об утверждении клинического протокола
-    - text: «Хирургическое лечение эпилепсии»
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
-          лечение эпилепсии 14.07.2017 № 75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: «Хирургическое лечение эпилепсии»
-    - text: На основании абзаца седьмого части первой статьи 1 Закона Республики Беларусь
-        от
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
-          лечение эпилепсии 14.07.2017 № 75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: На основании абзаца седьмого части первой статьи 1 Закона Республики
-          Беларусь от
-    - text: Министерстве здравоохранения Республики Беларусь, утвержденного постановлением
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
-          лечение эпилепсии 14.07.2017 № 75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Министерстве здравоохранения Республики Беларусь, утвержденного постановлением
-    - text: вопросах Министерства здравоохранения и мерах по реализации Указа Президента
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
-          лечение эпилепсии 14.07.2017 № 75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: вопросах Министерства здравоохранения и мерах по реализации Указа Президента
-    drug_groups: []
-    drugs:
-    - drug_name: июля
-      active_substance: null
-      drug_group: null
-      dose_text: 2017 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
-          лечение эпилепсии 14.07.2017 № 75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июля 2017 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
-          лечение эпилепсии 14.07.2017 № 75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июня 1993 года «О здравоохранении» в редакции Закон
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
-          лечение эпилепсии 14.07.2017 № 75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "октября 2011 года № 1446 «О некоторых \nвопросах Минист"
-    - drug_name: августа
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
-          лечение эпилепсии 14.07.2017 № 75.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: августа 2011 года № 360», Министерство здравоохранения
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
+      quote: госпитализация
+  - text: Амбулаторные и стационарные условия
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторные и стационарные условия
+  red_flags:
+  - text: Наличие сопутствующей соматической патологии в фазе декомпенсации, препятствующей
+      проведению наркоза.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: наличие сопутствующей соматической патологии в фазе декомпенсации, препятствующей
+        проведению наркоза;
+  - text: Наличие сопутствующих инфекционных заболеваний до их разрешения.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: наличие сопутствующих инфекционных заболеваний до их разрешения;
+  - text: Психические расстройства в фазе декомпенсации.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: психические расстройства в фазе декомпенсации;
+  - text: Преднамеренное нарушение схемы приема противосудорожных лекарственных средств.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое
+        лечение эпилепсии 14.07.2017 № 75.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: преднамеренное нарушение схемы приема противосудорожных лекарственных
+        средств.
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
-    document_url: null
-    local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП Хирургическое лечение
-      эпилепсии 14.07.2017 № 75.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Хирургическое лечение эпилепсии
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:42.535838+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T16:51:49.897747+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:42.537559+00:00'
+  validated_at: '2026-07-20T16:51:49.911007+00:00'

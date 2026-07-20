@@ -1,6 +1,6 @@
 protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Диагностика лечение анемии недоношенных
@@ -19,27 +19,27 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_лечение_анемии_недоношенных
-  name: Диагностика лечение анемии недоношенных
+- condition_id: anemia_of_prematurity
+  name: Анемия недоношенных
   synonyms: []
   abbreviations: []
   icd10_codes:
+  - P61.2
   - D64.9
-  - P07.3
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[diagnostics] 15. Основные лабораторные критерии диагностики анемии недоношенных:
-        (стр. 4)'
+    - text: Диагностика на основании факторов риска, клинических симптомов и лабораторных
+        показателей.
       logic_group: null
       operator: unknown
       values: []
@@ -56,10 +56,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 15. Основные лабораторные критерии диагностики анемии
-          недоношенных: (стр. 4)'
-    - text: '[diagnostics] 17. Диагноз ранней анемии недоношенных устанавливается
-        при наличии основных (стр. 4)'
+        quote: Диагностика на основании факторов риска, клинических симптомов и лабораторных
+          показателей.
+    - text: Снижение Hb, эритроцитов, Ht более чем на 2 SD от референсных значений.
       logic_group: null
       operator: unknown
       values: []
@@ -76,9 +75,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 17. Диагноз ранней анемии недоношенных устанавливается
-          при наличии основных (стр. 4)'
-    - text: лабораторных критериев у недоношенных детей на 2–10 неделе жизни.
+        quote: Снижение Hb, эритроцитов, Ht более чем на 2 SD от референсных значений.
+    - text: Отсутствие признаков анемии раннего неонатального периода.
       logic_group: null
       operator: unknown
       values: []
@@ -95,9 +93,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: лабораторных критериев у недоношенных детей на 2–10 неделе жизни.
-    - text: '[diagnostics] 18. Диагноз поздней анемии недоношенных устанавливается
-        при наличии основных (стр. 4)'
+        quote: Отсутствие признаков анемии раннего неонатального периода.
+    - text: 'Ранняя анемия: наличие основных лабораторных критериев на 2–10 неделе
+        жизни.'
       logic_group: null
       operator: unknown
       values: []
@@ -114,9 +112,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 18. Диагноз поздней анемии недоношенных устанавливается
-          при наличии основных (стр. 4)'
-    - text: лабораторных критериев у недоношенных детей после 10 недели жизни.
+        quote: 'Ранняя анемия: наличие основных лабораторных критериев на 2–10 неделе
+          жизни.'
+    - text: 'Поздняя анемия: наличие основных лабораторных критериев после 10 недели
+        жизни.'
       logic_group: null
       operator: unknown
       values: []
@@ -133,29 +132,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: лабораторных критериев у недоношенных детей после 10 недели жизни.
-    - text: Дополнительные лабораторные критерии анемии недоношенных
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Дополнительные лабораторные критерии анемии недоношенных
+        quote: 'Поздняя анемия: наличие основных лабораторных критериев после 10 недели
+          жизни.'
     optional: []
     exclusion: []
   required_exams:
-  - name: ОАК
+  - name: Концентрация Hb
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -169,19 +151,286 @@ conditions:
       protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
       document_url: null
       local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
-      page_start: null
+      page_start: 4
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "я классификация лекарственных средств; \nОАК – общий анализ крови; \n\
-        Национальный правовой Интернет-портал Республики Беларус"
-  conditional_exams: []
+      quote: снижение более чем на 2 SD от референсных значений концентрации Hb венозной
+        и капиллярной крови у детей первых 6 месяцев жизни согласно приложениям 1,
+        2
+  - name: Количество эритроцитов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: снижение более чем на 2 SD от референсных значений количества эритроцитов
+        венозной и капиллярной крови у детей первых 6 месяцев жизни согласно приложениям
+        1, 2
+  - name: Показатель Ht
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: снижение более чем на 2 SD от референсных значений показателя Ht венозной
+        и капиллярной крови у детей первых 6 месяцев жизни согласно приложениям 1,
+        2
+  conditional_exams:
+  - name: Количество ретикулоцитов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: изменение показателей количества ретикулоцитов в сыворотке крови согласно
+        приложению 3
+  - name: Содержание ЭПО
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: изменение показателей содержания ЭПО в сыворотке крови согласно приложению
+        3
+  - name: Ферритин
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: изменение показателей ферритина в сыворотке крови согласно приложению
+        3
+  - name: Железо
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: изменение показателей железа в сыворотке крови согласно приложению 3
+  - name: Трансферрин
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: изменение показателей трансферрина в сыворотке крови согласно приложению
+        3
+  - name: Растворимые рецепторы трансферрина
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: изменение показателей растворимых рецепторов трансферрина в сыворотке
+        крови согласно приложению 3
+  - name: Средний объем эритроцитов (MCV)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: отклонения от референсных значений показателей среднего объема эритроцитов
+        (MCV) у детей первых 6 месяцев жизни согласно приложению 4.
+  - name: Среднее содержание Hb в эритроците (MCH)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: отклонения от референсных значений показателей среднего содержания Hb
+        в эритроците (MCH) у детей первых 6 месяцев жизни согласно приложению 4.
+  - name: Средняя концентрация Hb в эритроците (MCHC)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: отклонения от референсных значений показателей средней концентрации Hb
+        в эритроците (MCHC) у детей первых 6 месяцев жизни согласно приложению 4.
+  - name: Исследование кислотно-основного состояния, газов крови, уровня лактата в
+      крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При наличии признаков тканевой гипоксии и метаболических нарушений у
+        недоношенного новорожденного с анемией рекомендуется исследование кислотно-основного
+        состояния, газов крови, уровня лактата.
   treatment:
     non_drug:
-    - text: '[treatment] 3. Для целей настоящего клинического протокола используются
-        основные термины (стр. 2)'
+    - text: Гемотрансфузии
       source_ref:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
         document_url: null
@@ -192,10 +441,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 3. Для целей настоящего клинического протокола используются
-          основные термины (стр. 2)'
-    - text: «Об обращении лекарственных средств», Законом Республики Беларусь от 19
-        ноября
+        quote: Гемотрансфузии
+    - text: Соблюдать принцип «один донор – один реципиент», при возможности ЭКК от
+        одного донора делить на мини-дозы для одного новорожденного ребенка.
       source_ref:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
         document_url: null
@@ -206,10 +454,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: «Об обращении лекарственных средств», Законом Республики Беларусь от
-          19 ноября
-    - text: '1993 г. № 2570-XII «О правах ребенка», а также следующие термины и их
-        определения:'
+        quote: Соблюдать принцип «один донор – один реципиент», при возможности ЭКК
+          от одного донора делить на мини-дозы для одного новорожденного ребенка.
+    - text: Обязательно проводить лейкоредукцию ЭКК.
       source_ref:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
         document_url: null
@@ -220,9 +467,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '1993 г. № 2570-XII «О правах ребенка», а также следующие термины и
-          их определения:'
-    - text: анемия – снижение концентрации гемоглобина, и (или) количества эритроцитов,
+        quote: Обязательно проводить лейкоредукцию ЭКК.
+    - text: Рекомендуется гамма-облучение или рентгеновское облучение ЭКК в дозе 25
+        Гр, направленное на инактивацию T-лимфоцитов.
       source_ref:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
         document_url: null
@@ -233,37 +480,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: анемия – снижение концентрации гемоглобина, и (или) количества эритроцитов,
-    - text: и (или) показателя гематокрита в единице объема крови
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: и (или) показателя гематокрита в единице объема крови
-    - text: анемия недоношенных поздняя – анемия, развившаяся у недоношенного ребенка,
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: анемия недоношенных поздняя – анемия, развившаяся у недоношенного ребенка,
+        quote: Рекомендуется гамма-облучение или рентгеновское облучение ЭКК в дозе
+          25 Гр, направленное на инактивацию T-лимфоцитов.
     drug_groups: []
     drugs:
-    - drug_name: июля
+    - drug_name: Фолиевая кислота
       active_substance: null
       drug_group: null
-      dose_text: 2006 г
+      dose_text: таблетки 1 мг; допускается применение таблеток, измельченных в порошок.
+        Внутрь 0,5 мг/кг 1 раз/сутки; общая продолжительность терапии 2 месяца
       frequency_text: null
       duration_text: null
       route: null
@@ -275,17 +500,21 @@ conditions:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
         document_url: null
         local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: июля 2006 г
-    - drug_name: ноября
+        quote: фолиевая кислота, таблетки 1 мг; допускается применение таблеток, измельченных
+          в порошок. Внутрь 0,5 мг/кг 1 раз/сутки; общая продолжительность терапии
+          2 месяца
+    - drug_name: Токоферол
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: 'капли для внутреннего применения масляные (раствор масляный) 50
+        мг/мл; 100 мг/мл; 300 мг/мл (нельзя принимать внутрь совместно с лекарственными
+        препаратами железа): 10 мг (2–5 капель, раствор масляный'
       frequency_text: null
       duration_text: null
       route: null
@@ -297,17 +526,20 @@ conditions:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
         document_url: null
         local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "ноября \n1993 г"
-    - drug_name: таблетки
+        quote: токоферол, капли для внутреннего применения масляные... 10 мг в сутки
+          в течение 2 недель; нельзя принимать внутрь совместно с лекарственными препаратами
+          железа.
+    - drug_name: Цианокобаламин
       active_substance: null
       drug_group: null
-      dose_text: 1 мг
+      dose_text: раствор для инъекций 500 мкг/мл, подкожно в дозе 1 мкг/кг, максимальная
+        суточная доза – 100 мкг
       frequency_text: null
       duration_text: null
       route: null
@@ -319,17 +551,19 @@ conditions:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
         document_url: null
         local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: таблетки 1 мг
-    - drug_name: Внутрь
+        quote: цианокобаламин, раствор для инъекций 500 мкг/мл, подкожно в дозе 1
+          мкг/кг, максимальная суточная доза – 100 мкг
+    - drug_name: Пиридоксин
       active_substance: null
       drug_group: null
-      dose_text: 0,5 мг
+      dose_text: раствор для инъекций 50 мг/мл, детям – 20 мг/сутки в 1–2 приема подкожно,
+        внутримышечно или внутривенно в течение 2 недель
       frequency_text: null
       duration_text: null
       route: null
@@ -341,17 +575,19 @@ conditions:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
         document_url: null
         local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: Внутрь 0,5 мг/кг 1 раз/сутки
-    - drug_name: масляный
+        quote: пиридоксин, раствор для инъекций 50 мг/мл, детям – 20 мг/сутки в 1–2
+          приема подкожно, внутримышечно или внутривенно в течение 2 недель
+    - drug_name: Аскорбиновая кислота
       active_substance: null
       drug_group: null
-      dose_text: 50 мг
+      dose_text: раствор для внутривенного и внутримышечного введения 50 мг/мл, –
+        50 мг в сутки внутримышечно или внутривенно в течение 2 недель
       frequency_text: null
       duration_text: null
       route: null
@@ -363,131 +599,22 @@ conditions:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
         document_url: null
         local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: масляный 50 мг/мл, 1–2 капли, раствор масляный 100 мг/
-    - drug_name: инъекций
-      active_substance: null
-      drug_group: null
-      dose_text: 500 мкг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "инъекций 500 мкг/мл, подкожно в дозе 1 мкг/кг, \nмаксимал"
-    - drug_name: введения
-      active_substance: null
-      drug_group: null
-      dose_text: 50 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "введения  \n50 мг/мл, – 50 мг в сутки внутримышечно или в"
-    - drug_name: дозе
-      active_substance: null
-      drug_group: null
-      dose_text: 25 Г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: дозе 25 Гр, направленное на инактивацию T-лимфоци
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 2024 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июня 2024 г
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
+        quote: аскорбиновая кислота, раствор для внутривенного и внутримышечного введения
+          50 мг/мл, – 50 мг в сутки внутримышечно или внутривенно в течение 2 недель
     procedures: []
     surgery: []
     source_refs: []
   follow_up: []
   hospitalization: []
   routing:
-  - text: '[prevention] 29. Медицинская профилактика анемии недоношенных направлена
-      на предупреждение (стр. 6)'
+  - text: 'Госпитализация для переливания ЭКК: новорожденные 8–14 дней с респираторной
+      поддержкой, капиллярная проба Hb <100 г/л или Ht <30%.'
     timing: null
     required_if: []
     source_ref:
@@ -500,9 +627,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[prevention] 29. Медицинская профилактика анемии недоношенных направлена
-        на предупреждение (стр. 6)'
-  - text: 'и включает лечебно-профилактические мероприятия, направленные на:'
+      quote: 'Госпитализация для переливания ЭКК: новорожденные 8–14 дней с респираторной
+        поддержкой, капиллярная проба Hb <100 г/л или Ht <30%.'
+  - text: 'Госпитализация для переливания ЭКК: новорожденные 8–14 дней с респираторной
+      поддержкой, венозная проба Hb <90 г/л или Ht <30%.'
     timing: null
     required_if: []
     source_ref:
@@ -515,9 +643,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'и включает лечебно-профилактические мероприятия, направленные на:'
-  - text: '[prevention] 29. Медицинская профилактика анемии недоношенных направлена
-      на предупреждение (стр. 6)'
+      quote: 'Госпитализация для переливания ЭКК: новорожденные 8–14 дней с респираторной
+        поддержкой, венозная проба Hb <90 г/л или Ht <30%.'
+  - text: 'Госпитализация для переливания ЭКК: новорожденные >15 дней с респираторной
+      поддержкой, капиллярная проба Hb <85 г/л или Ht <25%.'
     timing: null
     required_if: []
     source_ref:
@@ -530,9 +659,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[prevention] 29. Медицинская профилактика анемии недоношенных направлена
-        на предупреждение (стр. 6)'
-  - text: 'и включает лечебно-профилактические мероприятия, направленные на:'
+      quote: 'Госпитализация для переливания ЭКК: новорожденные >15 дней с респираторной
+        поддержкой, капиллярная проба Hb <85 г/л или Ht <25%.'
+  - text: 'Госпитализация для переливания ЭКК: новорожденные >15 дней с респираторной
+      поддержкой, венозная проба Hb <77 г/л или Ht <25%.'
     timing: null
     required_if: []
     source_ref:
@@ -545,34 +675,79 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'и включает лечебно-профилактические мероприятия, направленные на:'
-  red_flags: []
+      quote: 'Госпитализация для переливания ЭКК: новорожденные >15 дней с респираторной
+        поддержкой, венозная проба Hb <77 г/л или Ht <25%.'
+  - text: 'Госпитализация для переливания ЭКК: новорожденные 8–14 дней без респираторной
+      поддержки, капиллярная проба Hb <85 г/л или Ht <25%.'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Госпитализация для переливания ЭКК: новорожденные 8–14 дней без респираторной
+        поддержки, капиллярная проба Hb <85 г/л или Ht <25%.'
+  - text: 'Госпитализация для переливания ЭКК: новорожденные 8–14 дней без респираторной
+      поддержки, венозная проба Hb <77 г/л или Ht <25%.'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Госпитализация для переливания ЭКК: новорожденные 8–14 дней без респираторной
+        поддержки, венозная проба Hb <77 г/л или Ht <25%.'
+  red_flags:
+  - text: Негативным последствием облучения ЭКК является высвобождение интерлейкинов
+      и калия. ЭКК для новорожденных детей после облучения отмывают. Срок использования
+      компонента составляет 24 часа.
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
+      page_start: 12
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Негативным последствием облучения является высвобождение интерлейкинов
+        и калия. ЭКК для новорожденных детей после облучения отмывают. Срок использования
+        компонента составляет 24 часа.
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
-    document_url: null
-    local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_анемии_недоношенных_пост_МЗ_04.06.2024_97.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика лечение анемии недоношенных
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:16:00.241912+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T18:23:45.521144+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:16:00.248504+00:00'
+  validated_at: '2026-07-20T18:23:45.529332+00:00'

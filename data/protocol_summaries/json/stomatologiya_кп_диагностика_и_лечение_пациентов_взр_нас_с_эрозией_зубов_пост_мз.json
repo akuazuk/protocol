@@ -1,7 +1,7 @@
 {
   "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
     "title": "Диагностика и лечение пациентов взрослое население с эрозией зубов",
@@ -32,12 +32,18 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_и_лечение_пациентов_взрослое_населен",
-      "name": "Диагностика и лечение пациентов взрослое население с эрозией зубов",
+      "condition_id": "erosion_of_teeth",
+      "name": "Эрозия зубов",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "B24"
+        "K03.2",
+        "K03.20",
+        "K03.21",
+        "K03.23",
+        "K03.24",
+        "K03.28",
+        "K03.29"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -45,7 +51,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[criteria] 5. Признаками и критериями, определяющими эрозию зубов, являются: (стр. 5)",
+            "text": "Овальный или округлый дефект эмали, расположенный в поперечном направлении наиболее выпуклой части вестибулярной поверхности коронки зуба.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -62,11 +68,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 5. Признаками и критериями, определяющими эрозию зубов, являются: (стр. 5)"
+              "quote": "Овальный или округлый дефект эмали, расположенный в поперечном направлении наиболее выпуклой части вестибулярной поверхности коронки зуба."
             }
           },
           {
-            "text": "КЛАССИФИКАЦИЯ, ПРИЗНАКИ И КРИТЕРИИ ЭРОЗИИ ЗУБОВ",
+            "text": "Дно дефекта блестящее, гладкое, плотное.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -83,11 +89,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "КЛАССИФИКАЦИЯ, ПРИЗНАКИ И КРИТЕРИИ ЭРОЗИИ ЗУБОВ"
+              "quote": "Дно дефекта блестящее, гладкое, плотное."
             }
           },
           {
-            "text": "определение медицинских показаний к лечению, выбор метода лечения и тактики врача-",
+            "text": "При углублении и расширении границ дефекта вовлекается дентин.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -104,19 +110,87 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "определение медицинских показаний к лечению, выбор метода лечения и тактики врача-"
+              "quote": "При углублении и расширении границ дефекта вовлекается дентин."
+            }
+          },
+          {
+            "text": "Цвет соответствует естественному цвету тканей зуба.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Цвет соответствует естественному цвету тканей зуба."
+            }
+          },
+          {
+            "text": "При ухудшении индивидуальной гигиены рта, поверхность дефекта окрашивается пищевыми красителями, приобретая желтый и светло-коричневый оттенок.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При ухудшении индивидуальной гигиены рта, поверхность дефекта окрашивается пищевыми красителями, приобретая желтый и светло-коричневый оттенок."
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
+      "required_exams": [
+        {
+          "name": "Медицинский осмотр врачом-стоматологом-терапевтом",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинское наблюдение за результатами лечения рекомендовано осуществлять путем проведения медицинских осмотров пациентов с эрозией постоянных зубов врачом-стоматологом-терапевтом через 6 месяцев"
+          }
+        }
+      ],
       "conditional_exams": [],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 9. Принципами лечения эрозии зубов являются: (стр. 5)",
+            "text": "Устранение факторов, обусловливающих процесс образования эрозий.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
               "document_url": null,
@@ -127,11 +201,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 9. Принципами лечения эрозии зубов являются: (стр. 5)"
+              "quote": "Устранение факторов, обусловливающих процесс образования эрозий."
             }
           },
           {
-            "text": "устранение факторов, обусловливающих процесс образования эрозий",
+            "text": "Предупреждение дальнейшего развития эрозий.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
               "document_url": null,
@@ -142,11 +216,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "устранение факторов, обусловливающих процесс образования эрозий"
+              "quote": "Предупреждение дальнейшего развития эрозий."
             }
           },
           {
-            "text": "предупреждение дальнейшего развития эрозий",
+            "text": "Сохранение и восстановление анатомической формы пораженного эрозией зуба и функциональной способности всей зубочелюстной системы.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
               "document_url": null,
@@ -157,11 +231,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "предупреждение дальнейшего развития эрозий"
+              "quote": "Сохранение и восстановление анатомической формы пораженного эрозией зуба и функциональной способности всей зубочелюстной системы."
             }
           },
           {
-            "text": "Национальный правовой Интернет-портал Республики Беларусь, 24.03.2023, 8/39541",
+            "text": "Препарирование зубов под искусственные коронки, вкладки, виниры.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
               "document_url": null,
@@ -172,11 +246,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Национальный правовой Интернет-портал Республики Беларусь, 24.03.2023, 8/39541"
+              "quote": "Препарирование зубов под искусственные коронки, вкладки, виниры."
             }
           },
           {
-            "text": "сохранение и восстановление анатомической формы пораженного эрозией зуба",
+            "text": "Изготовление временных конструкций (кроме препарированных зубов под штампованные коронки).",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
               "document_url": null,
@@ -187,11 +261,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "сохранение и восстановление анатомической формы пораженного эрозией зуба"
+              "quote": "Изготовление временных конструкций (кроме препарированных зубов под штампованные коронки)."
             }
           },
           {
-            "text": "и функциональной способности всей зубочелюстной системы.",
+            "text": "Получение аналоговых или оптических (3D) оттисков.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
               "document_url": null,
@@ -202,17 +276,122 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "и функциональной способности всей зубочелюстной системы."
+              "quote": "Получение аналоговых или оптических (3D) оттисков."
+            }
+          },
+          {
+            "text": "Определение и фиксация центрального соотношения челюстей или центральной окклюзии.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Определение и фиксация центрального соотношения челюстей или центральной окклюзии."
+            }
+          },
+          {
+            "text": "Выбор цвета, размера и формы искусственных коронок, вкладок, виниров.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Выбор цвета, размера и формы искусственных коронок, вкладок, виниров."
+            }
+          },
+          {
+            "text": "Наложение и припасовка каркаса коронки.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Наложение и припасовка каркаса коронки."
+            }
+          },
+          {
+            "text": "Наложение и припасовка готовой коронки, вкладки, винира.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Наложение и припасовка готовой коронки, вкладки, винира."
+            }
+          },
+          {
+            "text": "Фиксация коронки на временный материал (по медицинским показаниям).",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Фиксация коронки на временный материал (по медицинским показаниям)."
+            }
+          },
+          {
+            "text": "Фиксация коронки, вкладки, винира на постоянный материал.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Фиксация коронки, вкладки, винира на постоянный материал."
+            }
+          },
+          {
+            "text": "Рекомендации по гигиеническому уходу за зубным протезом, правилам адаптации и срокам замены конструкций.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Рекомендации по гигиеническому уходу за зубным протезом, правилам адаптации и срокам замены конструкций."
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "применения",
+            "drug_name": "Лидокаин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "100 мг",
+            "dose_text": "Спрей для местного применения 100 мг/мл. Одну порцию (1–3 нажатия) наносят на слизистую полости рта/десну или смазывают смоченным тампоном.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -224,20 +403,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "применения 100 мг/мл во \nфлаконах 50 мл \nОдну порцию (1–3"
+              "quote": "Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну. Лекарственное средство можно также наносить путем смазывания смоченным в нем ватным тампоном"
             }
           },
           {
-            "drug_name": "шприцах",
+            "drug_name": "Лидокаин/Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "12,5 г",
+            "dose_text": "Анестезирующий гель в шприцах 12,5 г. Разовая доза назначается врачом-специалистом индивидуально.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -249,20 +428,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "шприцах 12,5 г \nДля аппликационной анестезии слизистой о"
+              "quote": "Анестезирующий гель в шприцах 12,5 г. Для аппликационной анестезии слизистой оболочки полости рта, в т. ч. перед инъекционной анестезией. Разовую дозу врач-специалист назначает индивидуально"
             }
           },
           {
-            "drug_name": "картриджах",
+            "drug_name": "Артикаин/Эпинефрин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1,7 мл",
+            "dose_text": "Раствор для инъекций (40 мг + 0,005 мг)/мл до (40 мг + 0,012 мг)/мл. До 7 мг артикаина на 1 кг массы тела, или до 500 мг (12,5 мл) за процедуру.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -274,138 +453,13 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "картриджах 1,7 мл \n(1,8 мл), в ампулах 2 мл"
-            }
-          },
-          {
-            "drug_name": "соответствует",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "12,5 мл",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "соответствует 12,5 мл \nраствора для инъекций)\n\n[treatment] Лека"
-            }
-          },
-          {
-            "drug_name": "января",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2023 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "января 2023 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          },
-          {
-            "drug_name": "марта",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2023 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "марта 2023 г"
+              "quote": "Раствор для инъекций (40 мг + 0,005 мг)/мл... При выполнении одной лечебной процедуры взрослым можно вводить артикаин в дозе до 7 мг на 1 кг массы тела. Отмечено, что пациенты хорошо переносили дозы до 500 мг (соответствует 12,5 мл раствора для инъекций)"
             }
           }
         ],
@@ -415,7 +469,7 @@
       },
       "follow_up": [
         {
-          "text": "через 6 мес",
+          "text": "Медицинский осмотр врачом-стоматологом-терапевтом через 6 месяцев после завершения терапевтического лечения.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -429,48 +483,72 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "через 6 мес"
+            "quote": "Медицинский осмотр врачом-стоматологом-терапевтом через 6 месяцев после завершения терапевтического лечения."
+          }
+        },
+        {
+          "text": "Последующее медицинское наблюдение за состоянием зубов и зубных протезов (при их наличии) 2 раза в год (каждые 6 месяцев).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Последующее медицинское наблюдение за состоянием зубов и зубных протезов (при их наличии) 2 раза в год (каждые 6 месяцев)."
           }
         }
       ],
       "hospitalization": [],
-      "routing": [],
+      "routing": [
+        {
+          "text": "Амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Амбулаторно"
+          }
+        }
+      ],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_мз",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_эрозией_зубов_пост_МЗ_11.01.2023_4.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика и лечение пациентов взрослое население с эрозией зубов"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:50.916637+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T18:05:00.071884+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:50.919862+00:00"
+    "validated_at": "2026-07-20T18:05:00.075302+00:00"
   }
 }

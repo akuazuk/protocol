@@ -1,6 +1,6 @@
 protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Диагностика острой интоксикации вызванной употреблением алкоголя наркотических
@@ -20,37 +20,38 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_острой_интоксикации_вызванной_употре
-  name: Диагностика острой интоксикации вызванной употреблением алкоголя наркотических
-    средств
+- condition_id: acute_intoxication_alcohol_drugs
+  name: Острая интоксикация, вызванная употреблением алкоголя, наркотических средств
+    и других психоактивных веществ
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - F10.03
-  - F10.07
-  - F10
   - F10.0
-  - F11
   - F11.0
-  - F12
   - F12.0
-  - F13
   - F13.0
-  - F14
   - F14.0
+  - F15.0
+  - F16.0
+  - F17.0
+  - F18.0
+  - F19.0
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: 7.1.3. проведение пробы (проб) на определение концентрации паров этанола
+    - text: 'Наличие, по меньшей мере, одного признака 1 порядка (алкоголь): расторможенность,
+        чрезмерная склонность к аргументированию/оспариванию, агрессивность, неустойчивость
+        настроения, нарушение внимания, снижение способности здраво рассуждать и критически
+        оценивать свои поступки.'
       logic_group: null
       operator: unknown
       values: []
@@ -67,9 +68,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 7.1.3. проведение пробы (проб) на определение концентрации паров этанола
-    - text: на отравление этанолом и другими спиртами проводится его определение в
-        крови
+        quote: 'Наличие, по меньшей мере, одного признака 1 порядка (алкоголь): расторможенность,
+          чрезмерная склонность к аргументированию/оспариванию, агрессивность, неустойчивость
+          настроения, нарушение внимания, сн'
+    - text: 'Обязательное присутствие, по меньшей мере, одного признака 2 порядка
+        (алкоголь): шаткость походки, затруднение при сохранении равновесия стоя,
+        смазанная речь, нистагм, нарушение сознания, покраснение лица, инъецированность
+        склер.'
       logic_group: null
       operator: unknown
       values: []
@@ -86,10 +91,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: на отравление этанолом и другими спиртами проводится его определение
-          в крови
-    - text: биологических образцов (мочи) для определения наличия наркотических средств
-        и иных
+        quote: 'Обязательное присутствие, по меньшей мере, одного признака 2 порядка
+          (алкоголь): шаткость походки, затруднение при сохранении равновесия стоя,
+          смазанная речь, нистагм, нарушение сознания, покраснение '
+    - text: Симптомы и признаки соответствуют известному действию конкретного наркотического
+        средства/вещества и достаточно выражены для клинически значимых нарушений
+        уровня сознания, когнитивных функций, восприятия, эмоционального состояния
+        или поведения.
       logic_group: null
       operator: unknown
       values: []
@@ -106,9 +114,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: биологических образцов (мочи) для определения наличия наркотических
-          средств и иных
-    - text: 11. Диагностические критерии острой интоксикации, вызванной потреблением
+        quote: Симптомы и признаки соответствуют известному действию конкретного наркотического
+          средства/вещества и достаточно выражены для клинически значимых нарушений
+          уровня сознания, когнитивных функций, восприя
+    - text: Имеющиеся симптомы или признаки не могут быть объяснены заболеванием,
+        не связанным с потреблением наркотических средств и иных веществ, а также
+        другим психическим расстройством (заболеванием).
       logic_group: null
       operator: unknown
       values: []
@@ -125,15 +136,248 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 11. Диагностические критерии острой интоксикации, вызванной потреблением
+        quote: Имеющиеся симптомы или признаки не могут быть объяснены заболеванием,
+          не связанным с потреблением наркотических средств и иных веществ, а также
+          другим психическим расстройством (заболеванием).
+    - text: Жалобы пациента зависят от вида и дозы наркотических средств и иных веществ
+        и определяются его основными фармакологическими или побочными эффектами, а
+        также могут быть связаны с возникшими осложнениями острой интоксикации.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+        document_url: null
+        local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Жалобы пациента зависят от вида и дозы наркотических средств и иных
+          веществ и определяются его основными фармакологическими или побочными эффектами,
+          а также могут быть связаны с возникшими осложнениям
     optional: []
     exclusion: []
-  required_exams: []
+  required_exams:
+  - name: Сбор анамнестических сведений об употреблении алкоголя
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'сбор анамнестических сведений, направленный на выяснение следующих данных:
+        вид употребляемого алкоголя (водка, вино, пиво, технический спирт, растворитель,
+        другое), доза, время приема;'
+  - name: Выявление симптомов и признаков действия алкоголя
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: выявление симптомов и признаков, соответствующих действию алкоголя и
+        достаточно выраженных, чтобы привести к клинически значимым нарушениям сознания,
+        когнитивных функций, восприятия, эмоционального состояния или поведения
+  - name: Проба на определение концентрации паров этанола в выдыхаемом воздухе
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: проведение пробы (проб) на определение концентрации паров этанола в выдыхаемом
+        воздухе;
+  - name: Дифференциально-диагностические мероприятия
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: проведение дифференциально-диагностических мероприятий в целях исключения
+        других соматических заболеваний, другого психического расстройства (заболевания),
+        которыми могли бы объясняться выявленные симптомы и признаки;
+  - name: Отбор биологических образцов (кровь и моча)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Отбор биологических образцов (мочи и крови) для проведения диагностики
+        острой интоксикации, вызванной употреблением алкоголя, является обязательным.
+  - name: Химико-токсикологическое исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'проведение химико-токсикологического исследования: количественный (этанол
+        в крови) и качественный (другие спирты в моче) анализ.'
+  - name: Сбор анамнестических данных об употреблении наркотических средств и иных
+      веществ
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: сбор анамнестических данных у пациента, его родителей, усыновителей (удочерителей),
+        опекунов, попечителей или сопровождающих его лиц для установления вида наркотических
+        средств и иных веществ;
+  - name: Сбор анамнеза у пациента
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: У всех пациентов с подозрением на острую интоксикацию, вызванную потреблением
+        наркотических средств и иных веществ, с целью подтверждения данного диагноза
+        следует выяснить, принимал ли пациент незадолго до того, как изменилось его
+        состояние, какие-либо наркотические и иные вещества, какие именно и в какой
+        последовательности.
+  - name: Сбор анамнеза у сопровождающих лиц
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При подозрении на острую интоксикацию, вызванную потреблением наркотических
+        средств и иных веществ, с целью подтверждения данного диагноза следует расспросить
+        сопровождающих лиц о систематическом приеме и возможных случаях острой интоксикации,
+        вызванной потреблением наркотических средств и иных веществ, в прошлом.
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] 12. Жалобы пациента зависят от вида и дозы наркотических
-        средств и иных веществ (стр. 9)'
+    - text: Коррекция назначаемого (проводимого) лечения для предупреждения развития
+        нежелательных эффектов от сочетания лекарственных средств и наркотических
+        средств и иных веществ.
       source_ref:
         protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
         document_url: null
@@ -144,244 +388,724 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 12. Жалобы пациента зависят от вида и дозы наркотических
-          средств и иных веществ (стр. 9)'
-    - text: и определяются его основными фармакологическими или побочными эффектами,
-        а также
-      source_ref:
-        protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
-        document_url: null
-        local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: и определяются его основными фармакологическими или побочными эффектами,
-          а также
-    - text: могут быть связаны с возникшими осложнениями острой интоксикации, вызванной
-      source_ref:
-        protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
-        document_url: null
-        local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: могут быть связаны с возникшими осложнениями острой интоксикации, вызванной
-    - text: потреблением наркотических средств и иных веществ. При тяжелой степени
-        острой
-      source_ref:
-        protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
-        document_url: null
-        local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: потреблением наркотических средств и иных веществ. При тяжелой степени
-          острой
-    - text: интоксикации, вызванной потреблением наркотических средств и иных веществ,
-        жалобы
-      source_ref:
-        protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
-        document_url: null
-        local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: интоксикации, вызванной потреблением наркотических средств и иных веществ,
-          жалобы
-    - text: пациента, как правило, отсутствуют, так как контакт с ним затруднен или
-        невозможен.
-      source_ref:
-        protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
-        document_url: null
-        local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: пациента, как правило, отсутствуют, так как контакт с ним затруднен
-          или невозможен.
+        quote: Коррекция назначаемого (проводимого) лечения для предупреждения развития
+          нежелательных эффектов от сочетания лекарственных средств и наркотических
+          средств и иных веществ.
     drug_groups: []
-    drugs:
-    - drug_name: ноября
-      active_substance: null
-      drug_group: null
-      dose_text: 2022 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
-        document_url: null
-        local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ноября 2022 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
-        document_url: null
-        local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
-        document_url: null
-        local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: апреля
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
-        document_url: null
-        local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: апреля 2011 г
-    - drug_name: января
-      active_substance: null
-      drug_group: null
-      dose_text: 2012 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
-        document_url: null
-        local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "января \n2012 г"
-    - drug_name: июля
-      active_substance: null
-      drug_group: null
-      dose_text: 2012 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
-        document_url: null
-        local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июля 2012 г
+    drugs: []
     procedures: []
     surgery: []
     source_refs: []
   follow_up: []
   hospitalization: []
   routing: []
-  red_flags: []
+  red_flags:
+  - text: Отсутствие жалоб пациента и затрудненный или невозможный контакт при тяжелой
+      степени острой интоксикации.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При тяжелой степени острой интоксикации, вызванной потреблением наркотических
+        средств и иных веществ, жалобы пациента, как правило, отсутствуют, так как
+        контакт с ним затруднен или невозможен.
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
-    document_url: null
-    local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика острой интоксикации вызванной употреблением алкоголя наркотических
-      средств
+  source_refs: []
+- condition_id: alcohol_delirium
+  name: Делирий, вызванный употреблением алкоголя
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - F10.03
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Выявление симптомов и признаков, соответствующих действию алкоголя и достаточно
+        выраженных, чтобы привести к клинически значимым нарушениям сознания, когнитивных
+        функций, восприятия, эмоционального состояния или поведения.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+        document_url: null
+        local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выявление симптомов и признаков, соответствующих действию алкоголя
+          и достаточно выраженных, чтобы привести к клинически значимым нарушениям
+          сознания, когнитивных функций, восприятия, эмоционального со
+    - text: 'Наличие, по меньшей мере, одного признака 1 порядка: расторможенность,
+        чрезмерная склонность к аргументированию или оспариванию, агрессивность, неустойчивость
+        настроения, нарушение внимания, снижение способности здраво рассуждать и критически
+        оценивать свои поступки.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+        document_url: null
+        local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Наличие, по меньшей мере, одного признака 1 порядка: расторможенность,
+          чрезмерная склонность к аргументированию или оспариванию, агрессивность,
+          неустойчивость настроения, нарушение внимания, снижение '
+    - text: 'Обязательное присутствие, по меньшей мере, одного признака 2 порядка:
+        шаткость походки, затруднение при сохранении равновесия в положении стоя,
+        смазанная речь, нистагм, нарушение сознания, покраснение лица, инъецированность
+        склер.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+        document_url: null
+        local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Обязательное присутствие, по меньшей мере, одного признака 2 порядка:
+          шаткость походки, затруднение при сохранении равновесия в положении стоя,
+          смазанная речь, нистагм, нарушение сознания, покраснение'
+    - text: Жалобы пациента зависят от вида и дозы наркотических средств и иных веществ
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+        document_url: null
+        local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Жалобы пациента зависят от вида и дозы наркотических средств и иных
+          веществ
+    - text: Отсутствие жалоб и затруднение/невозможность контакта при тяжелой степени
+        острой интоксикации
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+        document_url: null
+        local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Отсутствие жалоб и затруднение/невозможность контакта при тяжелой степени
+          острой интоксикации
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Сбор анамнестических сведений
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'сбор анамнестических сведений, направленный на выяснение следующих данных:
+        вид употребляемого алкоголя (водка, вино, пиво, технический спирт, растворитель,
+        другое), доза, время приема'
+  - name: Проведение пробы на определение концентрации паров этанола в выдыхаемом
+      воздухе
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: проведение пробы (проб) на определение концентрации паров этанола в выдыхаемом
+        воздухе
+  - name: Проведение дифференциально-диагностических мероприятий
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: проведение дифференциально-диагностических мероприятий в целях исключения
+        других соматических заболеваний, другого психического расстройства (заболевания),
+        которыми могли бы объясняться выявленные симптомы и признаки
+  - name: Отбор биологических образцов (крови и мочи) для исследования
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Отбор биологических образцов (мочи и крови) для проведения диагностики
+        острой интоксикации, вызванной употреблением алкоголя, является обязательным.
+  - name: Проведение химико-токсикологического исследования (этанол в крови, другие
+      спирты в моче)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'проведение химико-токсикологического исследования: количественный (этанол
+        в крови) и качественный (другие спирты в моче) анализ.'
+  - name: Анамнез у пациента
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: следует выяснить, принимал ли пациент незадолго до того, как изменилось
+        его состояние, какие-либо наркотические и иные вещества, какие именно и в
+        какой последовательности.
+  - name: Анамнез у сопровождающих лиц
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: следует расспросить сопровождающих лиц о систематическом приеме и возможных
+        случаях острой интоксикации, вызванной потреблением наркотических средств
+        и иных веществ, в прошлом.
+  conditional_exams:
+  - name: Отбор биологических образцов (мочи) для определения наличия наркотических
+      средств и иных веществ
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При подозрении на острую интоксикацию, вызванную одновременным употреблением
+        нескольких наркотических средств и иных веществ и алкоголя, необходимо произвести
+        отбор биологических образцов (мочи) для определения наличия наркотических
+        средств и иных веществ.
+  treatment:
+    non_drug:
+    - text: Коррекция назначаемого (проводимого) лечения для предупреждения развития
+        нежелательных эффектов от сочетания лекарственных средств и наркотических
+        средств и иных веществ
+      source_ref:
+        protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+        document_url: null
+        local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Коррекция назначаемого (проводимого) лечения для предупреждения развития
+          нежелательных эффектов от сочетания лекарственных средств и наркотических
+          средств и иных веществ
+    drug_groups: []
+    drugs: []
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up: []
+  hospitalization: []
+  routing: []
+  red_flags:
+  - text: Отсутствие жалоб у пациента при тяжелой степени острой интоксикации
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При тяжелой степени острой интоксикации, вызванной потреблением наркотических
+        средств и иных веществ, жалобы пациента, как правило, отсутствуют, так как
+        контакт с ним затруднен или невозможен.
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: pathological_alcohol_intoxication
+  name: Патологическое опьянение, вызванное употреблением алкоголя
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - F10.07
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: 'Для алкоголя: наличие не менее одного признака 1 порядка (расторможенность,
+        агрессивность, неустойчивость настроения, нарушение внимания, снижение критичности)
+        И не менее одного признака 2 порядка (шаткость походки, смазанная речь, нистагм,
+        нарушение сознания, покраснение лица, инъецированность склер).'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+        document_url: null
+        local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Для алкоголя: наличие не менее одного признака 1 порядка (расторможенность,
+          агрессивность, неустойчивость настроения, нарушение внимания, снижение критичности)
+          И не менее одного признака 2 порядка (ша'
+    - text: 'Для наркотических средств: симптомы соответствуют известному действию
+        вещества и вызывают клинически значимые нарушения, не объясняемые другими
+        заболеваниями или психическими расстройствами.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+        document_url: null
+        local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Для наркотических средств: симптомы соответствуют известному действию
+          вещества и вызывают клинически значимые нарушения, не объясняемые другими
+          заболеваниями или психическими расстройствами.'
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Сбор анамнестических сведений об употреблении алкоголя
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'сбор анамнестических сведений, направленный на выяснение следующих данных:
+        вид употребляемого алкоголя (водка, вино, пиво, технический спирт, растворитель,
+        другое), доза, время приема'
+  - name: Выявление симптомов и признаков действия алкоголя
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: выявление симптомов и признаков, соответствующих действию алкоголя и
+        достаточно выраженных, чтобы привести к клинически значимым нарушениям сознания,
+        когнитивных функций, восприятия, эмоционального состояния или поведения
+  - name: Проба на определение концентрации паров этанола в выдыхаемом воздухе
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: проведение пробы (проб) на определение концентрации паров этанола в выдыхаемом
+        воздухе
+  - name: Отбор биологических образцов (крови и мочи) для диагностики интоксикации
+      алкоголем
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Отбор биологических образцов (мочи и крови) для проведения диагностики
+        острой интоксикации, вызванной употреблением алкоголя, является обязательным.
+  - name: Химико-токсикологическое исследование (этанол в крови, другие спирты в моче)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'проведение химико-токсикологического исследования: количественный (этанол
+        в крови) и качественный (другие спирты в моче) анализ.'
+  - name: Сбор анамнестических данных для установления вида наркотических средств
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: сбор анамнестических данных у пациента, его родителей, усыновителей (удочерителей),
+        опекунов, попечителей или сопровождающих его лиц для установления вида наркотических
+        средств и иных веществ
+  - name: Сбор анамнеза о приеме веществ
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: с целью подтверждения данного диагноза следует выяснить, принимал ли
+        пациент незадолго до того, как изменилось его состояние, какие-либо наркотические
+        и иные вещества, какие именно и в какой последовательности.
+  - name: Сбор анамнеза у сопровождающих лиц
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При подозрении на острую интоксикацию, вызванную потреблением наркотических
+        средств и иных веществ, с целью подтверждения данного диагноза следует расспросить
+        сопровождающих лиц о систематическом приеме и возможных случаях острой интоксикации,
+        вызванной потреблением наркотических средств и иных веществ, в прошлом.
+  conditional_exams:
+  - name: Отбор биологических образцов (мочи) для определения наркотических средств
+      и иных веществ
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При подозрении на острую интоксикацию, вызванную одновременным употреблением
+        нескольких наркотических средств и иных веществ и алкоголя...необходимо произвести
+        отбор биологических образцов (мочи)
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing: []
+  red_flags:
+  - text: Отсутствие жалоб пациента и затрудненный/невозможный контакт при тяжелой
+      степени острой интоксикации.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: psikhiatriya_narkologiya_кп_диагностика_острой_интоксикации_вызванной_употреблен
+      document_url: null
+      local_path: minzdrav_protocols/psikhiatriya-narkologiya/КП_Диагностика_острой_интоксикации_вызванной_употреблением_алкоголя_наркотических_средств_пост_МЗ_08.11.2022_109.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При тяжелой степени острой интоксикации, вызванной потреблением наркотических
+        средств и иных веществ, жалобы пациента, как правило, отсутствуют, так как
+        контакт с ним затруднен или невозможен.
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:45.585337+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T17:17:13.133662+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=3
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:45.587657+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[pathological_alcohol_intoxication].required_exams[0]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[pathological_alcohol_intoxication].required_exams[1]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[pathological_alcohol_intoxication].required_exams[2]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[pathological_alcohol_intoxication].required_exams[7]
+  validated_at: '2026-07-20T17:17:13.150608+00:00'

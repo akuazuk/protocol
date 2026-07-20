@@ -1,6 +1,6 @@
 # Validation: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац
 
 - **status:** valid
-- **validated_at:** 2026-06-23T19:16:26.630460+00:00
+- **validated_at:** 2026-07-20T16:19:20.217191+00:00
 - **review_status:** needs_review
-- **extraction_status:** auto_extracted
+- **extraction_status:** llm_extracted

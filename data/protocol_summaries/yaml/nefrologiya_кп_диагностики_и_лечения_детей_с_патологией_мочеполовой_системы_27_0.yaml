@@ -1,9 +1,9 @@
 protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: диагностики и лечения детей с патологией мочеполовой системы 549
+  title: Диагностика и лечение детей с патологией мочеполовой системы
   url: null
   local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с патологией
     мочеполовой системы 27.09.2005_549.pdf
@@ -20,35 +20,26 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностики_и_лечения_детей_с_патологией_мочепол
-  name: диагностики и лечения детей с патологией мочеполовой системы 549
+- condition_id: pyonephrosis
+  name: Пионефроз
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - Q62.3
-  - Q62.8
   - N13.2
-  - N13.6
-  - N28.8
-  - B24
-  - N12
-  - N31.0
-  - N31.2
-  - Q62.0
-  - Q62.2
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria: null
   required_exams:
-  - name: УЗИ
+  - name: 'Биохимическое исследование крови: глюкоза, мочевина, креатинин, билирубин,
+      общий белок, электролиты (К, Na, Са, Cl)'
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -63,18 +54,151 @@ conditions:
       document_url: null
       local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
         патологией мочеполовой системы 27.09.2005_549.pdf
-      page_start: null
+      page_start: 3
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "ренко \n1 \n1 \n1 \n \n1 \n \n \n1 \n \n \n \n1 \n \nУЗИ почек, мо-\n\
-        чевого пузыря, \nмочеточников \nПосев мочи на \nБК \nВыполнение рекоменд"
+      quote: 'Биохимическое исследование крови: глюкоза, мочевина, креатинин, билирубин,
+        общий белок, электролиты (К, Na, Са, Cl)'
+  - name: Посев мочи на микрофлору и чувствительность к антибиотикам
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Посев мочи на микрофлору и чувствительность к антибиотикам
+  - name: Ультразвуковое исследование (УЗИ) мочевой системы
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Ультразвуковое исследование (далее-УЗИ) мочевой системы
+  - name: Обзорная урограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обзорная урограмма
+  - name: Экскреторная урограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Экскреторная урограмма
+  - name: Консультация детского уролога
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Консультация детского уролога
+  - name: Изотопная ренограмма с фуросемидом
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Изотопная ренограмма с фуросемидом
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] 3. Антидепрессанты: имипрамин (стр. 8)'
+    - text: 'Физиотерапия: импульсные токи – 10 дней, импульсное магнитное поле –
+        10 дней'
       source_ref:
         protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
         document_url: null
@@ -86,78 +210,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 3. Антидепрессанты: имипрамин (стр. 8)'
-    - text: внутрь (2-7 лет – 20 мг/сут, 8-14
-      source_ref:
-        protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
-        document_url: null
-        local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
-          с патологией мочеполовой системы 27.09.2005_549.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: внутрь (2-7 лет – 20 мг/сут, 8-14
-    - text: лет – 50 мг/сут в 4 равных дозах)
-      source_ref:
-        protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
-        document_url: null
-        local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
-          с патологией мочеполовой системы 27.09.2005_549.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: лет – 50 мг/сут в 4 равных дозах)
-    - text: '[treatment] 4. Электрофорез с 0,1% р-ром (стр. 8)'
-      source_ref:
-        protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
-        document_url: null
-        local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
-          с патологией мочеполовой системы 27.09.2005_549.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 4. Электрофорез с 0,1% р-ром (стр. 8)'
-    - text: с 6 лет по 2,5-5 мг 2 р/сут в те-
-      source_ref:
-        protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
-        document_url: null
-        local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
-          с патологией мочеполовой системы 27.09.2005_549.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: с 6 лет по 2,5-5 мг 2 р/сут в те-
-    - text: 'чение 3-4 нед. б) Антидепрессанты: имипрамин'
-      source_ref:
-        protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
-        document_url: null
-        local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
-          с патологией мочеполовой системы 27.09.2005_549.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'чение 3-4 нед. б) Антидепрессанты: имипрамин'
+        quote: 'Физиотерапия: импульсные токи – 10 дней, импульсное магнитное поле
+          – 10 дней'
     drug_groups: []
     drugs:
-    - drug_name: через
+    - drug_name: Метамизол
       active_substance: null
       drug_group: null
-      dose_text: 1 г
+      dose_text: 50% раствор, разовая доза 0,1 мл на год жизни
       frequency_text: null
       duration_text: null
       route: null
@@ -170,17 +230,17 @@ conditions:
         document_url: null
         local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
           с патологией мочеполовой системы 27.09.2005_549.pdf
-        page_start: null
+        page_start: 3
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "через 1 год после \nисчезновения клинических при-\n"
-    - drug_name: октября
+        quote: -50% р-р метамизола - разовая доза 0,1 мл на год жизни
+    - drug_name: Папаверина гидрохлорид
       active_substance: null
       drug_group: null
-      dose_text: 2003 г
+      dose_text: 2% раствор, 0,8-2 мг/кг или 0,2 мл на год жизни разовая доза внутримышечно
       frequency_text: null
       duration_text: null
       route: null
@@ -193,17 +253,18 @@ conditions:
         document_url: null
         local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
           с патологией мочеполовой системы 27.09.2005_549.pdf
-        page_start: null
+        page_start: 3
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: октября 2003 г
-    - drug_name: августа
+        quote: -2% р-р папаверина гидрохлорида 0,8-2 мг/кг или 0,2 мл на год жизни
+          разовая доза в/м
+    - drug_name: Дифенгидрамин
       active_substance: null
       drug_group: null
-      dose_text: "2000 \nг"
+      dose_text: 1% раствор, внутримышечно однократно в возрастной дозировке
       frequency_text: null
       duration_text: null
       route: null
@@ -216,17 +277,17 @@ conditions:
         document_url: null
         local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
           с патологией мочеполовой системы 27.09.2005_549.pdf
-        page_start: null
+        page_start: 3
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "августа 2000 \nг"
-    - drug_name: доза
+        quote: -1% р-р дифенгидрамина в/м однократно в возрастной дозировке
+    - drug_name: Камнерастворяющие и камнеизгоняющие препараты (растительного происхождения)
       active_substance: null
       drug_group: null
-      dose_text: 0,1 мл
+      dose_text: 2-3 раза/сутки внутрь
       frequency_text: null
       duration_text: null
       route: null
@@ -239,21 +300,48 @@ conditions:
         document_url: null
         local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
           с патологией мочеполовой системы 27.09.2005_549.pdf
-        page_start: null
+        page_start: 3
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "доза 0,1 мл на год жизни \n-2% р-р папаверина гидрохл"
+        quote: 'Камнерастворяющие и камнеизгоняющие препараты: лекарственные средства
+          растительного происхождения 2-3 раза/сут внутрь'
+    - drug_name: Антибактериальное лечение
+      active_substance: null
+      drug_group: null
+      dose_text: для профилактики пиелонефрита с учетом антибиотикограммы 7 дней
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
+          с патологией мочеполовой системы 27.09.2005_549.pdf
+        page_start: 3
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Антибактериальное лечение для профилактики пиелонефрита с учетом антибиотикограммы
+          7 дней
     procedures: []
     surgery: []
     source_refs: []
-  follow_up:
-  - text: Контроль
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: Госпитализация в специализированный стационар для оперативного лечения (по
+      показаниям).
     timing: null
     required_if: []
-    expected_actions: []
     source_ref:
       protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
       document_url: null
@@ -265,11 +353,123 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контроль
-  - text: Контроль
+      quote: Госпитализация в специализированный стационар для оперативного лечения
+        (по показаниям).
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: kidney_hypertrophy
+  name: Гипертрофия почки
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - N13.6
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment:
+    non_drug:
+    - text: Направление в специализированный стационар для оперативного лечения (по
+        показ.)
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
+          с патологией мочеполовой системы 27.09.2005_549.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Направление в специализированный стационар для оперативного лечения
+          (по показ.)
+    drug_groups: []
+    drugs:
+    - drug_name: Метамизол
+      active_substance: null
+      drug_group: null
+      dose_text: разовая доза 0,1 мл на год жизни
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
+          с патологией мочеполовой системы 27.09.2005_549.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: -50% р-р метамизола - разовая доза 0,1 мл на год жизни
+    - drug_name: Папаверина гидрохлорид
+      active_substance: null
+      drug_group: null
+      dose_text: 0,8-2 мг/кг или 0,2 мл на год жизни разовая доза
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
+          с патологией мочеполовой системы 27.09.2005_549.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: -2% р-р папаверина гидрохлорида 0,8-2 мг/кг или 0,2 мл на год жизни
+          разовая доза в/м
+    - drug_name: Дифенгидрамин
+      active_substance: null
+      drug_group: null
+      dose_text: в возрастной дозировке
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
+          с патологией мочеполовой системы 27.09.2005_549.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: -1% р-р дифенгидрамина в/м однократно в возрастной дозировке
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: госпитализация
     timing: null
     required_if: []
-    expected_actions: []
     source_ref:
       protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
       document_url: null
@@ -281,11 +481,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контроль
-  - text: Контроль
+      quote: госпитализация
+  - text: госпитализация
     timing: null
     required_if: []
-    expected_actions: []
     source_ref:
       protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
       document_url: null
@@ -297,11 +496,146 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контроль
-  - text: Контроль
+      quote: госпитализация
+  red_flags:
+  - text: Направление в стационар по экстренным показаниям
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Направление в стационар (по экстренным показаниям)
+  - text: Направление в специализированный стационар для оперативного лечения (по
+      показ.)
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Направление в специализированный стационар для оперативного лечения (по
+        показ.)
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: nephroptosis
+  name: Нефроптоз
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - N28.8
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment:
+    non_drug: []
+    drug_groups: []
+    drugs:
+    - drug_name: Нитрофурантоин
+      active_substance: null
+      drug_group: null
+      dose_text: 5-7 мг/кг/сут. в 2 приема, 7-14 дней
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
+          с патологией мочеполовой системы 27.09.2005_549.pdf
+        page_start: 22
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Мочевые антисептики: нитрофурановые препараты (нитрофурантоин, фуразолидон
+          5-7 мг/кг/сут.)'
+    - drug_name: Фуразолидон
+      active_substance: null
+      drug_group: null
+      dose_text: 5-7 мг/кг/сут. в 2 приема, 7-14 дней
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
+          с патологией мочеполовой системы 27.09.2005_549.pdf
+        page_start: 22
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Мочевые антисептики: нитрофурановые препараты (нитрофурантоин, фуразолидон
+          5-7 мг/кг/сут.)'
+    - drug_name: Нитроксолин
+      active_substance: null
+      drug_group: null
+      dose_text: 0,2-0,4 г/сут. в 2 приема, 7-14 дней
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
+          с патологией мочеполовой системы 27.09.2005_549.pdf
+        page_start: 22
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: производные оксихинолина (нитроксолин 0,2-0,4 г/сут.)
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: госпитализация/амбулаторно
     timing: null
     required_if: []
-    expected_actions: []
     source_ref:
       protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
       document_url: null
@@ -313,53 +647,535 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контроль
-  - text: Контроль
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
-      document_url: null
-      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
-        патологией мочеполовой системы 27.09.2005_549.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Контроль
+      quote: госпитализация/амбулаторно
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: cystic_pyeloureteritis
+  name: Пиелоуретерит кистозный
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - N28.8
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment: null
+  follow_up: []
   hospitalization: []
   routing: []
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
-    document_url: null
-    local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с патологией
-      мочеполовой системы 27.09.2005_549.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: диагностики и лечения детей с патологией мочеполовой системы 549
+  source_refs: []
+- condition_id: uninhibited_neurogenic_bladder
+  name: Незаторможенный мочевой пузырь
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - N31.0
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams:
+  - name: Уродинамические обследования
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Лечение нейрогенного мочевого пузыря должно проводиться только после
+        уродинамических обследований и консультации специалистов: уролога, невролога'
+  - name: Консультация уролога
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Лечение нейрогенного мочевого пузыря должно проводиться только после
+        уродинамических обследований и консультации специалистов: уролога, невролога'
+  - name: Консультация невролога
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Лечение нейрогенного мочевого пузыря должно проводиться только после
+        уродинамических обследований и консультации специалистов: уролога, невролога'
+  conditional_exams:
+  - name: Бактериологическое исследование мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: МУ То же + Бактериологическое исследование мочи
+  - name: 'Биохимическое исследование крови: мочевина, креатинин'
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Биохимическое исследование крови: мочевина, креатинин'
+  - name: УЗИ почек, мочевого пузыря
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗИ почек, мочевого пузыря
+  - name: Обзорная рентгенограмма пояснично-крестцового отдела позвоночника
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обзорная рентгенограмма пояснично-крестцового отдела позвоночника
+  - name: Определение остаточного объема мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Определение остаточного объема мочи
+  - name: Консультация психиатра
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Консультация: психиатра'
+  - name: Эхоэнцефалография
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: То же + Эхоэнцефалография
+  - name: Рентгенография поясничного отдела позвоночника
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: То же + Рентгенография поясничного отдела позвоночника
+  - name: Электрокардиограмма (ЭКГ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: То же + Электрокардиограмма (далее – ЭКГ)
+  treatment:
+    non_drug:
+    - text: Электрофорез с 0,1% р-ром атропина на область мочевого пузыря № 10
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
+          с патологией мочеполовой системы 27.09.2005_549.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Электрофорез с 0,1% р-ром атропина на область мочевого пузыря № 10
+    - text: Ультразвук на область мочевого пузыря №10
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
+          с патологией мочеполовой системы 27.09.2005_549.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ультразвук на область мочевого пузыря №10
+    - text: Электростимуляция анального сфинктера диадинамическими токами
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
+          с патологией мочеполовой системы 27.09.2005_549.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Электростимуляция анального сфинктера диадинамическими токами
+    - text: Электрофорез с 0,05% р-ром неостигмина на область мочевого пузыря № 10
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
+          с патологией мочеполовой системы 27.09.2005_549.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Электрофорез с 0,05% р-ром неостигмина на область мочевого пузыря №
+          10
+    - text: Иглорефлексотерапия
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
+          с патологией мочеполовой системы 27.09.2005_549.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Иглорефлексотерапия
+    - text: Соблюдение питьевого режима (ограничение приема жидкости на ночь)
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
+          с патологией мочеполовой системы 27.09.2005_549.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Соблюдение питьевого режима (ограничение приема жидкости на ночь)
+    drug_groups: []
+    drugs:
+    - drug_name: Имипрамин
+      active_substance: null
+      drug_group: null
+      dose_text: внутрь (2-7 лет – 20 мг/сут, 8-14 лет – 50 мг/сут в 4 равных дозах)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
+          с патологией мочеполовой системы 27.09.2005_549.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Антидепрессанты: имипрамин внутрь (2-7 лет – 20 мг/сут, 8-14 лет –
+          50 мг/сут в 4 равных дозах)'
+    - drug_name: Оксибутинин
+      active_substance: null
+      drug_group: null
+      dose_text: внутрь детям с 6 лет по 2,5-5 мг 2 р/сут в течение 3-4 нед.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей
+          с патологией мочеполовой системы 27.09.2005_549.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Антихолинергические препараты: оксибутинин внутрь детям с 6 лет по
+          2,5-5 мг 2 р/сут в течение 3-4 нед.'
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Курсы лечения (электрофорез) повторяются 3-4 раза/год
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Курсы лечения (электрофорез) повторяются 3-4 раза/год
+  - text: Диспансерное наблюдение врача общей практики 2 раза/год
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диспансерное наблюдение врача общей практики 2 раза/год
+  - text: Снятие с учета через 1 год после исчезновения клинических признаков заболевания
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_0
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП диагностики и лечения детей с
+        патологией мочеполовой системы 27.09.2005_549.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Снятие с учета через 1 год после исчезновения клинических признаков заболевания
+  hospitalization: []
+  routing: []
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:42.268889+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T16:41:55.695725+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=5
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:42.272701+00:00'
+  warnings:
+  - level: warning
+    code: quote_not_in_source
+    message: Цитата не найдена в исходном тексте
+    path: conditions[pyonephrosis].required_exams[1]
+  - level: warning
+    code: quote_not_in_source
+    message: Цитата не найдена в исходном тексте
+    path: conditions[pyonephrosis].required_exams[6]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[kidney_hypertrophy].treatment.drugs[0]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[kidney_hypertrophy].treatment.drugs[1]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[kidney_hypertrophy].treatment.drugs[2]
+  validated_at: '2026-07-20T16:41:55.720294+00:00'

@@ -1,6 +1,6 @@
 # Validation: stomatologiya_кп4_гемангиома_чло
 
 - **status:** valid
-- **validated_at:** 2026-06-23T19:16:26.653886+00:00
+- **validated_at:** 2026-07-20T17:50:41.671459+00:00
 - **review_status:** needs_review
-- **extraction_status:** auto_extracted
+- **extraction_status:** llm_extracted

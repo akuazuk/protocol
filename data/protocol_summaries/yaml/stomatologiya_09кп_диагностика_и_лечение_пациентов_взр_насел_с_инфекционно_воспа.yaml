@@ -1,9 +1,9 @@
 protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: 09КП Диагностика и лечение пациентов взр насел с инфекционно воспалительными
+  title: Диагностика и лечение пациентов взрослого населения с инфекционно-воспалительными
     заболеваниями мягких тканей
   url: null
   local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
@@ -27,22 +27,21 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: 09кп_диагностика_и_лечение_пациентов_взр_насел_с
-  name: 09КП Диагностика и лечение пациентов взр насел с инфекционно воспалительными
-    заболеваниями мягких тканей
+- condition_id: infectious_inflammatory_soft_tissue_diseases
+  name: Инфекционно-воспалительные заболевания мягких тканей челюстно-лицевой области
   synonyms: []
   abbreviations: []
   icd10_codes:
   - L02.0
   - L02.1
   - L03.2
-  - O72
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Признаки и критерии, определяющие инфекционно-воспалительные заболевания
+    - text: отек, гиперемия, боль, инфильтрат в области мягких тканей, локальный лимфаденит,
+        лихорадка, лейкоцитоз
       logic_group: null
       operator: unknown
       values: []
@@ -59,8 +58,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Признаки и критерии, определяющие инфекционно-воспалительные заболевания
-    - text: '[diagnostics] 10. Для постановки диагноза осуществляются: (стр. 5)'
+        quote: отек, гиперемия, боль, инфильтрат в области мягких тканей, локальный
+          лимфаденит, лихорадка, лейкоцитоз
+    - text: некротический стержень с очагом флуктуации при фурункуле и карбункуле
       logic_group: null
       operator: unknown
       values: []
@@ -77,8 +77,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 10. Для постановки диагноза осуществляются: (стр. 5)'
-    - text: определение чувствительности к антибактериальным ЛС
+        quote: некротический стержень с очагом флуктуации при фурункуле и карбункуле
+    - text: резко болезненный отграниченный инфильтрат в околочелюстных мягких тканях
+        в пределах одного анатомического пространства при абсцессе
       logic_group: null
       operator: unknown
       values: []
@@ -95,8 +96,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение чувствительности к антибактериальным ЛС
-    - text: определение чувствительности к противогрибковым ЛС.
+        quote: резко болезненный отграниченный инфильтрат в околочелюстных мягких
+          тканях в пределах одного анатомического пространства при абсцессе
+    - text: слабо или умеренно выраженные признаки интоксикации (температура до 38–39
+        °С, озноб, бледность, потливость, лейкоцитоз со сдвигом влево, СОЭ до 40 мм/час)
       logic_group: null
       operator: unknown
       values: []
@@ -113,8 +116,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение чувствительности к противогрибковым ЛС.
-    - text: определение чувствительности к антибактериальным ЛС
+        quote: слабо или умеренно выраженные признаки интоксикации (температура до
+          38–39 °С, озноб, бледность, потливость, лейкоцитоз со сдвигом влево, СОЭ
+          до 40 мм/час)
+    - text: боль при надавливании и перкуссии «причинного» зуба
       logic_group: null
       operator: unknown
       values: []
@@ -131,8 +136,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение чувствительности к антибактериальным ЛС
-    - text: определение чувствительности к противогрибковым ЛС
+        quote: боль при надавливании и перкуссии «причинного» зуба
+    - text: воспалительная контрактура жевательных мышц
       logic_group: null
       operator: unknown
       values: []
@@ -149,8 +154,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение чувствительности к противогрибковым ЛС
-    - text: '[diagnostics] 14. Для постановки диагноза осуществляются: (стр. 5)'
+        quote: воспалительная контрактура жевательных мышц
+    - text: резко болезненный при пальпации инфильтрат без четких границ, распространяющийся
+        на две и более анатомические области при флегмоне
       logic_group: null
       operator: unknown
       values: []
@@ -167,8 +173,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 14. Для постановки диагноза осуществляются: (стр. 5)'
-    - text: определение чувствительности к антибактериальным ЛС
+        quote: резко болезненный при пальпации инфильтрат без четких границ, распространяющийся
+          на две и более анатомические области при флегмоне
+    - text: резко выраженные признаки интоксикации (температура до 39–40 °С, озноб,
+        бледность, потливость, значительный лейкоцитоз со сдвигом влево, СОЭ до 60
+        мм/час, изменения в анализе мочи, свойственные токсическому нефриту)
       logic_group: null
       operator: unknown
       values: []
@@ -185,11 +194,32 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение чувствительности к антибактериальным ЛС
+        quote: резко выраженные признаки интоксикации (температура до 39–40 °С, озноб,
+          бледность, потливость, значительный лейкоцитоз со сдвигом влево, СОЭ до
+          60 мм/час, изменения в анализе мочи, свойственные токсич
+    - text: Подозрение на бактериальную этиологию (гиперемия, флюктуация, размягчение)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Подозрение на бактериальную этиологию (гиперемия, флюктуация, размягчение)
     optional: []
     exclusion: []
   required_exams:
-  - name: УЗИ
+  - name: Клиническое обследование пациента (сбор анамнеза, внешний осмотр, выявление
+      жалоб, пальпация лимфатических узлов/мышц/желез/сустава, осмотр полости рта)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -203,19 +233,194 @@ conditions:
       protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
       document_url: null
       local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
-      page_start: null
+      page_start: 5
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "ортопантомография челюстей или КЛКТ; \nУЗИ; \nлабораторные диагностические\
-        \ исследования: \nобщий анализ крови; \nбиохимически"
-  conditional_exams: []
+      quote: 'клиническое обследование пациента: сбор анамнеза, внешний осмотр с оценкой
+        формы и конфигурации лица, выявление жалоб, аллергический анамнез, пальпация
+        регионарных лимфатических узлов, жевательных мышц, слюнных желез, височно-нижнечелюстного
+        сустава; осмотр полости рта...'
+  - name: Общий анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ крови
+  - name: Биохимический анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: биохимический анализ крови
+  - name: Коагулограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: коагулограмма
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ мочи
+  - name: Бактериологическое исследование (при наличии экссудата) с определением чувствительности
+      к антибактериальным и противогрибковым ЛС
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'бактериологическое исследование (при наличии экссудата): определение
+        чувствительности к антибактериальным ЛС; определение чувствительности к противогрибковым
+        ЛС.'
+  conditional_exams:
+  - name: Ортопантомография челюстей или КЛКТ
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'лучевые методы исследования: ортопантомография челюстей или КЛКТ'
+  - name: УЗИ
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗИ
+  - name: Консультации врачей-специалистов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультация врача-специалиста (врача-торакального хирурга, врача-невролога,
+        врача-нейрохирурга, врача-офтальмолога, врача-оториноларинголога, врача-физиотерапевта,
+        врача-рефлексотерапевта, врача лучевой диагностики, врача клинической лабораторной
+        диагностики, других).
   treatment:
     non_drug:
-    - text: '[treatment] 1. Настоящий клинический протокол определяет общие требования
-        к объему (стр. 3)'
+    - text: Удаление «причинного» зуба
       source_ref:
         protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
         document_url: null
@@ -226,9 +431,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 1. Настоящий клинический протокол определяет общие требования
-          к объему (стр. 3)'
-    - text: оказания стоматологической хирургической медицинской помощи в амбулаторных
+        quote: Удаление «причинного» зуба
+    - text: 'Выбор метода обезболивания: местная инъекционная проводниковая анестезия'
       source_ref:
         protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
         document_url: null
@@ -239,8 +443,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: оказания стоматологической хирургической медицинской помощи в амбулаторных
-    - text: воспалительными заболеваниями мягких тканей челюстно-лицевой области (шифр
+        quote: 'Выбор метода обезболивания: местная инъекционная проводниковая анестезия'
+    - text: Перевязка послеоперационной раны с инстилляцией антисептическими ЛС
       source_ref:
         protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
         document_url: null
@@ -251,9 +455,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: воспалительными заболеваниями мягких тканей челюстно-лицевой области
-          (шифр
-    - text: по Международной статистической классификации болезней и проблем, связанных
+        quote: Перевязка послеоперационной раны с инстилляцией антисептическими ЛС
+    - text: Замена дренажа
       source_ref:
         protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
         document_url: null
@@ -264,9 +467,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: по Международной статистической классификации болезней и проблем, связанных
-    - text: со здоровьем, десятого пересмотра – L02.0 Абсцесс кожи, фурункул и карбункул
-        лица
+        quote: Замена дренажа
+    - text: Ультрафиолетовое облучение – 4–6 процедур, через день
       source_ref:
         protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
         document_url: null
@@ -277,9 +479,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: со здоровьем, десятого пересмотра – L02.0 Абсцесс кожи, фурункул и
-          карбункул лица
-    - text: L02.1 Абсцесс кожи, фурункул и карбункул шеи
+        quote: Ультрафиолетовое облучение – 4–6 процедур, через день
+    - text: Токи ультравысокой частоты (УВЧ-терапия) – 5–7 процедур, ежедневно
       source_ref:
         protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
         document_url: null
@@ -290,13 +491,73 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: L02.1 Абсцесс кожи, фурункул и карбункул шеи
+        quote: Токи ультравысокой частоты (УВЧ-терапия) – 5–7 процедур, ежедневно
+    - text: Флюктуоризация – 6–10 процедур, ежедневно
+      source_ref:
+        protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Флюктуоризация – 6–10 процедур, ежедневно
+    - text: Лазеротерапия – 6–8 процедур, ежедневно
+      source_ref:
+        protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Лазеротерапия – 6–8 процедур, ежедневно
+    - text: Микроволновая терапия – 6–10 процедур, ежедневно
+      source_ref:
+        protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Микроволновая терапия – 6–10 процедур, ежедневно
+    - text: Диадинамотерапия – 6–8 процедур, ежедневно
+      source_ref:
+        protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Диадинамотерапия – 6–8 процедур, ежедневно
+    - text: Электрорефлексотерапия – 10 процедур, ежедневно
+      source_ref:
+        protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Электрорефлексотерапия – 10 процедур, ежедневно
     drug_groups: []
     drugs:
-    - drug_name: капсулы
+    - drug_name: Амоксициллин
       active_substance: null
       drug_group: null
-      dose_text: 250 мг
+      dose_text: 2 г однократно за 30–60 минут до хирургического вмешательства
       frequency_text: null
       duration_text: null
       route: null
@@ -308,17 +569,20 @@ conditions:
         protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: капсулы 250 мг, капсулы 500 мг, таблетки, покрытые обо
-    - drug_name: метронидазол
+        quote: амоксициллин (капсулы 250 мг, капсулы 500 мг, таблетки, покрытые оболочкой,
+          1000 мг; таблетки, покрытые оболочкой, 500 мг) 2 г однократно за 30–60 минут
+          до хирургического вмешательства
+    - drug_name: Клиндамицин
       active_substance: null
       drug_group: null
-      dose_text: 500 мг
+      dose_text: 600 мг внутрь за час до проведения хирургического вмешательства (при
+        аллергии на пенициллины)
       frequency_text: null
       duration_text: null
       route: null
@@ -330,17 +594,19 @@ conditions:
         protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "метронидазол 500 мг в/в, или \nцефуроксим 1,5 г в/в + метрони"
-    - drug_name: дазол
+        quote: (при аллергии на пенициллины) клиндамицин (капсулы 300 мг, капсулы
+          150 мг) 600 мг внутрь за час до проведения хирургического вмешательства
+    - drug_name: Цефазолин
       active_substance: null
       drug_group: null
-      dose_text: 500 мг
+      dose_text: 'при весе менее 120 кг: 2 г внутривенно (в/в); при весе более 120
+        кг: 3 г в/в (за 60 минут до хирургического доступа)'
       frequency_text: null
       duration_text: null
       route: null
@@ -352,17 +618,19 @@ conditions:
         protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: 'дазол 500 мг в/в, или ампициллин/сульбактам 3 г в/в, '
-    - drug_name: клавуланат
+        quote: 'цефазолин (при весе менее 120 кг: 2 г внутривенно (далее – в/в); при
+          весе более 120 кг: 3 г в/в'
+    - drug_name: Метронидазол
       active_substance: null
       drug_group: null
-      dose_text: 1,2 г
+      dose_text: 500 мг в/в (в комбинации с цефазолином или цефуроксимом, за 60 минут
+        до хирургического доступа)
       frequency_text: null
       duration_text: null
       route: null
@@ -374,17 +642,18 @@ conditions:
         protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: клавуланат 1,2 г в/в или клиндамицин 900 мг в/в
-    - drug_name: июня
+        quote: метронидазол 500 мг в/в
+    - drug_name: Цефуроксим
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: 1,5 г в/в (в комбинации с метронидазолом, за 60 минут до хирургического
+        доступа)
       frequency_text: null
       duration_text: null
       route: null
@@ -396,17 +665,17 @@ conditions:
         protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
+        quote: цефуроксим 1,5 г в/в
+    - drug_name: Ампициллин/Сульбактам
       active_substance: null
       drug_group: null
-      dose_text: 2011 г
+      dose_text: 3 г в/в (за 60 минут до хирургического доступа)
       frequency_text: null
       duration_text: null
       route: null
@@ -418,17 +687,17 @@ conditions:
         protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: октября 2011 г
-    - drug_name: декабря
+        quote: ампициллин/сульбактам 3 г в/в
+    - drug_name: Амоксициллин/Клавуланат
       active_substance: null
       drug_group: null
-      dose_text: 2011 г
+      dose_text: 1,2 г в/в (за 60 минут до хирургического доступа)
       frequency_text: null
       duration_text: null
       route: null
@@ -440,17 +709,17 @@ conditions:
         protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: декабря 2011 г
-    - drug_name: февраля
+        quote: амоксициллин/клавуланат 1,2 г в/в
+    - drug_name: Клиндамицин
       active_substance: null
       drug_group: null
-      dose_text: 2008 г
+      dose_text: 900 мг в/в (за 60 минут до хирургического доступа)
       frequency_text: null
       duration_text: null
       route: null
@@ -462,21 +731,20 @@ conditions:
         protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: февраля 2008 г
+        quote: клиндамицин 900 мг в/в
     procedures: []
     surgery: []
     source_refs: []
   follow_up: []
   hospitalization: []
   routing:
-  - text: '[prevention] 22. Медицинское наблюдение в амбулаторных условиях пациентов
-      с инфекционно- (стр. 10)'
+  - text: госпитализация
     timing: null
     required_if: []
     source_ref:
@@ -489,10 +757,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[prevention] 22. Медицинское наблюдение в амбулаторных условиях пациентов
-        с инфекционно- (стр. 10)'
-  - text: '[prevention] 22. Медицинское наблюдение в амбулаторных условиях пациентов
-      с инфекционно- (стр. 10)'
+      quote: госпитализация
+  - text: амбулаторно
     timing: null
     required_if: []
     source_ref:
@@ -505,10 +771,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[prevention] 22. Медицинское наблюдение в амбулаторных условиях пациентов
-        с инфекционно- (стр. 10)'
-  - text: '[prevention] 22. Медицинское наблюдение в амбулаторных условиях пациентов
-      с инфекционно- (стр. 11)'
+      quote: амбулаторно
+  - text: госпитализация
     timing: null
     required_if: []
     source_ref:
@@ -521,36 +785,81 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[prevention] 22. Медицинское наблюдение в амбулаторных условиях пациентов
-        с инфекционно- (стр. 11)'
-  red_flags: []
+      quote: госпитализация
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  red_flags:
+  - text: 'Резко выраженные признаки интоксикации: высокая температура тела (до 39–40
+      °С), озноб, бледность кожных покровов, потливость, значительное изменение периферической
+      крови (лейкоцитоз со сдвигом формулы влево, СОЭ, достигающая 60 мм/час), изменения
+      в анализе мочи, свойственные токсическому нефриту.'
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: резко выраженные признаки интоксикации (высокая температура тела (до
+        39–40 °С); озноб; бледность кожных покровов; потливость; значительное изменение
+        периферической крови, характерное для воспалительного процесса – лейкоцитоз
+        со сдвигом формулы влево, СОЭ, достигающая 60 мм/час; изменения в анализе
+        мочи, свойственные токсическому нефриту)
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_09кп_диагностика_и_лечение_пациентов_взр_насел_с_инфекционно_воспа
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/09КП_Диагностика_и_лечение_пациентов_взр_насел_с_инфекционно-воспалительными_заболеваниями_мягких_тканей_пост_МЗ_02.05.2023_66.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: 09КП Диагностика и лечение пациентов взр насел с инфекционно воспалительными
-      заболеваниями мягких тканей
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:48.428075+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-20T17:50:19.387521+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:48.433567+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[infectious_inflammatory_soft_tissue_diseases].treatment.drugs[7]
+  validated_at: '2026-07-20T17:50:19.399372+00:00'

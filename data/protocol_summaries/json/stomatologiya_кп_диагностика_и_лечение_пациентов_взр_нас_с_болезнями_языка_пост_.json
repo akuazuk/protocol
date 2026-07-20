@@ -1,10 +1,10 @@
 {
   "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика и лечение пациентов взрослое население с болезнями языка",
+    "title": "Диагностика и лечение пациентов с болезнями языка",
     "url": null,
     "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_МЗ_11.01.2023_4.pdf",
     "document_sha256": null,
@@ -32,13 +32,16 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_и_лечение_пациентов_взрослое_населен",
-      "name": "Диагностика и лечение пациентов взрослое население с болезнями языка",
+      "condition_id": "diseases_of_tongue",
+      "name": "Болезни языка",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "B24",
-        "D07"
+        "K14",
+        "K14.0",
+        "K14.01",
+        "K14.1",
+        "K14.5"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -46,7 +49,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[criteria] 4. Признаками и критериями, определяющими болезни языка, являются: (стр. 4)",
+            "text": "Травматическое изъязвление языка: разного размера и глубины, приподнятые края, дно с налетом бледно-желтого цвета, гиперемия и отек вокруг, болезненность при пальпации. Инфицирование: усиление отека и болезненность регионарных лимфоузлов.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -63,11 +66,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 4. Признаками и критериями, определяющими болезни языка, являются: (стр. 4)"
+              "quote": "Травматическое изъязвление языка: разного размера и глубины, приподнятые края, дно с налетом бледно-желтого цвета, гиперемия и отек вокруг, болезненность при пальпации. Инфицирование: усиление отека и"
             }
           },
           {
-            "text": "[criteria] 4. Признаками и критериями, определяющими болезни языка, являются: (стр. 4)",
+            "text": "«Географический» язык: зона десквамации эпителия в форме кольца или полукольца на спинке/боковых поверхностях, увеличенные грибовидные сосочки, участки кератоза. Мигрирующие очаги десквамации без эрозий, эпителизация через несколько дней.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -84,11 +87,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 4. Признаками и критериями, определяющими болезни языка, являются: (стр. 4)"
+              "quote": "«Географический» язык: зона десквамации эпителия в форме кольца или полукольца на спинке/боковых поверхностях, увеличенные грибовидные сосочки, участки кератоза. Мигрирующие очаги десквамации без эроз"
             }
           },
           {
-            "text": "[criteria] 4. Признаками и критериями, определяющими болезни языка, являются: (стр. 5)",
+            "text": "Складчатость языка: макроглоссия, симметрично расположенные продольные или поперечные складки, нормальные сосочки на дне/боковых поверхностях. Возможна десквамация эпителия, катаральное воспаление, кандидозный глоссит, запах изо рта.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -105,7 +108,70 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 4. Признаками и критериями, определяющими болезни языка, являются: (стр. 5)"
+              "quote": "Складчатость языка: макроглоссия, симметрично расположенные продольные или поперечные складки, нормальные сосочки на дне/боковых поверхностях. Возможна десквамация эпителия, катаральное воспаление, ка"
+            }
+          },
+          {
+            "text": "Дифференциальная диагностика травматического изъязвления: туберкулезная язва, твердый шанкр, изъязвления/некроз при заболеваниях крови, пузырчатка.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Дифференциальная диагностика травматического изъязвления: туберкулезная язва, твердый шанкр, изъязвления/некроз при заболеваниях крови, пузырчатка."
+            }
+          },
+          {
+            "text": "Дифференциальная диагностика «географического» языка: вторичный сифилис, кандидоз, лейкоплакия, типичная форма красного плоского лишая, гиповитаминозы В2 и В12.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Дифференциальная диагностика «географического» языка: вторичный сифилис, кандидоз, лейкоплакия, типичная форма красного плоского лишая, гиповитаминозы В2 и В12."
+            }
+          },
+          {
+            "text": "Дифференциальная диагностика складчатого языка: склерозирующий глоссит при третичном сифилисе.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Дифференциальная диагностика складчатого языка: склерозирующий глоссит при третичном сифилисе."
             }
           }
         ],
@@ -113,11 +179,187 @@
         "exclusion": []
       },
       "required_exams": [],
-      "conditional_exams": [],
+      "conditional_exams": [
+        {
+          "name": "Общий анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "лабораторные методы диагностики: общий анализ крови"
+          }
+        },
+        {
+          "name": "Цитологическое исследование материала из очага поражения",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "лабораторные методы диагностики: цитологическое исследование материала из очага поражения"
+          }
+        },
+        {
+          "name": "Исследование кала на яйца гельминтов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "лабораторные методы диагностики: исследование кала на яйца гельминтов"
+          }
+        },
+        {
+          "name": "Консультация врача-терапевта",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "консультация врача-специалиста по медицинским показаниям (врача-терапевта)"
+          }
+        },
+        {
+          "name": "Консультация врача-эндокринолога",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "консультация врача-специалиста по медицинским показаниям (врача-эндокринолога)"
+          }
+        },
+        {
+          "name": "Консультация врача-психотерапевта",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "консультация врача-специалиста по медицинским показаниям (врача-психотерапевта)"
+          }
+        },
+        {
+          "name": "Консультация врача аллерголога-иммунолога",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "консультация врача-специалиста по медицинским показаниям (врача аллерголога-иммунолога)"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 9.2. Планирование комплексного лечения пациентов с болезнями языка включает (стр. 6)",
+            "text": "Своевременная диагностика и устранение факторов, приводящих к травме языка, зубочелюстных аномалий, вредных привычек.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
               "document_url": null,
@@ -128,11 +370,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 9.2. Планирование комплексного лечения пациентов с болезнями языка включает (стр. 6)"
+              "quote": "Своевременная диагностика и устранение факторов, приводящих к травме языка, зубочелюстных аномалий, вредных привычек."
             }
           },
           {
-            "text": "выявление и контроль вредных привычек, санация полости рта, устранение местных",
+            "text": "Регулярное механическое удаление зубного налета с помощью гигиенических средств, а также профессиональное удаление зубных отложений.",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
               "document_url": null,
@@ -143,11 +385,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "выявление и контроль вредных привычек, санация полости рта, устранение местных"
+              "quote": "Регулярное механическое удаление зубного налета с помощью гигиенических средств, а также профессиональное удаление зубных отложений."
             }
           },
           {
-            "text": "мотивация и обучение гигиене полости рта",
+            "text": "Выявление и контроль вредных привычек",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
               "document_url": null,
@@ -158,11 +400,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "мотивация и обучение гигиене полости рта"
+              "quote": "Выявление и контроль вредных привычек"
             }
           },
           {
-            "text": "которое проводят совместно с врачами-специалистами.",
+            "text": "Санация полости рта",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
               "document_url": null,
@@ -173,11 +415,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "которое проводят совместно с врачами-специалистами."
+              "quote": "Санация полости рта"
             }
           },
           {
-            "text": "[treatment] 10. Терапевтические лечебные мероприятия у пациентов с болезнями языка: (стр. 6)",
+            "text": "Устранение местных неблагоприятных факторов",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
               "document_url": null,
@@ -188,11 +430,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 10. Терапевтические лечебные мероприятия у пациентов с болезнями языка: (стр. 6)"
+              "quote": "Устранение местных неблагоприятных факторов"
             }
           },
           {
-            "text": "10.2. дополнительные лечебные мероприятия (по медицинским показаниям):",
+            "text": "Мотивация и обучение гигиене полости рта и уходу за языком",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
               "document_url": null,
@@ -203,17 +445,62 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "10.2. дополнительные лечебные мероприятия (по медицинским показаниям):"
+              "quote": "Мотивация и обучение гигиене полости рта и уходу за языком"
+            }
+          },
+          {
+            "text": "Местное лечение",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Местное лечение"
+            }
+          },
+          {
+            "text": "Общее лечение, которое проводят совместно с врачами-специалистами",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Общее лечение, которое проводят совместно с врачами-специалистами"
+            }
+          },
+          {
+            "text": "Физиотерапевтические методы лечения, включая излучение гелий-неонового лазера АФЛД-1 на очаги поражения (плотность мощности 100 мВт/см2, длина волны 633 нм, экспозиция 1 минута), курс 5–7 сеансов",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Физиотерапевтические методы лечения, включая излучение гелий-неонового лазера АФЛД-1 на очаги поражения (плотность мощности 100 мВт/см2, длина волны 633 нм, экспозиция 1 минута), курс 5–7 сеансов"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "применения",
+            "drug_name": "Лидокаин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "100 мг",
+            "dose_text": "Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -225,20 +512,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "применения 100 мг/мл во \nфлаконах 50 мл \nОдну порцию (1–3"
+              "quote": "Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну. Лекарственное средство можно наносить путем смазывания смоченным в лекарственном средстве ватным тампоном"
             }
           },
           {
-            "drug_name": "шприцах",
+            "drug_name": "Лидокаин/Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "12,5 г",
+            "dose_text": "Анестезирующий гель в шприцах 12,5 г; анестезирующий гель в шприцах 8,5 г. Для аппликационной анестезии слизистой оболочки полости рта. Разовую дозу врач назначает индивидуально.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -250,20 +537,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "шприцах 12,5 г"
+              "quote": "Для аппликационной анестезии слизистой оболочки полости рта. Разовую дозу врач-специалист назначает индивидуально, учитывая состояние области нанесения лекарственного средства и общее состояние пациента"
             }
           },
           {
-            "drug_name": "января",
+            "drug_name": "Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2023 г",
+            "dose_text": "Раствор для местного и наружного применения 0,5 мг/мл. Неразведенный раствор применяется в виде орошений, полосканий и аппликаций – 5–10 мл раствора наносят на пораженную поверхность с экспозицией 1–3",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -275,20 +562,20 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "января 2023 г"
+              "quote": "Неразведенный раствор применяется в виде орошений, полосканий и аппликаций – 5–10 мл раствора наносят на пораженную поверхность слизистой оболочки полости рта или на десну с экспозицией 1–3 мин 2–3 раза в сутки."
             }
           },
           {
-            "drug_name": "июня",
+            "drug_name": "Бензилдиметил-аммония хлорид",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1993 г",
+            "dose_text": "Раствор для наружного (местного) применения 0,1 мг/мл. Неразведенный раствор применяется в виде протираний – 5–10 мл раствора наносят на пораженную поверхность с экспозицией 1–3 мин 2–3 раза в сутки (",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -300,63 +587,13 @@
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
               "document_url": null,
               "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июня \n1993 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          },
-          {
-            "drug_name": "марта",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2023 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "марта 2023 г"
+              "quote": "Неразведенный раствор применяется в виде протираний – 5–10 мл раствора наносят на слизистую оболочку полости рта на пораженную поверхность с экспозицией 1–3 мин 2–3 раза в сутки (на тампоне, в течение 3–5 дней)"
             }
           }
         ],
@@ -366,7 +603,7 @@
       },
       "follow_up": [
         {
-          "text": "контроль",
+          "text": "Регулярное механическое удаление зубного налета с помощью гигиенических средств, а также профессиональное удаление зубных отложений.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -380,11 +617,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
+            "quote": "Регулярное механическое удаление зубного налета с помощью гигиенических средств, а также профессиональное удаление зубных отложений."
           }
         },
         {
-          "text": "контроль",
+          "text": "Контроль эффективности гигиены полости рта до достижения показателя гигиенического индекса OHI-S 0,3–0,6 балла",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -398,7 +635,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
+            "quote": "Контроль эффективности гигиены полости рта до достижения показателя гигиенического индекса OHI-S 0,3–0,6 балла"
           }
         }
       ],
@@ -408,38 +645,26 @@
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_болезнями_языка_пост_МЗ_11.01.2023_4.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика и лечение пациентов взрослое население с болезнями языка"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:49.931694+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-20T18:00:42.735207+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:49.934070+00:00"
+    "validated_at": "2026-07-20T18:00:42.737994+00:00"
   }
 }
