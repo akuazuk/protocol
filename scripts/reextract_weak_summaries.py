@@ -218,9 +218,13 @@ def main() -> int:
 
     if summaries and args.publish:
         stats = publish_summaries(summaries)
-        write_summary_rag_jsonl(summaries)
         clear_protocol_summary_cache()
+        # ВАЖНО: перестраиваем RAG-jsonl из ВСЕХ опубликованных сводок, а не только
+        # из переизвлечённой партии - иначе summary_chunks.jsonl затрётся и потеряет
+        # не тронутые в этом прогоне протоколы (write открывает файл в режиме "w").
+        out = write_summary_rag_jsonl()
         print(f"Published: {stats}")
+        print(f"Rebuilt RAG chunks (all summaries): {out}")
 
     print(f"Done: ok={ok} fail={fail} skip={skip}")
     return 1 if fail and not ok else 0
