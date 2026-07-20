@@ -8376,7 +8376,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-20-r16-proto-viewer-key-extracts"
+BUILD_VERSION = "2026-07-20-r17-keyboard-layout-fix"
 
 
 def _app_version() -> str:
@@ -8727,7 +8727,10 @@ def _infer_icd_pipeline_from_full_query(
     Возвращает:
       icd_analysis, q_эффективный, q_rag, query_clinical_refinement | None, сообщение_об_ошибке | None
     """
-    q = (full_query or "").strip()
+    from clinical_knowledge.keyboard_layout import maybe_fix_layout
+
+    q_before_layout = (full_query or "").strip()
+    q, layout_corrected = maybe_fix_layout(q_before_layout)
     q_rag = clinical_query_for_rag(q)
     q_rag_lexicon = q_rag
     if not q_rag:
@@ -8756,6 +8759,9 @@ def _infer_icd_pipeline_from_full_query(
             q = apply_clinical_correction(q, q_rag)
             query_clinical_refinement = rmeta
     icd_analysis = analyze_query_for_icd(q, q_rag, lexicon_query=q_rag_lexicon)
+    if layout_corrected and isinstance(icd_analysis, dict):
+        icd_analysis["layout_corrected"] = True
+        icd_analysis["query_before_layout"] = q_before_layout
     pre_icd_infer_on = os.environ.get("RAG_ICD_PRE_RETRIEVE_INFER", "1").strip().lower() in (
         "1",
         "true",
@@ -9559,6 +9565,8 @@ def _api_assist_impl(body: AssistIn) -> dict:
 
     out = {
         "query": q,
+        "query_layout_corrected": bool(icd_analysis.get("layout_corrected")),
+        "query_before_layout": icd_analysis.get("query_before_layout") or "",
         "search_tier": search_tier,
         "retrieval": retrieved,
         "protocol_ui_meta": protocol_ui_meta_bundle(meta_paths),
@@ -9883,8 +9891,10 @@ def api_search_protocols_by_icd(body: ProtocolsByIcdIn) -> dict:
 
     from clinical_knowledge.protocol_icd_index import format_assist_payload, lookup_protocols_by_icd
 
+    from clinical_knowledge.keyboard_layout import maybe_fix_layout
+
     t_start = time.perf_counter()
-    q = body.query.strip()
+    q, _ = maybe_fix_layout(body.query.strip())
     icd_analysis = analyze_query_for_icd(q, clinical_query_for_rag(q))
     icd_analysis = _merge_explicit_icd_into_analysis(icd_analysis, body.icd_codes)
     lookup = lookup_protocols_by_icd(

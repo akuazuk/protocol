@@ -17742,6 +17742,16 @@
       var qShort = q.length > 72 ? q.slice(0, 69) + "…" : q;
       parts.push("<strong>Запрос:</strong> " + escapeHtml(qShort));
     }
+    var laData = window.__lastAssistData || {};
+    if (laData.query_layout_corrected && laData.query_before_layout) {
+      var wasQ = laData.query_before_layout;
+      if (wasQ.length > 40) wasQ = wasQ.slice(0, 37) + "…";
+      parts.push(
+        '<span class="wiz-ctx-note" title="Похоже, запрос был набран в латинской раскладке - исправили автоматически">Исправлена раскладка (было: ' +
+          escapeHtml(wasQ) +
+          ")</span>"
+      );
+    }
     var ctx = window.__funnelContext || {};
     var wizCtx = window.__searchWizard || {};
     if (ctx.icd_codes && ctx.icd_codes.length && (ctx.icd_confirmed || wizCtx.step !== "icd")) {
