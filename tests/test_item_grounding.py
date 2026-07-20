@@ -69,3 +69,19 @@ def test_build_extraction_grounding_summary() -> None:
 def test_score_item_empty_tokens() -> None:
     r = score_item("и в на", [("текст протокола о лечении", 1)])
     assert r["support"] == 0.0
+
+
+def test_abbreviation_matches_full_form() -> None:
+    chunks = [
+        {"text": "Проводится общий анализ крови и общий анализ мочи.", "page_from": 3},
+    ]
+    rows = ground_items(["ОАК", "ОАМ"], chunks)
+    assert rows[0]["verified"] is True
+    assert rows[1]["verified"] is True
+
+
+def test_full_form_matches_abbreviation_in_text() -> None:
+    chunks = [{"text": "Назначают ОАК и УЗИ органов брюшной полости.", "page_from": 2}]
+    rows = ground_items(["Общий анализ крови", "УЗИ ОБП"], chunks)
+    assert rows[0]["verified"] is True
+    assert rows[1]["verified"] is True

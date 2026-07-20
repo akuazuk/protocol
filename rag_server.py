@@ -212,6 +212,8 @@ def _apply_low_memory_defaults() -> None:
             ("RAG_VECTOR_INDEX", "1"),
             ("RAG_EMBED_POOL", "60"),
             ("RAG_PREFILTER_BEFORE_EMBED", "1"),
+            ("RAG_EXTRACT_GROUNDING", "1"),
+            ("RAG_EXTRACT_GROUNDING_DROP", "1"),
             ("RAG_LEXICAL_MAX_CHARS", "8192"),
             ("CONSULT_PREWARM_PROTOCOL_ICD_INDEX", "1"),
             ("CONSULT_PREWARM_SUMMARY_ICD_INDEX", "1"),
@@ -8374,7 +8376,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-20-r6-render-4gb-profile"
+BUILD_VERSION = "2026-07-20-r7-summary-cards-full-export"
 
 
 def _app_version() -> str:
