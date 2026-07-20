@@ -11457,6 +11457,89 @@
     .proto-snap__page:hover {
       color: #115e59;
     }
+    .proto-card {
+      margin: 0 0 0.6rem;
+      padding: 0.55rem 0.65rem;
+      background: rgba(240, 249, 245, 0.85);
+      border: 1px solid rgba(125, 211, 192, 0.45);
+      border-radius: 10px;
+    }
+    .proto-card--rag {
+      background: rgba(248, 250, 252, 0.9);
+      border-color: rgba(148, 163, 184, 0.45);
+    }
+    .proto-card--raw {
+      background: rgba(248, 250, 252, 0.7);
+      border-color: rgba(203, 213, 225, 0.6);
+    }
+    .proto-card__head-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4rem;
+      margin: 0 0 0.4rem;
+    }
+    .proto-card__src {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      padding: 0.12rem 0.45rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .proto-card__src--ok {
+      color: #0f766e;
+      background: rgba(125, 211, 192, 0.28);
+    }
+    .proto-card__src--rag {
+      color: #475569;
+      background: rgba(148, 163, 184, 0.24);
+    }
+    .proto-card__src--raw {
+      color: #64748b;
+      background: rgba(203, 213, 225, 0.3);
+    }
+    .proto-card__cond {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .proto-card__list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .proto-card__item {
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: #334155;
+    }
+    .proto-card__label {
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .proto-card__page {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #0f766e;
+      white-space: nowrap;
+      text-decoration: none;
+      border-bottom: 1px dotted rgba(15, 118, 110, 0.6);
+    }
+    .proto-card__page:hover {
+      color: #115e59;
+    }
+    .proto-card__verified {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #0f766e;
+      white-space: nowrap;
+      cursor: help;
+    }
     .assist-catalog-badge--warn {
       background: #fef3c7 !important;
       color: #92400e !important;
@@ -17885,6 +17968,97 @@
     return href + "#page=" + p;
   }
 
+  /** Фаза 2: карточка-выдержка протокола из data.protocol_card (Summary Card -> RAG -> фрагмент). */
+  function protocolCardForData(data, path) {
+    if (!data || !path) return null;
+    var map = data.protocol_card || {};
+    var c = map[path];
+    if (c && c.available) return c;
+    var nk = normalizeProtocolPath(path);
+    if (nk && map[nk] && map[nk].available) return map[nk];
+    return null;
+  }
+
+  function protocolCardSourceMeta(source) {
+    if (source === "summary")
+      return {
+        label: "Из карточки протокола",
+        cls: "proto-card__src--ok",
+        title:
+          "Структурная выдержка из проверяемой карточки протокола: дословные цитаты с привязкой к странице",
+      };
+    if (source === "rag")
+      return {
+        label: "Из текста протокола",
+        cls: "proto-card__src--rag",
+        title: "Ключевые фрагменты по разделам, собранные из текста протокола",
+      };
+    return {
+      label: "Фрагмент из PDF",
+      cls: "proto-card__src--raw",
+      title: "Фрагмент из текста протокола (структурная карточка недоступна)",
+    };
+  }
+
+  /** Фаза 2+3: рендер структурных выдержек с меткой раздела, страницей и значком опоры. */
+  function renderProtocolCardHtml(card, pr, opts) {
+    opts = opts || {};
+    if (!card || !card.available || !card.extracts || !card.extracts.length) return "";
+    var maxItems = opts.maxItems || card.extracts.length;
+    var maxLen = opts.maxLen || 220;
+    var path = (pr && pr.path) || card.path || "";
+    var meta = protocolCardSourceMeta(card.source);
+    var html = '<div class="proto-card proto-card--' + escapeHtmlAttr(card.source || "raw") + '">';
+    html += '<div class="proto-card__head-row">';
+    html +=
+      '<span class="proto-card__src ' +
+      meta.cls +
+      '" title="' +
+      escapeHtmlAttr(meta.title) +
+      '">' +
+      escapeHtml(meta.label) +
+      "</span>";
+    if (card.condition && card.condition.display_label) {
+      html +=
+        '<span class="proto-card__cond" title="Нозология из протокола, совпавшая с запросом">' +
+        escapeHtml(card.condition.display_label) +
+        "</span>";
+    }
+    html += "</div>";
+    html += '<ul class="proto-card__list">';
+    var shown = 0;
+    var i;
+    for (i = 0; i < card.extracts.length && shown < maxItems; i++) {
+      var e = card.extracts[i];
+      var txt = truncateExcerpt(String(e.text || ""), maxLen);
+      if (!txt) continue;
+      shown++;
+      html += '<li class="proto-card__item">';
+      if (e.label) {
+        html += '<span class="proto-card__label">' + escapeHtml(e.label) + "</span> ";
+      }
+      html += '<span class="proto-card__text">' + escapeHtml(txt) + "</span>";
+      if (e.page_start) {
+        html +=
+          ' <a class="proto-card__page" href="' +
+          pdfPageHref(path, e.page_start) +
+          '" target="_blank" rel="noopener noreferrer" title="Открыть PDF на этой странице">стр. ' +
+          escapeHtml(String(e.page_start)) +
+          "</a>";
+      }
+      if (e.quote && card.source === "summary") {
+        html +=
+          ' <span class="proto-card__verified" title="' +
+          escapeHtmlAttr("Дословно в протоколе: " + String(e.quote)) +
+          '">' +
+          "\u2713 цитата</span>";
+      }
+      html += "</li>";
+    }
+    html += "</ul></div>";
+    return shown ? html : "";
+  }
+
   /** P0: компактная выжимка top-1 «Ключевое из протокола» из structured excerpts (без LLM). */
   function renderProtocolKeySnapshot(data, pr, opts) {
     opts = opts || {};
@@ -18092,25 +18266,44 @@
         escapeHtml(explain) +
         "</p>";
     }
-    var snapshot = renderProtocolKeySnapshot(data, pr, {
-      maxSections: isTop ? 4 : 2,
-      maxLen: isTop ? 170 : 120,
-    });
-    if (snapshot) {
-      html += snapshot;
+    var card = protocolCardForData(data, pr.path);
+    if (card) {
+      html += renderProtocolCardHtml(card, pr, {
+        maxItems: isTop ? 4 : 2,
+        maxLen: isTop ? 220 : 150,
+      });
     } else {
-      var cit = excerptForProtocol(pr, excerptByPath);
-      if (cit && methodist) {
-        html +=
-          '<p class="proto-nav-card__excerpt">' +
-          escapeHtml(truncateExcerpt(cit, isTop ? 320 : 240)) +
-          "</p>";
+      var snapshot = renderProtocolKeySnapshot(data, pr, {
+        maxSections: isTop ? 4 : 2,
+        maxLen: isTop ? 170 : 120,
+      });
+      if (snapshot) {
+        html += snapshot;
+      } else {
+        var cit = excerptForProtocol(pr, excerptByPath);
+        if (cit && methodist) {
+          html +=
+            '<p class="proto-nav-card__excerpt">' +
+            escapeHtml(truncateExcerpt(cit, isTop ? 320 : 240)) +
+            "</p>";
+        }
       }
     }
     var firstPage = 0;
-    var snapEx = structuredExcerptForData(data, pr.path);
-    if (snapEx && snapEx.sections && snapEx.sections.length && snapEx.sections[0].page_start) {
-      firstPage = parseInt(snapEx.sections[0].page_start, 10) || 0;
+    if (card && card.extracts && card.extracts.length) {
+      var ci;
+      for (ci = 0; ci < card.extracts.length; ci++) {
+        if (card.extracts[ci].page_start) {
+          firstPage = parseInt(card.extracts[ci].page_start, 10) || 0;
+          break;
+        }
+      }
+    }
+    if (!firstPage) {
+      var snapEx = structuredExcerptForData(data, pr.path);
+      if (snapEx && snapEx.sections && snapEx.sections.length && snapEx.sections[0].page_start) {
+        firstPage = parseInt(snapEx.sections[0].page_start, 10) || 0;
+      }
     }
     var pdfHref = firstPage ? pdfPageHref(pr.path, firstPage) : safeResourceHref(pr.path || "");
     html += '<div class="proto-nav-card__actions">';
@@ -18421,8 +18614,24 @@
         String(dupN) +
         " рубриках каталога (показана одна копия).</p>";
     }
-    var cit = excerptForProtocol(pr, excerptByPath);
-    if (cit) {
+    var liCard =
+      opts.protocolCard && pr.path
+        ? opts.protocolCard[pr.path] || opts.protocolCard[normalizeProtocolPath(pr.path)] || null
+        : null;
+    var useLiCard =
+      liCard &&
+      liCard.available &&
+      liCard.extracts &&
+      liCard.extracts.length &&
+      !window.__methodistMode &&
+      (opts.steppedList || opts.doctorLite);
+    var cit = useLiCard ? "" : excerptForProtocol(pr, excerptByPath);
+    if (useLiCard) {
+      html += renderProtocolCardHtml(liCard, pr, {
+        maxItems: opts.isTopProtocol ? 4 : 3,
+        maxLen: 200,
+      });
+    } else if (cit) {
       var previewLen = opts.excerptPreviewLen || 0;
       var showFull = opts.steppedDetail || !previewLen;
       var citShow = showFull ? cit : truncateExcerpt(cit, previewLen);
@@ -21125,6 +21334,7 @@
         excerptByPath: excerptByPath,
         protocolIcdMentions: protocolIcdMentions,
         protocolUiMeta: data.protocol_ui_meta || {},
+        protocolCard: data.protocol_card || {},
         citationsOnly: citationsOnly,
         compactResults: compactResults,
         doctorLite: doctorLite,
