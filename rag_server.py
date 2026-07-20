@@ -178,11 +178,70 @@ def _render_extended_ram() -> bool:
     return env_int("RENDER_RAM_MB", 0) >= 1800
 
 
+def _render_high_ram() -> bool:
+    """Render 4 GiB+ - можно включить семантический реранк, BM25-blend и vector index.
+
+    Активируется при RENDER_RAM_MB>=3500 или на планах pro*/pro_max/pro_ultra.
+    """
+    plan = (os.environ.get("RENDER_PLAN") or os.environ.get("RENDER_INSTANCE_TYPE") or "").strip().lower()
+    if plan in (
+        "pro",
+        "pro_plus",
+        "pro plus",
+        "pro_max",
+        "pro max",
+        "pro_ultra",
+        "pro ultra",
+    ):
+        return True
+    return env_int("RENDER_RAM_MB", 0) >= 3500
+
+
 def _apply_low_memory_defaults() -> None:
-    """Render: дефолты RAM по plan (512 MiB vs Standard 2 GiB). Явные env не перезаписываются."""
+    """Render: дефолты RAM по plan (512 MiB / 2 GiB / 4 GiB+). Явные env не перезаписываются."""
     if not env_bool("RENDER", False):
         return
-    if _render_extended_ram():
+    if _render_high_ram():
+        # 4 GiB+: качество поиска в приоритете - полный корпус в RAM + семантика.
+        profile: tuple[tuple[str, str], ...] = (
+            ("RAG_MEMORY_SAVER", "0"),
+            ("RAG_STARTUP_MODE", "full"),
+            ("RAG_LEX_BM25_ALPHA", "0.55"),
+            ("RAG_EMBED_POOL_MERGE", "1"),
+            ("RAG_GEMINI_EMBED_RERANK", "1"),
+            ("RAG_VECTOR_INDEX", "1"),
+            ("RAG_EMBED_POOL", "60"),
+            ("RAG_PREFILTER_BEFORE_EMBED", "1"),
+            ("RAG_LEXICAL_MAX_CHARS", "8192"),
+            ("CONSULT_PREWARM_PROTOCOL_ICD_INDEX", "1"),
+            ("CONSULT_PREWARM_SUMMARY_ICD_INDEX", "1"),
+            ("CONSULT_REVIEW_CACHE_MAX", "96"),
+            ("CONSULT_REVIEW_MAX_CHUNKS", "12"),
+            ("CONSULT_RENDER_L2_LITE", "0"),
+            ("CONSULT_RENDER_L2_SKIP_LLM", "0"),
+            ("CONSULT_TYPED_RETRIEVE", "1"),
+            ("CONSULT_REVIEW_FORBID_FULL_CORPUS", "0"),
+            ("CONSULT_RICH_CHUNKS_MAX_PER_PATH", "16"),
+            ("CONSULT_REVIEW_MAX_PROTOCOL_PATHS", "6"),
+            ("CONSULT_REVIEW_CACHE", "1"),
+            ("CONSULT_RESPONSE_INCLUDE_HTML", "0"),
+            ("PROTOCOL_SUMMARY_RAG_MERGE", "1"),
+            ("CONSULT_L2_FAST", "0"),
+            ("CONSULT_L2_EVIDENCE_MAX_PATHS", "5"),
+            ("CONSULT_L2_EVIDENCE_MAX_CHARS", "14000"),
+            ("CONSULT_L2_EVIDENCE_MAX_CHUNKS_PER_PATH", "4"),
+            ("CONSULT_L2_ALIGN_MAX_CHUNKS_PER_PATH", "6"),
+            ("RAG_LEX_MAX_CANDIDATES", "16000"),
+            ("RAG_LEX_MAX_UNION", "40000"),
+            ("RAG_RETRIEVE_CONCURRENCY", "3"),
+            ("CONSULT_ALIGNMENT_ENABLED", "1"),
+            ("RAG_LEX_INDEX_DEFER", "0"),
+            ("CONSULT_CONCURRENCY", "2"),
+            ("RAG_CHUNK_VOTE_RERETRIEVE", "1"),
+            ("RAG_SEARCH_REQUIRE_ALLOWLIST_ON_RENDER", "0"),
+            ("SEARCH_CONCURRENCY", "3"),
+        )
+    elif _render_extended_ram():
         profile: tuple[tuple[str, str], ...] = (
             ("RAG_MEMORY_SAVER", "1"),
             ("RAG_LEX_BM25_ALPHA", "1.0"),
@@ -8315,7 +8374,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-20-r5-confidence-calibration"
+BUILD_VERSION = "2026-07-20-r6-render-4gb-profile"
 
 
 def _app_version() -> str:

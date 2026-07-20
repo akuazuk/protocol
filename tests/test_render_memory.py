@@ -66,6 +66,47 @@ def test_apply_standard_plan_defaults(monkeypatch):
     assert os.environ.get("CONSULT_REVIEW_FORBID_FULL_CORPUS") == "1"
 
 
+def test_render_high_ram_by_ram_mb(monkeypatch):
+    monkeypatch.setenv("RENDER", "true")
+    monkeypatch.setenv("RENDER_RAM_MB", "4096")
+    monkeypatch.delenv("RENDER_PLAN", raising=False)
+    assert rag_server._render_high_ram() is True
+
+
+def test_render_high_ram_standard_is_not_high(monkeypatch):
+    monkeypatch.setenv("RENDER", "true")
+    monkeypatch.setenv("RENDER_PLAN", "standard")
+    monkeypatch.delenv("RENDER_RAM_MB", raising=False)
+    assert rag_server._render_high_ram() is False
+    assert rag_server._render_extended_ram() is True
+
+
+def test_apply_high_ram_defaults(monkeypatch):
+    for key in (
+        "RAG_GEMINI_EMBED_RERANK",
+        "RAG_LEX_BM25_ALPHA",
+        "RAG_EMBED_POOL_MERGE",
+        "RAG_VECTOR_INDEX",
+        "RAG_STARTUP_MODE",
+        "RAG_SEARCH_REQUIRE_ALLOWLIST_ON_RENDER",
+        "PROTOCOL_SUMMARY_RAG_MERGE",
+        "RAG_MEMORY_SAVER",
+    ):
+        monkeypatch.delenv(key, raising=False)
+    monkeypatch.setenv("RENDER", "true")
+    monkeypatch.setenv("RENDER_RAM_MB", "4096")
+    monkeypatch.delenv("RENDER_PLAN", raising=False)
+    rag_server._apply_low_memory_defaults()
+    assert os.environ.get("RAG_GEMINI_EMBED_RERANK") == "1"
+    assert os.environ.get("RAG_LEX_BM25_ALPHA") == "0.55"
+    assert os.environ.get("RAG_EMBED_POOL_MERGE") == "1"
+    assert os.environ.get("RAG_VECTOR_INDEX") == "1"
+    assert os.environ.get("RAG_STARTUP_MODE") == "full"
+    assert os.environ.get("RAG_SEARCH_REQUIRE_ALLOWLIST_ON_RENDER") == "0"
+    assert os.environ.get("PROTOCOL_SUMMARY_RAG_MERGE") == "1"
+    assert os.environ.get("RAG_MEMORY_SAVER") == "0"
+
+
 def test_memory_saver_explicit_off(monkeypatch):
     monkeypatch.setenv("RENDER", "true")
     monkeypatch.setenv("RAG_MEMORY_SAVER", "0")
