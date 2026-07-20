@@ -8376,7 +8376,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-20-r17-keyboard-layout-fix"
+BUILD_VERSION = "2026-07-20-r18-protocol-brief-backend"
 
 
 def _app_version() -> str:
@@ -10695,6 +10695,51 @@ def api_protocol_card(
     )
     card["build_version"] = BUILD_VERSION
     return card
+
+
+@app.get("/api/protocol-brief")
+def api_protocol_brief(
+    path: str = Query(..., min_length=3, max_length=512),
+    query: str = Query("", max_length=2000),
+    icd: str = Query("", max_length=256),
+) -> dict:
+    """Единая сводка протокола: выводы по разделам без дублей/обрывков + сущности.
+
+    Один источник для навигатора (`proto-viewer.html`): Summary Card -> контроль
+    качества -> обогащение страниц, при слабой карточке - чистый экстрактор из
+    rich-чанков (дедуп near-дублей, фильтр глоссария/шифра МКБ/эха названия).
+    """
+    from clinical_knowledge.page_locator import locate_page_for_quote
+    from clinical_knowledge.protocol_links import normalize_protocol_path
+    from clinical_knowledge.protocol_brief import build_protocol_brief
+
+    icd_codes = [c.strip() for c in icd.split(",") if c.strip()] if icd.strip() else None
+    p = path.strip()
+    key = normalize_protocol_path(p) or p
+
+    rich_chunks: list[dict] = []
+    try:
+        _require_rag_loaded(max_wait_sec=max(3.0, env_float("RAG_LOAD_WAIT_LITE_SEC", 28.0)))
+        rich_chunks = get_rich_chunks_for_path(key)
+    except Exception:
+        rich_chunks = []
+
+    def _lookup(catalog_path: str, quote: str):
+        if not rich_chunks:
+            return None
+        return locate_page_for_quote(quote, rich_chunks)
+
+    brief = build_protocol_brief(
+        p,
+        query=query.strip(),
+        icd_codes=icd_codes,
+        rich_chunks=rich_chunks or None,
+        page_lookup=_lookup,
+        max_points=6,
+        max_text_chars=300,
+    )
+    brief["build_version"] = BUILD_VERSION
+    return brief
 
 
 @app.get("/api/protocol-summary-excerpt")
