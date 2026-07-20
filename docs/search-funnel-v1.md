@@ -9,10 +9,10 @@
 
 **Связанные документы:**
 
-- [search-navigation-improvement-plan-v2.md](./search-navigation-improvement-plan-v2.md) — фазы A–D, KPI  
-- [search-methodist-roadmap.md](./search-methodist-roadmap.md) — режим методиста, compact UI  
-- [protocol_summary_acceptance_audit.md](./protocol_summary_acceptance_audit.md) — YAML summaries, summary_chunks  
-- `clinical_knowledge/protocol_summary/nav.py` — TOC разделов для UI  
+- Навигация поиска: фазы A-D, KPI (исторический план удалён)  
+- [search-methodist-roadmap.md](./search-methodist-roadmap.md) - режим методиста, compact UI  
+- [protocol_summary_acceptance_audit.md](./protocol_summary_acceptance_audit.md) - YAML summaries, summary_chunks  
+- `clinical_knowledge/protocol_summary/nav.py` - TOC разделов для UI  
 
 ---
 
@@ -20,16 +20,16 @@
 
 | Было (flat RAG) | Станет (воронка) |
 |-----------------|------------------|
-| Один `/api/assist` → 6–10 протоколов с длинными цитатами | 7–8 коротких шагов, ≤6 кнопок на шаг |
+| Один `/api/assist` → 6-10 протоколов с длинными цитатами | 7-8 коротких шагов, ≤6 кнопок на шаг |
 | LLM-ranking + «Оценка ИИ» | `retrieve_only` + score только как tie-break |
 | Повторный ввод / правка запроса | Контекст накапливается в сессии; «← Назад» |
 | Методист оценивает только top-1 PDF | Методист размечает **ошибку на конкретном шаге** воронки |
 
 **UX-правила:**
 
-1. Не больше **6 кнопок** на шаг; остальное — «Ещё варианты».
+1. Не больше **6 кнопок** на шаг; остальное - «Ещё варианты».
 2. **Автопропуск** шага при высокой уверенности (МКБ уже в запросе → пропуск шага 2).
-3. **Цитаты и PDF** — только на финальном шаге (режим «только цитаты» по умолчанию).
+3. **Цитаты и PDF** - только на финальном шаге (режим «только цитаты» по умолчанию).
 4. Поле запроса **не очищается**; кнопки дополняют `funnel_context`, не заменяют текст.
 
 ---
@@ -47,7 +47,7 @@
       ↓
 [4] Протокол (PDF)        → кнопки: название КП + год + %
       ↓
-[5] Нозология внутри КП   → conditions[] из Protocol Summary (один PDF — несколько болезней)
+[5] Нозология внутри КП   → conditions[] из Protocol Summary (один PDF - несколько болезней)
       ↓
 [6] Раздел протокола      → критерии / обследования / лечение / red flags / наблюдение
       ↓
@@ -91,7 +91,7 @@ flowchart TD
 
 ## 4. Структура протоколов для воронки
 
-### 4.1 Protocol Summary Card (основа шагов 5–7)
+### 4.1 Protocol Summary Card (основа шагов 5-7)
 
 Уже описано в `clinical_knowledge/protocol_summary/schema.py`:
 
@@ -105,7 +105,7 @@ conditions:
     source_refs: [page, section_title, quote]
 ```
 
-**Пробел:** `data/protocol_summaries/summary_chunks.jsonl` (~10 648 строк) **не подключён к RAG** — см. [protocol_summary_acceptance_audit.md](./protocol_summary_acceptance_audit.md).
+**Пробел:** `data/protocol_summaries/summary_chunks.jsonl` (~10 648 строк) **не подключён к RAG** - см. [protocol_summary_acceptance_audit.md](./protocol_summary_acceptance_audit.md).
 
 ### 4.2 Оси ветвления (параметры кнопок)
 
@@ -127,7 +127,7 @@ conditions:
 
 - кластеризация чанков по embedding → `pattern_id`;
 - методист помечает «тот же смысл, что в КП X»;
-- в UI: «Похожие формулировки» — **после** шага 6, не в top-list шага 4.
+- в UI: «Похожие формулировки» - **после** шага 6, не в top-list шага 4.
 
 ### 4.4 API воронки (целевой контракт)
 
@@ -161,9 +161,9 @@ POST /api/search/funnel
 }
 ```
 
-На шаге 7 — `excerpt`, `pdf_href`, `source_ref` вместо `choices`.
+На шаге 7 - `excerpt`, `pdf_href`, `source_ref` вместо `choices`.
 
-Пока шаги 0–4 реализованы через `/api/assist` + `retrieve_only` и stepper в `index.html` (r134).
+Пока шаги 0-4 реализованы через `/api/assist` + `retrieve_only` и stepper в `index.html` (r134).
 
 ---
 
@@ -173,7 +173,7 @@ POST /api/search/funnel
 
 | Роль | В воронке |
 |------|-----------|
-| **Врач** | Проходит шаги 0–7; не видит AI-summary |
+| **Врач** | Проходит шаги 0-7; не видит AI-summary |
 | **ИИ (methodist)** | Meta-review ranking + `suggested_funnel` (на каком шаге ошибка) |
 | **Методист** | Одобряет / правит → `feedback` с `funnel_step` |
 | **Движок** | routing, summary RAG, golden eval |
@@ -193,8 +193,8 @@ POST /api/search/funnel
 
 **События feedback:**
 
-- `search_review` — воронка верна end-to-end;
-- `retrieval_fix` — `rejected_path`, `chosen_path`, **`funnel_step`**, **`funnel_context`**, `retrieval_top_paths`.
+- `search_review` - воронка верна end-to-end;
+- `retrieval_fix` - `rejected_path`, `chosen_path`, **`funnel_step`**, **`funnel_context`**, `retrieval_top_paths`.
 
 ### 5.3 Замкнутый цикл
 
@@ -211,9 +211,9 @@ POST /api/search/funnel
 **Еженедельный минимум методиста:**
 
 1. Разобрать очередь `GET /api/methodist/queue?domain=search` (B4).
-2. 10–20 прогонов golden queries (symptom / МКБ / mixed).
+2. 10-20 прогонов golden queries (symptom / МКБ / mixed).
 3. Проверить дашборд «Поиск · оценки»: Hit@1, Hit@3, AI-approved rate.
-4. При ≥20 `retrieval_fix` — прогон CI eval (B3).
+4. При ≥20 `retrieval_fix` - прогон CI eval (B3).
 
 ### 5.4 Три скорости улучшений
 
@@ -231,10 +231,10 @@ POST /api/search/funnel
 |---------|----------|------|
 | **Step accuracy** | % сессий без `retrieval_fix` на шаге N | ≥80% на шаге 4 |
 | **Hit@1 / Hit@3** | Правильный PDF в top-1 / top-3 (шаг 4) | Hit@3 ≥60% |
-| **Skip rate** | Доля автопропусков шагов 1–2 | мониторинг |
+| **Skip rate** | Доля автопропусков шагов 1-2 | мониторинг |
 | **Time to excerpt** | От submit до шага 7 | <30 с (retrieve_only) |
 | **MKB adoption** | Доля сессий с кодом после шага 2 | +15% |
-| **Summary coverage** | PDF с usable YAML для шагов 5–6 | top-50 запросов 100% |
+| **Summary coverage** | PDF с usable YAML для шагов 5-6 | top-50 запросов 100% |
 
 ---
 
@@ -242,20 +242,20 @@ POST /api/search/funnel
 
 | BUILD | Шаги воронки |
 |-------|----------------|
-| r128–r132 | dedup, lite assist, citations-only, methodist compact |
+| r128-r132 | dedup, lite assist, citations-only, methodist compact |
 | r133 | methodist AI-review, search dashboard |
 | r135 | шаг 1 популяция, deterministic search-ai-review fallback, symptom rerank |
-| r134 | шаги 0–2–4 (stepper), retrieve_only, compact list → detail |
+| r134 | шаги 0-2-4 (stepper), retrieve_only, compact list → detail |
 
 ---
 
 ## 8. Задачи для GitHub Issues (фазы B и C)
 
-Ниже — готовые текста issues. Labels: `search`, `funnel`, `phase-B` / `phase-C`, `methodist`.
+Ниже - готовые текста issues. Labels: `search`, `funnel`, `phase-B` / `phase-C`, `methodist`.
 
 ---
 
-### Issue B1 — Summary-first retrieval при МКБ в query
+### Issue B1 - Summary-first retrieval при МКБ в query
 
 **Labels:** `search`, `phase-B`, `rag`, `priority-high`
 
@@ -266,16 +266,16 @@ POST /api/search/funnel
 **Критерии приёмки**
 
 - [ ] `retrieve()` объединяет raw + summary corpora с пометкой `kind=summary_*`.
-- [ ] При `icd_codes_for_lex` не пустом — boost summary-чанков с matching ICD.
+- [ ] При `icd_codes_for_lex` не пустом - boost summary-чанков с matching ICD.
 - [ ] Hit@1 на golden set (МКБ-only queries) не ниже baseline −5% и цель +10% после tuning.
-- [ ] Тесты: `tests/test_summary_retrieval.py` (fixture 3–5 протоколов).
+- [ ] Тесты: `tests/test_summary_retrieval.py` (fixture 3-5 протоколов).
 
 **Зависимости:** нет  
 **Файлы:** `rag_server.py`, `clinical_knowledge/protocol_summary/summary_to_rag.py`
 
 ---
 
-### Issue B2 — Pre-filter рубрика + МКБ до embed rerank
+### Issue B2 - Pre-filter рубрика + МКБ до embed rerank
 
 **Labels:** `search`, `phase-B`, `rag`
 
@@ -294,7 +294,7 @@ POST /api/search/funnel
 
 ---
 
-### Issue B3 — Golden queries + CI eval для поиска
+### Issue B3 - Golden queries + CI eval для поиска
 
 **Labels:** `search`, `phase-B`, `ci`, `methodist`
 
@@ -313,17 +313,17 @@ POST /api/search/funnel
 
 ---
 
-### Issue B4 — Очередь methodist queue domain=search
+### Issue B4 - Очередь methodist queue domain=search
 
 **Labels:** `search`, `phase-B`, `methodist`
 
 **Описание**
 
-`GET /api/methodist/queue?domain=search` — приоритет: AI `ranking_verdict` ∈ {partially_wrong, wrong}, низкий Hit@3, `query_too_vague` без follow-up.
+`GET /api/methodist/queue?domain=search` - приоритет: AI `ranking_verdict` ∈ {partially_wrong, wrong}, низкий Hit@3, `query_too_vague` без follow-up.
 
 **Критерии приёмки**
 
-- [ ] API возвращает id, query_hash, verdict, top_paths, created_at (без полного текста запроса в логах UI — опционально маскирование).
+- [ ] API возвращает id, query_hash, verdict, top_paths, created_at (без полного текста запроса в логах UI - опционально маскирование).
 - [ ] Вкладка методиста «Очередь · поиск» или фильтр в существующей queue.
 - [ ] Документация в `docs/search-funnel-v1.md` §5.3.
 
@@ -331,7 +331,7 @@ POST /api/search/funnel
 
 ---
 
-### Issue B5 — Обязательный rejected_path при wrong_protocol
+### Issue B5 - Обязательный rejected_path при wrong_protocol
 
 **Labels:** `search`, `phase-B`, `methodist`, `ux`
 
@@ -349,19 +349,19 @@ POST /api/search/funnel
 
 ---
 
-### Issue B6 — funnel_step и funnel_context в feedback
+### Issue B6 - funnel_step и funnel_context в feedback
 
 **Labels:** `search`, `phase-B`, `funnel`, `methodist`
 
 **Описание**
 
-Расширить schema `retrieval_fix` / `search_review`: поля `funnel_step` (0–7), `funnel_context` (JSON), новые теги `wrong_rubric`, `wrong_condition`, `wrong_section`, `wrong_icd_suggestion`.
+Расширить schema `retrieval_fix` / `search_review`: поля `funnel_step` (0-7), `funnel_context` (JSON), новые теги `wrong_rubric`, `wrong_condition`, `wrong_section`, `wrong_icd_suggestion`.
 
 **Критерии приёмки**
 
 - [ ] `feedback_store.py` валидирует новые поля.
 - [ ] UI методиста: dropdown «На каком шаге ошибка».
-- [ ] `methodist_stats.search` — breakdown по funnel_step.
+- [ ] `methodist_stats.search` - breakdown по funnel_step.
 - [ ] AI-review prompt: optional `suggested_funnel_step`.
 
 **Зависимости:** B4  
@@ -369,7 +369,7 @@ POST /api/search/funnel
 
 ---
 
-### Issue C1 — Stepper жалобы → МКБ → протокол
+### Issue C1 - Stepper жалобы → МКБ → протокол
 
 **Labels:** `search`, `phase-C`, `funnel`, `ux`
 
@@ -386,13 +386,13 @@ POST /api/search/funnel
 
 ---
 
-### Issue C2 — Шаг 1 воронки: популяция и care_setting
+### Issue C2 - Шаг 1 воронки: популяция и care_setting
 
 **Labels:** `search`, `phase-C`, `funnel`, `ux`, `priority-high`
 
 **Описание**
 
-После submit, если population не выведена однозначно — экран с 3–5 кнопками (взрослые / дети / беременные / неотложно). Контекст → `funnel_context.population`, `care_setting`. Автопропуск при явных маркерах в тексте.
+После submit, если population не выведена однозначно - экран с 3-5 кнопками (взрослые / дети / беременные / неотложно). Контекст → `funnel_context.population`, `care_setting`. Автопропуск при явных маркерах в тексте.
 
 **Критерии приёмки**
 
@@ -408,7 +408,7 @@ POST /api/search/funnel
 
 ---
 
-### Issue C3 — Шаг 3 воронки: выбор рубрики
+### Issue C3 - Шаг 3 воронки: выбор рубрики
 
 **Labels:** `search`, `phase-C`, `funnel`, `ux`
 
@@ -426,13 +426,13 @@ POST /api/search/funnel
 
 ---
 
-### Issue C4 — Шаги 5–6: condition + section (Protocol Summary TOC)
+### Issue C4 - Шаги 5-6: condition + section (Protocol Summary TOC)
 
 **Labels:** `search`, `phase-C`, `funnel`, `protocol-summary`, `priority-high`
 
 **Описание**
 
-После выбора PDF — если есть YAML summary: кнопки `conditions[]`, затем разделы из `nav.py` (criteria, exams, treatment, red_flags, follow_up). Клик → excerpt API по `source_ref`.
+После выбора PDF - если есть YAML summary: кнопки `conditions[]`, затем разделы из `nav.py` (criteria, exams, treatment, red_flags, follow_up). Клик → excerpt API по `source_ref`.
 
 **Критерии приёмки**
 
@@ -446,7 +446,7 @@ POST /api/search/funnel
 
 ---
 
-### Issue C5 — API POST /api/search/funnel
+### Issue C5 - API POST /api/search/funnel
 
 **Labels:** `search`, `phase-C`, `funnel`, `api`
 
@@ -458,14 +458,14 @@ POST /api/search/funnel
 
 - [ ] Контракт из §4.4 этого документа.
 - [ ] Session id (cookie или client UUID) для телеметрии по шагам.
-- [ ] `index.html` переведён на funnel API для шагов 1–7.
+- [ ] `index.html` переведён на funnel API для шагов 1-7.
 - [ ] OpenAPI / README endpoint table.
 
 **Зависимости:** C2, C3, C4, B6
 
 ---
 
-### Issue C6 — Lazy KZ matrix (только запрошенный блок)
+### Issue C6 - Lazy KZ matrix (только запрошенный блок)
 
 **Labels:** `search`, `phase-C`, `kz`, `ux`
 
@@ -484,13 +484,13 @@ POST /api/search/funnel
 
 ---
 
-### Issue C7 — Экран «КЗ по выбранному протоколу»
+### Issue C7 - Экран «КЗ по выбранному протоколу»
 
 **Labels:** `search`, `phase-C`, `kz`, `ux`
 
 **Описание**
 
-После шага 7 — CTA «Оформить черновик КЗ»: протокол + выбранный section + чек-лист блоков КЗ на одном экране.
+После шага 7 - CTA «Оформить черновик КЗ»: протокол + выбранный section + чек-лист блоков КЗ на одном экране.
 
 **Критерии приёмки**
 
@@ -498,7 +498,7 @@ POST /api/search/funnel
 - [ ] Не дублировать полную матрицу без запроса.
 
 **Зависимости:** C6  
-**Связано:** N4 в search-navigation-improvement-plan-v2.md
+**Связано:** N4 (навигация поиска)
 
 ---
 
@@ -510,7 +510,7 @@ POST /api/search/funnel
        ──► B3 + B4 + B6 (methodist loop по шагам)
        ──► C4 (condition/section)
        ──► C5 (единый funnel API)
-       ──► C6–C7 (KZ integration)
+       ──► C6-C7 (KZ integration)
        ──► Phase D (embedder) после ≥20 retrieval_fix
 ```
 
@@ -520,4 +520,4 @@ POST /api/search/funnel
 
 | Версия | Дата | Изменения |
 |--------|------|-----------|
-| 1.0 | 2026-06 | Первая версия: воронка 0–7, методист loop, issues B1–B6, C1–C7 |
+| 1.0 | 2026-06 | Первая версия: воронка 0-7, методист loop, issues B1-B6, C1-C7 |

@@ -51,4 +51,3 @@
 ## Связанные документы
 
 - [search-funnel-v1.md](./search-funnel-v1.md)
-- [search-navigation-improvement-plan-v2.md](./search-navigation-improvement-plan-v2.md)

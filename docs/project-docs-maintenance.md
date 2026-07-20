@@ -14,7 +14,7 @@
 | Изменения `patient.html` / patient API | `docs/architecture-b2c-patient.md`, бизнес-план §8.1, презентация B2C-блок |
 | Режим методиста (`?mode=methodist`) | `docs/methodist-workbench-tz.md`, architecture-stages (не `?methodist=1`) |
 | Логотипы / sticky chrome | architecture-b2c §14.1, презентация, буклет |
-| Scoring / блоки КЗ (6→8 и т.д.) | audit, implementation_plan, presentation, biz plan |
+| Scoring / блоки КЗ (6→8 и т.д.) | audit, presentation, biz plan |
 | FHIR / ЦИСЗ / send_gate | `architecture-kravira-fhir-mis-print.html` + PDF |
 | Footer / материалы проекта | `index.html` (4 public + methodist-only), `docs/mvp-presentation.html` footer |
 
@@ -32,8 +32,8 @@
 | `docs/architecture-stages-print.html` (+ PDF) | архитектура по этапам | backend, frontend, methodist, patient |
 | `docs/architecture-kravira-fhir-mis-print.html` (+ PDF) | МИС, FHIR, ЦИСЗ | send_gate, cisz, B2C-контур |
 | `docs/architecture-b2c-patient.md` | B2C-разработка | API, схемы, бренд, line counts |
-| `docs/action-plan-master.md` | ops + ML roadmap | фазы A–D, метрики, чеклист |
-| `docs/cursor-spend-checklist.md` | Cursor Pro+ $70 ROI | chunk GOOGLE vs Cursor $, прогоны B1–B3 |
+| `docs/plans/` | актуальные планы работ | версионируемые планы, метрики, риски |
+| `docs/cursor-spend-checklist.md` | Cursor Pro+ $70 ROI | chunk GOOGLE vs Cursor $, прогоны B1-B3 |
 | `docs/current_project_audit.md` | compliance KZ (snapshot) | scoring, модули; BUILD - сверять с prod |
 | `docs/konkurs/03_Biznes_plan_*` | конкурс / инвест | B2C MVP status, monetization |
 | `.cursor/rules/project-docs-sync.mdc` | агент Cursor | напоминание прогонять чек-лист |

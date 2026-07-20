@@ -1,8 +1,8 @@
 # Cursor $70: как тратить с максимальным ROI (Protocol)
 
-> **Общий план работ:** [action-plan-master.md](./action-plan-master.md)  
+> **Общий план работ:** [docs/plans/](./plans/)  
 > **Продукт:** проверка **любого** КЗ **любой** специальности против **478** протоколов Минздрава РБ (B2B врач + B2C пациент).  
-> **Не путать:** десятки тысяч КЗ в год на рынке ≠ один batch из 30 fixtures — batch **измеряет** pipeline, chunk QA **улучшает** retrieval для всех.
+> **Не путать:** десятки тысяч КЗ в год на рынке ≠ один batch из 30 fixtures - batch **измеряет** pipeline, chunk QA **улучшает** retrieval для всех.
 
 ---
 
@@ -37,11 +37,11 @@
 
 | Да | Нет |
 |----|-----|
-| 3–5 **узких** Agent-сессий с **Opus/Sonnet** (выбор модели вручную) | Прогон 59k чанков |
+| 3-5 **узких** Agent-сессий с **Opus/Sonnet** (выбор модели вручную) | Прогон 59k чанков |
 | Архитектура, приоритеты, multi-file fix **после** метрик | Замена `llm_chunk_qa.py` |
 | «Какой PR делать первым» | Бесплатный unlimited Auto |
 
-**Auto + Tab** на paid-плане — **без** этого пула. **Рутину кодить в Auto**, Opus — только synthesis и сложный routing.
+**Auto + Tab** на paid-плане - **без** этого пула. **Рутину кодить в Auto**, Opus - только synthesis и сложный routing.
 
 ### Где реальный прирост качества КZ (весь проект)
 
@@ -53,7 +53,7 @@
 | **4** | **3 quick wins B2C** в код | **Auto** | ↑ конверсия «понял → пришёл с вопросами» |
 | **5** | B2B→B2C sanitization | **Auto** | ↓ риск утечки send_gate/ЦИСЗ |
 
-**Вывод:** после Wave A $70 Cursor **оптимальны** на **п.2 и п.4–5**, не на повторный bulk Gemini. **Неоптимально:** Opus + «улучши чанки» или Wave B без gate.
+**Вывод:** после Wave A $70 Cursor **оптимальны** на **п.2 и п.4-5**, не на повторный bulk Gemini. **Неоптимально:** Opus + «улучши чанки» или Wave B без gate.
 
 ### North star (как понять, что деньги не зря)
 
@@ -63,9 +63,9 @@
 | Batch KZ overall (L1) | ~84.2% | **84.2%** (без регрессии) | слабые рубрики ↑ **после B1** |
 | L2 smoke 5 рубрик | часть с `rag_chunks_n=0` | overall 85.6%; **rag/preamble не в batch JSON** | все 5: `rag_chunks_n>0`, preamble=0 |
 | Search probe top-1 | baseline | **100%** (100/100) | не регрессировать |
-| `report_n_1/2` | ~60–62% | без изменений | **scoring track**, не chunk QA |
+| `report_n_1/2` | ~60-62% | без изменений | **scoring track**, не chunk QA |
 | B2C pytest matrix | neuro/derma/phleb pass | - | +1 fixture после B2 |
-| Cursor $70 остаток | — | — | ≥$10 в конце месяца |
+| Cursor $70 остаток | - | - | ≥$10 в конце месяца |
 
 ---
 
@@ -81,11 +81,11 @@
 
 ---
 
-## 3. План месяца (один лист — отмечай ☐)
+## 3. План месяца (один лист - отмечай ☐)
 
-> **Жёсткое правило (добавлено после 29.06):** prod deploy Wave A **желательно после B1** или явного waiver. Если Wave A уже на prod - **сначала D1–D2**, потом B1, потом приёмка.
+> **Жёсткое правило (добавлено после 29.06):** prod deploy Wave A **желательно после B1** или явного waiver. Если Wave A уже на prod - **сначала D1-D2**, потом B1, потом приёмка.
 
-### Неделя A — корпус (без Cursor $) — ☑ в основном сделано
+### Неделя A - корпус (без Cursor $) - ☑ в основном сделано
 
 | ☐ | Действие | Команда / артеfact |
 |---|----------|-------------------|
@@ -96,16 +96,16 @@
 | A4 | **Pilot 800** | `scripts/llm_chunk_qa.py --limit 800` (GOOGLE) |
 | A5 | **Gate pilot** | merge + audit; см. §4 |
 
-### Неделя B — Cursor $ (**сейчас главный фокус**)
+### Неделя B - Cursor $ (**сейчас главный фокус**)
 
 | ☐ | Прогон | Модель | ~$ | Deliverable |
 |---|--------|--------|-----|-------------|
-| B1 | **Routing root-cause** (все рубрики) | Auto → **1× Opus** | 20–25 | Таблица + 1–2 PR с тестом |
-| B2 | **B2C: 3 quick wins** | Auto implement | 10–15 | 3 коммита + pytest |
-| B3 | Sanitization boundary | Auto | 5–8 | ≤5 рисков или зелёный pytest |
-| — | Резерв | Auto | 10+ | Фиксы после smoke |
+| B1 | **Routing root-cause** (все рубрики) | Auto → **1× Opus** | 20-25 | Таблица + 1-2 PR с тестом |
+| B2 | **B2C: 3 quick wins** | Auto implement | 10-15 | 3 коммита + pytest |
+| B3 | Sanitization boundary | Auto | 5-8 | ≤5 рисков или зелёный pytest |
+| - | Резерв | Auto | 10+ | Фиксы после smoke |
 
-### Неделя C — корпус на prod (GOOGLE) — ☑ Wave A + deploy
+### Неделя C - корпус на prod (GOOGLE) - ☑ Wave A + deploy
 
 | ☐ | Wave A P0 + KZ-linked | `llm_chunk_qa.py --append` |
 | ☐ | merge из **`section_mapped`**, не пустого `final` | `merge_chunk_qa_fixes.py` |
@@ -114,7 +114,7 @@
 | ☐ | L2 smoke **5 рубрик** + поля в JSON | см. §7 |
 | ☐ | Batch snapshot | `run_clients_consult_render_batch.py` |
 
-### Неделя D — дожать Wave A (**следующие 1–2 дня, $0 + Cursor B**)
+### Неделя D - дожать Wave A (**следующие 1-2 дня, $0 + Cursor B**)
 
 | ☐ | Действие | Команда / критерий |
 |---|----------|-------------------|
@@ -153,7 +153,7 @@
 
 ---
 
-## 5. Фаза A — команды (копипаст)
+## 5. Фаза A - команды (копипаст)
 
 ```bash
 cd protocol   # корень репозитория
@@ -190,7 +190,7 @@ export CHUNK_QA_LLM=1 CHUNK_QA_LLM_BACKEND=gemini CHUNK_QA_MAX_OUT=16000
 
 Полный план волн: [`ml/experiments/batch_r70_2026-06-28/GEMINI_FULL_QA_PLAN.md`](../ml/experiments/batch_r70_2026-06-28/GEMINI_FULL_QA_PLAN.md).
 
-### D1–D2 — post-Wave A (копипаст)
+### D1-D2 - post-Wave A (копипаст)
 
 ```bash
 cd protocol
@@ -213,7 +213,7 @@ cd protocol
 
 ---
 
-## 6. Cursor $ — только 2 Opus-сессии + Auto-код
+## 6. Cursor $ - только 2 Opus-сессии + Auto-код
 
 ### Когда какую модель
 
@@ -226,7 +226,7 @@ cd protocol
 
 ---
 
-### Прогон B1 — Routing (главный Cursor-$ ROI)
+### Прогон B1 - Routing (главный Cursor-$ ROI)
 
 **Почему первый сейчас:** post-Wave A L1 **84.2%** без изменений - провалы **scoring vs routing vs chunks**. L1 tier **не читает chunk-RAG**; routing B1 двигает L2 и слабые `report_n_*`. Универсально для **всех** специальностей.
 
@@ -242,11 +242,11 @@ cd protocol
 ```text
 Protocol: consult-review для КЗ ЛЮБОЙ специальности. Corpus: 478 PDF, 24 rubrics,
 ~59k chunks. Batch ~84% overall; failures mix routing (wrong protocol PDF, age path),
-rag_chunks_n=0, and scoring/sparse rules — NOT chunk quality alone.
+rag_chunks_n=0, and scoring/sparse rules - NOT chunk quality alone.
 
 Задача (строго):
 1. Классифицируй типы провалов: routing | chunks | scoring. По 1 примеру из
-   РАЗНЫХ рубрик (gastro, kard, pediatr, lor, uro, onko, therapy…) — cite ACTION_PLAN.
+   РАЗНЫХ рубрик (gastro, kard, pediatr, lor, uro, onko, therapy…) - cite ACTION_PLAN.
 2. Для каждого типа: файл(ы) в коде, минимальный fix, один pytest.
 3. Решение: что fix **после** Wave A (routing/scoring) vs что уже закрыл corpus QA.
 4. L2 smoke matrix: 5 KZ / 5 rubrics, pass = rag_chunks_n>0, no preamble in cite.
@@ -260,14 +260,14 @@ Output: markdown table (max 12 rows) + ONE recommended PR scope (≤3 files).
 
 ---
 
-### Прогон B2 — B2C: implement 3 wins (не brainstorming)
+### Прогон B2 - B2C: implement 3 wins (не brainstorming)
 
-**Ошибка прошлой версии чек-листа:** «10 улучшений Opus» без кода — сжигает $ без shippable result.
+**Ошибка прошлой версии чек-листа:** «10 улучшений Opus» без кода - сжигает $ без shippable result.
 
 **Сначала** прочитать §17 gaps в `docs/architecture-b2c-patient.md`. **Потом** Agent:
 
 **Файлы (@):**  
-`docs/architecture-b2c-patient.md` (§17–18) ·  
+`docs/architecture-b2c-patient.md` (§17-18) ·  
 `clinical_knowledge/patient_report_v2.py` ·  
 `clinical_knowledge/patient_question_builder.py` ·  
 `patient-ui.js` ·  
@@ -276,7 +276,7 @@ Output: markdown table (max 12 rows) + ONE recommended PR scope (≤3 files).
 **Промпт Agent (Auto, implement mode):**
 
 ```text
-B2C «Проверь КЗ» — для ЛЮБОЙ специальности. Read architecture-b2c-patient.md §17 gaps.
+B2C «Проверь КЗ» - для ЛЮБОЙ специальности. Read architecture-b2c-patient.md §17 gaps.
 
 Implement EXACTLY 3 P0 items from §17 that are:
 - universal (not one ICD/specialty)
@@ -293,13 +293,13 @@ List what you changed and why patients of any specialty benefit.
 
 ---
 
-### Прогон B3 — Sanitization (15 мин, Auto)
+### Прогон B3 - Sanitization (15 мин, Auto)
 
 **Файлы (@):** `tests/test_patient_sanitization_boundary.py` · `clinical_knowledge/patient_review.py` · `api/patient/openapi.yaml`
 
 ```text
 Audit B2C API leak of B2B fields (send_gate, cisz, raw alignment). Max 5 issues.
-If tests already cover — say "OK" in 3 lines. Else minimal fix + test. No rag_server wide refactor.
+If tests already cover - say "OK" in 3 lines. Else minimal fix + test. No rag_server wide refactor.
 ```
 
 ---
@@ -395,11 +395,11 @@ Push/smoke - только если вы сами нажали кнопку (пр
 
 **Да** (после Wave A), если месяц выглядит так:
 
-1. **$0** — audit 57k + embeddings + probe gate
-2. **Cursor Auto + 1× Opus** — B1 routing (главный рычаг для слабых KZ)
-3. **Cursor Auto** — B2 три B2C fix + B3 sanitization
-4. **GOOGLE** — только retry/continuous, не blind Wave B
-5. **$10+ остаток** — доработки после smoke
+1. **$0** - audit 57k + embeddings + probe gate
+2. **Cursor Auto + 1× Opus** - B1 routing (главный рычаг для слабых KZ)
+3. **Cursor Auto** - B2 три B2C fix + B3 sanitization
+4. **GOOGLE** - только retry/continuous, не blind Wave B
+5. **$10+ остаток** - доработки после smoke
 
 **Нет**, если $70 ушли на повторный bulk chunk QA, Opus без PR в `main`, или deploy corpus без embeddings.
 

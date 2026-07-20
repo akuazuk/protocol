@@ -87,7 +87,7 @@ Auto AI-review на Render вернул **422** (нет `analysis_id` в отв�
 | 29 KZ × score_breakdown | **калибратор блоков** (логрег/GBM на фичах) | точнее overall |
 | Chunk `verdict` + `entities` | только как **weak labels** для reranker features | вторично |
 
-Минимум для старта ML: **50+ retrieval_fix** с `chosen_path` / `rejected_path` (см. `docs/action-plan-master.md`, фаза B).
+Минимум для старта ML: **50+ retrieval_fix** с `chosen_path` / `rejected_path` (см. `docs/plans/`, ML backlog).
 
 ### D. Следующий batch-тест
 

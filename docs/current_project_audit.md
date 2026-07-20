@@ -1,6 +1,6 @@
 # Аудит проекта Protocol - модуль проверки КЗ (KZ Compliance Checker)
 
-> **Snapshot** (2026-06-24). Актуальный порядок работ: [action-plan-master.md](./action-plan-master.md).  
+> **Snapshot** (2026-06-24). Актуальный порядок работ: [docs/plans/](./plans/).  
 > Версия сборки в этом файле может отставать от prod - сверяйте с `BUILD_VERSION` в `rag_server.py`.  
 > См. также: `docs/project-docs-maintenance.md` - чек-лист актуализации документов.
 

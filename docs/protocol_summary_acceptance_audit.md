@@ -1,7 +1,7 @@
 # Protocol Summary Cards - отчёт приёмочного аудита
 
 **Дата:** 2026-05-31  
-**ТЗ:** `docs/cursor_task_protocol_summary_cards_with_legacy_fallback.md`  
+**ТЗ:** Summary Cards с legacy fallback (исходное ТЗ архивировано)  
 **Коммит:** `5a218ad` (main)  
 **Метод:** статический обзор кода + запуск CLI/тестов без изменений в репозитории.
 

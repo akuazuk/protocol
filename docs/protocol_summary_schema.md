@@ -8,5 +8,3 @@
 - Статусы: `extraction_status`, `review_status`, `validation.status`
 
 Хранение: `data/protocol_summaries/yaml/{protocol_id}.yaml`
-
-См. также: `docs/cursor_task_protocol_summary_cards_with_legacy_fallback.md`

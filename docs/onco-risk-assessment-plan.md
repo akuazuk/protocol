@@ -2,7 +2,7 @@
 
 > **Статус:** план (research + implementation), ревизия 2, 2026-06-30
 > **Аудитория:** Павел + Cursor Agent + методслужба
-> **Связано:** `config/red_flags.yaml`, `clinical_knowledge/safety_checker.py`, `clinical_knowledge/consult_schema.py`, `rag_server.py` (`_consult_oncology_flags`, `_consult_oncology_dual_scan`), `clinical_knowledge/patient_report_v2.py`, `patient-ui.js`, `docs/action-plan-master.md`, `docs/architecture-b2c-patient.md`
+> **Связано:** `config/red_flags.yaml`, `clinical_knowledge/safety_checker.py`, `clinical_knowledge/consult_schema.py`, `rag_server.py` (`_consult_oncology_flags`, `_consult_oncology_dual_scan`), `clinical_knowledge/patient_report_v2.py`, `patient-ui.js`, `docs/architecture-b2c-patient.md`
 > **Принцип:** это **советующий** слой (decision-support / триаж), **не** диагноз и **не** send_gate. Подпись КЗ остаётся детерминированной по правилам.
 
 ---

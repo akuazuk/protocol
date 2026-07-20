@@ -87,7 +87,7 @@ python -m scripts.analyze_consultation --folder data/examples/consultations --ou
 
 В ответе `/api/consult-review` появляется поле `structured_analysis` (документ + оценка
 соответствия) и `report_markdown`. Отключается флагом `CONSULT_STRUCTURED_ANALYSIS=0`.
-Подробности: `docs/current_project_audit.md`, `docs/implementation_plan.md`.
+Подробности: `docs/current_project_audit.md`.
 
 ## Корпус и актуальность
 
