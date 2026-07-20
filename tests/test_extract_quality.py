@@ -49,6 +49,17 @@ def test_best_excerpt_all_bad_returns_empty() -> None:
     assert best_meaningful_excerpt(["УЗИ", "ЭКГ", None], limit=240) == ""
 
 
+def test_bracket_tag_prefix_stripped() -> None:
+    assert clean_clinical_text("[routing] 6. Направление пациентов в стационар").startswith(
+        "Направление пациентов"
+    )
+
+
+def test_boilerplate_rejected() -> None:
+    assert is_meaningful_clinical_text("«О здравоохранении», а также термины и их определения") is False
+    assert is_meaningful_clinical_text("Настоящий клинический протокол устанавливает требования") is False
+
+
 def test_excerpt_ends_on_sentence_boundary() -> None:
     t = (
         "Диагноз устанавливают на основании клинической картины. "

@@ -8376,7 +8376,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-20-r15-navigator-master-detail"
+BUILD_VERSION = "2026-07-20-r16-proto-viewer-key-extracts"
 
 
 def _app_version() -> str:
@@ -10644,6 +10644,47 @@ def api_protocol_summary_nav(
         icd_codes=icd_codes,
         allow_rich_fallback=bool(rich_fallback),
     )
+
+
+@app.get("/api/protocol-card")
+def api_protocol_card(
+    path: str = Query(..., min_length=3, max_length=512),
+    query: str = Query("", max_length=2000),
+    icd: str = Query("", max_length=256),
+) -> dict:
+    """Структурная карточка-выдержка протокола: целые фразы по разделам с цитатой и страницей.
+
+    Тот же проектор, что и в поиске (Summary Card -> контроль качества -> обогащение
+    страниц). Для навигатора по протоколу - «Ключевые выдержки» без обрывков.
+    """
+    from clinical_knowledge.page_locator import locate_page_for_quote
+    from clinical_knowledge.protocol_links import normalize_protocol_path
+    from clinical_knowledge.protocol_card import build_protocol_card
+
+    icd_codes = [c.strip() for c in icd.split(",") if c.strip()] if icd.strip() else None
+    p = path.strip()
+
+    def _lookup(catalog_path: str, quote: str):
+        try:
+            _require_rag_loaded(max_wait_sec=max(3.0, env_float("RAG_LOAD_WAIT_LITE_SEC", 28.0)))
+            key = normalize_protocol_path(catalog_path) or catalog_path
+            chunks = get_rich_chunks_for_path(key)
+        except Exception:
+            chunks = None
+        if not chunks:
+            return None
+        return locate_page_for_quote(quote, chunks)
+
+    card = build_protocol_card(
+        p,
+        query=query.strip(),
+        icd_codes=icd_codes,
+        page_lookup=_lookup,
+        max_extracts=6,
+        max_text_chars=320,
+    )
+    card["build_version"] = BUILD_VERSION
+    return card
 
 
 @app.get("/api/protocol-summary-excerpt")

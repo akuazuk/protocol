@@ -366,6 +366,91 @@
       background: var(--mint-soft); color: var(--green-800); cursor: pointer;
     }
     .protocol-src-empty, .protocol-src-loading { color: var(--muted); font-size: 0.82rem; padding: 0.75rem 0.2rem; }
+
+    .pv-key {
+      margin: 0 0 0.9rem;
+      padding: 0.85rem 0.95rem;
+      border: 1px solid rgba(52, 168, 130, 0.32);
+      border-radius: 14px;
+      background: linear-gradient(165deg, rgba(240, 249, 245, 0.9), #fff);
+    }
+    .pv-key__title {
+      margin: 0 0 0.5rem;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .pv-key__head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem;
+      margin: 0 0 0.6rem;
+    }
+    .pv-key__src {
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      padding: 0.14rem 0.5rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .pv-key__src--ok { color: #0f766e; background: rgba(125, 211, 192, 0.3); }
+    .pv-key__src--rag { color: #475569; background: rgba(148, 163, 184, 0.24); }
+    .pv-key__src--raw { color: #64748b; background: rgba(203, 213, 225, 0.32); }
+    .pv-key__cond { font-size: 0.8rem; font-weight: 650; color: #0f172a; }
+    .pv-key__tabs {
+      display: flex;
+      gap: 0.35rem;
+      margin: 0 0 0.65rem;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+    }
+    .pv-key__tabs::-webkit-scrollbar { display: none; }
+    .pv-key__tab {
+      flex: 0 0 auto;
+      font: inherit;
+      font-size: 0.76rem;
+      font-weight: 650;
+      color: #475569;
+      background: rgba(148, 163, 184, 0.16);
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: 0.26rem 0.7rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .pv-key__tab:hover { background: rgba(125, 211, 192, 0.24); }
+    .pv-key__tab.is-active { color: #0f766e; background: rgba(125, 211, 192, 0.36); border-color: rgba(15, 118, 110, 0.35); }
+    .pv-key__list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .pv-key__item {
+      padding-left: 0.7rem;
+      border-left: 3px solid rgba(52, 168, 130, 0.5);
+    }
+    .pv-key__label {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: #0f766e;
+      margin: 0 0 0.2rem;
+    }
+    .pv-key__text { margin: 0; font-size: 0.9rem; line-height: 1.55; color: #1f2937; }
+    .pv-key__meta { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.7rem; margin-top: 0.3rem; }
+    .pv-key__page {
+      font-size: 0.72rem; font-weight: 700; color: #0f766e; white-space: nowrap;
+      text-decoration: none; border-bottom: 1px dotted rgba(15, 118, 110, 0.6);
+    }
+    .pv-key__page:hover { color: #115e59; }
+    .pv-key__verified { font-size: 0.7rem; font-weight: 650; color: #0f766e; white-space: nowrap; cursor: help; }
+    @media (max-width: 640px) {
+      .pv-key__text { font-size: 0.95rem; }
+      .pv-key__tab { padding: 0.32rem 0.75rem; font-size: 0.82rem; }
+    }
   </style>
 </head>
 <body class="app-tab-search">
@@ -521,6 +606,65 @@
       var u = "/api/protocol-pdf?path=" + encodeURIComponent(path || "");
       return page ? u + "#page=" + page : u;
     }
+    var KEY_SECTION_SHORT = { criteria: "Критерии", exams: "Обследования", treatment: "Лечение", red_flags: "Красные флаги", follow_up: "Наблюдение" };
+    function cardSrcMeta(src) {
+      if (src === "summary") return { label: "Из карточки протокола", cls: "pv-key__src--ok", title: "Структурная выдержка с дословной цитатой и привязкой к странице" };
+      if (src === "rag") return { label: "Из текста протокола", cls: "pv-key__src--rag", title: "Ключевые фрагменты по разделам из текста протокола" };
+      return { label: "Фрагмент из PDF", cls: "pv-key__src--raw", title: "Фрагмент из текста протокола" };
+    }
+    function fetchCard(path, query) {
+      return fetch("/api/protocol-card?path=" + encodeURIComponent(path) + "&query=" + encodeURIComponent(query || ""), { cache: "no-store" })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .catch(function () { return null; });
+    }
+    function renderKeyPanel(card, path, el) {
+      var meta = cardSrcMeta(card.source), extr = card.extracts || [];
+      var secs = [], seen = {};
+      extr.forEach(function (e) { var s = e.section_id || "body"; if (!seen[s]) { seen[s] = 1; secs.push(s); } });
+      var html = '<p class="pv-key__title">Ключевые выдержки</p>';
+      html += '<div class="pv-key__head">';
+      html += '<span class="pv-key__src ' + meta.cls + '" title="' + escAttr(meta.title) + '">' + esc(meta.label) + "</span>";
+      if (card.condition && card.condition.display_label) html += '<span class="pv-key__cond">' + esc(card.condition.display_label) + "</span>";
+      html += "</div>";
+      if (secs.length >= 2) {
+        html += '<div class="pv-key__tabs"><button type="button" class="pv-key__tab is-active" data-key-section="all">Всё</button>';
+        secs.forEach(function (s) { html += '<button type="button" class="pv-key__tab" data-key-section="' + escAttr(s) + '">' + esc(KEY_SECTION_SHORT[s] || s) + "</button>"; });
+        html += "</div>";
+      }
+      html += '<ul class="pv-key__list">';
+      extr.forEach(function (e) {
+        html += '<li class="pv-key__item" data-key-section="' + escAttr(e.section_id || "body") + '">';
+        if (e.label) html += '<span class="pv-key__label">' + esc(e.label) + "</span>";
+        html += '<p class="pv-key__text">' + esc(e.text || "") + "</p>";
+        var m = "";
+        if (e.page_start) m += '<a class="pv-key__page" href="' + escAttr(pdfHref(path, e.page_start)) + '" target="_blank" rel="noopener">стр. ' + esc(e.page_start) + "</a>";
+        if (e.quote && card.source === "summary") m += '<span class="pv-key__verified" title="' + escAttr("Дословно в протоколе: " + e.quote) + '">\u2713 цитата</span>';
+        if (m) html += '<span class="pv-key__meta">' + m + "</span>";
+        html += "</li>";
+      });
+      html += "</ul>";
+      el.innerHTML = html;
+      el.querySelectorAll(".pv-key__tab").forEach(function (tab) {
+        tab.addEventListener("click", function () {
+          var sec = tab.getAttribute("data-key-section") || "all";
+          el.querySelectorAll(".pv-key__tab").forEach(function (t) { t.classList.toggle("is-active", t === tab); });
+          el.querySelectorAll(".pv-key__item").forEach(function (li) {
+            var s = li.getAttribute("data-key-section") || "body";
+            li.style.display = sec === "all" || s === sec ? "" : "none";
+          });
+        });
+      });
+    }
+    function loadKeyPanel(path, query) {
+      var el = document.getElementById("pv-key");
+      if (!el) return;
+      fetchCard(path, query).then(function (card) {
+        if (card && card.available && card.extracts && card.extracts.length) {
+          renderKeyPanel(card, path, el);
+          el.hidden = false;
+        }
+      });
+    }
     function chipsHtml(entities) {
       if (!entities || !entities.length) return "";
       var out = '<div class="protocol-src-item__chips">';
@@ -599,6 +743,7 @@
       var baseView = doc.view, root = document.getElementById("pv-root");
       var shell =
         '<div class="protocol-src-viewer">' +
+        '<div class="pv-key" id="pv-key" hidden></div>' +
         '<div class="protocol-src-toolbar">' +
         '<div class="protocol-src-search-wrap">' +
         '<input class="protocol-src-search" type="search" placeholder="Лекарства, обследования, диагноз…" value="' + escAttr(q) + '" autocomplete="off" />' +
@@ -720,6 +865,7 @@
       function runReset() { search.value = ""; apply(""); search.focus(); }
       renderToc("", baseView);
       body.innerHTML = bodyHtml(path, baseView, "", active);
+      loadKeyPanel(path, q);
       if (q && q.trim().length >= 2) { search.value = q; apply(q); }
       if (btnGo) btnGo.addEventListener("click", runSearch);
       if (btnReset) btnReset.addEventListener("click", runReset);

@@ -14,6 +14,7 @@ import re
 
 from clinical_knowledge.meaningful_excerpt import meaningful_excerpt, normalize_text
 
+_BRACKET_PREFIX = re.compile(r"^\s*\[[^\]]{1,40}\]\s*")
 _ENUM_PREFIX = re.compile(r"^\s*(?:\d+(?:\.\d+)*[.)]\s*)+")
 _BULLET_PREFIX = re.compile(r"^\s*[-–—•·*]+\s*")
 _ALPHA_WORD = re.compile(r"[а-яёa-z]{3,}", re.I)
@@ -25,14 +26,31 @@ _MIN_LETTER_RATIO = 0.55
 
 _STOP_TAILS = ("далее", "или", "и", "с", "в", "на", "по", "для", "при", "до")
 
+# Юридический/оглавительный шум, не несущий клинического смысла.
+_BOILERPLATE = (
+    "термины и их определения",
+    "о здравоохранении",
+    "общие положения",
+    "область применения",
+    "перечень сокращен",
+    "настоящий клинический протокол",
+    "настоящего клинического протокола",
+    "нормативные ссылки",
+    "список литератур",
+)
+
 
 def clean_clinical_text(text: str | None) -> str:
-    """Нормализация: убрать переносы, ведущую нумерацию/маркеры, лишние пробелы."""
+    """Нормализация: убрать переносы, теговые/скобочные и нумерационные префиксы, пробелы."""
     t = normalize_text(text)
     if not t:
         return ""
-    t = _ENUM_PREFIX.sub("", t)
-    t = _BULLET_PREFIX.sub("", t)
+    prev = None
+    while prev != t:
+        prev = t
+        t = _BRACKET_PREFIX.sub("", t)
+        t = _ENUM_PREFIX.sub("", t)
+        t = _BULLET_PREFIX.sub("", t)
     return t.strip()
 
 
@@ -42,7 +60,7 @@ def _trim_dangling(t: str) -> str:
         idx = t.rfind("(")
         if idx > 0:
             t = t[:idx].strip()
-    t = t.rstrip(" ,;:-–—")
+    t = t.rstrip(" ,;:-- - ")
     words = t.split()
     while words and words[-1].lower().strip(".,;:") in _STOP_TAILS:
         words.pop()
@@ -59,6 +77,9 @@ def is_meaningful_clinical_text(text: str | None) -> bool:
         return False
     letters = len(_LETTER.findall(t))
     if letters / max(1, len(t)) < _MIN_LETTER_RATIO:
+        return False
+    low = t.lower()
+    if any(bp in low for bp in _BOILERPLATE):
         return False
     return True
 
