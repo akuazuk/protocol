@@ -8376,7 +8376,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-20-r14-navigator-card-tabs-mobile"
+BUILD_VERSION = "2026-07-20-r15-navigator-master-detail"
 
 
 def _app_version() -> str:

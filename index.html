@@ -11312,6 +11312,114 @@
       gap: 0.65rem;
     }
 
+    .proto-nav-split {
+      display: block;
+    }
+    .proto-nav-index {
+      display: none;
+    }
+    .proto-nav-detail {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    @keyframes proto-pane-in {
+      from {
+        opacity: 0.35;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    @media (min-width: 900px) {
+      .proto-nav-split {
+        display: grid;
+        grid-template-columns: minmax(230px, 300px) minmax(0, 1fr);
+        gap: 1rem;
+        align-items: start;
+      }
+      .proto-nav-index {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+        position: sticky;
+        top: 0.5rem;
+        max-height: calc(100vh - 1.5rem);
+        overflow-y: auto;
+        padding-right: 0.15rem;
+      }
+      .proto-nav-detail {
+        gap: 0;
+      }
+      .proto-nav-pane {
+        display: none;
+      }
+      .proto-nav-pane.is-selected {
+        display: block;
+        animation: proto-pane-in 0.15s ease;
+      }
+    }
+    .proto-nav-index__item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+      background: #fff;
+      border: 1px solid var(--pastel-mint-border, rgba(125, 211, 192, 0.45));
+      border-radius: 10px;
+      padding: 0.5rem 0.6rem;
+      cursor: pointer;
+      transition: border-color 0.12s, background 0.12s;
+    }
+    .proto-nav-index__item:hover {
+      border-color: #0f766e;
+    }
+    .proto-nav-index__item.is-active {
+      border-color: #0f766e;
+      background: var(--pastel-mint-soft, rgba(240, 249, 245, 0.9));
+      box-shadow: inset 3px 0 0 #0f766e;
+    }
+    .proto-nav-index__rank {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.4rem;
+      height: 1.4rem;
+      border-radius: 50%;
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--pastel-mint-text, #0f766e);
+      background: var(--pastel-mint-strong, rgba(125, 211, 192, 0.35));
+    }
+    .proto-nav-index__item--top .proto-nav-index__rank {
+      color: #034a3c;
+      background: var(--pastel-mint-active, rgba(125, 211, 192, 0.55));
+    }
+    .proto-nav-index__body {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      min-width: 0;
+    }
+    .proto-nav-index__title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #0f172a;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .proto-nav-index__sub {
+      font-size: 0.7rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+
     .proto-nav-card {
       padding: 0.85rem 0.95rem;
       border-radius: 14px;
@@ -18515,6 +18623,66 @@
     return html;
   }
 
+  /** Итерация 1: элемент левого рельса master-detail (десктоп). */
+  function renderProtocolNavIndexItem(pr, opts) {
+    opts = opts || {};
+    var path = pr.path || "";
+    var title = formatProtocolDisplayTitle(path, pr.title || "");
+    var codes = ((pr && pr.matched_icd_codes) || []).slice(0, 2).join(", ");
+    var html =
+      '<button type="button" class="proto-nav-index__item' +
+      (opts.active ? " is-active" : "") +
+      (opts.top ? " proto-nav-index__item--top" : "") +
+      '" data-nav-target="' +
+      escapeHtmlAttr(path) +
+      '">';
+    html += '<span class="proto-nav-index__rank">' + String(opts.rank) + "</span>";
+    html += '<span class="proto-nav-index__body">';
+    html +=
+      '<span class="proto-nav-index__title" title="' +
+      escapeHtmlAttr(title) +
+      '">' +
+      escapeHtml(title) +
+      "</span>";
+    var sub = [];
+    if (codes) sub.push(codes);
+    if (opts.top) sub.push("рекомендуем");
+    else if (opts.weak) sub.push("ниже по близости");
+    if (sub.length) {
+      html += '<span class="proto-nav-index__sub">' + escapeHtml(sub.join(" · ")) + "</span>";
+    }
+    html += "</span></button>";
+    return html;
+  }
+
+  /** Итерация 1: переключение master-detail на десктопе (делегировано, один раз). */
+  function ensureProtocolNavIndex() {
+    if (window.__protoNavIndexWired) return;
+    window.__protoNavIndexWired = 1;
+    document.addEventListener("click", function (ev) {
+      var item = ev.target && ev.target.closest && ev.target.closest(".proto-nav-index__item");
+      if (!item) return;
+      var hub = item.closest(".proto-nav-hub");
+      if (!hub) return;
+      ev.preventDefault();
+      var target = item.getAttribute("data-nav-target") || "";
+      hub.querySelectorAll(".proto-nav-index__item").forEach(function (b) {
+        b.classList.toggle("is-active", b === item);
+      });
+      var selected = null;
+      hub.querySelectorAll(".proto-nav-pane").forEach(function (p) {
+        var on = p.getAttribute("data-pane-path") === target;
+        p.classList.toggle("is-selected", on);
+        if (on) selected = p;
+      });
+      if (selected && window.matchMedia && window.matchMedia("(min-width: 900px)").matches) {
+        try {
+          selected.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } catch (e) {}
+      }
+    });
+  }
+
   function renderProtocolNavHub(protos, data, opts) {
     opts = opts || {};
     if (!protos || !protos.length) return "";
@@ -18537,31 +18705,36 @@
       '<p class="proto-nav-top-cta__lead">Список отсортирован по близости к запросу. Откройте <strong>раздел PDF</strong> или файл целиком. ' +
       "Под рекомендованным протоколом - чек-лист оформления КЗ по СОП Кравира.</p>" +
       "</div>";
-    html += '<div class="proto-nav-cards">';
-    for (pi = 0; pi < high.length; pi++) {
-      html += renderProtocolNavCard(high[pi], data, {
+    var all = high.concat(low);
+    html += '<div class="proto-nav-split">';
+    html += '<nav class="proto-nav-index" aria-label="Список протоколов">';
+    for (pi = 0; pi < all.length; pi++) {
+      html += renderProtocolNavIndexItem(all[pi], {
+        rank: pi + 1,
+        active: pi === 0,
+        top: pi === 0,
+        weak: pi >= high.length,
+      });
+    }
+    html += "</nav>";
+    html += '<div class="proto-nav-detail">';
+    for (pi = 0; pi < all.length; pi++) {
+      var paneCard = renderProtocolNavCard(all[pi], data, {
         excerptByPath: opts.excerptByPath,
         protocolUiMeta: opts.protocolUiMeta,
         isTop: pi === 0,
         rank: pi + 1,
       });
-    }
-    html += "</div>";
-    if (low.length) {
       html +=
-        '<details class="proto-nav-weak-toggle"><summary>Другие протоколы (' +
-        String(low.length) +
-        ")</summary><div class=\"proto-nav-cards\">";
-      for (pi = 0; pi < low.length; pi++) {
-        html += renderProtocolNavCard(low[pi], data, {
-          excerptByPath: opts.excerptByPath,
-          protocolUiMeta: opts.protocolUiMeta,
-          isTop: false,
-          rank: high.length + pi + 1,
-        });
-      }
-      html += "</div></details>";
+        '<div class="proto-nav-pane' +
+        (pi === 0 ? " is-selected" : "") +
+        '" data-pane-path="' +
+        escapeHtmlAttr(all[pi].path || "") +
+        '">' +
+        paneCard +
+        "</div>";
     }
+    html += "</div></div>";
     if (hiddenMore > 0) {
       html +=
         '<p class="assist-note" style="margin:0.5rem 0 0;font-size:0.82rem">Ещё ' +
@@ -18599,6 +18772,7 @@
 
   function bindProtocolNavHub(data) {
     ensureProtocolCardTabs();
+    ensureProtocolNavIndex();
     bindProtoPickButtons(data);
     ingestProtocolNavFromAssist(data);
     if (window.__methodistMode) {

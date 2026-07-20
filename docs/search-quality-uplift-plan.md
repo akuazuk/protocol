@@ -254,8 +254,28 @@ Summary Cards в поиск (сделано, шаг 2):
   перерисовки. Вкладки горизонтально прокручиваются на телефоне.
 - Mobile-first CSS: карточка, вкладки и кнопки действий адаптированы (`@media max-width:640px`),
   крупные тап-таргеты, действия растягиваются на всю ширину.
-- Следующая итерация (по желанию): двухпанельный master-detail на десктопе (список + деталь) и
-  LLM-переизвлечение оставшихся `auto_extracted` карточек для целых выдержек на всех ~477 КП.
+Фаза 3.4 (десктопный master-detail, итерация 1, сделано):
+- `renderProtocolNavHub` перестроен в двухпанельный layout: слева рельс-индекс всех протоколов
+  (`renderProtocolNavIndexItem`: ранг, название в 2 строки, коды МКБ, «рекомендуем»/«ниже по
+  близости»), справа - деталь выбранного протокола.
+- Переключение - делегированный `ensureProtocolNavIndex` (без перерисовки, все карточки
+  отрендерены сразу, поэтому фидбэк/бейджи/КЗ-хинты работают). На десктопе виден только выбранный
+  pane; sticky-рельс, плавное появление.
+- Mobile-first: под 900px рельс скрыт, все карточки складываются в одну колонку (как раньше) -
+  на телефоне master-detail не нужен. `BUILD_VERSION` r15.
+
+Фаза 3.5 (LLM-переизвлечение auto_extracted, итерация 2, ГОТОВО К ЗАПУСКУ - заблокировано гео):
+- Цель: 398 карточек `auto_extracted` -> `llm_extracted` (целые выдержки на всех ~477 КП, конец
+  фолбэков на сырой текст).
+- Пайплайн готов: `scripts/reextract_weak_summaries.py` (LLM multi-pass + валидация цитат +
+  публикация), очередь всех 398 - `data/protocol_summaries/reextract_auto_extracted.json`.
+- БЛОКЕР: Gemini API из этой среды отвечает `400 User location is not supported for the API use`
+  (гео-ограничение Google AI Studio). Ключ в `.env` валиден, но локация не поддерживается.
+- Запуск из поддерживаемой локации (или через VPN/Vertex-регион) одной командой:
+  `set -a && source .env && set +a && python3 scripts/reextract_weak_summaries.py \
+   --queue-file data/protocol_summaries/reextract_auto_extracted.json --publish --resume --sleep 0.8`
+  Затем `python3 scripts/probe_protocol_cards.py` для сверки покрытия и коммит обновлённых
+  `data/protocol_summaries/**` + `output/**/summary_chunks.jsonl`.
 
 ---
 
