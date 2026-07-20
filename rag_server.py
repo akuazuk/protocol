@@ -3228,6 +3228,31 @@ def extract_clinical_detail(
                                 ext.get("note"),
                                 "Формулировки с пометкой «[не из протокола]» - общеклинические ориентиры, не цитата из клинического протокола.",
                             )
+    if os.environ.get("RAG_EXTRACT_GROUNDING", "1").strip().lower() in ("1", "true", "yes"):
+        try:
+            from clinical_knowledge.item_grounding import build_extraction_grounding
+            from clinical_knowledge.protocol_icd_profile_index import (
+                _load_profile_index_by_path,
+            )
+
+            _min_sup = float(os.environ.get("RAG_EXTRACT_GROUNDING_MIN_SUPPORT", "0.34"))
+            _prof = _load_profile_index_by_path().get(path.replace("\\", "/"))
+            _chunks_for_ground = _chunks_by_path.get(path) or []
+            if _chunks_for_ground:
+                ext["grounding"] = build_extraction_grounding(
+                    ext, _chunks_for_ground, profile_entry=_prof, min_support=_min_sup
+                )
+                if os.environ.get("RAG_EXTRACT_GROUNDING_DROP", "0").strip().lower() in (
+                    "1",
+                    "true",
+                    "yes",
+                ):
+                    for _f in ("medications", "investigations", "treatment_methods"):
+                        rows = ext["grounding"].get(_f) or []
+                        if rows:
+                            ext[_f] = [r["text"] for r in rows if r.get("verified")]
+        except Exception:
+            pass
     warn_thr = float(os.environ.get("RAG_DETAIL_WARN_RAG_SUPPORT", "0.22"))
     low_sup = False
     if client_rag_support is not None:
@@ -8248,7 +8273,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-20-r2-search-quality-track1"
+BUILD_VERSION = "2026-07-20-r3-item-grounding"
 
 
 def _app_version() -> str:

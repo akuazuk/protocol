@@ -6151,6 +6151,35 @@
       background: rgba(251, 191, 36, 0.08);
     }
 
+    .assist-fact-support {
+      display: inline-block;
+      margin-left: 0.4rem;
+      padding: 0.05rem 0.4rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      line-height: 1.5;
+      border-radius: 999px;
+      white-space: nowrap;
+      vertical-align: baseline;
+      cursor: help;
+    }
+
+    .assist-fact-support--ok {
+      color: #0f5132;
+      background: rgba(25, 135, 84, 0.14);
+      border: 1px solid rgba(25, 135, 84, 0.35);
+    }
+
+    .assist-fact-support--low {
+      color: #842029;
+      background: rgba(220, 53, 69, 0.12);
+      border: 1px solid rgba(220, 53, 69, 0.32);
+    }
+
+    .assist-fact-unverified .assist-fact-text .assist-text-collapsible-inner {
+      opacity: 0.72;
+    }
+
     .assist-card {
       margin: 0;
       padding: 1.25rem 1.35rem;
@@ -18840,18 +18869,65 @@
       h += "</ul>";
       return h;
     }
+    function groundingRowsFor(catKey) {
+      var g = ex && ex.grounding ? ex.grounding[catKey] : null;
+      return Array.isArray(g) ? g : null;
+    }
+    function groundingBadgeHtml(gRow) {
+      if (!gRow || typeof gRow.support !== "number") return "";
+      var pct = Math.round(gRow.support * 100);
+      var lvl = gRow.verified ? "ok" : "low";
+      var oblTxt =
+        gRow.obligation === "required"
+          ? " · обязательно"
+          : gRow.obligation === "recommended"
+          ? " · рекомендовано"
+          : "";
+      var tip = gRow.quote
+        ? "Опора в протоколе: " +
+          gRow.quote +
+          (gRow.page ? " (стр. " + gRow.page + ")" : "")
+        : "Нет прямой опоры в тексте протокола - проверьте по первоисточнику";
+      return (
+        '<span class="assist-fact-support assist-fact-support--' +
+        lvl +
+        '" title="' +
+        escapeHtmlAttr(tip) +
+        '">' +
+        pct +
+        "%" +
+        escapeHtml(oblTxt) +
+        "</span>"
+      );
+    }
     function listHtmlChecks(items, catKey) {
       if (!items || !items.length) {
         return (
           '<p class="assist-detail-fact-empty"> - не указано во фрагменте протокола</p>'
         );
       }
+      var gRows = groundingRowsFor(catKey);
       var h = '<ul class="assist-detail-list assist-detail-list--pick">';
       var li;
       for (li = 0; li < items.length; li++) {
         var line = String(items[li]);
-        var liCls =
-          line.indexOf(NP_MARK) === 0 ? ' class="assist-detail-li-nonprotocol"' : "";
+        var gRow = null;
+        if (gRows) {
+          if (gRows[li] && gRows[li].text === line) gRow = gRows[li];
+          else {
+            var gi;
+            for (gi = 0; gi < gRows.length; gi++) {
+              if (gRows[gi] && gRows[gi].text === line) {
+                gRow = gRows[gi];
+                break;
+              }
+            }
+          }
+        }
+        var classes = [];
+        if (line.indexOf(NP_MARK) === 0) classes.push("assist-detail-li-nonprotocol");
+        if (gRow && gRow.verified === false) classes.push("assist-fact-unverified");
+        var liCls = classes.length ? ' class="' + classes.join(" ") + '"' : "";
         var cid = "assist-fact-" + catKey + "-" + li;
         h +=
           "<li" +
@@ -18868,7 +18944,9 @@
           '<span class="assist-fact-text">' +
           '<span class="assist-text-collapsible-inner">' +
           escapeHtml(line) +
-          "</span></span></label>" +
+          "</span>" +
+          groundingBadgeHtml(gRow) +
+          "</span></label>" +
           '<button type="button" class="assist-text-toggle assist-text-toggle--fact" hidden aria-expanded="false">Ещё</button>' +
           "</div></li>";
       }

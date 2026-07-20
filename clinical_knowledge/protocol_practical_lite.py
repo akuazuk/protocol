@@ -411,6 +411,13 @@ def build_clinical_detail_lite(
     has_rich = any(ch.get("rich_chunk") for ch in chunks)
     lite_sections = build_lite_sections(chunks, query, icd_codes) if chunks else []
     extraction = build_extraction_from_chunks(chunks, query, icd_codes) if chunks else {"detailed": False}
+    if chunks:
+        try:
+            from clinical_knowledge.item_grounding import build_extraction_grounding
+
+            extraction["grounding"] = build_extraction_grounding(extraction, chunks)
+        except Exception:
+            pass
     clinical_blocks = build_clinical_blocks(extraction, lite_sections, query) if chunks else {}
     score = 0.72
     n_useful = len(extraction.get("investigations") or []) + len(extraction.get("medications") or [])
