@@ -510,11 +510,26 @@ def protocol_ui_meta_for_path(path: str) -> dict:
         if ym:
             year = ym.group(1)
     mz_m = re.search(r"№\s*(\d+)", fn)
+    care: dict = {}
+    try:
+        from clinical_knowledge.care_setting import infer_care_setting_for_path
+
+        title_for_care = str(row.get("display_title") or "")
+        care = infer_care_setting_for_path(
+            path or "",
+            title_for_care,
+            chunks_getter=lambda p: _chunks_by_path.get(p) or [],
+        )
+    except Exception:
+        care = {}
     return {
         "year": year,
         "post_mz": bool(post_csv or post_fn),
         "audience_hint": "; ".join(audience) if audience else None,
         "mz_number": mz_m.group(1) if mz_m else None,
+        "care_setting": care.get("care_setting"),
+        "care_setting_label": care.get("care_setting_label"),
+        "care_setting_confidence": care.get("care_setting_confidence"),
     }
 
 
@@ -8273,7 +8288,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-20-r3-item-grounding"
+BUILD_VERSION = "2026-07-20-r4-care-setting-badge"
 
 
 def _app_version() -> str:

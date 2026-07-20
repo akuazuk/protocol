@@ -11754,6 +11754,21 @@
       color: #1e40af;
     }
 
+    .assist-catalog-badge--inpatient {
+      background: rgba(126, 34, 206, 0.12);
+      color: #6b21a8;
+    }
+
+    .assist-catalog-badge--outpatient {
+      background: rgba(13, 148, 136, 0.14);
+      color: #0f766e;
+    }
+
+    .assist-catalog-badge--care-mixed {
+      background: rgba(202, 138, 4, 0.14);
+      color: #92400e;
+    }
+
     .assist-audience-banner {
       margin: 0 0 0.75rem;
       padding: 0.55rem 0.7rem;
@@ -28278,6 +28293,27 @@
       h +=
         '<span class="assist-catalog-badge" title="Аудитория по названию КП">' +
         escapeHtml(String(m.audience_hint)) +
+        "</span>";
+    }
+    if (m.care_setting_label) {
+      var csMod =
+        m.care_setting === "inpatient"
+          ? " assist-catalog-badge--inpatient"
+          : m.care_setting === "outpatient"
+          ? " assist-catalog-badge--outpatient"
+          : " assist-catalog-badge--care-mixed";
+      var csTip =
+        "Условия оказания по протоколу" +
+        (typeof m.care_setting_confidence === "number"
+          ? " (уверенность " + Math.round(m.care_setting_confidence * 100) + "%)"
+          : "");
+      h +=
+        '<span class="assist-catalog-badge' +
+        csMod +
+        '" title="' +
+        escapeHtmlAttr(csTip) +
+        '">' +
+        escapeHtml(String(m.care_setting_label)) +
         "</span>";
     }
     return h;
