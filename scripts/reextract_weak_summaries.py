@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -39,7 +40,9 @@ from clinical_knowledge.protocol_summary.summary_to_rag import write_summary_rag
 from clinical_knowledge.protocol_summary.validator import validate_protocol_summary, write_validation_report  # noqa: E402
 
 QUEUE = ROOT / "data" / "protocol_summaries" / "reextract_queue.json"
-STATE = ROOT / "data" / "protocol_summaries" / "reextract_state.jsonl"
+# Прогресс можно вынести на persistent disk (Render): REEXTRACT_STATE=/var/data/...jsonl,
+# чтобы --resume переживал рестарт эфемерного диска приложения.
+STATE = Path(os.environ.get("REEXTRACT_STATE") or (ROOT / "data" / "protocol_summaries" / "reextract_state.jsonl"))
 CATALOG = ROOT / "data" / "protocol_catalog.jsonl"
 
 

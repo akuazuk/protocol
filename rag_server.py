@@ -8376,7 +8376,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-20-r21-reextract-queue-rag-rebuild-fix"
+BUILD_VERSION = "2026-07-20-r22-reextract-state-env-override"
 
 
 def _app_version() -> str:
