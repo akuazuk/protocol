@@ -32,7 +32,8 @@ PYTHONPATH=. python3 scripts/run_mis_protocol_l1_batch.py \
 - `kz_l1_2026-07_summary.json` - агрегаты по врачам/спец./филиалам (**можно в git**)
 - `kz_l1_2026-07_state.jsonl` - resume
 
-Дашборд: кабинет методиста → вкладка «MIS · КЗ» или страница `mis-kz-quality.html`.
+Дашборд: кабинет методиста → вкладка «MIS · КЗ» или страница `mis-kz-quality.html`
+(включая топ-30 слабых визитов с visit_id, датой и комментарием).
 API: `GET /api/methodist/mis-kz-quality` (нужен methodist token).
 
 План: `docs/plans/2026-07-21-mis-kz-l1-batch-v1.md`.

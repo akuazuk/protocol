@@ -81,6 +81,8 @@ def build_mis_kz_quality_view(*, month: str | None = None) -> dict[str, Any]:
         "filials": summary.get("filials") or [],
         "top_doctors": summary.get("top_doctors") or doctors[:15],
         "bottom_doctors": summary.get("bottom_doctors") or [],
+        "worst_visits": summary.get("worst_visits") or [],
+        "worst_visits_meta": summary.get("worst_visits_meta") or {},
         "notes": summary.get("notes") or [],
         "doctors_n": len(doctors),
     }

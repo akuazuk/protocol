@@ -196,6 +196,28 @@
         </section>
       </div>
 
+      <section class="card" style="margin-top:14px">
+        <h2>Топ-30 слабых визитов</h2>
+        <p class="sub" id="worst-meta">Визиты врачей с самым низким средним L1: id, дата и что просело</p>
+        <div style="overflow:auto;max-height:560px">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Дата</th>
+                <th>Visit ID</th>
+                <th>Врач</th>
+                <th>Спец.</th>
+                <th>L1</th>
+                <th>Avg врача</th>
+                <th>Что не так</th>
+              </tr>
+            </thead>
+            <tbody id="worst-visits"></tbody>
+          </table>
+        </div>
+      </section>
+
       <p class="footnote" id="notes"></p>
     </div>
   </div>
@@ -296,6 +318,23 @@
     document.getElementById("bottom-docs").innerHTML = doctorRows(bottom, minN);
     document.getElementById("specs").innerHTML = simpleRows(data.specialties, "specialization");
     document.getElementById("filials").innerHTML = simpleRows(data.filials, "filial");
+    var meta = data.worst_visits_meta || {};
+    var worstMetaEl = document.getElementById("worst-meta");
+    if (worstMetaEl) {
+      worstMetaEl.textContent = meta.rule_ru ||
+        "Визиты врачей с самым низким средним L1: id, дата и что просело";
+    }
+    var worst = data.worst_visits || [];
+    document.getElementById("worst-visits").innerHTML = worst.length
+      ? worst.map(function (v, i) {
+          return "<tr><td>" + (i + 1) + "</td><td>" + esc(v.date || " - ") +
+            "</td><td><code>" + esc(v.visit_id || " - ") + "</code></td><td>" +
+            esc(v.doctor_fio || " - ") + "</td><td>" + esc(v.doctor_specialization || " - ") +
+            "</td><td>" + scorePill(v.overall_pct) + "</td><td>" +
+            scorePill(v.doctor_avg_overall_pct) + "</td><td>" + esc(v.comment || " - ") +
+            "</td></tr>";
+        }).join("")
+      : "<tr><td colspan='8'>Нет worst_visits в summary - пересоберите batch summary</td></tr>";
     document.getElementById("notes").textContent = (data.notes || []).join(" ");
   }
 

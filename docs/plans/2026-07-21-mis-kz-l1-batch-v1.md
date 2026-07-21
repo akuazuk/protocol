@@ -19,6 +19,7 @@
 | `data/mis_protocol/kz_l1_2026-07_summary.json` | Агрегаты (без patient_id) - в git |
 | `GET /api/methodist/mis-kz-quality` | Отдача summary для UI |
 | `mis-kz-quality.html` + вкладка методиста | Визуализация |
+| `worst_visits` в summary | Топ-30 слабых визитов врачей из bottom (id, дата, комментарий) |
 
 ## 3. Как повторить на другом компьютере
 
@@ -63,6 +64,7 @@ HTTP-режим упирается в rate-limit 60 POST/мин → исполь
 - [x] Скрипт batch + resume
 - [x] Полный прогон на Render (`--direct`, workers=1)
 - [x] Summary в git + API + UI + пуш
+- [x] Топ-30 слабых визитов (visit_id, дата, комментарий) у врачей с низким avg
 - [ ] (позже) L2 только на bottom-decile
 
 ## 6. Риски
