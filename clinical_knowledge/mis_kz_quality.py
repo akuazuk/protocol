@@ -173,138 +173,221 @@ def _parse_gemini_json(text: str) -> dict[str, Any]:
         return {}
 
 
-def review_visits_with_gemini(
-    *,
-    month: str,
-    visit_ids: list[str],
-    max_visits: int = 20,
-) -> dict[str, Any]:
-    """Выборочный разбор КЗ через methodist Gemini (обычно gemini-2.5-pro)."""
-    month = (month or "").strip() or "2026-07"
-    ids = [str(v).strip() for v in visit_ids if str(v).strip()]
-    ids = ids[: max(1, int(max_visits))]
-    if not ids:
-        return {"ok": False, "error": "empty_visit_ids", "reviews": []}
-
-    csv_path = _csv_path_for_month(month)
-    if csv_path is None:
-        return {
-            "ok": False,
-            "error": "csv_not_found",
-            "hint_ru": f"Нет mis_protocol_{month}.csv на /var/data или data/mis_protocol",
-            "reviews": [],
-        }
-
-    from clinical_knowledge.gemini_model_config import methodist_gemini_model_name
+def _load_batch_helpers():
     import importlib.util
-    import rag_server as rs
 
     batch_path = ROOT / "scripts" / "run_mis_protocol_l1_batch.py"
     spec = importlib.util.spec_from_file_location("run_mis_protocol_l1_batch", batch_path)
     if spec is None or spec.loader is None:
-        return {"ok": False, "error": "batch_script_missing", "reviews": []}
+        raise RuntimeError("batch_script_missing")
     batch_mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(batch_mod)
-    build_kz_text = batch_mod.build_kz_text
-    load_csv_by_visit = batch_mod.load_csv_by_visit
+    return batch_mod.build_kz_text, batch_mod.load_csv_by_visit
 
-    model_name, model_warn = methodist_gemini_model_name()
-    model = rs.get_methodist_gemini()
-    if model is None:
-        return {
-            "ok": False,
-            "error": "gemini_unavailable",
-            "hint_ru": "LLM недоступен (нет ключа или модели).",
-            "model": model_name,
-            "model_warn": model_warn,
-            "reviews": [],
-        }
 
-    csv_by_visit = load_csv_by_visit(csv_path)
+def _protocol_title(path: str) -> str:
+    name = Path(str(path)).name if path else ""
+    return name[:120] if name else str(path)[:120]
+
+
+def _extract_l2_context(result: dict[str, Any]) -> dict[str, Any]:
+    sa = result.get("structured_analysis") or {}
+    comp = sa.get("compliance") if isinstance(sa, dict) else {}
+    if not isinstance(comp, dict):
+        comp = {}
+    overall = result.get("overall_score")
+    if overall is None:
+        overall = comp.get("overall_score")
+    status = result.get("overall_status") or comp.get("overall_status")
+
+    protocols: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for src in (
+        comp.get("matched_protocols") or [],
+        result.get("retrieval_paths") or [],
+        ((result.get("alignment") or {}) if isinstance(result.get("alignment"), dict) else {}).get(
+            "protocol_paths"
+        )
+        or [],
+    ):
+        if not isinstance(src, list):
+            continue
+        for it in src:
+            if isinstance(it, dict):
+                p = str(it.get("path") or it.get("protocol_path") or it.get("title") or "").strip()
+            else:
+                p = str(it or "").strip()
+            if not p or p in seen:
+                continue
+            seen.add(p)
+            protocols.append({"path": p, "title": _protocol_title(p)})
+            if len(protocols) >= 6:
+                break
+        if len(protocols) >= 6:
+            break
+
+    gaps: list[str] = []
+    for item in comp.get("critical_issues") or comp.get("issues") or []:
+        if isinstance(item, dict):
+            txt = str(item.get("message_ru") or item.get("text") or item.get("issue") or "").strip()
+        else:
+            txt = str(item).strip()
+        if txt:
+            gaps.append(txt[:220])
+        if len(gaps) >= 8:
+            break
+    align = result.get("alignment") if isinstance(result.get("alignment"), dict) else {}
+    for card in align.get("alignment_cards") or []:
+        if not isinstance(card, dict):
+            continue
+        for g in card.get("gaps_ru") or []:
+            t = str(g).strip()
+            if t:
+                gaps.append(t[:220])
+            if len(gaps) >= 10:
+                break
+        if len(gaps) >= 10:
+            break
+
+    block_scores: dict[str, Any] = {}
+    alignment_blocks = comp.get("alignment_by_block") or {}
+    if isinstance(alignment_blocks, dict):
+        for bid, val in alignment_blocks.items():
+            if isinstance(val, dict):
+                sc = val.get("score")
+                if sc is None:
+                    sc = val.get("alignment_score")
+                block_scores[str(bid)] = sc
+            elif isinstance(val, (int, float)):
+                block_scores[str(bid)] = float(val)
+
+    evidence_snippets: list[str] = []
+    ep = result.get("evidence_pack")
+    if isinstance(ep, dict):
+        blocks = ep.get("blocks") or {}
+        if isinstance(blocks, dict):
+            for items in blocks.values():
+                if not isinstance(items, list):
+                    continue
+                for it in items[:2]:
+                    if not isinstance(it, dict):
+                        continue
+                    snip = str(it.get("text") or it.get("excerpt") or it.get("snippet") or "").strip()
+                    title = _protocol_title(str(it.get("protocol_path") or ""))
+                    if snip:
+                        evidence_snippets.append(f"[{title}] {snip[:280]}")
+                    if len(evidence_snippets) >= 8:
+                        break
+                if len(evidence_snippets) >= 8:
+                    break
+
+    review = result.get("review") if isinstance(result.get("review"), dict) else {}
+    summary_l2 = str(
+        result.get("summary_ru")
+        or review.get("summary_ru")
+        or ""
+    ).strip()
+
+    try:
+        overall_f = round(float(overall), 1) if overall is not None else None
+    except (TypeError, ValueError):
+        overall_f = None
+
+    return {
+        "l2_overall_pct": overall_f,
+        "l2_status": status,
+        "l2_summary": summary_l2[:500] if summary_l2 else None,
+        "protocols": protocols,
+        "gaps_l2": gaps[:10],
+        "block_scores": block_scores,
+        "evidence_snippets": evidence_snippets,
+        "render_l2_limited": bool(result.get("render_l2_limited")),
+    }
+
+
+def _build_full_llm_prompt(*, row: dict, visit_id: str, text: str, l2_ctx: dict) -> str:
+    proto_lines = []
+    for p in l2_ctx.get("protocols") or []:
+        proto_lines.append(f"- {p.get('title') or p.get('path')}")
+    gap_lines = [f"- {g}" for g in (l2_ctx.get("gaps_l2") or [])[:8]]
+    ev_lines = [f"- {e}" for e in (l2_ctx.get("evidence_snippets") or [])[:6]]
+    blocks = l2_ctx.get("block_scores") or {}
+    block_line = ", ".join(f"{k}={v}" for k, v in list(blocks.items())[:10])
+    return (
+        "Ты методист клиники и аудитор качества КЗ по клиническим протоколам Минздрава РБ.\n"
+        "Сделай ИНДИВИДУАЛЬНЫЙ полный разбор консультативного заключения.\n"
+        "Опирайся на найденные протоколы МЗ и замечания L2; не выдумывай протоколы вне списка.\n"
+        "Верни ТОЛЬКО JSON без markdown со схемой:\n"
+        "{\n"
+        '  "overall_pct": 0-100,\n'
+        '  "status": "non_compliant|partially_compliant|mostly_compliant|compliant|manual_review_required",\n'
+        '  "executive_summary_ru": "3-6 предложений: итог для методиста",\n'
+        '  "protocol_review": [{"protocol": "название", "compliance_ru": "насколько КЗ соответствует", "gaps_ru": ["пробел"]}],\n'
+        '  "block_review": [{"block": "жалобы|анамнез|объективный статус|диагноз|обследования|лечение|наблюдение", '
+        '"score_pct": 0-100, "comment_ru": "что не так / что хорошо"}],\n'
+        '  "critical_gaps_ru": ["критичный пробел"],\n'
+        '  "recommendations_ru": ["конкретное действие врачу/методисту"],\n'
+        '  "mz_notes_ru": "кратко про соответствие требованиям оформления и протоколам МЗ"\n'
+        "}\n\n"
+        f"Врач: {(row.get('doctor_fio') or '').strip()}\n"
+        f"Специальность: {(row.get('doctor_specialization') or '').strip()}\n"
+        f"Филиал: {(row.get('filial') or '').strip()}\n"
+        f"Дата: {(row.get('date') or '')[:19]}\n"
+        f"Visit ID: {visit_id}\n"
+        f"Patient ID: {str(row.get('patient_id') or '').strip()}\n"
+        f"L2 overall: {l2_ctx.get('l2_overall_pct')} / {l2_ctx.get('l2_status')}\n"
+        f"L2 summary: {l2_ctx.get('l2_summary') or '—'}\n"
+        f"Баллы блоков L2: {block_line or '—'}\n"
+        "Протоколы МЗ (кандидаты):\n"
+        + ("\n".join(proto_lines) if proto_lines else "- (не найдены)")
+        + "\nЗамечания L2:\n"
+        + ("\n".join(gap_lines) if gap_lines else "- (нет)")
+        + "\nВыдержки из протоколов:\n"
+        + ("\n".join(ev_lines) if ev_lines else "- (нет)")
+        + f"\n\nТекст КЗ:\n{text[:11000]}"
+    )
+
+
+def _format_full_report_text(parsed: dict[str, Any], l2_ctx: dict[str, Any]) -> str:
+    parts: list[str] = []
+    exec_s = str(parsed.get("executive_summary_ru") or parsed.get("comment_ru") or "").strip()
+    if exec_s:
+        parts.append(exec_s)
+    mz = str(parsed.get("mz_notes_ru") or "").strip()
+    if mz:
+        parts.append("МЗ / оформление: " + mz)
+    crit = parsed.get("critical_gaps_ru") or []
+    if isinstance(crit, list) and crit:
+        parts.append("Критичные пробелы: " + "; ".join(str(x)[:120] for x in crit[:5]))
+    rec = parsed.get("recommendations_ru") or []
+    if isinstance(rec, list) and rec:
+        parts.append("Рекомендации: " + "; ".join(str(x)[:120] for x in rec[:5]))
+    protos = parsed.get("protocol_review") or []
+    if isinstance(protos, list) and protos:
+        bits = []
+        for p in protos[:4]:
+            if not isinstance(p, dict):
+                continue
+            bits.append(
+                f"{p.get('protocol') or 'протокол'}: {str(p.get('compliance_ru') or '')[:140]}"
+            )
+        if bits:
+            parts.append("Протоколы: " + " | ".join(bits))
+    if not parts and l2_ctx.get("l2_summary"):
+        parts.append(str(l2_ctx["l2_summary"]))
+    return "\n\n".join(parts)[:2500]
+
+
+def upsert_llm_review(*, month: str, item: dict[str, Any]) -> dict[str, Any]:
     existing = load_gemini_reviews(month=month)
     by_vid = {
         str(r.get("visit_id") or ""): r
         for r in (existing.get("reviews") or [])
         if isinstance(r, dict)
     }
-
-    new_rows: list[dict[str, Any]] = []
-    for vid in ids:
-        row = csv_by_visit.get(vid)
-        if not row:
-            item = {
-                "visit_id": vid,
-                "error": "visit_not_in_csv",
-                "comment": "Визит не найден в CSV",
-                "model": model_name,
-                "ts": _utc(),
-            }
-            by_vid[vid] = item
-            new_rows.append(item)
-            continue
-        text = build_kz_text(row)
-        prompt = (
-            "Ты методист клиники. Оцени качество консультативного заключения (КЗ).\n"
-            "Верни ТОЛЬКО JSON без markdown:\n"
-            '{"overall_pct": 0-100, "status": "non_compliant|partially_compliant|mostly_compliant|compliant",'
-            ' "comment_ru": "2-4 предложения: что не так и что исправить",'
-            ' "gaps_ru": ["краткий пробел 1", "пробел 2"]}\n\n'
-            f"Врач: {(row.get('doctor_fio') or '').strip()}\n"
-            f"Специальность: {(row.get('doctor_specialization') or '').strip()}\n"
-            f"Дата: {(row.get('date') or '')[:19]}\n"
-            f"Visit ID: {vid}\n"
-            f"Patient ID: {str(row.get('patient_id') or '').strip()}\n\n"
-            f"Текст КЗ:\n{text[:12000]}"
-        )
-        try:
-            resp = rs.generate_gemini_methodist_ai_review(model, prompt)
-            raw = rs._extract_gemini_text(resp)
-            parsed = _parse_gemini_json(raw)
-            overall = parsed.get("overall_pct")
-            try:
-                overall_f = round(float(overall), 1) if overall is not None else None
-            except (TypeError, ValueError):
-                overall_f = None
-            gaps = parsed.get("gaps_ru") or []
-            if not isinstance(gaps, list):
-                gaps = []
-            comment = str(parsed.get("comment_ru") or "").strip()
-            if gaps and not comment:
-                comment = "; ".join(str(g) for g in gaps[:4])
-            elif gaps:
-                comment = comment + " | Пробелы: " + "; ".join(str(g) for g in gaps[:3])
-            item = {
-                "visit_id": vid,
-                "patient_id": str(row.get("patient_id") or "").strip(),
-                "date": (row.get("date") or "")[:19],
-                "doctor_fio": (row.get("doctor_fio") or "").strip(),
-                "doctor_specialization": (row.get("doctor_specialization") or "").strip(),
-                "filial": (row.get("filial") or "").strip(),
-                "diagnosis_short": ((row.get("clinical_diagnosis") or "").strip())[:160],
-                "overall_pct": overall_f,
-                "status": parsed.get("status"),
-                "comment": comment[:600] or (raw or "")[:400],
-                "gaps_ru": [str(g)[:160] for g in gaps[:5]],
-                "model": model_name,
-                "model_warn": model_warn,
-                "ts": _utc(),
-                "error": None,
-            }
-        except Exception as e:
-            item = {
-                "visit_id": vid,
-                "patient_id": str(row.get("patient_id") or "").strip(),
-                "date": (row.get("date") or "")[:19],
-                "doctor_fio": (row.get("doctor_fio") or "").strip(),
-                "error": str(e)[:300],
-                "comment": f"Ошибка LLM: {e}"[:300],
-                "model": model_name,
-                "model_warn": model_warn,
-                "ts": _utc(),
-            }
+    vid = str(item.get("visit_id") or "")
+    if vid:
         by_vid[vid] = item
-        new_rows.append(item)
-
     reviews = sorted(
         by_vid.values(),
         key=lambda r: (
@@ -313,14 +396,12 @@ def review_visits_with_gemini(
         ),
     )
     meta = {
-        "model": model_name,
-        "model_warn": model_warn,
-        "note_ru": "Выборочный LLM-разбор качества КЗ.",
-        "last_batch_n": len(new_rows),
+        **(existing.get("meta") or {}),
+        "note_ru": "Выборочный полный LLM-разбор КЗ с опорой на протоколы МЗ.",
         "last_batch_at": _utc(),
+        "last_visit_id": vid,
     }
     path = save_gemini_reviews(month=month, reviews=reviews, meta=meta)
-
     summary = load_mis_kz_summary(month=month)
     if summary and summary.get("_source_path"):
         try:
@@ -328,17 +409,211 @@ def review_visits_with_gemini(
             if sp.is_file():
                 data = json.loads(sp.read_text(encoding="utf-8"))
                 data["gemini_reviews"] = reviews
-                data["gemini_meta"] = meta
+                data["gemini_meta"] = {
+                    "note_ru": meta["note_ru"],
+                    "last_batch_at": meta.get("last_batch_at"),
+                }
                 sp.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
         except (OSError, json.JSONDecodeError, TypeError):
             pass
+    return {"reviews": reviews, "meta": meta, "path": str(path)}
 
+
+def review_one_visit_full(*, month: str, visit_id: str) -> dict[str, Any]:
+    """Один визит: L2-контекст по протоколам МЗ + полный LLM-отчёт."""
+    month = (month or "").strip() or "2026-07"
+    vid = str(visit_id or "").strip()
+    if not vid:
+        return {"ok": False, "error": "empty_visit_id"}
+
+    csv_path = _csv_path_for_month(month)
+    if csv_path is None:
+        return {
+            "ok": False,
+            "error": "csv_not_found",
+            "hint_ru": f"Нет mis_protocol_{month}.csv на /var/data или data/mis_protocol",
+        }
+
+    import os as _os
+
+    import rag_server as rs
+    from clinical_knowledge.gemini_model_config import methodist_gemini_model_name
+
+    build_kz_text, load_csv_by_visit = _load_batch_helpers()
+    csv_by_visit = load_csv_by_visit(csv_path)
+    row = csv_by_visit.get(vid)
+    if not row:
+        item = {
+            "visit_id": vid,
+            "error": "visit_not_in_csv",
+            "comment": "Визит не найден в CSV",
+            "ts": _utc(),
+            "report_kind": "full",
+        }
+        stored = upsert_llm_review(month=month, item=item)
+        return {"ok": False, "error": "visit_not_in_csv", "item": item, **stored}
+
+    model_name, model_warn = methodist_gemini_model_name()
+    model = rs.get_methodist_gemini()
+    if model is None:
+        return {
+            "ok": False,
+            "error": "llm_unavailable",
+            "hint_ru": "LLM недоступен (нет ключа или модели).",
+        }
+
+    text = build_kz_text(row)
+    _os.environ.setdefault("CONSULT_L2_FAST", "1")
+    _os.environ.setdefault("CONSULT_RENDER_L2_SKIP_LLM", "0")
+
+    stages: list[str] = ["l2_start"]
+    l2_ctx: dict[str, Any] = {}
+    try:
+        l2_result = rs._consult_review_from_tier_or_pipeline(
+            tier="L2",
+            text=text,
+            bundle=None,
+            consultation_id=f"mis-llm-{vid}",
+            category_slugs="",
+            require_rag_for_l2=False,
+            l2_narrative=False,
+        )
+        l2_ctx = _extract_l2_context(l2_result if isinstance(l2_result, dict) else {})
+        stages.append("l2_done")
+    except Exception as e:
+        stages.append("l2_fail")
+        l2_ctx = {
+            "l2_overall_pct": None,
+            "l2_status": None,
+            "l2_summary": f"L2 недоступен: {e}"[:200],
+            "protocols": [],
+            "gaps_l2": [],
+            "block_scores": {},
+            "evidence_snippets": [],
+            "render_l2_limited": False,
+            "l2_error": str(e)[:300],
+        }
+
+    prompt = _build_full_llm_prompt(row=row, visit_id=vid, text=text, l2_ctx=l2_ctx)
+    stages.append("llm_start")
+    try:
+        resp = rs.generate_gemini_methodist_ai_review(model, prompt)
+        raw = rs._extract_gemini_text(resp)
+        parsed = _parse_gemini_json(raw)
+        if not parsed:
+            parsed = {
+                "overall_pct": l2_ctx.get("l2_overall_pct"),
+                "status": l2_ctx.get("l2_status"),
+                "executive_summary_ru": (raw or "")[:800] or l2_ctx.get("l2_summary"),
+                "critical_gaps_ru": l2_ctx.get("gaps_l2") or [],
+                "recommendations_ru": [],
+                "protocol_review": [
+                    {"protocol": p.get("title"), "compliance_ru": "см. L2", "gaps_ru": []}
+                    for p in (l2_ctx.get("protocols") or [])[:3]
+                ],
+                "block_review": [],
+                "mz_notes_ru": "",
+            }
+        overall = parsed.get("overall_pct")
+        try:
+            overall_f = round(float(overall), 1) if overall is not None else l2_ctx.get("l2_overall_pct")
+        except (TypeError, ValueError):
+            overall_f = l2_ctx.get("l2_overall_pct")
+        report_text = _format_full_report_text(parsed, l2_ctx)
+        item = {
+            "visit_id": vid,
+            "patient_id": str(row.get("patient_id") or "").strip(),
+            "date": (row.get("date") or "")[:19],
+            "doctor_fio": (row.get("doctor_fio") or "").strip(),
+            "doctor_specialization": (row.get("doctor_specialization") or "").strip(),
+            "filial": (row.get("filial") or "").strip(),
+            "diagnosis_short": ((row.get("clinical_diagnosis") or "").strip())[:160],
+            "overall_pct": overall_f,
+            "status": parsed.get("status") or l2_ctx.get("l2_status"),
+            "comment": report_text[:600],
+            "report_full_ru": report_text,
+            "executive_summary_ru": str(parsed.get("executive_summary_ru") or "")[:1200],
+            "protocol_review": parsed.get("protocol_review") or [],
+            "block_review": parsed.get("block_review") or [],
+            "critical_gaps_ru": parsed.get("critical_gaps_ru") or [],
+            "recommendations_ru": parsed.get("recommendations_ru") or [],
+            "mz_notes_ru": str(parsed.get("mz_notes_ru") or "")[:800],
+            "protocols_mz": l2_ctx.get("protocols") or [],
+            "l2_overall_pct": l2_ctx.get("l2_overall_pct"),
+            "l2_status": l2_ctx.get("l2_status"),
+            "l2_gaps": l2_ctx.get("gaps_l2") or [],
+            "block_scores": l2_ctx.get("block_scores") or {},
+            "report_kind": "full",
+            "stages": stages + ["llm_done"],
+            "ts": _utc(),
+            "error": None,
+        }
+        # do not expose vendor model names to UI clients
+        item.pop("model", None)
+        stored = upsert_llm_review(month=month, item=item)
+        return {
+            "ok": True,
+            "month": month,
+            "visit_id": vid,
+            "item": item,
+            "stages": item["stages"],
+            "reviews": stored["reviews"],
+            "storage_path": stored["path"],
+        }
+    except Exception as e:
+        item = {
+            "visit_id": vid,
+            "patient_id": str(row.get("patient_id") or "").strip(),
+            "date": (row.get("date") or "")[:19],
+            "doctor_fio": (row.get("doctor_fio") or "").strip(),
+            "error": str(e)[:300],
+            "comment": f"Ошибка LLM: {e}"[:300],
+            "report_full_ru": f"Ошибка LLM: {e}"[:500],
+            "l2_overall_pct": l2_ctx.get("l2_overall_pct"),
+            "protocols_mz": l2_ctx.get("protocols") or [],
+            "report_kind": "full",
+            "stages": stages + ["llm_fail"],
+            "ts": _utc(),
+        }
+        stored = upsert_llm_review(month=month, item=item)
+        return {
+            "ok": False,
+            "error": "llm_failed",
+            "hint_ru": str(e)[:300],
+            "item": item,
+            "reviews": stored["reviews"],
+            "storage_path": stored["path"],
+        }
+
+
+def review_visits_with_gemini(
+    *,
+    month: str,
+    visit_ids: list[str],
+    max_visits: int = 20,
+) -> dict[str, Any]:
+    """Пакетный прогон (совместимость): полный разбор по каждому visit_id."""
+    month = (month or "").strip() or "2026-07"
+    ids = [str(v).strip() for v in visit_ids if str(v).strip()]
+    ids = ids[: max(1, int(max_visits))]
+    if not ids:
+        return {"ok": False, "error": "empty_visit_ids", "reviews": []}
+
+    batch: list[dict[str, Any]] = []
+    last_reviews: list[dict] = []
+    storage_path = ""
+    for vid in ids:
+        out = review_one_visit_full(month=month, visit_id=vid)
+        if out.get("item"):
+            batch.append(out["item"])
+        last_reviews = out.get("reviews") or last_reviews
+        storage_path = out.get("storage_path") or storage_path
+    ok_n = sum(1 for x in batch if not x.get("error"))
     return {
-        "ok": True,
+        "ok": ok_n > 0,
         "month": month,
-        "model": model_name,
-        "model_warn": model_warn,
-        "storage_path": str(path),
-        "reviews": reviews,
-        "batch": new_rows,
+        "storage_path": storage_path,
+        "reviews": last_reviews,
+        "batch": batch,
+        "hint_ru": None if ok_n else "Не удалось разобрать выбранные визиты",
     }

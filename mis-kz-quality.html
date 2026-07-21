@@ -205,6 +205,15 @@
           <button class="btn" type="button" id="btn-gemini" style="background:var(--teal-deep);color:#fff">Прогнать выбранные через LLM</button>
         </div>
         <p class="sub" id="gemini-status" style="margin-top:0"></p>
+        <div id="llm-progress-wrap" hidden style="margin:8px 0 14px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px">
+            <span id="llm-progress-label">Ожидание…</span>
+            <span id="llm-progress-pct">0%</span>
+          </div>
+          <div style="height:10px;border-radius:999px;background:#e8f2ee;overflow:hidden">
+            <div id="llm-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#0f6b5c,#3cb89a);transition:width .25s ease"></div>
+          </div>
+        </div>
         <div style="overflow:auto;max-height:620px">
           <table>
             <thead>
@@ -228,7 +237,7 @@
 
       <section class="card" style="margin-top:14px">
         <h2>LLM-разбор выбранных визитов</h2>
-        <p class="sub" id="gemini-meta">Выборочная оценка качества КЗ языковой моделью</p>
+        <p class="sub" id="gemini-meta">Полный индивидуальный разбор с опорой на протоколы МЗ (L2 + LLM)</p>
         <div style="overflow:auto;max-height:480px">
           <table>
             <thead>
@@ -239,11 +248,16 @@
                 <th>Patient ID</th>
                 <th>Врач</th>
                 <th>LLM %</th>
-                <th>Комментарий</th>
+                <th>Кратко</th>
+                <th></th>
               </tr>
             </thead>
             <tbody id="gemini-reviews"></tbody>
           </table>
+        </div>
+        <div id="llm-report-detail" class="card" style="margin-top:14px;display:none;background:#f7fbf9">
+          <h3 style="margin:0 0 8px;font-family:Fraunces,serif">Расширенный отчёт</h3>
+          <div id="llm-report-body" style="font-size:14px;line-height:1.55;white-space:pre-wrap"></div>
         </div>
       </section>
 
@@ -371,19 +385,97 @@
     var gmeta = data.gemini_meta || {};
     var gmetaEl = document.getElementById("gemini-meta");
     if (gmetaEl) {
-      gmetaEl.textContent = gmeta.note_ru || "Выборочный LLM-разбор";
+      gmetaEl.textContent = gmeta.note_ru || "Полный LLM-разбор с опорой на протоколы МЗ";
     }
-    var greviews = data.gemini_reviews || [];
+    window.__misKzLlmReviews = data.gemini_reviews || [];
+    var greviews = window.__misKzLlmReviews;
     document.getElementById("gemini-reviews").innerHTML = greviews.length
       ? greviews.map(function (v, i) {
           return "<tr><td>" + (i + 1) + "</td><td>" + esc(v.date || " - ") +
             "</td><td><code>" + esc(v.visit_id || " - ") + "</code></td><td><code>" +
             esc(v.patient_id || " - ") + "</code></td><td>" + esc(v.doctor_fio || " - ") +
             "</td><td>" + scorePill(v.overall_pct) + "</td><td>" +
-            esc(v.comment || v.error || " - ") + "</td></tr>";
+            esc((v.comment || v.error || " - ").slice(0, 160)) +
+            "</td><td><button type='button' class='btn btn--ghost' data-report-idx='" + i +
+            "' style='padding:6px 10px;background:#eef5f2;color:var(--teal-deep)'>Отчёт</button></td></tr>";
         }).join("")
-      : "<tr><td colspan='7'>Пока пусто - отметьте визиты выше и нажмите «Прогнать через LLM»</td></tr>";
+      : "<tr><td colspan='8'>Пока пусто - отметьте визиты выше и нажмите «Прогнать через LLM»</td></tr>";
+    document.querySelectorAll("[data-report-idx]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        showFullReport(Number(btn.getAttribute("data-report-idx")));
+      });
+    });
     document.getElementById("notes").textContent = (data.notes || []).join(" ");
+  }
+
+  function showFullReport(idx) {
+    var list = window.__misKzLlmReviews || [];
+    var v = list[idx];
+    var box = document.getElementById("llm-report-detail");
+    var body = document.getElementById("llm-report-body");
+    if (!v || !box || !body) return;
+    var lines = [];
+    lines.push("Visit " + (v.visit_id || "—") + " · patient " + (v.patient_id || "—") + " · " + (v.date || "—"));
+    lines.push("Врач: " + (v.doctor_fio || "—") + (v.doctor_specialization ? " · " + v.doctor_specialization : ""));
+    lines.push("LLM: " + (v.overall_pct != null ? v.overall_pct + "%" : "—") + " · L2: " + (v.l2_overall_pct != null ? v.l2_overall_pct + "%" : "—"));
+    lines.push("");
+    lines.push(v.executive_summary_ru || v.report_full_ru || v.comment || "Нет текста отчёта");
+    if (v.mz_notes_ru) {
+      lines.push("");
+      lines.push("Протоколы / оформление МЗ:");
+      lines.push(v.mz_notes_ru);
+    }
+    var protos = v.protocol_review || [];
+    if (protos.length) {
+      lines.push("");
+      lines.push("Разбор по протоколам:");
+      protos.forEach(function (p) {
+        lines.push("• " + (p.protocol || "протокол") + ": " + (p.compliance_ru || ""));
+        (p.gaps_ru || []).slice(0, 4).forEach(function (g) { lines.push("   - " + g); });
+      });
+    } else if ((v.protocols_mz || []).length) {
+      lines.push("");
+      lines.push("Кандидаты протоколов МЗ:");
+      (v.protocols_mz || []).forEach(function (p) {
+        lines.push("• " + (p.title || p.path || ""));
+      });
+    }
+    var blocks = v.block_review || [];
+    if (blocks.length) {
+      lines.push("");
+      lines.push("По блокам КЗ:");
+      blocks.forEach(function (b) {
+        lines.push("• " + (b.block || "") + (b.score_pct != null ? " (" + b.score_pct + "%)" : "") + ": " + (b.comment_ru || ""));
+      });
+    }
+    var gaps = v.critical_gaps_ru || v.l2_gaps || [];
+    if (gaps.length) {
+      lines.push("");
+      lines.push("Критичные пробелы:");
+      gaps.slice(0, 8).forEach(function (g) { lines.push("• " + g); });
+    }
+    var rec = v.recommendations_ru || [];
+    if (rec.length) {
+      lines.push("");
+      lines.push("Рекомендации:");
+      rec.slice(0, 8).forEach(function (g) { lines.push("• " + g); });
+    }
+    body.textContent = lines.join("\n");
+    box.style.display = "block";
+    box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function setProgress(done, total, label) {
+    var wrap = document.getElementById("llm-progress-wrap");
+    var bar = document.getElementById("llm-progress-bar");
+    var pctEl = document.getElementById("llm-progress-pct");
+    var lab = document.getElementById("llm-progress-label");
+    if (!wrap) return;
+    wrap.hidden = false;
+    var pct = total ? Math.round((done / total) * 100) : 0;
+    if (bar) bar.style.width = pct + "%";
+    if (pctEl) pctEl.textContent = pct + "%";
+    if (lab) lab.textContent = label || (done + " / " + total);
   }
 
   function showError(msg) {
@@ -428,8 +520,9 @@
   }
 
   async function runGemini() {
-    var ids = selectedVisitIds();
+    var ids = selectedVisitIds().slice(0, 20);
     var st = document.getElementById("gemini-status");
+    var btn = document.getElementById("btn-gemini");
     if (!ids.length) {
       st.textContent = "Сначала отметьте хотя бы один визит.";
       return;
@@ -439,27 +532,39 @@
       st.textContent = "Нужен токен методиста.";
       return;
     }
-    st.textContent = "LLM: прогон " + ids.length + " визит(ов)…";
-    try {
-      var res = await fetch("/api/methodist/mis-kz-quality/gemini-review", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "X-Methodist-Token": token
-        },
-        body: JSON.stringify({ month: month, visit_ids: ids, max_visits: 20 })
-      });
-      var data = await res.json();
-      if (!res.ok || !data.ok) {
-        st.textContent = data.hint_ru || data.error || ("HTTP " + res.status);
-        return;
+    if (btn) btn.disabled = true;
+    var ok = 0, fail = 0;
+    setProgress(0, ids.length, "Старт: 0 / " + ids.length);
+    st.textContent = "Полный LLM-разбор (протоколы МЗ): 0 / " + ids.length;
+    for (var i = 0; i < ids.length; i++) {
+      var vid = ids[i];
+      setProgress(i, ids.length, "Визит " + (i + 1) + " / " + ids.length + " · " + vid + " (L2 + LLM)…");
+      st.textContent = "Идёт разбор " + (i + 1) + " / " + ids.length + " · visit " + vid;
+      try {
+        var res = await fetch("/api/methodist/mis-kz-quality/llm-review-one", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "X-Methodist-Token": token
+          },
+          body: JSON.stringify({ month: month, visit_id: vid })
+        });
+        var data = await res.json();
+        if (res.ok && data.ok) ok += 1;
+        else fail += 1;
+        if (data.item) {
+          window.__misKzLlmReviews = data.reviews || window.__misKzLlmReviews || [];
+        }
+      } catch (e) {
+        fail += 1;
+        st.textContent = "Ошибка на visit " + vid + ": " + String(e && e.message || e);
       }
-      st.textContent = "Готово: " + (data.batch || []).length + " визит(ов) через LLM";
-      await load();
-    } catch (e) {
-      st.textContent = String(e && e.message || e);
+      setProgress(i + 1, ids.length, "Готово " + (i + 1) + " / " + ids.length);
     }
+    st.textContent = "Готово: успешно " + ok + ", ошибок " + fail + " из " + ids.length;
+    if (btn) btn.disabled = false;
+    await load();
   }
 
   document.getElementById("btn-refresh").addEventListener("click", load);

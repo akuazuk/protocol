@@ -8383,7 +8383,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-21-r33-ui-llm-label"
+BUILD_VERSION = "2026-07-21-r34-llm-progress-full-report"
 
 
 def _app_version() -> str:
@@ -10632,9 +10632,14 @@ class MisKzGeminiReviewIn(BaseModel):
     max_visits: int = Field(default=20, ge=1, le=50)
 
 
+class MisKzLlmReviewOneIn(BaseModel):
+    month: str = Field(default="2026-07", min_length=7, max_length=7)
+    visit_id: str = Field(..., min_length=1, max_length=64)
+
+
 @app.post("/api/methodist/mis-kz-quality/gemini-review")
 def api_methodist_mis_kz_gemini_review(request: "Request", body: MisKzGeminiReviewIn) -> dict:
-    """Выборочный прогон выбранных визитов через methodist Gemini (обычно 2.5-pro)."""
+    """Пакетный прогон выбранных визитов через LLM (полный разбор)."""
     _require_methodist_auth(request)
     from clinical_knowledge.mis_kz_quality import review_visits_with_gemini
 
@@ -10643,6 +10648,15 @@ def api_methodist_mis_kz_gemini_review(request: "Request", body: MisKzGeminiRevi
         visit_ids=list(body.visit_ids or []),
         max_visits=int(body.max_visits or 20),
     )
+
+
+@app.post("/api/methodist/mis-kz-quality/llm-review-one")
+def api_methodist_mis_kz_llm_review_one(request: "Request", body: MisKzLlmReviewOneIn) -> dict:
+    """Один визит: L2 по протоколам МЗ + полный индивидуальный LLM-отчёт."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.mis_kz_quality import review_one_visit_full
+
+    return review_one_visit_full(month=body.month, visit_id=body.visit_id)
 
 
 @app.post("/api/methodist/patient-quality/refresh")

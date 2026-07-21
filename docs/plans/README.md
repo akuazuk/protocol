@@ -18,7 +18,8 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
-| [2026-07-21-mis-kz-worst50-l2-gemini-v1.md](2026-07-21-mis-kz-worst50-l2-gemini-v1.md) | Топ-50 худших КЗ + L2 + выборочный Gemini | active |
+| [2026-07-21-mis-kz-llm-progress-full-report-v1.md](2026-07-21-mis-kz-llm-progress-full-report-v1.md) | Прогресс LLM-прогона + полный разбор по протоколам МЗ | active |
+| [2026-07-21-mis-kz-worst50-l2-gemini-v1.md](2026-07-21-mis-kz-worst50-l2-gemini-v1.md) | Топ-50 худших КЗ + L2 + выборочный Gemini | archived (преемник: llm-progress-full-report-v1) |
 | [2026-07-21-mis-kz-l1-batch-v1.md](2026-07-21-mis-kz-l1-batch-v1.md) | Массовый L1 mis_protocol (июль: 7648 визитов) + дашборд методиста | archived (преемник: worst50-l2-gemini-v1) |
 | [2026-07-20-protocol-reextract-quality-v1.md](2026-07-20-protocol-reextract-quality-v1.md) | Чистка навигатора протоколов + LLM-переизвлечение 373 auto-протоколов | archived (преемник: работа закрыта в r23; дальше - mis-kz-l1) |
 
