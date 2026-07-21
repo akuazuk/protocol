@@ -62,6 +62,10 @@ mysql+pymysql://kravira_mc_user:<PASSWORD>@178.163.240.131:6330/kravira_mc?chars
 | 26 | Рекомендации по лечению |
 | 7 / 8 | Врач id / доп. |
 
+ФИО врача **не в `result`**, а в `mis_data.specialist_name` по `visit_id`
+(плюс `specialization`). Экспортёр подтягивает столбцы `doctor_fio`,
+`doctor_specialization`, `specialist_id_from_visit` (~99% покрытие за июль 2026).
+
 Не тащить в LLM-промпт сырой `result` целиком - только выбранные слоты + очистка пробелов/переносов.
 
 ## Как подключаться из агента

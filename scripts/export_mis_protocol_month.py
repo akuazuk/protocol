@@ -112,6 +112,45 @@ def main() -> int:
     # Сырой result оставляем для отладки, но в конце.
     out["result_raw"] = df["result"].values
 
+    # ФИО врача из mis_data по visit_id (specialist_name).
+    print("Joining mis_data specialist_name by visit_id …", flush=True)
+    vids = out["visit_id"].dropna().astype(int).unique().tolist()
+    chunks: list[pd.DataFrame] = []
+    engine = _engine()
+    with engine.connect() as conn:
+        for i in range(0, len(vids), 800):
+            batch = vids[i : i + 800]
+            ph = ",".join(str(int(x)) for x in batch)
+            q_doc = text(
+                f"""
+                SELECT visit_id,
+                       MIN(specialist_id) AS specialist_id_from_visit,
+                       MIN(specialist_name) AS doctor_fio,
+                       MIN(specialization) AS doctor_specialization
+                FROM mis_data
+                WHERE visit_id IN ({ph})
+                GROUP BY visit_id
+                """
+            )
+            chunks.append(pd.read_sql(q_doc, conn))
+    engine.dispose()
+    if chunks:
+        doc = pd.concat(chunks, ignore_index=True)
+        out = out.merge(doc, on="visit_id", how="left")
+        # doctor_fio рядом с doctor_id
+        cols = list(out.columns)
+        for c in ("doctor_fio", "doctor_specialization", "specialist_id_from_visit"):
+            if c in cols:
+                cols.remove(c)
+        if "doctor_id" in cols:
+            i = cols.index("doctor_id") + 1
+            cols[i:i] = ["doctor_fio", "doctor_specialization", "specialist_id_from_visit"]
+        else:
+            cols += ["doctor_fio", "doctor_specialization", "specialist_id_from_visit"]
+        out = out[cols]
+        fio_n = int(out["doctor_fio"].fillna("").astype(str).str.strip().ne("").sum())
+        print(f"doctor_fio filled: {fio_n}/{len(out)} ({100 * fio_n / max(1, len(out)):.1f}%)", flush=True)
+
     args.out_dir.mkdir(parents=True, exist_ok=True)
     parquet_path = args.out_dir / f"mis_protocol_{tag}.parquet"
     csv_path = args.out_dir / f"mis_protocol_{tag}.csv"
@@ -129,9 +168,13 @@ def main() -> int:
         "date_to_exclusive": d1,
         "rows": int(len(out)),
         "columns": list(out.columns),
+        "doctor_fio_filled": int(out["doctor_fio"].fillna("").astype(str).str.strip().ne("").sum())
+        if "doctor_fio" in out.columns
+        else 0,
+        "doctor_fio_source": "mis_data.specialist_name via visit_id",
         "parquet": str(parquet_path.relative_to(ROOT)),
         "csv": str(csv_path.relative_to(ROOT)),
-        "source": "kravira_mc.mis_protocol",
+        "source": "kravira_mc.mis_protocol + mis_data",
         "exported_at": datetime.now().isoformat(timespec="seconds"),
     }
     meta_path.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
