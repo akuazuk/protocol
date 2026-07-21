@@ -12,10 +12,29 @@ python3 scripts/export_mis_protocol_month.py --month 2026-07
 
 Схема полей: `epam/scheme_mis_protocols.docx`, парсер: `clinical_knowledge/mis_protocol_parse.py`.
 
-## Файлы
+## На Render (тестовый диск)
 
-| Файл | Содержимое |
-|------|------------|
-| `mis_protocol_YYYY-MM.parquet` | все столбцы + `result_raw` |
-| `mis_protocol_YYYY-MM.csv` | то же без сырого `result` (для просмотра) |
-| `mis_protocol_YYYY-MM.meta.json` | число строк, колонки, период (без ПДн) |
+Файлы кладутся в `/var/data/mis_protocol/` (persistent disk), не в git.
+
+```bash
+# загрузить месяц на Render
+bash scripts/render_mis_protocol_data.sh upload 2026-07
+
+# список
+bash scripts/render_mis_protocol_data.sh list
+
+# удалить месяц
+bash scripts/render_mis_protocol_data.sh delete 2026-07
+
+# удалить всё тестовое
+bash scripts/render_mis_protocol_data.sh delete-all
+```
+
+На самом Render (SSH):
+
+```bash
+ls -lh /var/data/mis_protocol/
+rm -f /var/data/mis_protocol/mis_protocol_2026-07.*
+# или
+rm -rf /var/data/mis_protocol
+```
