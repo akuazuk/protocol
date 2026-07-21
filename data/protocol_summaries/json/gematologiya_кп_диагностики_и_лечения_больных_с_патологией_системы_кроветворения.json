@@ -1,10 +1,10 @@
 {
   "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "диагностики и лечения больных с патологией системы кроветворения 274",
+    "title": "Диагностика и лечение больных с патологией системы кроветворения",
     "url": null,
     "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "adult_and_child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,34 +32,350 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностики_и_лечения_больных_с_патологией_систе",
-      "name": "диагностики и лечения больных с патологией системы кроветворения 274",
+      "condition_id": "chronic_myeloproliferative_disease",
+      "name": "Хроническое миелопролиферативное заболевание",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "D61.3",
-        "D68",
-        "D47.1",
-        "D50.0",
-        "D50.1",
-        "D51",
-        "D52",
-        "D61.2",
-        "B24",
-        "C90.0",
-        "D59.0",
-        "D61.1"
+        "D47.1"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
       "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
+      "required_exams": [
+        {
+          "name": "Общий анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Общий ан. крови"
+          }
+        },
+        {
+          "name": "Определение уровней АЧТВ, ПТИ, ТВ, фибриногена",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Определение уровней АЧТВ, ПТИ, ТВ, фибриногена"
+          }
+        },
+        {
+          "name": "Уровень фактора VIII",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Уровень фактора VIII- при обращении в период диагностики"
+          }
+        },
+        {
+          "name": "Общий анализ крови + тромбоциты",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Общий ан. крови + тромбоциты 1р/нед"
+          }
+        },
+        {
+          "name": "Определение уровней АЧТВ, ПТИ, ТВ, фибриногена",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Определение уровней активированного частичного тромбопластинового времени (далее-АЧТВ), протромбинового индекса (далее-ПТИ), тромбинового времени (далее-ТВ), фибриногена"
+          }
+        },
+        {
+          "name": "Биохимическое исследование крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Биохимическое исследование крови: общий белок, мочевина, аспартатаминотрансфераза (далее-АсАТ), аланинаминотрансфераза (далее-АлАТ)"
+          }
+        },
+        {
+          "name": "Миелограмма",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Миелограмма"
+          }
+        },
+        {
+          "name": "Трепанобиопсия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Трепанобиопсия"
+          }
+        },
+        {
+          "name": "Ультразвуковое исследование органов брюшной полости",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Ультразвуковое исследование (далее-УЗИ) органов брюшной полости"
+          }
+        },
+        {
+          "name": "Полимеразная цепная реакция (ПЦР)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Полимеразная цепная реакция (далее-ПЦР)"
+          }
+        },
+        {
+          "name": "Цитогенетика",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Цитогенетика"
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Определение иммунного ингибитора фактора VIII",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Определение иммунного ингибитора фактора VIII"
+          }
+        },
+        {
+          "name": "Обследование родственников",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 29,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обследование родственников"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 3. Признать утратившими силу: (стр. 2)",
+            "text": "Физиотерапевтическое лечение: магнитотерапия, лазеротерапия, электрофорез на область гематомы, гемартроза (10 сеансов)",
             "source_ref": {
               "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
               "document_url": null,
@@ -70,11 +386,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 3. Признать утратившими силу: (стр. 2)"
+              "quote": "Физиотерапевтическое лечение: магнитотерапия, лазеротерапия, электрофорез на область гематомы, гемартроза (10 сеансов)"
             }
           },
           {
-            "text": "подпункты 1.1.,1.2.,1.3.,1.6.,1.7.,1.10. пункта 1 приказа Министерства",
+            "text": "Массаж (10 сеансов после купирования кровотечения)",
             "source_ref": {
               "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
               "document_url": null,
@@ -85,77 +401,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "подпункты 1.1.,1.2.,1.3.,1.6.,1.7.,1.10. пункта 1 приказа Министерства"
-            }
-          },
-          {
-            "text": "здравоохранения Республики Беларусь от 29 мая 2001 г. № 126 «Об утвержде-",
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "здравоохранения Республики Беларусь от 29 мая 2001 г. № 126 «Об утвержде-"
-            }
-          },
-          {
-            "text": "нии протоколов обследования и лечения больных в системе здравоохранения",
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "нии протоколов обследования и лечения больных в системе здравоохранения"
-            }
-          },
-          {
-            "text": "подпункты 1.2.,1.4.,1.6.,1.9. пункта 1 приказа Министерства здравоохра-",
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "подпункты 1.2.,1.4.,1.6.,1.9. пункта 1 приказа Министерства здравоохра-"
-            }
-          },
-          {
-            "text": "менных протоколов обследования и лечения больных в системе здравоохране-",
-            "source_ref": {
-              "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "менных протоколов обследования и лечения больных в системе здравоохране-"
+              "quote": "Массаж (10 сеансов после купирования кровотечения)"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "февраля",
+            "drug_name": "Криопреципитат",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2002 г",
+            "dose_text": "15-50 ЕД/кг",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -167,20 +423,20 @@
               "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
-              "page_start": null,
+              "page_start": 9,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "февраля 2002 г"
+              "quote": "Криопреципитат, концентрированные препараты фактора VIII (15-50 ЕД/кг) в условиях дневного стационара"
             }
           },
           {
-            "drug_name": "Этамзилат",
+            "drug_name": "Концентрированные препараты фактора VIII",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "250 мг",
+            "dose_text": "15-50 ЕД/кг",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -192,20 +448,20 @@
               "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
-              "page_start": null,
+              "page_start": 9,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Этамзилат 250 мг 4 раза/сут \nвнутрь \nФТ: магнитотерапия, "
+              "quote": "Криопреципитат, концентрированные препараты фактора VIII (15-50 ЕД/кг) в условиях дневного стационара"
             }
           },
           {
-            "drug_name": "кислота",
+            "drug_name": "Аминокапроновая кислота",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "15 мг",
+            "dose_text": "внутрь 2-4 г/сут",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -217,20 +473,20 @@
               "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
-              "page_start": null,
+              "page_start": 9,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "кислота 15 мг/сут \nвнутрь – 30-40 дн"
+              "quote": "Аминокапроновая кислота внутрь 2-4 г/сут (исключая почечные кровотечения)"
             }
           },
           {
-            "drug_name": "плазма",
+            "drug_name": "6-меркаптопурин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "15 \nмл",
+            "dose_text": "100 мг/сут.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -242,20 +498,20 @@
               "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
-              "page_start": null,
+              "page_start": 3,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "плазма 15 \nмл/кг/сут \nМенадион (витамин К) 30 \nмг/сут"
+              "quote": "6-меркаптопурин 100 мг/сут."
             }
           },
           {
-            "drug_name": "-меркаптопурин",
+            "drug_name": "Гидроксикарбамид",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "100 мг",
+            "dose_text": "0,5-1,0 г/сут.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -267,20 +523,20 @@
               "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
-              "page_start": null,
+              "page_start": 3,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "-меркаптопурин 100 мг/сут"
+              "quote": "Гидроксикарбамид 0,5-1,0 г/сут."
             }
           },
           {
-            "drug_name": "менее",
+            "drug_name": "Преднизолон",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "70 г",
+            "dose_text": "30-60 мг/сут. внутрь",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -292,13 +548,38 @@
               "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
               "document_url": null,
               "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
-              "page_start": null,
+              "page_start": 3,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "менее 70 г/л (в условиях дневно-\nго стационара) в "
+              "quote": "Преднизолон 30-60 мг/сут. внутрь"
+            }
+          },
+          {
+            "drug_name": "Фолиевая кислота",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "8-12 мг/сут.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+              "page_start": 3,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Фолиевая кислота 8-12 мг/сут."
             }
           }
         ],
@@ -308,7 +589,7 @@
       },
       "follow_up": [
         {
-          "text": "Контроль",
+          "text": "Стабилизация",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -322,49 +603,539 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Контроль"
+            "quote": "Стабилизация"
           }
         }
       ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        },
+        {
+          "text": "стационар",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "стационар"
+          }
+        },
+        {
+          "text": "дневной стационар",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "дневной стационар"
+          }
+        },
+        {
+          "text": "Гематологический кабинет областного уровня",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Гематологический кабинет областного уровня"
+          }
+        },
+        {
+          "text": "Гематологический кабинет Республиканского уровня",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Гематологический кабинет Республиканского уровня"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Почечные кровотечения (при назначении Аминокапроновой кислоты)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Аминокапроновая кислота внутрь 2-4 г/сут (исключая почечные кровотечения)"
+          }
+        }
+      ],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "iron_deficiency_anemia_sideropenic_dysphagia",
+      "name": "Железодефицитная анемия и сидеропеническая дисфагия",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "D50.0",
+        "D50.1"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": null,
+      "follow_up": [],
       "hospitalization": [],
       "routing": [],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
+      "source_refs": []
+    },
+    {
+      "condition_id": "vitamin_b12_folate_deficiency_anemias",
+      "name": "Витамин-В12-дефицитная и фолиеводефицитная анемии",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "D51",
+        "D52"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": null,
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [
         {
-          "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "диагностики и лечения больных с патологией системы кроветворения 274"
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        },
+        {
+          "text": "госпитализация",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация"
+          }
         }
-      ]
+      ],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "hereditary_spherocytosis",
+      "name": "Наследственная сфероцитарная анемия (Минковского-Шоффара)",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "D58.0"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [
+        {
+          "name": "Общий анализ крови + тромбоциты, ретикулоциты",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Общий ан. крови + тромбоциты, ретикулоциты 1р/нед"
+          }
+        },
+        {
+          "name": "Определение метилмалоновой кислоты в моче",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Определение метилмалоновой кислоты в моче"
+          }
+        },
+        {
+          "name": "Определение витамина В12 и фолиевой кислоты в сыворотке крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Определение витамина В12 и фолиевой кислоты в сыворотке крови"
+          }
+        },
+        {
+          "name": "АсАТ, АлАТ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "АсАТ, АлАТ"
+          }
+        },
+        {
+          "name": "ФГДС",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ФГДС"
+          }
+        },
+        {
+          "name": "РРС",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "РРС"
+          }
+        },
+        {
+          "name": "Ультразвуковое исследование органов брюшной полости",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Ультразвуковое исследование (далее-УЗИ) органов брюшной полости"
+          }
+        },
+        {
+          "name": "Исследование кала на гельминты",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Исследование кала на гельминты"
+          }
+        },
+        {
+          "name": "АЧТВ, ПТИ, ТВ, фибриногена",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией системы кроветворения 274.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "АЧТВ, ПТИ, ТВ, фибриногена"
+          }
+        }
+      ],
+      "conditional_exams": [],
+      "treatment": null,
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "drug_induced_autoimmune_hemolytic_anemia",
+      "name": "Медикаментозная аутоиммунная гемолитическая анемия",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "D59.0"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": null,
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "drug_induced_aplastic_anemia",
+      "name": "Медикаментозная апластическая анемия",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "D61.1"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": null,
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-07-20T16:03:47.636495+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-21T05:41:19.385280+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections",
-      "llm_skeleton_failed_fallback"
+      "llm_pipeline_v1",
+      "conditions=6"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-07-20T16:03:47.641607+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[chronic_myeloproliferative_disease].required_exams[4]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[hereditary_spherocytosis].required_exams[6]"
+      }
+    ],
+    "validated_at": "2026-07-21T05:41:19.406994+00:00"
   }
 }

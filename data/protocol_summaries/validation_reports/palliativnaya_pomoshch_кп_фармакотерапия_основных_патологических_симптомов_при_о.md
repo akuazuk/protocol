@@ -1,7 +1,7 @@
 # Validation: palliativnaya_pomoshch_кп_фармакотерапия_основных_патологических_симптомов_при_о
 
 - **status:** invalid
-- **validated_at:** 2026-07-20T17:14:08.018636+00:00
+- **validated_at:** 2026-07-21T06:06:56.607469+00:00
 - **review_status:** needs_review
 - **extraction_status:** auto_extracted
 

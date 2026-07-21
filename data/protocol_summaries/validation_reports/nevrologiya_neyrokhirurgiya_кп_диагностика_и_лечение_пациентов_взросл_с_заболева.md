@@ -1,12 +1,46 @@
 # Validation: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_взросл_с_заболева
 
-- **status:** invalid
-- **validated_at:** 2026-07-20T16:28:40.918871+00:00
+- **status:** needs_human_review
+- **validated_at:** 2026-07-21T05:52:50.428740+00:00
 - **review_status:** needs_review
-- **extraction_status:** auto_extracted
+- **extraction_status:** llm_extracted
 
-## Errors
-- `critical_red_flag_actions` conditions[диагностика_и_лечение_пациентов_взросл_с_заболев].red_flags[0]: critical red flag без expected_actions
-- `critical_red_flag_actions` conditions[диагностика_и_лечение_пациентов_взросл_с_заболев].red_flags[1]: critical red flag без expected_actions
-- `critical_red_flag_actions` conditions[диагностика_и_лечение_пациентов_взросл_с_заболев].red_flags[2]: critical red flag без expected_actions
-- `critical_red_flag_actions` conditions[диагностика_и_лечение_пациентов_взросл_с_заболев].red_flags[3]: critical red flag без expected_actions
+## Warnings
+- `duplicate_drug` conditions[intracerebral_abscess_granuloma].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[intracerebral_abscess_granuloma].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[intracerebral_abscess_granuloma].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_exam` conditions[intraspinal_abscess_granuloma].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[intraspinal_abscess_granuloma].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[intraspinal_abscess_granuloma].required_exams[10]: Дублирующееся обследование
+- `duplicate_drug` conditions[intraspinal_abscess_granuloma].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[intraspinal_abscess_granuloma].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[intraspinal_abscess_granuloma].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[intraspinal_abscess_granuloma].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[intraspinal_abscess_granuloma].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[intraspinal_abscess_granuloma].treatment.drugs[15]: Дублирующийся препарат
+- `duplicate_drug` conditions[intraspinal_abscess_granuloma].treatment.drugs[16]: Дублирующийся препарат
+- `duplicate_exam` conditions[cerebrovascular_diseases].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[cerebrovascular_diseases].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[cerebrovascular_diseases].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[cerebrovascular_diseases].required_exams[4]: Дублирующееся обследование
+- `duplicate_drug` conditions[cerebrovascular_diseases].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[cerebrovascular_diseases].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[cerebrovascular_diseases].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[cerebrovascular_diseases].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[cerebrovascular_diseases].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[cerebrovascular_diseases].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[cerebrovascular_diseases].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[cerebrovascular_diseases].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_exam` conditions[hydrocephalus].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[hydrocephalus].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[csf_leakage].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[csf_leakage].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[csf_leakage].required_exams[4]: Дублирующееся обследование
+- `duplicate_exam` conditions[arnold_chiari_malformation].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[arnold_chiari_malformation].required_exams[1]: Дублирующееся обследование
+- `duplicate_exam` conditions[arnold_chiari_malformation].required_exams[2]: Дублирующееся обследование
+- `duplicate_exam` conditions[arnold_chiari_malformation].required_exams[3]: Дублирующееся обследование
+- `duplicate_exam` conditions[arnold_chiari_malformation].required_exams[4]: Дублирующееся обследование
+- `duplicate_exam` conditions[arnold_chiari_malformation].required_exams[5]: Дублирующееся обследование
+- `duplicate_exam` conditions[arnold_chiari_malformation].required_exams[6]: Дублирующееся обследование
+- `duplicate_exam` conditions[arnold_chiari_malformation].required_exams[8]: Дублирующееся обследование

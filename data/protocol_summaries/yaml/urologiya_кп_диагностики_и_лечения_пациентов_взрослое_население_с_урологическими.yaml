@@ -1,9 +1,10 @@
 protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: диагностики и лечения пациентов взрослое население с урологическими заболеваниями
+  title: Клинический протокол диагностики и лечения пациентов взрослое население с
+    урологическими заболеваниями
   url: null
   local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов взрослое
     население с урологическими заболеваниями 22.09.2011 №920.pdf
@@ -21,35 +22,46 @@ rubric:
 applicability:
   population:
   - adult
+  - pregnant
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностики_и_лечения_пациентов_взрослое_населен
-  name: диагностики и лечения пациентов взрослое население с урологическими заболеваниями
+- condition_id: benign_neoplasms_urinary_organs
+  name: Доброкачественные новообразования мочевых органов
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - F52.2
-  - F52
-  - F52.3
-  - F52.4
-  - F98.0
-  - N27
-  - N31.0
-  - N31.1
-  - N32.0
-  - N32.3
-  - O23.0
-  - R33
+  - D30
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing: []
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: testicular_hypofunction
+  name: Гипофункция яичек
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - E29.1
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria: null
   required_exams:
-  - name: УЗИ
+  - name: Антропометрические данные
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -64,101 +76,133 @@ conditions:
       document_url: null
       local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
         взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-      page_start: null
+      page_start: 6
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "ные \nОценка признаков мас-\nкулинизации \nУЗИ простаты, яичек \nОпределение\
-        \ концентра-\nции тестостерона, ФСГ, \nЛГ, пролактина"
-  conditional_exams: []
+      quote: Антропометрические данные
+  - name: Оценка признаков маскулинизации
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Оценка признаков маскулинизации
+  - name: УЗИ простаты, яичек
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗИ простаты, яичек
+  - name: Определение концентрации тестостерона, ФСГ, ЛГ, пролактина
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Определение концентрации тестостерона, ФСГ, ЛГ, пролактина (данный вид
+        диагностики прово-дится на областном уровне)
+  conditional_exams:
+  - name: Консультация врача-эндокринолога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: сультация врача-эндокринолога
+  - name: Консультация врача-сексолога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: врача-сексолога
   treatment:
-    non_drug:
-    - text: развитии осложнений госпитализа-
-      source_ref:
-        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
-        document_url: null
-        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
-          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: развитии осложнений госпитализа-
-    - text: Периодическая или постоянная ка-
-      source_ref:
-        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
-        document_url: null
-        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
-          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Периодическая или постоянная ка-
-    - text: Альфа-адреноблокаторы, например,
-      source_ref:
-        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
-        document_url: null
-        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
-          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Альфа-адреноблокаторы, например,
-    - text: 'Физиотерапия (далее ФТ): Электро-'
-      source_ref:
-        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
-        document_url: null
-        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
-          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Физиотерапия (далее ФТ): Электро-'
-    - text: развитии осложнений, госпитализа-
-      source_ref:
-        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
-        document_url: null
-        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
-          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: развитии осложнений, госпитализа-
-    - text: ция в урологический стационар для
-      source_ref:
-        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
-        document_url: null
-        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
-          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ция в урологический стационар для
+    non_drug: []
     drug_groups: []
     drugs:
-    - drug_name: тамсулозин
+    - drug_name: хорионический гонадотропин
       active_substance: null
       drug_group: null
-      dose_text: 0,4 мг
+      dose_text: 5000 ед 1 раз в неделю
       frequency_text: null
       duration_text: null
       route: null
@@ -171,17 +215,17 @@ conditions:
         document_url: null
         local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
           взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "тамсулозин 0,4 мг 1 раз в сутки  \n \nФизиотерапия (далее ФТ"
-    - drug_name: дексаметазон
+        quote: 5000 ед 1 раз в неделю
+    - drug_name: гель тестостерона
       active_substance: null
       drug_group: null
-      dose_text: 2 мг
+      dose_text: 50 мг 1 раз в день накожно
       frequency_text: null
       duration_text: null
       route: null
@@ -194,17 +238,17 @@ conditions:
         document_url: null
         local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
           взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "дексаметазон  2 мг внутрь  \n  \nрапии определяет-\nся типом а"
-    - drug_name: внутрь
+        quote: гель тестостерона 50 мг 1 раз в день накожно
+    - drug_name: тестостерон
       active_substance: null
       drug_group: null
-      dose_text: 500 мг
+      dose_text: 1000 мг в/м 1 раз в 3 месяца
       frequency_text: null
       duration_text: null
       route: null
@@ -217,19 +261,17 @@ conditions:
         document_url: null
         local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
           взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: 'внутрь 500 мг  - 10 дней, офлокса-
-
-          цин внутрь 400 мг  1'
-    - drug_name: цефтриаксон
+        quote: тестостерон 1000 мг в/м 1 раз в 3 месяца
+    - drug_name: тестостерон
       active_substance: null
       drug_group: null
-      dose_text: 1000 мг
+      dose_text: 40 мг 3 раза в сутки внутрь 3 месяца
       frequency_text: null
       duration_text: null
       route: null
@@ -242,314 +284,795 @@ conditions:
         document_url: null
         local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
           взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "цефтриаксон 1000 мг в/м 2 раза в \nсутки 7-10 дней"
-    - drug_name: диклофенак
-      active_substance: null
-      drug_group: null
-      dose_text: "100 \nмг"
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
-        document_url: null
-        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
-          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "диклофенак 100 \nмг в сутки внутрь или ректально \nДлительнос"
-    - drug_name: нимесулид
-      active_substance: null
-      drug_group: null
-      dose_text: 100 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
-        document_url: null
-        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
-          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "нимесулид 100 мг внутрь - 5 дней, \nили мелоксикам 7,5-15 "
-    - drug_name: хлортиазид
-      active_substance: null
-      drug_group: null
-      dose_text: 25 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
-        document_url: null
-        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
-          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "хлортиазид  25 мг внутрь 2 раза в \nсутки"
-    - drug_name: кислота
-      active_substance: null
-      drug_group: null
-      dose_text: 10 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
-        document_url: null
-        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
-          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'кислота 10 мг/кг внутрь (при ре-
-
-          зорбтивной гиперкаль'
-    - drug_name: гидрохлорид
-      active_substance: null
-      drug_group: null
-      dose_text: 10 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
-        document_url: null
-        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
-          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "гидрохлорид 10 мг внутрь 2-3 раза в \nсутки"
-    - drug_name: магния
-      active_substance: null
-      drug_group: null
-      dose_text: 175мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
-        document_url: null
-        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
-          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "магния 175мг/175мг внутрь в таб-\nлетках ежедневно  \n"
-    - drug_name: метионин
-      active_substance: null
-      drug_group: null
-      dose_text: 500 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
-        document_url: null
-        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
-          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "метионин 500 мг внутрь 2-3 раза \nв сутки"
-    - drug_name: гидрохлортиазид
-      active_substance: null
-      drug_group: null
-      dose_text: 25 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
-        document_url: null
-        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
-          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "гидрохлортиазид 25 мг \nвнутрь 2 раза в сутки \n \nпри цистинурии:"
+        quote: тестостерон 40 мг 3 раза в сутки внутрь 3 месяца
     procedures: []
     surgery: []
     source_refs: []
-  follow_up:
-  - text: динамического наблюден
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
-      document_url: null
-      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
-        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: динамического наблюден
-  - text: Динамическое наблюден
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
-      document_url: null
-      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
-        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Динамическое наблюден
-  - text: Динамическое наблюден
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
-      document_url: null
-      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
-        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Динамическое наблюден
-  - text: Контроль
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
-      document_url: null
-      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
-        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Контроль
-  - text: контроль
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
-      document_url: null
-      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
-        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: контроль
+  follow_up: []
   hospitalization: []
   routing: []
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
-    document_url: null
-    local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов взрослое
-      население с урологическими заболеваниями 22.09.2011 №920.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: диагностики и лечения пациентов взрослое население с урологическими заболеваниями
+  source_refs: []
+- condition_id: hydronephrosis_renal_ureteric_calculus
+  name: Гидронефроз с обструкцией почки и мочеточниковым камнем
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - N13.3
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing: []
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: hydroureter
+  name: Гидроуретер
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - N13.4
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing: []
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: ureter_kink_stricture_no_hydronephrosis
+  name: Перегиб и стриктура мочеточника без гидронефроза
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - N13.5
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: pyonephrosis
+  name: Пионефроз
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - N13.6
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing: []
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: uropathy_vesicoureteral_reflux
+  name: Уропатия, обусловленная пузырно-мочеточниковым рефлюксом
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - N13.7
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing: []
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: renal_and_ureteric_calculi
+  name: Камни почки и мочеточника
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - N20.0
+  - N20.2
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: bladder_calculus
+  name: Камень мочевого пузыря
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - N21.0
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams:
+  - name: Физикальное обследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: 17
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Физикальное обследование
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: 17
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Общий анализ мочи
+  - name: Общий анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: 17
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Общий анализ крови
+  - name: УЗИ органов мочевой системы
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: 18
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗИ органов мочевой системы
+  - name: Урография обзорная
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: 18
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Урография обзорная
+  - name: Урография эскреторная
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: 18
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Урография эскреторная
+  - name: Анализ камня
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: 14
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Анализ камня
+  - name: Определение вида камнеобразования
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: 18
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: После удаления камня - Определение вида камнеобразования
+  - name: Биохимическое исследование крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: 18
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Биохимическое исследование крови: определение концентрации кальция,
+        мочевой кислоты'
+  - name: Биохимическое исследование разовой порции мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: 18
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Биохимическое исследование разовой порции мочи: определение концентрации
+        кальция, фосфора, магния, мочевой кислоты, натрия, хлора, креатинина'
+  conditional_exams: []
+  treatment:
+    non_drug:
+    - text: Контроль плотности мочи в пределах 1,010-1,015 г/л путем увеличения суточного
+        диуреза (водная нагрузка)
+      source_ref:
+        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Контроль плотности мочи в пределах 1,010-1,015 г/л путем увеличения
+          суточного диуреза (водная нагрузка)
+    - text: нормализация веса
+      source_ref:
+        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: нормализация веса
+    - text: нормализация суточного диуреза
+      source_ref:
+        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: нормализация суточного диуреза
+    - text: ограничение употребления белка
+      source_ref:
+        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ограничение употребления белка
+    - text: ощелачивание мочи - алкализирующие цитратные смеси внутрь, например, блемарен
+        (под контролем рН мочи 7,7-8,0), или натрия гидрокарбонат внутрь в суточной
+        дозе 0,1-0,2 г на кг массы тела
+      source_ref:
+        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ощелачивание мочи - алкализирующие цитратные смеси внутрь, например,
+          блемарен (под контролем рН мочи 7,7-8,0), или натрия гидрокарбонат внутрь
+          в суточной дозе 0,1-0,2 г на кг массы тела
+    - text: Диета – лечебное питание
+      source_ref:
+        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Диета – лечебное питание
+    - text: Оптимизация физической активности
+      source_ref:
+        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Оптимизация физической активности
+    drug_groups: []
+    drugs:
+    - drug_name: Канефрон
+      active_substance: null
+      drug_group: null
+      dose_text: 50 капель внутрь 3 раза в сутки - 21 день, затем по 50 капель 3 раза
+        в день - 10 дней каждого месяца в течение 3-6 мес.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+        page_start: 14
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Комбинированные лекарственные препараты растительного происхождения:
+          экстракты растительных препаратов, например, канефрон по 50 капель внутрь
+          3 раза в сутки - 21 день, затем по 50 капель 3 раза в день - 10 дней каждого
+          месяца в течение 3-6 мес.'
+    - drug_name: Гидрохлортиазид
+      active_substance: null
+      drug_group: null
+      dose_text: 25 мг внутрь 2 раза в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+        page_start: 15
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'мочегонные препараты: гидрохлортиазид 25 мг внутрь 2 раза в сутки'
+    - drug_name: Аллопуринол
+      active_substance: null
+      drug_group: null
+      dose_text: 100-300 мг в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+        page_start: 15
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'ингибиторы синтеза мочевой кислоты: аллопуринол внутрь 100-300 мг
+          в сутки'
+    - drug_name: Блемарен
+      active_substance: null
+      drug_group: null
+      dose_text: под контролем рН мочи 6,0-6,5 (не более 7,0)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+        document_url: null
+        local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+          взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+        page_start: 15
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: алкализирующие цитратные смеси внутрь, например, блемарен (под контролем
+          рН мочи 6,0-6,5 (не более 7,0))
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Наблюдение после стационарного лечения
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Наблюдение после стационарного лечения
+  - text: Повторные контрольные исследования в зависимости от типа нарушений и проводимого
+      лечения
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Повторные контрольные исследования в зависимости от типа нарушений и
+        проводимого лечения
+  - text: Контроль плотности мочи в пределах 1,010-1,015 г/л путем увеличения суточного
+      диуреза (водная нагрузка)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль плотности мочи в пределах 1,010-1,015 г/л путем увеличения суточного
+        диуреза (водная нагрузка)
+  - text: Длительность наблюдения и лечения определяются индивидуально в зависимости
+      от состояния пациента
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Длительность наблюдения и лечения определяются индивидуально в зависимости
+        от состояния пациента
+  hospitalization: []
+  routing:
+  - text: госпитализация/амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация/амбулаторно
+  - text: госпитализация в урологический стационар для дистанционной или контактной
+      литотрипсии и лапаксии при установлении диагноза или при неэффективности лечения
+      и развитии осложнений
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация в урологический стационар для дистанционной или контактной
+        литотрипсии и лапаксии при установлении диагноза или при неэффективности лечения
+        и развитии осложнений
+  red_flags:
+  - text: Неэффективность лечения и развитие осложнений
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+      document_url: null
+      local_path: minzdrav_protocols/urologiya/КП диагностики и лечения пациентов
+        взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При неэффективности лечения и развитии осложнений госпитализация в урологический
+        стационар
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T18:09:33.212881+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-21T06:18:58.509025+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
-  - llm_skeleton_failed_fallback
+  - llm_pipeline_v1
+  - conditions=9
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-07-20T18:09:33.232992+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[testicular_hypofunction].treatment.drugs[3]
+  validated_at: '2026-07-21T06:18:58.549078+00:00'

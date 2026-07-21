@@ -1,10 +1,10 @@
 {
   "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "диагностики и лечения пациентов с инфекциями передаваемыми половым путем",
+    "title": "Диагностики и лечения пациентов с инфекциями передаваемыми половым путем",
     "url": null,
     "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
     "document_sha256": null,
@@ -22,7 +22,8 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "adult_and_child",
+      "pregnant"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,68 +33,20 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностики_и_лечения_пациентов_с_инфекциями_пер",
-      "name": "диагностики и лечения пациентов с инфекциями передаваемыми половым путем",
+      "condition_id": "primary_syphilis_other_locations",
+      "name": "Первичный сифилис других локализаций",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "B24",
-        "K75.9"
+        "A51.1"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
-      "diagnostic_criteria": {
-        "required": [
-          {
-            "text": "6     обследование  проводится, если диагноз впервые устанавливается в условиях стационара",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "6     обследование  проводится, если диагноз впервые устанавливается в условиях стационара"
-            }
-          },
-          {
-            "text": "6     обследование  проводится, если диагноз впервые устанавливается в условиях стационара",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "6     обследование  проводится, если диагноз впервые устанавливается в условиях стационара"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
+      "diagnostic_criteria": null,
       "required_exams": [
         {
-          "name": "УЗИ",
+          "name": "МАНК, РИФ, ИФА (на антигены) на ИППП",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -108,117 +61,177 @@
             "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
             "document_url": null,
             "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
-            "page_start": null,
+            "page_start": 4,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "-акушера- \nгинеколога \n(врача-уролога) \nУЗИ органов \nмалого таза  \nОсновная методика: \nЦефтриаксон в/м или в/в 1,0 г каждые"
+            "quote": "МАНК, РИФ, ИФА (на антигены) на ИППП (применяется один из предложенных методов)"
+          }
+        },
+        {
+          "name": "Физикальный осмотр",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Физикальный осмотр"
+          }
+        },
+        {
+          "name": "Общий анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Общий анализ крови"
+          }
+        },
+        {
+          "name": "Общий анализ мочи",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Общий анализ мочи"
+          }
+        },
+        {
+          "name": "Микрореакция преципитации с плазмой или инактивированной сывороткой",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Микрореакция преципитации с плазмой или инактивированной сывороткой"
+          }
+        },
+        {
+          "name": "Консультация врача-офтальмолога, врача-терапевта (у детей - неонатолога или педиатра), врача-невролога, врача-оториноларинголога",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Консультация врача-офтальмолога, врача-терапевта (у детей - неонатолога или педиатра), врача-невролога, врача-оториноларинголога"
           }
         }
       ],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "бензилпенициллина по 600 тыс. ЕД",
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "бензилпенициллина по 600 тыс. ЕД"
-            }
-          },
-          {
-            "text": "в/м 2 р/сут. с интервалом 12 часов 28",
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "в/м 2 р/сут. с интервалом 12 часов 28"
-            }
-          },
-          {
-            "text": "Цефтриаксон по 1,0 г в/м 1 раз в сутки",
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Цефтриаксон по 1,0 г в/м 1 раз в сутки"
-            }
-          },
-          {
-            "text": "Эритромицин  по 0,5 внутрь 4 раза в",
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Эритромицин  по 0,5 внутрь 4 раза в"
-            }
-          },
-          {
-            "text": "Лечение детей проводится в условиях",
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Лечение детей проводится в условиях"
-            }
-          },
-          {
-            "text": "[treatment] МАНК, РИФ, (стр. 7)",
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] МАНК, РИФ, (стр. 7)"
-            }
+      "conditional_exams": [
+        {
+          "name": "Бактериологическое обследование",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Бактериологическое обследование"
           }
-        ],
+        }
+      ],
+      "treatment": {
+        "non_drug": [],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "венно",
+            "drug_name": "Цефтриаксон",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2,0 г",
+            "dose_text": "в/м 1,0 однократно",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -230,20 +243,20 @@
               "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
               "document_url": null,
               "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "венно 2,0 г 1 раз в день \n20 дней \nАльтернативная ме"
+              "quote": "Основная методика: Цефтриаксон в/м 1,0 однократно"
             }
           },
           {
-            "drug_name": "более",
+            "drug_name": "Цефиксим",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2,4 \nмл",
+            "dose_text": "внутрь 400 мг однократно",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -255,20 +268,20 @@
               "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
               "document_url": null,
               "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "более 2,4 \nмлн"
+              "quote": "Альтернативные методики: Цефиксим внутрь 400 мг однократно"
             }
           },
           {
-            "drug_name": "внутрь",
+            "drug_name": "Спектиномицин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "200 мг",
+            "dose_text": "в/м 2,0 г однократно, у женщин – 4 г (в каждую ягодицу по 2 г)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -280,20 +293,20 @@
               "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
               "document_url": null,
               "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "внутрь 200 мг каждые \n12 часов 14 дней \nПротивовоспали"
+              "quote": "Спектиномицин в/м 2,0 г однократно, у женщин – 4 г (в каждую ягодицу по 2 г)"
             }
           },
           {
-            "drug_name": "Эритромицин",
+            "drug_name": "Офлоксацин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "20 мг",
+            "dose_text": "внутрь 400 мг однократно",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -305,20 +318,20 @@
               "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
               "document_url": null,
               "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Эритромицин \n20 мг/кг в день внутрь в равных \nдозах 4 раза"
+              "quote": "Офлоксацин внутрь 400 мг однократно"
             }
           },
           {
-            "drug_name": "доза",
+            "drug_name": "Ломефлоксацин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "50 мг",
+            "dose_text": "внутрь 800 мг однократно",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -330,13 +343,88 @@
               "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
               "document_url": null,
               "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "доза 50 мг/кг \nв/м 1 раз в сутки, 20 дней \nили \nЭр"
+              "quote": "Ломефлоксацин внутрь 800 мг однократно"
+            }
+          },
+          {
+            "drug_name": "Новокаиновая соль бензилпенициллина (для беременных)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "по 600 тыс. ЕД в/м 2 р/сут. с интервалом 12 часов 28 дней",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Новокаиновая соль бензилпенициллина по 600 тыс. ЕД в/м 2 р/сут. с интервалом 12 часов 28 дней"
+            }
+          },
+          {
+            "drug_name": "Цефтриаксон (для беременных)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "по 1,0 г в/м 1 раз в сутки 20 дней",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Цефтриаксон по 1,0 г в/м 1 раз в сутки 20 дней"
+            }
+          },
+          {
+            "drug_name": "Эритромицин (для беременных)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "по 0,5 внутрь 4 раза в сутки 30 дней",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Эритромицин по 0,5 внутрь 4 раза в сутки 30 дней"
             }
           }
         ],
@@ -344,12 +432,13 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [
         {
-          "text": "через 3 \nмес",
+          "text": "амбулаторно",
           "timing": null,
           "required_if": [],
-          "expected_actions": [],
           "source_ref": {
             "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
             "document_url": null,
@@ -360,14 +449,13 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "через 3 \nмес"
+            "quote": "амбулаторно"
           }
         },
         {
-          "text": "Контроль",
+          "text": "Лечение детей проводится в условиях стационара.",
           "timing": null,
           "required_if": [],
-          "expected_actions": [],
           "source_ref": {
             "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
             "document_url": null,
@@ -378,49 +466,333 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Контроль"
+            "quote": "Лечение детей проводится в условиях стационара."
           }
         }
       ],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "secondary_syphilis_skin_mucosa",
+      "name": "Вторичный сифилис кожи и слизистых оболочек",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "A51.2"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": {
+        "non_drug": [],
+        "drug_groups": [],
+        "drugs": [
+          {
+            "drug_name": "Новокаиновая соль бензилпенициллина",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "по 600 тыс. ЕД в/м 2 р/сут. с интервалом 12 часов 28 дней",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Новокаиновая соль бензилпенициллина по 600 тыс. ЕД в/м 2 р/сут. с интервалом 12 часов 28 дней"
+            }
+          },
+          {
+            "drug_name": "Цефтриаксон",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "по 1,0 г в/м 1 раз в сутки 20 дней",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Цефтриаксон по 1,0 г в/м 1 раз в сутки 20 дней"
+            }
+          },
+          {
+            "drug_name": "Эритромицин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "по 0,5 внутрь 4 раза в сутки 30 дней",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Эритромицин по 0,5 внутрь 4 раза в сутки 30 дней"
+            }
+          }
+        ],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "госпитализация для детей",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация для детей"
+          }
+        }
+      ],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "early_latent_syphilis",
+      "name": "Ранний сифилис скрытый",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "A51.5"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": {
+        "non_drug": [],
+        "drug_groups": [],
+        "drugs": [
+          {
+            "drug_name": "Новокаиновая соль бензилпенициллина",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "600 тыс. ЕД в/м 2 р/сут. с интервалом 12 часов 28 дней",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лечение беременных: Основная методика: Новокаиновая соль бензилпенициллина по 600 тыс. ЕД в/м 2 р/сут. с интервалом 12 часов 28 дней"
+            }
+          },
+          {
+            "drug_name": "Цефтриаксон",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "1,0 г в/м 1 раз в сутки 20 дней",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Альтернативные методики: Цефтриаксон по 1,0 г в/м 1 раз в сутки 20 дней"
+            }
+          },
+          {
+            "drug_name": "Эритромицин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,5 внутрь 4 раза в сутки 30 дней",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Альтернативные методики: Эритромицин по 0,5 внутрь 4 раза в сутки 30 дней"
+            }
+          }
+        ],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "госпитализация (для детей)",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "госпитализация (для детей)"
+          }
+        }
+      ],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "cardiovascular_syphilis",
+      "name": "Сифилис сердечно-сосудистой системы",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "A52.0"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": null,
+      "follow_up": [],
       "hospitalization": [],
       "routing": [],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "infektsionnye_zabolevaniya_кп_диагностики_и_лечения_пациентов_с_инфекциями_перед",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП диагностики и лечения пациентов с инфекциями передаваемыми половым путем 29.10.2009_№1020.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "диагностики и лечения пациентов с инфекциями передаваемыми половым путем"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-07-20T16:09:48.458872+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-21T05:44:22.958465+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections",
-      "llm_skeleton_failed_fallback"
+      "llm_pipeline_v1",
+      "conditions=4"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-07-20T16:09:48.465951+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[secondary_syphilis_skin_mucosa].treatment.drugs[1]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[early_latent_syphilis].treatment.drugs[0]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[early_latent_syphilis].treatment.drugs[1]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[early_latent_syphilis].treatment.drugs[2]"
+      }
+    ],
+    "validated_at": "2026-07-21T05:44:22.981178+00:00"
   }
 }

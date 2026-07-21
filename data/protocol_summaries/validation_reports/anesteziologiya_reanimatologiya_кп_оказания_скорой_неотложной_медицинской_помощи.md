@@ -1,6 +1,9 @@
 # Validation: anesteziologiya_reanimatologiya_кп_оказания_скорой_неотложной_медицинской_помощи
 
-- **status:** valid
-- **validated_at:** 2026-07-20T15:17:05.468621+00:00
+- **status:** needs_human_review
+- **validated_at:** 2026-07-21T05:35:35.071991+00:00
 - **review_status:** needs_review
-- **extraction_status:** auto_extracted
+- **extraction_status:** llm_extracted
+
+## Warnings
+- `missing_icd10` conditions[traumatic_brain_injury]: Нет icd10_codes у condition

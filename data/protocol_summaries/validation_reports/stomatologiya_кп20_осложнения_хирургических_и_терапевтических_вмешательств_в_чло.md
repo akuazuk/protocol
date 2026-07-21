@@ -1,6 +1,49 @@
 # Validation: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
 
-- **status:** valid
-- **validated_at:** 2026-07-20T17:58:46.097125+00:00
+- **status:** needs_human_review
+- **validated_at:** 2026-07-21T06:13:53.377410+00:00
 - **review_status:** needs_review
-- **extraction_status:** auto_extracted
+- **extraction_status:** llm_extracted
+
+## Warnings
+- `missing_icd10` conditions[maxillary_tuberosity_fracture]: Нет icd10_codes у condition
+- `missing_icd10` conditions[post_injection_hematoma]: Нет icd10_codes у condition
+- `duplicate_drug` conditions[post_injection_hematoma].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[post_injection_hematoma].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[post_injection_hematoma].treatment.drugs[2]: Дублирующийся препарат
+- `missing_icd10` conditions[alveolar_hemorrhage]: Нет icd10_codes у condition
+- `duplicate_drug` conditions[alveolar_hemorrhage].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[alveolar_hemorrhage].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[alveolar_hemorrhage].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[tooth_displacement_soft_tissue].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[tooth_displacement_soft_tissue].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[tooth_displacement_soft_tissue].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[tooth_displacement_soft_tissue].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[tooth_displacement_soft_tissue].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[tooth_displacement_soft_tissue].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[tooth_displacement_soft_tissue].treatment.drugs[6]: Дублирующийся препарат
+- `missing_icd10` conditions[needle_fracture_anesthesia]: Нет icd10_codes у condition
+- `duplicate_drug` conditions[needle_fracture_anesthesia].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[needle_fracture_anesthesia].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[needle_fracture_anesthesia].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[needle_fracture_anesthesia].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[needle_fracture_anesthesia].treatment.drugs[4]: Дублирующийся препарат
+- `missing_icd10` conditions[aggressive_fluid_injection]: Нет icd10_codes у condition
+- `duplicate_drug` conditions[aggressive_fluid_injection].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[aggressive_fluid_injection].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[aggressive_fluid_injection].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[aggressive_fluid_injection].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[aggressive_fluid_injection].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[aggressive_fluid_injection].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[aggressive_fluid_injection].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[aggressive_fluid_injection].treatment.drugs[8]: Дублирующийся препарат
+- `missing_icd10` conditions[soft_tissue_damage_tooth_extraction]: Нет icd10_codes у condition
+- `duplicate_drug` conditions[soft_tissue_damage_tooth_extraction].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[soft_tissue_damage_tooth_extraction].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[soft_tissue_damage_tooth_extraction].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[soft_tissue_damage_tooth_extraction].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[soft_tissue_damage_tooth_extraction].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[soft_tissue_damage_tooth_extraction].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[soft_tissue_damage_tooth_extraction].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[soft_tissue_damage_tooth_extraction].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[soft_tissue_damage_tooth_extraction].treatment.drugs[8]: Дублирующийся препарат

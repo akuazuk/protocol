@@ -512,7 +512,9 @@ def build_protocol_overview(
         }
 
     prompt = _build_overview_prompt(query=q, title=title, path=pth, sources=sources)
-    max_out = int(os.environ.get("PROTOCOL_OVERVIEW_MAX_TOKENS", "1200"))
+    # gemini-2.5-flash расходует часть бюджета на «мышление»; при 1200 на длинном промпте
+    # (summary + до 6 points) вывод обнулялся -> поднимаем дефолт, чтобы хватало на ответ.
+    max_out = int(os.environ.get("PROTOCOL_OVERVIEW_MAX_TOKENS", "3000"))
     try:
         resp = rs.generate_gemini_consult_review_synthesize(model, prompt, max_out=max_out)
         txt = rs._extract_gemini_text(resp)
