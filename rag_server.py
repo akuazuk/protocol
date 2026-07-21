@@ -7681,6 +7681,11 @@ def _client_ip(request: "Request") -> str:
     return request.client.host if request.client else "unknown"
 
 
+def _rate_limit_skip_ip(ip: str) -> bool:
+    """Локальные/loopback вызовы (batch на том же инстансе) не режем."""
+    return ip in {"127.0.0.1", "::1", "localhost"}
+
+
 def _rate_limit_allows(key: str, limit: int) -> bool:
     if limit <= 0:
         return True
@@ -7751,16 +7756,18 @@ async def _security_and_rate_limit(request: "Request", call_next):
         return live
     if _RATE_LIMIT_ENABLED:
         path = request.url.path
-        explicit = path in _RATE_LIMITS
-        if explicit or (request.method == "POST" and path.startswith("/api/")):
-            limit = _RATE_LIMITS.get(path, _RATE_LIMIT_DEFAULT)
-            if not _rate_limit_allows(f"{_client_ip(request)}|{path}", limit):
-                if _REQUEST_LOG:
-                    _logger.warning("429 rate-limit %s %s ip=%s", request.method, path, _client_ip(request))
-                return JSONResponse(
-                    {"detail": "Слишком много запросов. Подождите минуту и повторите."},
-                    status_code=429,
-                )
+        ip = _client_ip(request)
+        if not _rate_limit_skip_ip(ip):
+            explicit = path in _RATE_LIMITS
+            if explicit or (request.method == "POST" and path.startswith("/api/")):
+                limit = _RATE_LIMITS.get(path, _RATE_LIMIT_DEFAULT)
+                if not _rate_limit_allows(f"{ip}|{path}", limit):
+                    if _REQUEST_LOG:
+                        _logger.warning("429 rate-limit %s %s ip=%s", request.method, path, ip)
+                    return JSONResponse(
+                        {"detail": "Слишком много запросов. Подождите минуту и повторите."},
+                        status_code=429,
+                    )
     started = time.perf_counter()
     try:
         response = await call_next(request)
@@ -8376,7 +8383,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-21-r29-mis-visit-enrich"
+BUILD_VERSION = "2026-07-21-r30-mis-kz-l1-dashboard"
 
 
 def _app_version() -> str:
@@ -10605,6 +10612,18 @@ def api_methodist_patient_quality(request: "Request") -> dict:
     from clinical_knowledge.patient_nightly_quality import build_methodist_patient_quality_view
 
     return build_methodist_patient_quality_view()
+
+
+@app.get("/api/methodist/mis-kz-quality")
+def api_methodist_mis_kz_quality(
+    request: "Request",
+    month: str = Query("2026-07", min_length=7, max_length=7),
+) -> dict:
+    """Агрегаты L1-анализа mis_protocol (врачи / специальности / филиалы)."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.mis_kz_quality import build_mis_kz_quality_view
+
+    return build_mis_kz_quality_view(month=month)
 
 
 @app.post("/api/methodist/patient-quality/refresh")

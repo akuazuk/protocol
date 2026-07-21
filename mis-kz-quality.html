@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MIS · качество КЗ (L1) | Кабинет методиста · Protocol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #14241f;
+    --muted: #5a726a;
+    --line: #d7e6df;
+    --card: #ffffff;
+    --bg0: #eef6f2;
+    --bg1: #f7fbf9;
+    --teal: #0f6b5c;
+    --teal-deep: #0a4a40;
+    --mint: #c8ebe0;
+    --good: #1a8a72;
+    --mid: #c9851a;
+    --low: #b42318;
+    --shadow: 0 18px 50px rgba(10, 74, 64, 0.10);
+    --radius: 18px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    color: var(--ink);
+    font-family: "DM Sans", system-ui, sans-serif;
+    background:
+      radial-gradient(900px 420px at 12% -10%, #d9f3ea 0%, transparent 60%),
+      radial-gradient(800px 380px at 100% 0%, #e7f0ff 0%, transparent 55%),
+      linear-gradient(180deg, var(--bg0), var(--bg1) 40%, #fff);
+    min-height: 100vh;
+  }
+  h1, h2, h3 { font-family: "Fraunces", Georgia, serif; font-weight: 700; letter-spacing: -0.02em; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 22px 18px 64px; }
+  .hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px;
+    padding: 28px 28px 24px;
+    color: #f4fffb;
+    background:
+      linear-gradient(135deg, rgba(15,107,92,.96), rgba(10,74,64,.92)),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 40 40'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M0 20h40v1H0zM20 0v40h1V0z'/%3E%3C/g%3E%3C/svg%3E");
+    box-shadow: var(--shadow);
+  }
+  .hero::after {
+    content: "";
+    position: absolute; right: -40px; top: -40px; width: 220px; height: 220px;
+    border-radius: 50%; background: rgba(255,255,255,.08);
+  }
+  .hero-top { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: flex-start; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: .4rem;
+    font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+    color: #b7ebe0; margin-bottom: 8px;
+  }
+  .hero h1 { margin: 0 0 8px; font-size: clamp(1.6rem, 3vw, 2.2rem); }
+  .hero p { margin: 0; max-width: 62ch; color: #d7f3ec; font-size: 15px; line-height: 1.5; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .btn {
+    appearance: none; border: 0; cursor: pointer; border-radius: 999px;
+    padding: 10px 14px; font: inherit; font-size: 13px; font-weight: 600;
+    background: #fff; color: var(--teal-deep); text-decoration: none;
+  }
+  .btn--ghost { background: rgba(255,255,255,.12); color: #fff; border: 1px solid rgba(255,255,255,.25); }
+  .meta { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px 16px; font-size: 13px; color: #cceee5; }
+  .kpi-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 18px 0 8px;
+  }
+  @media (max-width: 900px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+  .kpi {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 16px 16px 14px; box-shadow: 0 8px 24px rgba(20,36,31,.04);
+  }
+  .kpi .label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+  .kpi .value { margin-top: 6px; font-family: "Fraunces", serif; font-size: 1.85rem; color: var(--teal-deep); }
+  .kpi .hint { margin-top: 4px; font-size: 12px; color: var(--muted); }
+  .grid-2 { display: grid; grid-template-columns: 1.1fr .9fr; gap: 14px; margin-top: 14px; }
+  @media (max-width: 960px) { .grid-2 { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 18px; box-shadow: 0 8px 24px rgba(20,36,31,.04);
+  }
+  .card h2 { margin: 0 0 4px; font-size: 1.2rem; }
+  .card .sub { margin: 0 0 14px; color: var(--muted); font-size: 13px; }
+  .bars { display: flex; flex-direction: column; gap: 8px; }
+  .bar-row { display: grid; grid-template-columns: 72px 1fr 48px; gap: 10px; align-items: center; }
+  .bar-row .name { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .bar-track { height: 12px; border-radius: 999px; background: #eef5f2; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #1a8a72, #3cb89a); }
+  .bar-fill.is-mid { background: linear-gradient(90deg, #c9851a, #e3b04a); }
+  .bar-fill.is-low { background: linear-gradient(90deg, #b42318, #e35d4f); }
+  .bar-row .pct { font-size: 12px; font-weight: 700; text-align: right; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 9px 8px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+  th { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  tr:hover td { background: #f4faf7; }
+  .score {
+    display: inline-flex; min-width: 52px; justify-content: center;
+    padding: 3px 8px; border-radius: 999px; font-weight: 700; font-size: 12px;
+  }
+  .score.good { background: #e5f7f1; color: var(--good); }
+  .score.mid { background: #fff4df; color: #9a6410; }
+  .score.low { background: #fdecec; color: var(--low); }
+  .error {
+    margin-top: 16px; padding: 14px 16px; border-radius: 14px;
+    background: #fdecec; color: #7f1d1d; border: 1px solid #f5c2c2;
+  }
+  .auth-box {
+    margin-top: 16px; padding: 16px; border-radius: 16px; background: #fff; border: 1px solid var(--line);
+  }
+  .auth-box input {
+    width: min(420px, 100%); padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line);
+    font: inherit; margin-right: 8px;
+  }
+  .footnote { margin-top: 18px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+  .loading { color: var(--muted); padding: 24px 0; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <div class="hero-top">
+        <div>
+          <div class="eyebrow">Кабинет методиста · MIS</div>
+          <h1>Качество КЗ за месяц</h1>
+          <p>
+            Детерминированный L1-срез всех консультативных заключений из выгрузки МИС:
+            без LLM, по врачам, специальностям и филиалам.
+          </p>
+        </div>
+        <div class="hero-actions">
+          <a class="btn btn--ghost" href="index.html?mode=methodist#mis-kz">← В кабинет</a>
+          <button class="btn" type="button" id="btn-refresh">Обновить</button>
+        </div>
+      </div>
+      <div class="meta" id="meta-line">Загрузка…</div>
+    </header>
+
+    <div id="auth" class="auth-box" hidden>
+      <strong>Нужен токен методиста</strong>
+      <p style="margin:6px 0 10px;color:var(--muted);font-size:13px">Откройте страницу из кабинета методиста или вставьте токен:</p>
+      <input id="token-input" type="password" placeholder="X-Methodist-Token" autocomplete="off" />
+      <button class="btn" type="button" id="btn-token" style="background:var(--teal);color:#fff">Показать</button>
+    </div>
+    <div id="error" class="error" hidden></div>
+    <div id="loading" class="loading">Считаем агрегаты L1…</div>
+
+    <div id="dashboard" hidden>
+      <div class="kpi-grid">
+        <div class="kpi"><div class="label">КЗ в срезе</div><div class="value" id="kpi-n"> - </div><div class="hint" id="kpi-n-hint"></div></div>
+        <div class="kpi"><div class="label">Средний overall</div><div class="value" id="kpi-avg"> - </div><div class="hint" id="kpi-avg-hint"></div></div>
+        <div class="kpi"><div class="label">Врачей</div><div class="value" id="kpi-docs"> - </div><div class="hint">уникальных ФИО в выгрузке</div></div>
+        <div class="kpi"><div class="label">Ошибки анализа</div><div class="value" id="kpi-err"> - </div><div class="hint">сбоев L1 / сети</div></div>
+      </div>
+
+      <div class="grid-2">
+        <section class="card">
+          <h2>Распределение баллов</h2>
+          <p class="sub">Гистограмма overall % по всем успешно разобранным КЗ</p>
+          <div class="bars" id="hist-bars"></div>
+        </section>
+        <section class="card">
+          <h2>Средние по блокам</h2>
+          <p class="sub">Alignment L1: где чаще проседает качество записи</p>
+          <div class="bars" id="block-bars"></div>
+        </section>
+      </div>
+
+      <div class="grid-2" style="margin-top:14px">
+        <section class="card">
+          <h2>Топ врачей</h2>
+          <p class="sub">По среднему overall (минимум 3 КЗ, если есть)</p>
+          <div style="overflow:auto;max-height:420px"><table><thead><tr><th>Врач</th><th>Спец.</th><th>N</th><th>Avg</th></tr></thead><tbody id="top-docs"></tbody></table></div>
+        </section>
+        <section class="card">
+          <h2>Зона внимания</h2>
+          <p class="sub">Нижние по среднему overall (кандидаты на разбор / L2)</p>
+          <div style="overflow:auto;max-height:420px"><table><thead><tr><th>Врач</th><th>Спец.</th><th>N</th><th>Avg</th></tr></thead><tbody id="bottom-docs"></tbody></table></div>
+        </section>
+      </div>
+
+      <div class="grid-2" style="margin-top:14px">
+        <section class="card">
+          <h2>Специальности</h2>
+          <div style="overflow:auto;max-height:360px"><table><thead><tr><th>Специальность</th><th>N</th><th>Avg</th></tr></thead><tbody id="specs"></tbody></table></div>
+        </section>
+        <section class="card">
+          <h2>Филиалы</h2>
+          <div style="overflow:auto;max-height:360px"><table><thead><tr><th>Филиал</th><th>N</th><th>Avg</th></tr></thead><tbody id="filials"></tbody></table></div>
+        </section>
+      </div>
+
+      <p class="footnote" id="notes"></p>
+    </div>
+  </div>
+
+<script>
+(function () {
+  var TOKEN_KEY = "protocol_methodist_token";
+  var month = (new URLSearchParams(location.search).get("month") || "2026-07");
+
+  function getToken() {
+    try { return sessionStorage.getItem(TOKEN_KEY) || localStorage.getItem(TOKEN_KEY) || ""; }
+    catch (e) { return ""; }
+  }
+  function setToken(t) {
+    try { sessionStorage.setItem(TOKEN_KEY, t); localStorage.setItem(TOKEN_KEY, t); } catch (e) {}
+  }
+  function scoreClass(v) {
+    if (v == null) return "mid";
+    if (v >= 75) return "good";
+    if (v >= 65) return "mid";
+    return "low";
+  }
+  function scorePill(v) {
+    if (v == null || v === "") return " - ";
+    var n = Number(v);
+    return '<span class="score ' + scoreClass(n) + '">' + n.toFixed(1) + '%</span>';
+  }
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function bar(name, value, max) {
+    var v = Number(value) || 0;
+    var m = Math.max(max || 100, 1);
+    var pct = Math.max(0, Math.min(100, (v / m) * 100));
+    var cls = v >= 75 ? "" : (v >= 65 ? " is-mid" : " is-low");
+    return '<div class="bar-row"><div class="name">' + esc(name) + '</div>' +
+      '<div class="bar-track"><div class="bar-fill' + cls + '" style="width:' + pct + '%"></div></div>' +
+      '<div class="pct">' + (Number.isFinite(v) ? v.toFixed(0) : " - ") + '</div></div>';
+  }
+  function doctorRows(list, minN) {
+    minN = minN || 1;
+    return (list || []).filter(function (d) {
+      return (d.n || 0) >= minN && d.avg_overall_pct != null;
+    }).slice(0, 20).map(function (d) {
+      return "<tr><td>" + esc(d.doctor_fio) + "</td><td>" + esc(d.specialization || " - ") +
+        "</td><td>" + esc(d.n) + "</td><td>" + scorePill(d.avg_overall_pct) + "</td></tr>";
+    }).join("") || "<tr><td colspan='4'>Нет данных</td></tr>";
+  }
+  function simpleRows(list, key) {
+    return (list || []).slice(0, 25).map(function (d) {
+      return "<tr><td>" + esc(d[key]) + "</td><td>" + esc(d.n) + "</td><td>" + scorePill(d.avg_overall_pct) + "</td></tr>";
+    }).join("") || "<tr><td colspan='3'>Нет данных</td></tr>";
+  }
+
+  function render(data) {
+    document.getElementById("loading").hidden = true;
+    document.getElementById("dashboard").hidden = false;
+    document.getElementById("meta-line").textContent =
+      "Месяц " + (data.month || month) + " · tier " + (data.tier || "L1") +
+      " · сформировано " + (data.generated_at || " - ") +
+      (data.source_path ? " · " + data.source_path : "");
+    document.getElementById("kpi-n").textContent = data.n_ok != null ? data.n_ok : (data.n_cases || " - ");
+    document.getElementById("kpi-n-hint").textContent = "из " + (data.n_cases || " - ") + " строк выгрузки";
+    document.getElementById("kpi-avg").textContent = data.avg_overall_pct != null ? data.avg_overall_pct + "%" : " - ";
+    document.getElementById("kpi-avg-hint").textContent = "медиана " + (data.median_overall_pct != null ? data.median_overall_pct + "%" : " - ");
+    document.getElementById("kpi-docs").textContent = data.doctors_n != null ? data.doctors_n : ((data.doctors || []).length || " - ");
+    document.getElementById("kpi-err").textContent = data.n_errors != null ? data.n_errors : " - ";
+
+    var hist = data.score_histogram || {};
+    var histOrder = ["0-49", "50-59", "60-69", "70-79", "80-89", "90-100"];
+    var histMax = Math.max.apply(null, histOrder.map(function (k) { return Number(hist[k] || 0); }).concat([1]));
+    document.getElementById("hist-bars").innerHTML = histOrder.map(function (k) {
+      return bar(k + "%", hist[k] || 0, histMax);
+    }).join("");
+
+    var blocks = data.block_avg || {};
+    var blockLabels = {
+      diagnosis: "Диагноз", complaints: "Жалобы", anamnesis: "Анамнез",
+      objective_status: "Объект. статус", exams: "Обследования", treatment: "Лечение", follow_up: "Наблюдение"
+    };
+    var blockKeys = Object.keys(blocks);
+    document.getElementById("block-bars").innerHTML = blockKeys.length
+      ? blockKeys.map(function (k) { return bar(blockLabels[k] || k, blocks[k], 100); }).join("")
+      : "<div class='sub'>Нет block_avg в summary</div>";
+
+    var top = (data.top_doctors || data.doctors || []).slice().sort(function (a, b) {
+      return (b.avg_overall_pct || 0) - (a.avg_overall_pct || 0);
+    });
+    var bottom = (data.bottom_doctors || []).slice();
+    if (!bottom.length && data.doctors) {
+      bottom = data.doctors.slice().sort(function (a, b) {
+        return (a.avg_overall_pct || 0) - (b.avg_overall_pct || 0);
+      });
+    }
+    var minN = top.some(function (d) { return (d.n || 0) >= 3; }) ? 3 : 1;
+    document.getElementById("top-docs").innerHTML = doctorRows(top, minN);
+    document.getElementById("bottom-docs").innerHTML = doctorRows(bottom, minN);
+    document.getElementById("specs").innerHTML = simpleRows(data.specialties, "specialization");
+    document.getElementById("filials").innerHTML = simpleRows(data.filials, "filial");
+    document.getElementById("notes").textContent = (data.notes || []).join(" ");
+  }
+
+  function showError(msg) {
+    document.getElementById("loading").hidden = true;
+    var el = document.getElementById("error");
+    el.hidden = false;
+    el.textContent = msg;
+  }
+
+  async function load() {
+    document.getElementById("error").hidden = true;
+    document.getElementById("loading").hidden = false;
+    document.getElementById("dashboard").hidden = true;
+    var token = getToken();
+    var headers = { "Accept": "application/json" };
+    if (token) headers["X-Methodist-Token"] = token;
+    try {
+      var res = await fetch("/api/methodist/mis-kz-quality?month=" + encodeURIComponent(month), { headers: headers });
+      if (res.status === 401 || res.status === 403) {
+        document.getElementById("loading").hidden = true;
+        document.getElementById("auth").hidden = false;
+        document.getElementById("meta-line").textContent = "Нужна авторизация методиста";
+        return;
+      }
+      var data = await res.json();
+      if (!data.ok && !data.available) {
+        showError(data.hint_ru || data.error || "Summary ещё не готов");
+        document.getElementById("meta-line").textContent = "Нет агрегата L1";
+        return;
+      }
+      document.getElementById("auth").hidden = true;
+      render(data);
+    } catch (e) {
+      showError(String(e && e.message || e));
+    }
+  }
+
+  document.getElementById("btn-refresh").addEventListener("click", load);
+  document.getElementById("btn-token").addEventListener("click", function () {
+    var t = (document.getElementById("token-input").value || "").trim();
+    if (t) setToken(t);
+    load();
+  });
+  load();
+})();
+</script>
+</body>
+</html>

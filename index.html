@@ -551,7 +551,8 @@
     #tab-methodist-queue,
     #tab-methodist-search-stats,
     #tab-methodist-onco,
-    #tab-methodist-b2c {
+    #tab-methodist-b2c,
+    #tab-methodist-mis-kz {
       display: none;
     }
 
@@ -559,7 +560,8 @@
     body.methodist-mode #tab-methodist-queue:not([hidden]),
     body.methodist-mode #tab-methodist-search-stats:not([hidden]),
     body.methodist-mode #tab-methodist-onco:not([hidden]),
-    body.methodist-mode #tab-methodist-b2c:not([hidden]) {
+    body.methodist-mode #tab-methodist-b2c:not([hidden]),
+    body.methodist-mode #tab-methodist-mis-kz:not([hidden]) {
       display: inline-flex;
     }
 
@@ -12808,6 +12810,17 @@
           <span class="app-main-tab-sub">обзор, настройки B2B/B2C, демо-инструмент</span>
         </span>
       </button>
+      <button type="button" role="tab" id="tab-methodist-mis-kz" class="app-main-tab" aria-selected="false" aria-controls="panel-methodist-mis-kz" hidden>
+        <span class="app-main-tab-visual" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3v18h18" /><path d="M7 14l4-4 4 3 5-6" />
+          </svg>
+        </span>
+        <span class="app-main-tab-text">
+          <span class="app-main-tab-title">MIS · КЗ</span>
+          <span class="app-main-tab-sub">L1-срез выгрузки МИС по врачам и филиалам</span>
+        </span>
+      </button>
     </div>
 
     <div class="demo-cases-bar" id="demo-cases-bar" hidden>
@@ -14340,6 +14353,49 @@
           <div class="methodist-onco-frame-wrap">
             <iframe id="methodist-onco-frame" title="Онконастороженность - инструмент" loading="lazy"></iframe>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="panel-methodist-mis-kz"
+      class="panel-methodist-mis-kz"
+      role="tabpanel"
+      aria-labelledby="tab-methodist-mis-kz"
+      hidden
+    >
+      <div id="methodist-mis-kz-root" class="methodist-mis-kz-panel consult-hide-print">
+        <div class="methodist-ml-dashboard__hero">
+          <div>
+            <h2>MIS · качество КЗ (L1)</h2>
+            <p>
+              Массовый детерминированный срез выгрузки <code>mis_protocol</code> по врачам, специальностям и филиалам.
+              Без LLM (API cost ~$0). Полная визуализация - на отдельной странице.
+            </p>
+            <p class="methodist-tier-hint" id="methodist-mis-kz-meta"></p>
+          </div>
+          <div class="methodist-ml-dashboard__hero-actions">
+            <button type="button" class="btn-ml-dash-refresh" id="methodist-mis-kz-refresh">Обновить</button>
+            <a href="mis-kz-quality.html" target="_blank" rel="noopener noreferrer" class="btn-methodist-queue-open">Открыть дашборд</a>
+          </div>
+        </div>
+        <div id="methodist-mis-kz-error" class="methodist-ml-error" hidden></div>
+        <div id="methodist-mis-kz-kpi" class="analytics-kpi-grid" hidden></div>
+        <div class="methodist-ml-table-wrap" style="margin-top:1rem">
+          <table class="methodist-ml-table" id="methodist-mis-kz-table">
+            <thead>
+              <tr>
+                <th>Врач</th>
+                <th>Специальность</th>
+                <th>Филиал</th>
+                <th>N</th>
+                <th>Avg %</th>
+                <th>Min</th>
+                <th>Max</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -22383,6 +22439,7 @@
   var MAIN_TAB_SEARCH_STATS = "search-stats";
   var MAIN_TAB_B2C = "b2c-monetization";
   var MAIN_TAB_ONCO = "onco-risk";
+  var MAIN_TAB_MIS_KZ = "mis-kz";
   var METHODIST_RETRIEVAL_PROTOCOL_TAGS = ["wrong_protocol", "missed_protocol"];
   var __methodistMlCharts = {};
 
@@ -22637,6 +22694,11 @@
       if (active) tabOnco.removeAttribute("hidden");
       else tabOnco.setAttribute("hidden", "");
     }
+    var tabMisKz = document.getElementById("tab-methodist-mis-kz");
+    if (tabMisKz) {
+      if (active) tabMisKz.removeAttribute("hidden");
+      else tabMisKz.setAttribute("hidden", "");
+    }
     var methodistTabsRow = document.getElementById("methodist-main-tabs");
     if (methodistTabsRow) {
       if (active) methodistTabsRow.removeAttribute("hidden");
@@ -22656,7 +22718,8 @@
       hash === "#search-dashboard" ||
       hash === "#methodist-queue" ||
       hash === "#b2c-monetization" ||
-      hash === "#onco-risk"
+      hash === "#onco-risk" ||
+      hash === "#mis-kz"
     );
   }
 
@@ -22677,6 +22740,8 @@
       switchMainAppTab(MAIN_TAB_B2C);
     } else if (h === "#onco-risk" && window.__methodistMode) {
       switchMainAppTab(MAIN_TAB_ONCO);
+    } else if (h === "#mis-kz" && window.__methodistMode) {
+      switchMainAppTab(MAIN_TAB_MIS_KZ);
     } else if (h === "#analytics-stats" || h === "#analytics") {
       switchMainAppTab(MAIN_TAB_ANALYTICS);
     } else if (h === "#search" || h === "#/search") {
@@ -23574,6 +23639,110 @@
         if (errEl) {
           errEl.hidden = false;
           errEl.textContent = "Не удалось загрузить очередь: " + methodistApiErrorRu(e.message || e);
+        }
+      })
+      .finally(function () {
+        if (root) root.classList.remove("is-loading");
+      });
+  }
+
+  function loadMethodistMisKzPanel() {
+    if (!window.__methodistMode || !window.__methodistToken) return;
+    var root = document.getElementById("methodist-mis-kz-root");
+    var errEl = document.getElementById("methodist-mis-kz-error");
+    var kpiEl = document.getElementById("methodist-mis-kz-kpi");
+    var metaEl = document.getElementById("methodist-mis-kz-meta");
+    var tbody = document.querySelector("#methodist-mis-kz-table tbody");
+    if (errEl) {
+      errEl.hidden = true;
+      errEl.textContent = "";
+    }
+    if (root) root.classList.add("is-loading");
+    fetch("/api/methodist/mis-kz-quality?month=2026-07", {
+      headers: {
+        Accept: "application/json",
+        "X-Methodist-Token": window.__methodistToken,
+      },
+    })
+      .then(function (r) {
+        if (!r.ok) {
+          return r.text().then(function (t) {
+            throw new Error(t || r.status);
+          });
+        }
+        return r.json();
+      })
+      .then(function (data) {
+        if (!data || !data.available) {
+          if (errEl) {
+            errEl.hidden = false;
+            errEl.textContent = (data && data.hint_ru) || "Summary L1 ещё не готов";
+          }
+          if (metaEl) metaEl.textContent = "Нет kz_l1_*_summary.json";
+          if (kpiEl) kpiEl.hidden = true;
+          if (tbody) tbody.innerHTML = "";
+          return;
+        }
+        if (metaEl) {
+          metaEl.textContent =
+            "Месяц " +
+            (data.month || " - ") +
+            " · avg " +
+            (data.avg_overall_pct != null ? data.avg_overall_pct + "%" : " - ") +
+            " · КЗ " +
+            (data.n_ok != null ? data.n_ok : " - ") +
+            "/" +
+            (data.n_cases != null ? data.n_cases : " - ") +
+            (data.generated_at ? " · " + data.generated_at : "");
+        }
+        if (kpiEl) {
+          kpiEl.hidden = false;
+          kpiEl.innerHTML =
+            '<div class="analytics-kpi"><div class="analytics-kpi__label">КЗ</div><div class="analytics-kpi__value">' +
+            (data.n_ok != null ? data.n_ok : " - ") +
+            '</div></div>' +
+            '<div class="analytics-kpi"><div class="analytics-kpi__label">Avg overall</div><div class="analytics-kpi__value">' +
+            (data.avg_overall_pct != null ? data.avg_overall_pct + "%" : " - ") +
+            '</div></div>' +
+            '<div class="analytics-kpi"><div class="analytics-kpi__label">Врачей</div><div class="analytics-kpi__value">' +
+            (data.doctors_n != null ? data.doctors_n : " - ") +
+            '</div></div>' +
+            '<div class="analytics-kpi"><div class="analytics-kpi__label">Ошибки</div><div class="analytics-kpi__value">' +
+            (data.n_errors != null ? data.n_errors : " - ") +
+            "</div></div>";
+        }
+        var docs = (data.doctors || []).slice().sort(function (a, b) {
+          return (b.avg_overall_pct || 0) - (a.avg_overall_pct || 0);
+        });
+        if (tbody) {
+          tbody.innerHTML = docs
+            .slice(0, 80)
+            .map(function (d) {
+              return (
+                "<tr><td>" +
+                (d.doctor_fio || " - ") +
+                "</td><td>" +
+                (d.specialization || " - ") +
+                "</td><td>" +
+                (d.filial || " - ") +
+                "</td><td>" +
+                (d.n != null ? d.n : " - ") +
+                "</td><td>" +
+                (d.avg_overall_pct != null ? d.avg_overall_pct : " - ") +
+                "</td><td>" +
+                (d.min_overall_pct != null ? d.min_overall_pct : " - ") +
+                "</td><td>" +
+                (d.max_overall_pct != null ? d.max_overall_pct : " - ") +
+                "</td></tr>"
+              );
+            })
+            .join("");
+        }
+      })
+      .catch(function (e) {
+        if (errEl) {
+          errEl.hidden = false;
+          errEl.textContent = "Не удалось загрузить MIS·КЗ: " + methodistApiErrorRu(e.message || e);
         }
       })
       .finally(function () {
@@ -30465,6 +30634,7 @@
     var tabSearchStats = document.getElementById("tab-methodist-search-stats");
     var tabB2c = document.getElementById("tab-methodist-b2c");
     var tabOnco = document.getElementById("tab-methodist-onco");
+    var tabMisKz = document.getElementById("tab-methodist-mis-kz");
     var panelSearch = document.getElementById("panel-main-search");
     var panelConsult = document.getElementById("panel-consult-review");
     var panelAnalytics = document.getElementById("panel-analytics-stats");
@@ -30473,6 +30643,7 @@
     var panelSearchStats = document.getElementById("panel-methodist-search-stats");
     var panelB2c = document.getElementById("panel-methodist-b2c");
     var panelOnco = document.getElementById("panel-methodist-onco");
+    var panelMisKz = document.getElementById("panel-methodist-mis-kz");
     if (!tabSearch || !tabConsult || !panelSearch || !panelConsult) return;
     var isConsult = which === MAIN_TAB_CONSULT;
     var isMl = which === MAIN_TAB_ML_STATS;
@@ -30480,6 +30651,7 @@
     var isSearchStats = which === MAIN_TAB_SEARCH_STATS;
     var isB2c = which === MAIN_TAB_B2C;
     var isOnco = which === MAIN_TAB_ONCO;
+    var isMisKz = which === MAIN_TAB_MIS_KZ;
     var isAnalytics = which === MAIN_TAB_ANALYTICS;
     var isSearch = which === MAIN_TAB_SEARCH;
     tabSearch.setAttribute("aria-selected", isSearch ? "true" : "false");
@@ -30511,6 +30683,10 @@
       tabOnco.setAttribute("aria-selected", isOnco ? "true" : "false");
       tabOnco.tabIndex = isOnco ? 0 : -1;
     }
+    if (tabMisKz) {
+      tabMisKz.setAttribute("aria-selected", isMisKz ? "true" : "false");
+      tabMisKz.tabIndex = isMisKz ? 0 : -1;
+    }
     panelSearch.hidden = !isSearch;
     panelConsult.hidden = !isConsult;
     if (panelAnalytics) panelAnalytics.hidden = !isAnalytics;
@@ -30519,6 +30695,7 @@
     if (panelSearchStats) panelSearchStats.hidden = !isSearchStats;
     if (panelB2c) panelB2c.hidden = !isB2c;
     if (panelOnco) panelOnco.hidden = !isOnco;
+    if (panelMisKz) panelMisKz.hidden = !isMisKz;
     document.body.classList.remove(
       "app-tab-search",
       "app-tab-consult",
@@ -30527,7 +30704,8 @@
       "app-tab-queue",
       "app-tab-search-stats",
       "app-tab-b2c",
-      "app-tab-onco"
+      "app-tab-onco",
+      "app-tab-mis-kz"
     );
     if (isSearch) document.body.classList.add("app-tab-search");
     else if (isConsult) document.body.classList.add("app-tab-consult");
@@ -30537,6 +30715,7 @@
     else if (isSearchStats) document.body.classList.add("app-tab-search-stats");
     else if (isB2c) document.body.classList.add("app-tab-b2c");
     else if (isOnco) document.body.classList.add("app-tab-onco");
+    else if (isMisKz) document.body.classList.add("app-tab-mis-kz");
     syncSearchMethodistPanelPlacement();
     if (isSearchStats && typeof mountPendingSearchReviewWorkbench === "function") {
       mountPendingSearchReviewWorkbench();
@@ -30557,6 +30736,9 @@
       } else if (isOnco) {
         history.replaceState(null, "", window.location.pathname + window.location.search + "#onco-risk");
         if (typeof loadMethodistOncoPanel === "function") loadMethodistOncoPanel();
+      } else if (isMisKz) {
+        history.replaceState(null, "", window.location.pathname + window.location.search + "#mis-kz");
+        if (typeof loadMethodistMisKzPanel === "function") loadMethodistMisKzPanel();
       } else if (isAnalytics) {
         history.replaceState(null, "", window.location.pathname + window.location.search + "#analytics-stats");
         if (typeof loadAnalyticsTab === "function") loadAnalyticsTab();
@@ -32468,6 +32650,7 @@
     var tss = document.getElementById("tab-methodist-search-stats");
     var tb2c = document.getElementById("tab-methodist-b2c");
     var tonco = document.getElementById("tab-methodist-onco");
+    var tmis = document.getElementById("tab-methodist-mis-kz");
     var tablist = document.getElementById("app-main-tabs");
     if (!ts || !tc) return;
 
@@ -32511,6 +32694,20 @@
       tonco.setAttribute("data-wired", "1");
       tonco.addEventListener("click", function () {
         switchMainAppTab(MAIN_TAB_ONCO);
+      });
+    }
+    var tmis = document.getElementById("tab-methodist-mis-kz");
+    if (tmis && !tmis.getAttribute("data-wired")) {
+      tmis.setAttribute("data-wired", "1");
+      tmis.addEventListener("click", function () {
+        switchMainAppTab(MAIN_TAB_MIS_KZ);
+      });
+    }
+    var misKzRefresh = document.getElementById("methodist-mis-kz-refresh");
+    if (misKzRefresh && !misKzRefresh.getAttribute("data-wired")) {
+      misKzRefresh.setAttribute("data-wired", "1");
+      misKzRefresh.addEventListener("click", function () {
+        if (typeof loadMethodistMisKzPanel === "function") loadMethodistMisKzPanel();
       });
     }
     var b2cRefresh = document.getElementById("methodist-b2c-refresh");
@@ -32635,7 +32832,7 @@
           return;
         }
         e.preventDefault();
-        var mtabs = [tq, tml, tss, tb2c, tonco].filter(function (t) {
+        var mtabs = [tq, tml, tss, tb2c, tonco, tmis].filter(function (t) {
           return t && !t.hidden;
         });
         if (!mtabs.length) return;
@@ -32652,6 +32849,7 @@
         else if (mtabs[midx] === tss) switchMainAppTab(MAIN_TAB_SEARCH_STATS);
         else if (mtabs[midx] === tb2c) switchMainAppTab(MAIN_TAB_B2C);
         else if (mtabs[midx] === tonco) switchMainAppTab(MAIN_TAB_ONCO);
+        else if (mtabs[midx] === tmis) switchMainAppTab(MAIN_TAB_MIS_KZ);
         else switchMainAppTab(MAIN_TAB_QUEUE);
       });
     }

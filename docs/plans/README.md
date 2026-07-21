@@ -18,7 +18,8 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
-| [2026-07-20-protocol-reextract-quality-v1.md](2026-07-20-protocol-reextract-quality-v1.md) | Чистка навигатора протоколов + LLM-переизвлечение 373 auto-протоколов | active |
+| [2026-07-21-mis-kz-l1-batch-v1.md](2026-07-21-mis-kz-l1-batch-v1.md) | Массовый L1 mis_protocol (июль: 7648 визитов) + дашборд методиста | active |
+| [2026-07-20-protocol-reextract-quality-v1.md](2026-07-20-protocol-reextract-quality-v1.md) | Чистка навигатора протоколов + LLM-переизвлечение 373 auto-протоколов | archived (преемник: работа закрыта в r23; дальше - mis-kz-l1) |
 
 ## Легенда статусов
 
