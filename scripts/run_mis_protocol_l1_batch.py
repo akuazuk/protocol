@@ -173,6 +173,7 @@ def summarize_case(row: dict, result: dict, ms: int, text_len: int) -> dict:
         "ts": _utc(),
         "mis_id": row.get("id"),
         "visit_id": row.get("visit_id"),
+        "patient_id": str(row.get("patient_id") or "").strip(),
         "date": (row.get("date") or "")[:19],
         "doctor_fio": (row.get("doctor_fio") or "").strip() or " - ",
         "doctor_specialization": (row.get("doctor_specialization") or "").strip() or " - ",
@@ -305,45 +306,190 @@ def build_worst_visits(
     cases: list[dict],
     *,
     doctor_avgs: dict[str, float],
-    bottom_doctor_fios: set[str],
-    limit: int = 30,
+    limit: int = 50,
 ) -> list[dict]:
-    """Топ худших визитов среди врачей с самым низким средним L1."""
+    """Топ худших визитов по L1 overall среди всех врачей."""
     rows: list[dict] = []
     for c in cases:
         if c.get("error") or c.get("overall_pct") is None:
             continue
         fio = (c.get("doctor_fio") or "").strip() or " - "
-        if fio not in bottom_doctor_fios:
-            continue
         try:
             overall = float(c["overall_pct"])
         except (TypeError, ValueError):
             continue
+        comment = comment_for_visit(c)
         rows.append(
             {
                 "visit_id": str(c.get("visit_id") or ""),
+                "patient_id": str(c.get("patient_id") or "").strip(),
                 "date": (c.get("date") or "")[:19],
                 "doctor_fio": fio,
                 "doctor_specialization": (c.get("doctor_specialization") or "").strip() or " - ",
                 "filial": (c.get("filial") or "").strip() or " - ",
                 "overall_pct": round(overall, 1),
+                "l1_overall_pct": round(overall, 1),
                 "doctor_avg_overall_pct": doctor_avgs.get(fio),
                 "status": c.get("status"),
+                "l1_status": c.get("status"),
                 "diagnosis_short": (c.get("diagnosis_short") or "")[:160],
-                "comment": comment_for_visit(c),
+                "comment": comment,
+                "l1_comment": comment,
                 "block_scores": c.get("block_scores") or {},
+                "l2_overall_pct": c.get("l2_overall_pct"),
+                "l2_status": c.get("l2_status"),
+                "l2_comment": c.get("l2_comment"),
+                "l2_error": c.get("l2_error"),
             }
         )
     rows.sort(
         key=lambda r: (
             r.get("overall_pct") if r.get("overall_pct") is not None else 999,
-            r.get("doctor_avg_overall_pct") if r.get("doctor_avg_overall_pct") is not None else 999,
             r.get("date") or "",
             r.get("visit_id") or "",
         )
     )
     return rows[: max(0, int(limit))]
+
+
+def load_csv_by_visit(csv_path: Path) -> dict[str, dict]:
+    out: dict[str, dict] = {}
+    if not csv_path.is_file():
+        return out
+    with csv_path.open(encoding="utf-8", newline="") as f:
+        for row in csv.DictReader(f):
+            vid = str(row.get("visit_id") or "").strip()
+            if vid:
+                out[vid] = row
+    return out
+
+
+def attach_patient_ids(cases: list[dict], csv_by_visit: dict[str, dict]) -> None:
+    for c in cases:
+        if str(c.get("patient_id") or "").strip():
+            continue
+        row = csv_by_visit.get(str(c.get("visit_id") or ""))
+        if row:
+            c["patient_id"] = str(row.get("patient_id") or "").strip()
+
+
+def extract_l2_fields(result: dict) -> dict:
+    sa = result.get("structured_analysis") or {}
+    comp = sa.get("compliance") if isinstance(sa, dict) else {}
+    if not isinstance(comp, dict):
+        comp = {}
+    overall = result.get("overall_score")
+    if overall is None:
+        overall = comp.get("overall_score")
+    status = result.get("overall_status") or comp.get("overall_status")
+    parts: list[str] = []
+    if result.get("render_l2_limited"):
+        parts.append("L2 limited (как L1 на Render)")
+    summary = result.get("summary_ru") or result.get("review_summary_ru")
+    review = result.get("review")
+    if not summary and isinstance(review, dict):
+        summary = review.get("summary_ru")
+    if isinstance(summary, str) and summary.strip():
+        parts.append(summary.strip()[:280])
+    issues = comp.get("critical_issues") or comp.get("issues") or []
+    for item in issues[:3]:
+        if isinstance(item, dict):
+            txt = str(item.get("message_ru") or item.get("text") or item.get("issue") or "").strip()
+        else:
+            txt = str(item).strip()
+        if txt:
+            parts.append(txt[:160])
+    alignment = comp.get("alignment_by_block") or {}
+    weak: list[str] = []
+    if isinstance(alignment, dict):
+        scored = []
+        for bid, val in alignment.items():
+            if isinstance(val, dict):
+                sc = val.get("score")
+                if sc is None:
+                    sc = val.get("alignment_score")
+            elif isinstance(val, (int, float)):
+                sc = float(val)
+            else:
+                continue
+            if isinstance(sc, (int, float)):
+                scored.append((str(bid), float(sc)))
+        scored.sort(key=lambda x: x[1])
+        for bid, sc in scored[:3]:
+            if sc < 55:
+                weak.append(f"{BLOCK_LABEL_RU.get(bid, bid)} {sc:.0f}%")
+    if weak:
+        parts.append("слабые блоки: " + ", ".join(weak))
+    if not parts and overall is not None:
+        parts.append(f"L2 overall {overall}%")
+    try:
+        overall_f = round(float(overall), 1) if overall is not None else None
+    except (TypeError, ValueError):
+        overall_f = None
+    return {
+        "l2_overall_pct": overall_f,
+        "l2_status": status,
+        "l2_comment": "; ".join(parts)[:500] if parts else None,
+        "l2_error": None,
+        "l2_mode": result.get("l2_mode") or result.get("review_tier") or "L2",
+    }
+
+
+def enrich_worst_visits_l2(
+    worst: list[dict],
+    *,
+    csv_by_visit: dict[str, dict],
+    sleep_s: float = 0.0,
+) -> list[dict]:
+    """Прогон L2 (fast pipeline) для списка worst_visits; мутирует и возвращает список."""
+    os.chdir(ROOT)
+    if str(ROOT) not in sys.path:
+        sys.path.insert(0, str(ROOT))
+    # На Render L2-fast даёт сверку с протоколом; skip_llm обходится через fast=1.
+    os.environ.setdefault("CONSULT_L2_FAST", "1")
+    os.environ.setdefault("CONSULT_RENDER_L2_SKIP_LLM", "0")
+
+    from rag_server import _consult_review_from_tier_or_pipeline
+
+    for i, item in enumerate(worst, 1):
+        vid = str(item.get("visit_id") or "")
+        row = csv_by_visit.get(vid)
+        if not row:
+            item["l2_error"] = "visit_not_in_csv"
+            item["l2_comment"] = "нет строки CSV для L2"
+            print(f"l2 {i}/{len(worst)} visit={vid} SKIP no csv", flush=True)
+            continue
+        if not str(item.get("patient_id") or "").strip():
+            item["patient_id"] = str(row.get("patient_id") or "").strip()
+        text = build_kz_text(row)
+        t0 = time.perf_counter()
+        try:
+            result = _consult_review_from_tier_or_pipeline(
+                tier="L2",
+                text=text,
+                bundle=None,
+                consultation_id=f"mis-l2-{vid}",
+                category_slugs="",
+                require_rag_for_l2=False,
+                l2_narrative=False,
+            )
+            fields = extract_l2_fields(result)
+            item.update(fields)
+            ms = int((time.perf_counter() - t0) * 1000)
+            print(
+                f"l2 {i}/{len(worst)} visit={vid} l2={item.get('l2_overall_pct')} "
+                f"l1={item.get('l1_overall_pct')} ms={ms}",
+                flush=True,
+            )
+        except Exception as e:
+            item["l2_error"] = str(e)[:300]
+            item["l2_comment"] = f"ошибка L2: {e}"[:300]
+            item["l2_overall_pct"] = None
+            item["l2_status"] = None
+            print(f"l2 {i}/{len(worst)} visit={vid} FAIL {e}", flush=True)
+        if sleep_s > 0:
+            time.sleep(sleep_s)
+    return worst
 
 
 def build_summary(cases: list[dict], *, month: str, source: str) -> dict:
@@ -443,12 +589,10 @@ def build_summary(cases: list[dict], *, month: str, source: str) -> dict:
         for d in scored_doctors
         if d.get("avg_overall_pct") is not None
     }
-    bottom_fios = {str(d["doctor_fio"]) for d in bottom_doctors}
     worst_visits = build_worst_visits(
         cases,
         doctor_avgs=doctor_avgs,
-        bottom_doctor_fios=bottom_fios,
-        limit=30,
+        limit=50,
     )
 
     return {
@@ -472,19 +616,24 @@ def build_summary(cases: list[dict], *, month: str, source: str) -> dict:
         "bottom_doctors": bottom_doctors,
         "worst_visits": worst_visits,
         "worst_visits_meta": {
-            "limit": 30,
-            "bottom_doctors_n": len(bottom_doctors),
-            "min_doctor_n": 3,
+            "limit": 50,
+            "scope": "all_doctors",
+            "min_doctor_n": 0,
             "rule_ru": (
-                "30 визитов с самым низким L1 среди 15 врачей "
-                "с самым низким средним overall (минимум 3 КЗ)."
+                "50 визитов с самым низким L1 overall среди всех врачей "
+                "(не только bottom_doctors); рядом колонки L2 после --enrich-l2-worst."
             ),
+        },
+        "gemini_reviews": [],
+        "gemini_meta": {
+            "model_preferred": "gemini-2.5-pro",
+            "note_ru": "Gemini 3.6 в API нет; methodist-модель: gemini-2.5-pro. Выборочный прогон из UI.",
         },
         "notes": [
             "L1 = structured без RAG/LLM; стоимость API ~$0.",
             "*_print поля MIS = флаги on/off; в текст брались клинические столбцы.",
             "Полный jsonl с кейсами хранится только на /var/data (ПДн).",
-            "worst_visits: топ-30 слабых визитов врачей из bottom_doctors.",
+            "worst_visits: топ-50 слабых визитов overall + patient_id; L2/Gemini - отдельные поля.",
         ],
     }
 
@@ -521,6 +670,11 @@ def main() -> int:
     ap.add_argument("--sleep", type=float, default=0.0)
     ap.add_argument("--rebuild-summary-only", action="store_true")
     ap.add_argument(
+        "--enrich-l2-worst",
+        action="store_true",
+        help="После сборки summary прогнать worst_visits через L2-fast и перезаписать summary",
+    )
+    ap.add_argument(
         "--reset-fails",
         action="store_true",
         help="Перед запуском убрать fail из state (повторить 429/ошибки)",
@@ -533,14 +687,70 @@ def main() -> int:
     cases_path = out_dir / f"kz_l1_{args.month}_cases.jsonl"
     state_path = out_dir / f"kz_l1_{args.month}_state.jsonl"
     summary_path = out_dir / f"kz_l1_{args.month}_summary.json"
+    gemini_path = out_dir / f"kz_l1_{args.month}_gemini_reviews.json"
 
-    if args.rebuild_summary_only:
-        cases = load_cases_from_jsonl(cases_path)
-        summary = build_summary(cases, month=args.month, source=str(args.csv))
+    def _write_summary(summary: dict) -> None:
+        if gemini_path.is_file():
+            try:
+                gem = json.loads(gemini_path.read_text(encoding="utf-8"))
+                if isinstance(gem, dict) and isinstance(gem.get("reviews"), list):
+                    summary["gemini_reviews"] = gem.get("reviews") or []
+                    summary["gemini_meta"] = {
+                        **(summary.get("gemini_meta") or {}),
+                        **(gem.get("meta") or {}),
+                    }
+            except (OSError, json.JSONDecodeError):
+                pass
         summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    if args.rebuild_summary_only or args.enrich_l2_worst:
+        cases = load_cases_from_jsonl(cases_path)
+        csv_by_visit = load_csv_by_visit(args.csv)
+        attach_patient_ids(cases, csv_by_visit)
+        # preserve prior L2 fields if rebuilding without re-enrich
+        prior_l2: dict[str, dict] = {}
+        if summary_path.is_file() and not args.enrich_l2_worst:
+            try:
+                prev = json.loads(summary_path.read_text(encoding="utf-8"))
+                for w in prev.get("worst_visits") or []:
+                    vid = str(w.get("visit_id") or "")
+                    if vid and w.get("l2_overall_pct") is not None:
+                        prior_l2[vid] = {
+                            "l2_overall_pct": w.get("l2_overall_pct"),
+                            "l2_status": w.get("l2_status"),
+                            "l2_comment": w.get("l2_comment"),
+                            "l2_error": w.get("l2_error"),
+                            "l2_mode": w.get("l2_mode"),
+                        }
+            except (OSError, json.JSONDecodeError):
+                prior_l2 = {}
+        summary = build_summary(cases, month=args.month, source=str(args.csv))
+        if prior_l2:
+            for w in summary.get("worst_visits") or []:
+                extra = prior_l2.get(str(w.get("visit_id") or ""))
+                if extra:
+                    w.update(extra)
+        if args.enrich_l2_worst:
+            enrich_worst_visits_l2(
+                summary.get("worst_visits") or [],
+                csv_by_visit=csv_by_visit,
+                sleep_s=float(args.sleep or 0),
+            )
+            summary["worst_visits_meta"] = {
+                **(summary.get("worst_visits_meta") or {}),
+                "l2_enriched_at": _utc(),
+                "l2_enriched_n": sum(
+                    1
+                    for w in (summary.get("worst_visits") or [])
+                    if w.get("l2_overall_pct") is not None
+                ),
+            }
+        _write_summary(summary)
         print(
             f"rebuilt summary raw={len(cases)} unique={summary.get('n_cases')} "
-            f"worst_visits={len(summary.get('worst_visits') or [])} -> {summary_path}"
+            f"worst_visits={len(summary.get('worst_visits') or [])} "
+            f"l2_ok={sum(1 for w in (summary.get('worst_visits') or []) if w.get('l2_overall_pct') is not None)} "
+            f"-> {summary_path}"
         )
         return 0
 

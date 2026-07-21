@@ -197,23 +197,52 @@
       </div>
 
       <section class="card" style="margin-top:14px">
-        <h2>Топ-30 слабых визитов</h2>
-        <p class="sub" id="worst-meta">Визиты врачей с самым низким средним L1: id, дата и что просело</p>
-        <div style="overflow:auto;max-height:560px">
+        <h2>Топ-50 слабых визитов (все врачи)</h2>
+        <p class="sub" id="worst-meta">L1 overall по всему месяцу; рядом L2 и комментарии. Отметьте чекбоксами визиты для Gemini.</p>
+        <div class="hero-actions" style="margin:0 0 12px; gap:8px">
+          <button class="btn" type="button" id="btn-select-all" style="background:var(--teal);color:#fff">Выбрать все</button>
+          <button class="btn btn--ghost" type="button" id="btn-select-none" style="background:#eef5f2;color:var(--teal-deep)">Снять</button>
+          <button class="btn" type="button" id="btn-gemini" style="background:var(--teal-deep);color:#fff">Прогнать выбранные через Gemini</button>
+        </div>
+        <p class="sub" id="gemini-status" style="margin-top:0"></p>
+        <div style="overflow:auto;max-height:620px">
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>#</th>
+                <th>Дата</th>
+                <th>Visit ID</th>
+                <th>Patient ID</th>
+                <th>Врач</th>
+                <th>L1</th>
+                <th>L1: что не так</th>
+                <th>L2</th>
+                <th>L2: комментарий</th>
+              </tr>
+            </thead>
+            <tbody id="worst-visits"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card" style="margin-top:14px">
+        <h2>Gemini-разбор выбранных визитов</h2>
+        <p class="sub" id="gemini-meta">Модель methodist (обычно gemini-2.5-pro; 3.6 в API нет)</p>
+        <div style="overflow:auto;max-height:480px">
           <table>
             <thead>
               <tr>
                 <th>#</th>
                 <th>Дата</th>
                 <th>Visit ID</th>
+                <th>Patient ID</th>
                 <th>Врач</th>
-                <th>Спец.</th>
-                <th>L1</th>
-                <th>Avg врача</th>
-                <th>Что не так</th>
+                <th>Gemini %</th>
+                <th>Комментарий</th>
               </tr>
             </thead>
-            <tbody id="worst-visits"></tbody>
+            <tbody id="gemini-reviews"></tbody>
           </table>
         </div>
       </section>
@@ -322,19 +351,41 @@
     var worstMetaEl = document.getElementById("worst-meta");
     if (worstMetaEl) {
       worstMetaEl.textContent = meta.rule_ru ||
-        "Визиты врачей с самым низким средним L1: id, дата и что просело";
+        "50 визитов с самым низким L1 overall; рядом L2 и комментарии";
     }
     var worst = data.worst_visits || [];
     document.getElementById("worst-visits").innerHTML = worst.length
       ? worst.map(function (v, i) {
-          return "<tr><td>" + (i + 1) + "</td><td>" + esc(v.date || " - ") +
-            "</td><td><code>" + esc(v.visit_id || " - ") + "</code></td><td>" +
-            esc(v.doctor_fio || " - ") + "</td><td>" + esc(v.doctor_specialization || " - ") +
-            "</td><td>" + scorePill(v.overall_pct) + "</td><td>" +
-            scorePill(v.doctor_avg_overall_pct) + "</td><td>" + esc(v.comment || " - ") +
-            "</td></tr>";
+          var l1 = v.l1_overall_pct != null ? v.l1_overall_pct : v.overall_pct;
+          var l1c = v.l1_comment || v.comment || " - ";
+          return "<tr><td><input type='checkbox' class='worst-cb' value='" + esc(v.visit_id || "") + "'/></td>" +
+            "<td>" + (i + 1) + "</td><td>" + esc(v.date || " - ") +
+            "</td><td><code>" + esc(v.visit_id || " - ") + "</code></td><td><code>" +
+            esc(v.patient_id || " - ") + "</code></td><td>" + esc(v.doctor_fio || " - ") +
+            "</td><td>" + scorePill(l1) + "</td><td>" + esc(l1c) +
+            "</td><td>" + scorePill(v.l2_overall_pct) + "</td><td>" +
+            esc(v.l2_comment || v.l2_error || " - ") + "</td></tr>";
         }).join("")
-      : "<tr><td colspan='8'>Нет worst_visits в summary - пересоберите batch summary</td></tr>";
+      : "<tr><td colspan='10'>Нет worst_visits в summary - пересоберите batch summary</td></tr>";
+
+    var gmeta = data.gemini_meta || {};
+    var gmetaEl = document.getElementById("gemini-meta");
+    if (gmetaEl) {
+      gmetaEl.textContent =
+        (gmeta.note_ru || "Выборочный Gemini-разбор") +
+        (gmeta.model ? " · модель " + gmeta.model : "") +
+        (gmeta.model_warn ? " · " + gmeta.model_warn : "");
+    }
+    var greviews = data.gemini_reviews || [];
+    document.getElementById("gemini-reviews").innerHTML = greviews.length
+      ? greviews.map(function (v, i) {
+          return "<tr><td>" + (i + 1) + "</td><td>" + esc(v.date || " - ") +
+            "</td><td><code>" + esc(v.visit_id || " - ") + "</code></td><td><code>" +
+            esc(v.patient_id || " - ") + "</code></td><td>" + esc(v.doctor_fio || " - ") +
+            "</td><td>" + scorePill(v.overall_pct) + "</td><td>" +
+            esc(v.comment || v.error || " - ") + "</td></tr>";
+        }).join("")
+      : "<tr><td colspan='7'>Пока пусто - отметьте визиты выше и нажмите «Прогнать через Gemini»</td></tr>";
     document.getElementById("notes").textContent = (data.notes || []).join(" ");
   }
 
@@ -343,6 +394,12 @@
     var el = document.getElementById("error");
     el.hidden = false;
     el.textContent = msg;
+  }
+
+  function selectedVisitIds() {
+    return Array.prototype.slice.call(document.querySelectorAll(".worst-cb:checked"))
+      .map(function (el) { return el.value; })
+      .filter(Boolean);
   }
 
   async function load() {
@@ -373,12 +430,56 @@
     }
   }
 
+  async function runGemini() {
+    var ids = selectedVisitIds();
+    var st = document.getElementById("gemini-status");
+    if (!ids.length) {
+      st.textContent = "Сначала отметьте хотя бы один визит.";
+      return;
+    }
+    var token = getToken();
+    if (!token) {
+      st.textContent = "Нужен токен методиста.";
+      return;
+    }
+    st.textContent = "Gemini: прогон " + ids.length + " визит(ов)…";
+    try {
+      var res = await fetch("/api/methodist/mis-kz-quality/gemini-review", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-Methodist-Token": token
+        },
+        body: JSON.stringify({ month: month, visit_ids: ids, max_visits: 20 })
+      });
+      var data = await res.json();
+      if (!res.ok || !data.ok) {
+        st.textContent = data.hint_ru || data.error || ("HTTP " + res.status);
+        return;
+      }
+      st.textContent =
+        "Готово: " + (data.batch || []).length + " · модель " + (data.model || " - ") +
+        (data.model_warn ? " (" + data.model_warn + ")" : "");
+      await load();
+    } catch (e) {
+      st.textContent = String(e && e.message || e);
+    }
+  }
+
   document.getElementById("btn-refresh").addEventListener("click", load);
   document.getElementById("btn-token").addEventListener("click", function () {
     var t = (document.getElementById("token-input").value || "").trim();
     if (t) setToken(t);
     load();
   });
+  document.getElementById("btn-select-all").addEventListener("click", function () {
+    document.querySelectorAll(".worst-cb").forEach(function (el) { el.checked = true; });
+  });
+  document.getElementById("btn-select-none").addEventListener("click", function () {
+    document.querySelectorAll(".worst-cb").forEach(function (el) { el.checked = false; });
+  });
+  document.getElementById("btn-gemini").addEventListener("click", runGemini);
   load();
 })();
 </script>

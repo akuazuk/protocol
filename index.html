@@ -14398,17 +14398,45 @@
           </table>
         </div>
         <div class="methodist-ml-table-wrap" style="margin-top:1.25rem">
-          <h3 style="margin:0 0 0.5rem;font-size:1.05rem">Топ-30 слабых визитов</h3>
+          <h3 style="margin:0 0 0.5rem;font-size:1.05rem">Топ-50 слабых визитов (L1 + L2)</h3>
           <p class="methodist-tier-hint" id="methodist-mis-kz-worst-meta" style="margin-bottom:0.75rem"></p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:0.75rem">
+            <button type="button" class="btn-ml-dash-refresh" id="methodist-mis-kz-select-all">Выбрать все</button>
+            <button type="button" class="btn-ml-dash-refresh" id="methodist-mis-kz-select-none">Снять</button>
+            <button type="button" class="btn-methodist-queue-open" id="methodist-mis-kz-gemini">Прогнать через Gemini</button>
+          </div>
+          <p class="methodist-tier-hint" id="methodist-mis-kz-gemini-status" style="margin-bottom:0.75rem"></p>
           <table class="methodist-ml-table" id="methodist-mis-kz-worst-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>#</th>
+                <th>Дата</th>
+                <th>Visit ID</th>
+                <th>Patient ID</th>
+                <th>Врач</th>
+                <th>L1 %</th>
+                <th>L1 комментарий</th>
+                <th>L2 %</th>
+                <th>L2 комментарий</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="methodist-ml-table-wrap" style="margin-top:1.25rem">
+          <h3 style="margin:0 0 0.5rem;font-size:1.05rem">Gemini-разбор</h3>
+          <p class="methodist-tier-hint" id="methodist-mis-kz-gemini-meta" style="margin-bottom:0.75rem"></p>
+          <table class="methodist-ml-table" id="methodist-mis-kz-gemini-table">
             <thead>
               <tr>
                 <th>#</th>
                 <th>Дата</th>
                 <th>Visit ID</th>
+                <th>Patient ID</th>
                 <th>Врач</th>
-                <th>L1 %</th>
-                <th>Что не так</th>
+                <th>Gemini %</th>
+                <th>Комментарий</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -23763,11 +23791,55 @@
         if (worstMeta) {
           worstMeta.textContent =
             (data.worst_visits_meta && data.worst_visits_meta.rule_ru) ||
-            "30 визитов с самым низким L1 среди врачей с самым низким средним рейтингом";
+            "50 визитов с самым низким L1 overall среди всех врачей";
         }
         if (worstBody) {
           worstBody.innerHTML = worst.length
             ? worst
+                .map(function (v, i) {
+                  var l1 = v.l1_overall_pct != null ? v.l1_overall_pct : v.overall_pct;
+                  var l1c = v.l1_comment || v.comment || " - ";
+                  return (
+                    "<tr><td><input type='checkbox' class='methodist-mis-kz-cb' value='" +
+                    (v.visit_id || "") +
+                    "'/></td><td>" +
+                    (i + 1) +
+                    "</td><td>" +
+                    (v.date || " - ") +
+                    "</td><td>" +
+                    (v.visit_id || " - ") +
+                    "</td><td>" +
+                    (v.patient_id || " - ") +
+                    "</td><td>" +
+                    (v.doctor_fio || " - ") +
+                    (v.doctor_specialization ? " · " + v.doctor_specialization : "") +
+                    "</td><td>" +
+                    (l1 != null ? l1 : " - ") +
+                    "</td><td>" +
+                    l1c +
+                    "</td><td>" +
+                    (v.l2_overall_pct != null ? v.l2_overall_pct : " - ") +
+                    "</td><td>" +
+                    (v.l2_comment || v.l2_error || " - ") +
+                    "</td></tr>"
+                  );
+                })
+                .join("")
+            : "<tr><td colspan='10'>Нет данных worst_visits</td></tr>";
+        }
+        var geminiMeta = document.getElementById("methodist-mis-kz-gemini-meta");
+        var geminiBody = document.querySelector("#methodist-mis-kz-gemini-table tbody");
+        var gmeta = data.gemini_meta || {};
+        if (geminiMeta) {
+          geminiMeta.textContent =
+            (gmeta.note_ru || "Выборочный Gemini") +
+            (gmeta.model ? " · " + gmeta.model : "") +
+            (gmeta.model_warn ? " · " + gmeta.model_warn : "");
+        }
+        var greviews = data.gemini_reviews || [];
+        if (geminiBody) {
+          geminiBody.innerHTML = greviews.length
+            ? greviews
                 .map(function (v, i) {
                   return (
                     "<tr><td>" +
@@ -23777,17 +23849,18 @@
                     "</td><td>" +
                     (v.visit_id || " - ") +
                     "</td><td>" +
+                    (v.patient_id || " - ") +
+                    "</td><td>" +
                     (v.doctor_fio || " - ") +
-                    (v.doctor_specialization ? " · " + v.doctor_specialization : "") +
                     "</td><td>" +
                     (v.overall_pct != null ? v.overall_pct : " - ") +
                     "</td><td>" +
-                    (v.comment || " - ") +
+                    (v.comment || v.error || " - ") +
                     "</td></tr>"
                   );
                 })
                 .join("")
-            : "<tr><td colspan='6'>Нет данных worst_visits</td></tr>";
+            : "<tr><td colspan='7'>Пока пусто - выберите визиты и нажмите Gemini</td></tr>";
         }
       })
       .catch(function (e) {
@@ -32759,6 +32832,78 @@
       misKzRefresh.setAttribute("data-wired", "1");
       misKzRefresh.addEventListener("click", function () {
         if (typeof loadMethodistMisKzPanel === "function") loadMethodistMisKzPanel();
+      });
+    }
+    var misKzSelectAll = document.getElementById("methodist-mis-kz-select-all");
+    if (misKzSelectAll && !misKzSelectAll.getAttribute("data-wired")) {
+      misKzSelectAll.setAttribute("data-wired", "1");
+      misKzSelectAll.addEventListener("click", function () {
+        document.querySelectorAll(".methodist-mis-kz-cb").forEach(function (el) {
+          el.checked = true;
+        });
+      });
+    }
+    var misKzSelectNone = document.getElementById("methodist-mis-kz-select-none");
+    if (misKzSelectNone && !misKzSelectNone.getAttribute("data-wired")) {
+      misKzSelectNone.setAttribute("data-wired", "1");
+      misKzSelectNone.addEventListener("click", function () {
+        document.querySelectorAll(".methodist-mis-kz-cb").forEach(function (el) {
+          el.checked = false;
+        });
+      });
+    }
+    var misKzGemini = document.getElementById("methodist-mis-kz-gemini");
+    if (misKzGemini && !misKzGemini.getAttribute("data-wired")) {
+      misKzGemini.setAttribute("data-wired", "1");
+      misKzGemini.addEventListener("click", function () {
+        var ids = Array.prototype.slice
+          .call(document.querySelectorAll(".methodist-mis-kz-cb:checked"))
+          .map(function (el) {
+            return el.value;
+          })
+          .filter(Boolean);
+        var st = document.getElementById("methodist-mis-kz-gemini-status");
+        if (!ids.length) {
+          if (st) st.textContent = "Отметьте хотя бы один визит.";
+          return;
+        }
+        if (!window.__methodistToken) {
+          if (st) st.textContent = "Нет токена методиста.";
+          return;
+        }
+        if (st) st.textContent = "Gemini: прогон " + ids.length + "…";
+        fetch("/api/methodist/mis-kz-quality/gemini-review", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Methodist-Token": window.__methodistToken,
+          },
+          body: JSON.stringify({ month: "2026-07", visit_ids: ids, max_visits: 20 }),
+        })
+          .then(function (r) {
+            return r.json().then(function (d) {
+              return { ok: r.ok, data: d };
+            });
+          })
+          .then(function (res) {
+            if (!res.ok || !res.data || !res.data.ok) {
+              if (st)
+                st.textContent =
+                  (res.data && (res.data.hint_ru || res.data.error)) || "Ошибка Gemini";
+              return;
+            }
+            if (st)
+              st.textContent =
+                "Готово: " +
+                ((res.data.batch || []).length || 0) +
+                " · " +
+                (res.data.model || "gemini");
+            if (typeof loadMethodistMisKzPanel === "function") loadMethodistMisKzPanel();
+          })
+          .catch(function (e) {
+            if (st) st.textContent = String(e && e.message ? e.message : e);
+          });
       });
     }
     var b2cRefresh = document.getElementById("methodist-b2c-refresh");

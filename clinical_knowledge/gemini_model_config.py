@@ -6,6 +6,11 @@ import re
 
 # Алиасы на случай опечаток / несуществующих имён в .env
 _MODEL_ALIASES: dict[str, str] = {
+    "gemini-3.6-pro": "gemini-2.5-pro",
+    "gemini-3.6-flash": "gemini-2.5-flash",
+    "gemini-3.6": "gemini-2.5-pro",
+    "gemini-3.5-pro": "gemini-2.5-pro",
+    "gemini-3.5-flash": "gemini-2.5-flash",
     "gemini-3.1-pro": "gemini-2.5-pro",
     "gemini-3-pro": "gemini-2.5-pro",
     "gemini-3.1-flash": "gemini-2.5-flash",

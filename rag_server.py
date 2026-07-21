@@ -8383,7 +8383,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-21-r31-mis-kz-worst-visits"
+BUILD_VERSION = "2026-07-21-r32-mis-kz-l2-gemini"
 
 
 def _app_version() -> str:
@@ -10619,11 +10619,30 @@ def api_methodist_mis_kz_quality(
     request: "Request",
     month: str = Query("2026-07", min_length=7, max_length=7),
 ) -> dict:
-    """Агрегаты L1-анализа mis_protocol (врачи / специальности / филиалы)."""
+    """Агрегаты L1/L2-анализа mis_protocol (врачи / worst visits / Gemini)."""
     _require_methodist_auth(request)
     from clinical_knowledge.mis_kz_quality import build_mis_kz_quality_view
 
     return build_mis_kz_quality_view(month=month)
+
+
+class MisKzGeminiReviewIn(BaseModel):
+    month: str = Field(default="2026-07", min_length=7, max_length=7)
+    visit_ids: list[str] = Field(default_factory=list)
+    max_visits: int = Field(default=20, ge=1, le=50)
+
+
+@app.post("/api/methodist/mis-kz-quality/gemini-review")
+def api_methodist_mis_kz_gemini_review(request: "Request", body: MisKzGeminiReviewIn) -> dict:
+    """Выборочный прогон выбранных визитов через methodist Gemini (обычно 2.5-pro)."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.mis_kz_quality import review_visits_with_gemini
+
+    return review_visits_with_gemini(
+        month=body.month,
+        visit_ids=list(body.visit_ids or []),
+        max_visits=int(body.max_visits or 20),
+    )
 
 
 @app.post("/api/methodist/patient-quality/refresh")
