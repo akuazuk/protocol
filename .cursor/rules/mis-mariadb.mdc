@@ -1,0 +1,82 @@
+---
+description: Подключение к MariaDB клиники (MIS) - mis_protocol и смежные таблицы
+alwaysApply: true
+---
+
+# MariaDB MIS (Kravira)
+
+Источник правды по подключению - проект `~/CURSOR/sql_epam` (`sql_csv_compare.py`, `.env`).
+
+## Параметры (без пароля)
+
+| | |
+|--|--|
+| Host | `178.163.240.131` |
+| Port | `6330` |
+| Database | `kravira_mc` |
+| User | `kravira_mc_user` |
+| Пароль | только из `~/CURSOR/sql_epam/.env` → `KRAVIRA_DB_PASSWORD` (не коммитить, не печатать) |
+
+URL (SQLAlchemy + PyMySQL):
+
+```text
+mysql+pymysql://kravira_mc_user:<PASSWORD>@178.163.240.131:6330/kravira_mc?charset=utf8mb4
+```
+
+## Таблица `mis_protocol`
+
+Инструкция: `epam/scheme_mis_protocols.docx` (в доке имя `mis_protocols`, в БД - `mis_protocol`).
+КЗ = консультативные заключения (`type` = 9 в схеме МИС).
+
+| Колонка | Тип | Смысл |
+|---------|-----|--------|
+| `id` | int | PK |
+| `date` | date | дата визита из протокола |
+| `visit_id` | int | визит |
+| `patient_id` | int | пациент |
+| `result` | text | поля КЗ через `::` (см. ниже) |
+
+~634k строк. Смежные: `mis_data`.
+
+## Как читать `result` для анализа как КЗ
+
+1. `parts = result.split("::")` - **индекс N из схемы = `parts[N]`** (не порядковый номер строки в таблице-схеме; индексы разреженные, в живых строках ~300 слотов).
+2. Поле **22** - вложенная структура диагноза: `parts[22].split("##")`, затем:
+   - `##[0]` - список диагнозов через `|`
+   - `##[3]` - индекс основного диагноза
+3. Поля «признак вывод на печать» (12, 13, 14, 15, 16, 17, 23, 25, 27, 50…) обычно `on` - **не текст КЗ**, для анализа пропускать.
+4. Для сверки с consult-review / JSONL КЗ брать клинический текст:
+
+| idx | Поле |
+|-----|------|
+| 1 | Дата визита |
+| 2 | Специальность врача (id) |
+| 3 | Жалобы |
+| 10 | Анамнез (врач) |
+| 4 | Объективный статус |
+| 11 | Данные обследований |
+| 24 | Манипуляции |
+| 5 | Диагноз клинический (свободный текст) |
+| 22 | Диагноз структурированный (`##` / `|`) |
+| 6 | Рекомендации по обследованию |
+| 26 | Рекомендации по лечению |
+| 7 / 8 | Врач id / доп. |
+
+Не тащить в LLM-промпт сырой `result` целиком - только выбранные слоты + очистка пробелов/переносов.
+
+## Как подключаться из агента
+
+```bash
+cd ~/CURSOR/sql_epam && python3 -c "
+from pathlib import Path
+import os
+from dotenv import load_dotenv
+from sqlalchemy import create_engine, text
+load_dotenv(Path('.env'))
+pw = os.environ['KRAVIRA_DB_PASSWORD'].strip()
+e = create_engine(f'mysql+pymysql://kravira_mc_user:{pw}@178.163.240.131:6330/kravira_mc?charset=utf8mb4',
+                  pool_pre_ping=True, connect_args={'connect_timeout': 30})
+"
+```
+
+Retries при утреннем «Too many connections»: `MIS_DB_RETRIES`, `MIS_DB_RETRY_DELAY_SEC` (см. sql_epam).
