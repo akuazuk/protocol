@@ -253,6 +253,58 @@ def _catalog_path_index() -> dict[str, ProtocolSummary]:
 def rebuild_catalog_path_index() -> None:
     clear_protocol_summary_cache()
     _catalog_path_index.cache_clear()
+    _icd_family_index.cache_clear()
+
+
+@lru_cache(maxsize=1)
+def _icd_family_index() -> dict[str, list[tuple[str, str]]]:
+    """Индекс семейство МКБ -> [(local_path, title)] для «см. также» (P6)."""
+    index: dict[str, list[tuple[str, str]]] = {}
+    seen_per_family: dict[str, set[str]] = {}
+    for summary in load_protocol_summaries(usable_only=False):
+        lp = summary.source.local_path or ""
+        title = summary.source.title or ""
+        if not lp:
+            continue
+        fams: set[str] = set()
+        for c in summary.conditions:
+            for code in c.icd10_codes or []:
+                fam = _icd_family(str(code))
+                if fam:
+                    fams.add(fam)
+        for fam in fams:
+            bucket = index.setdefault(fam, [])
+            seen = seen_per_family.setdefault(fam, set())
+            if lp not in seen:
+                seen.add(lp)
+                bucket.append((lp, title))
+    return index
+
+
+def related_protocols_by_icd(
+    icd_codes: list[str] | None,
+    *,
+    exclude_path: str = "",
+    limit: int = 6,
+) -> list[dict[str, str]]:
+    """Другие протоколы с тем же семейством МКБ (для блока «см. также»)."""
+    fams = {_icd_family(c) for c in (icd_codes or []) if c}
+    fams.discard("")
+    if not fams:
+        return []
+    ex = _norm_path(exclude_path)
+    out: list[dict[str, str]] = []
+    seen: set[str] = set()
+    idx = _icd_family_index()
+    for fam in fams:
+        for lp, title in idx.get(fam, []):
+            if _norm_path(lp) == ex or lp in seen:
+                continue
+            seen.add(lp)
+            out.append({"path": lp, "title": title})
+            if len(out) >= limit:
+                return out
+    return out
 
 
 def find_summary_by_catalog_path(catalog_path: str) -> ProtocolSummary | None:

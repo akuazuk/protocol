@@ -22,7 +22,7 @@ import re
 import threading
 import time
 import warnings
-from collections import Counter
+from collections import Counter, OrderedDict
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FuturesTimeout
 import csv
@@ -8376,7 +8376,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-20-r23-reextract-auto-quality"
+BUILD_VERSION = "2026-07-21-r24-brief-expanded-nav"
 
 
 def _app_version() -> str:
@@ -10697,18 +10697,25 @@ def api_protocol_card(
     return card
 
 
+_BRIEF_CACHE: "OrderedDict[str, tuple[float, dict]]" = OrderedDict()
+_BRIEF_CACHE_MAX = 256
+_BRIEF_CACHE_TTL = 3600.0
+
+
 @app.get("/api/protocol-brief")
 def api_protocol_brief(
     path: str = Query(..., min_length=3, max_length=512),
     query: str = Query("", max_length=2000),
     icd: str = Query("", max_length=256),
 ) -> dict:
-    """Единая сводка протокола: выводы по разделам без дублей/обрывков + сущности.
+    """Единая расширенная сводка протокола: выводы по разделам + дозы/режим/тяжесть/сроки.
 
-    Один источник для навигатора (`proto-viewer.html`): Summary Card -> контроль
-    качества -> обогащение страниц, при слабой карточке - чистый экстрактор из
-    rich-чанков (дедуп near-дублей, фильтр глоссария/шифра МКБ/эха названия).
+    Один источник для навигатора (`proto-viewer.html`): Summary Card (расширенные
+    структурные поля) -> контроль качества -> grounding по тексту PDF; при слабой
+    карточке - чистый экстрактор из rich-чанков. Результат кэшируется по (path, icd).
     """
+    import time
+
     from clinical_knowledge.page_locator import locate_page_for_quote
     from clinical_knowledge.protocol_links import normalize_protocol_path
     from clinical_knowledge.protocol_brief import build_protocol_brief
@@ -10716,6 +10723,13 @@ def api_protocol_brief(
     icd_codes = [c.strip() for c in icd.split(",") if c.strip()] if icd.strip() else None
     p = path.strip()
     key = normalize_protocol_path(p) or p
+
+    cache_key = f"{key}|{icd.strip()}|{query.strip()[:80]}"
+    now = time.time()
+    cached = _BRIEF_CACHE.get(cache_key)
+    if cached and (now - cached[0]) < _BRIEF_CACHE_TTL:
+        _BRIEF_CACHE.move_to_end(cache_key)
+        return cached[1]
 
     rich_chunks: list[dict] = []
     try:
@@ -10735,10 +10749,37 @@ def api_protocol_brief(
         icd_codes=icd_codes,
         rich_chunks=rich_chunks or None,
         page_lookup=_lookup,
-        max_points=6,
-        max_text_chars=300,
+        max_points=8,
+        max_text_chars=320,
     )
     brief["build_version"] = BUILD_VERSION
+
+    # ИИ-обзор раздела из офлайн-кэша (P5), если предрасчитан.
+    try:
+        from clinical_knowledge.section_overview_cache import load_section_overviews
+
+        sec_ov = load_section_overviews(brief.get("protocol_id") or "")
+        if sec_ov:
+            for sec in brief.get("sections", []):
+                ov = sec_ov.get(sec.get("id"))
+                if ov and ov.get("summary"):
+                    sec["overview"] = ov["summary"]
+    except Exception:
+        pass
+
+    # «См. также»: протоколы с тем же семейством МКБ (P6).
+    try:
+        from clinical_knowledge.protocol_summary.nav import related_protocols_by_icd
+
+        rel_codes = list(icd_codes or []) + list((brief.get("condition") or {}).get("icd10_codes") or [])
+        brief["related"] = related_protocols_by_icd(rel_codes, exclude_path=key, limit=6)
+    except Exception:
+        brief["related"] = []
+
+    _BRIEF_CACHE[cache_key] = (now, brief)
+    _BRIEF_CACHE.move_to_end(cache_key)
+    while len(_BRIEF_CACHE) > _BRIEF_CACHE_MAX:
+        _BRIEF_CACHE.popitem(last=False)
     return brief
 
 

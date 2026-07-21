@@ -149,6 +149,32 @@
     .pv-point__quote[hidden] { display: none; }
     .pv-mark { background: rgba(250, 204, 21, 0.5); border-radius: 3px; }
 
+    /* Point tags + structured detail (P1/P2) */
+    .pv-point__tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0 0 0.35rem; }
+    .pv-tag { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.02em; padding: 0.12rem 0.5rem; border-radius: 999px; text-transform: uppercase; border: 1px solid transparent; }
+    .pv-tag--type { background: rgba(148, 163, 184, 0.16); color: #475569; }
+    .pv-tag--req { background: var(--mint-soft); color: var(--green-800); border-color: rgba(26, 138, 114, 0.3); }
+    .pv-tag--opt { background: var(--sky); color: #075985; border-color: rgba(3, 105, 161, 0.22); }
+    .pv-tag--danger { background: #fde8e6; color: #b42318; border-color: rgba(180, 35, 24, 0.28); }
+    .pv-point__detail { display: grid; grid-template-columns: max-content 1fr; gap: 0.15rem 0.6rem; margin: 0.45rem 0 0; font-size: 0.8rem; }
+    .pv-point__detail dt { color: var(--muted); font-weight: 700; }
+    .pv-point__detail dd { margin: 0; color: #334155; overflow-wrap: anywhere; }
+    .pv-point__badge { font-size: 0.7rem; font-weight: 700; color: var(--green-700); display: inline-flex; align-items: center; gap: 0.2rem; }
+    .pv-point__badge::before { content: "\2713"; }
+
+    /* Section AI overview (P5) */
+    .pv-section__overview { margin: 0 0 0.6rem; padding: 0.55rem 0.75rem; border-radius: 12px; background: linear-gradient(165deg, var(--mint-soft), #fff); border: 1px solid rgba(26, 138, 114, 0.2); font-size: 0.85rem; line-height: 1.5; color: #1f2d29; }
+
+    /* Weak-card review banner (P3/P4) */
+    .pv-review-banner { margin: 0 0 0.9rem; padding: 0.55rem 0.8rem; border-radius: 12px; background: #fff7ed; border: 1px solid rgba(217, 119, 6, 0.3); color: #9a3412; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 0.4rem; }
+
+    /* Related protocols (P6) */
+    .pv-related { margin-top: 1.5rem; border-top: 1px dashed var(--line); padding-top: 1rem; }
+    .pv-related__title { margin: 0 0 0.55rem; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--green-800); }
+    .pv-related__list { display: flex; flex-direction: column; gap: 0.4rem; }
+    .pv-related__link { display: block; padding: 0.5rem 0.7rem; border-radius: 11px; border: 1px solid var(--line); background: #fff; color: var(--green-800); font-size: 0.84rem; font-weight: 600; text-decoration: none; box-shadow: var(--shadow-sm); }
+    .pv-related__link:hover { background: var(--mint-soft); }
+
     .pv-empty, .pv-loading { color: var(--muted); font-size: 0.9rem; padding: 1.5rem 0.5rem; text-align: center; }
 
     /* Full text (behind toggle) */
@@ -281,25 +307,62 @@
       list.forEach(function (t) { out += '<span class="' + cls + '">' + esc(t) + "</span>"; });
       return out + "</div>";
     }
+    function tagClass(tag) {
+      var t = norm(tag);
+      if (t.indexOf("тяжесть") === 0 || t.indexOf("исключа") >= 0) return "pv-tag--danger";
+      if (t.indexOf("обязательн") >= 0) return "pv-tag--req";
+      if (t.indexOf("по показ") >= 0 || t.indexOf("дополнительн") >= 0) return "pv-tag--opt";
+      return "pv-tag--type";
+    }
+    function tagsHtml(tags) {
+      if (!tags || !tags.length) return "";
+      var out = '<div class="pv-point__tags">';
+      tags.forEach(function (t) { if (t) out += '<span class="pv-tag ' + tagClass(t) + '">' + esc(t) + "</span>"; });
+      return out + "</div>";
+    }
+    function detailHtml(detail) {
+      if (!detail || !detail.length) return "";
+      var out = '<dl class="pv-point__detail">';
+      detail.forEach(function (d) {
+        if (!d || !d.value) return;
+        out += "<dt>" + esc(d.label || "") + "</dt><dd>" + esc(d.value) + "</dd>";
+      });
+      return out + "</dl>";
+    }
     function pointHtml(path, pt, idx, sectionId, terms) {
       var html = '<article class="pv-point" data-pv-point data-sec="' + escAttr(sectionId) + '">';
+      html += tagsHtml(pt.tags);
       html += '<p class="pv-point__text">' + hl(pt.text || "", terms) + "</p>";
+      html += detailHtml(pt.detail);
       var meta = "";
       if (pt.page_start) meta += '<a class="pv-point__page" href="' + escAttr(pdfHref(path, pt.page_start)) + '" target="_blank" rel="noopener">стр. ' + esc(pt.page_start) + "</a>";
+      if (pt.verified) meta += '<span class="pv-point__badge" title="Цитата найдена в тексте PDF">подтверждено</span>';
       var qid = "q_" + sectionId + "_" + idx;
-      if (pt.quote && pt.verified) meta += '<button type="button" class="pv-point__cite-btn" data-cite-toggle="' + qid + '">цитата</button>';
+      if (pt.quote) meta += '<button type="button" class="pv-point__cite-btn" data-cite-toggle="' + qid + '">цитата</button>';
       if (meta) html += '<div class="pv-point__meta">' + meta + "</div>";
-      if (pt.quote && pt.verified) html += '<blockquote class="pv-point__quote" id="' + qid + '" hidden>' + esc(pt.quote) + "</blockquote>";
+      if (pt.quote) html += '<blockquote class="pv-point__quote" id="' + qid + '" hidden>' + esc(pt.quote) + "</blockquote>";
       return html + "</article>";
     }
     function sectionHtml(path, brief, sec, terms) {
       var pts = sec.points || [];
       var html = '<section class="pv-section" id="pv-sec-' + escAttr(sec.id) + '" data-sec="' + escAttr(sec.id) + '">';
       html += '<div class="pv-section__head"><h2 class="pv-section__title">' + esc(sec.label) + '</h2><span class="pv-section__rule"></span></div>';
+      if (sec.overview) html += '<p class="pv-section__overview">' + esc(sec.overview) + "</p>";
       html += entChips(brief, sec.id);
       html += '<div class="pv-points">';
       pts.forEach(function (pt, i) { html += pointHtml(path, pt, i, sec.id, terms); });
       return html + "</div></section>";
+    }
+    function relatedHtml(brief) {
+      var rel = brief.related || [];
+      if (!rel.length) return "";
+      var out = '<div class="pv-related"><p class="pv-related__title">См. также - протоколы по той же группе МКБ</p><div class="pv-related__list">';
+      rel.forEach(function (r) {
+        if (!r || !r.path) return;
+        var href = "/proto-viewer.html?path=" + encodeURIComponent(r.path);
+        out += '<a class="pv-related__link" href="' + escAttr(href) + '">' + esc(r.title || r.path) + "</a>";
+      });
+      return out + "</div></div>";
     }
     function renderBrief(brief, path) {
       var root = document.getElementById("pv-root");
@@ -313,6 +376,7 @@
         "</div>" +
         '<a class="pv-pdf-btn" href="' + escAttr(pdfHref(path, 0)) + '" target="_blank" rel="noopener">' + PDF_SVG + " PDF</a>" +
         "</div>" +
+        (brief.needs_review ? '<div class="pv-review-banner">Карточка размечена автоматически и ожидает проверки методиста - сверяйтесь с текстом PDF.</div>' : "") +
         '<div class="pv-overview" id="pv-overview" hidden></div>' +
         '<div class="pv-layout">' +
         '<nav class="pv-rail" id="pv-rail"><p class="pv-rail__title">Разделы</p></nav>' +
@@ -330,7 +394,7 @@
         b.addEventListener("click", function () { jumpTo(sec.id); });
         rail.appendChild(b);
       });
-      detail.innerHTML = (brief.sections || []).map(function (sec) { return sectionHtml(path, brief, sec, terms); }).join("");
+      detail.innerHTML = (brief.sections || []).map(function (sec) { return sectionHtml(path, brief, sec, terms); }).join("") + relatedHtml(brief);
 
       // цитаты
       detail.querySelectorAll("[data-cite-toggle]").forEach(function (btn) {
