@@ -14403,7 +14403,7 @@
           <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:0.75rem">
             <button type="button" class="btn-ml-dash-refresh" id="methodist-mis-kz-select-all">Выбрать все</button>
             <button type="button" class="btn-ml-dash-refresh" id="methodist-mis-kz-select-none">Снять</button>
-            <button type="button" class="btn-methodist-queue-open" id="methodist-mis-kz-gemini">Прогнать через Gemini</button>
+            <button type="button" class="btn-methodist-queue-open" id="methodist-mis-kz-gemini">Прогнать через LLM</button>
           </div>
           <p class="methodist-tier-hint" id="methodist-mis-kz-gemini-status" style="margin-bottom:0.75rem"></p>
           <table class="methodist-ml-table" id="methodist-mis-kz-worst-table">
@@ -14425,7 +14425,7 @@
           </table>
         </div>
         <div class="methodist-ml-table-wrap" style="margin-top:1.25rem">
-          <h3 style="margin:0 0 0.5rem;font-size:1.05rem">Gemini-разбор</h3>
+          <h3 style="margin:0 0 0.5rem;font-size:1.05rem">LLM-разбор</h3>
           <p class="methodist-tier-hint" id="methodist-mis-kz-gemini-meta" style="margin-bottom:0.75rem"></p>
           <table class="methodist-ml-table" id="methodist-mis-kz-gemini-table">
             <thead>
@@ -14435,7 +14435,7 @@
                 <th>Visit ID</th>
                 <th>Patient ID</th>
                 <th>Врач</th>
-                <th>Gemini %</th>
+                <th>LLM %</th>
                 <th>Комментарий</th>
               </tr>
             </thead>
@@ -16831,7 +16831,7 @@
     if (title) {
       title.textContent =
         "ИИ-оценка · " +
-        (ai.model_used || window.__methodistAiReviewModel || "Gemini") +
+        (ai.model_used || window.__methodistAiReviewModel || "LLM") +
         " · уверенность " +
         (ai.confidence || "medium");
     }
@@ -23831,10 +23831,7 @@
         var geminiBody = document.querySelector("#methodist-mis-kz-gemini-table tbody");
         var gmeta = data.gemini_meta || {};
         if (geminiMeta) {
-          geminiMeta.textContent =
-            (gmeta.note_ru || "Выборочный Gemini") +
-            (gmeta.model ? " · " + gmeta.model : "") +
-            (gmeta.model_warn ? " · " + gmeta.model_warn : "");
+          geminiMeta.textContent = gmeta.note_ru || "Выборочный LLM-разбор";
         }
         var greviews = data.gemini_reviews || [];
         if (geminiBody) {
@@ -23860,7 +23857,7 @@
                   );
                 })
                 .join("")
-            : "<tr><td colspan='7'>Пока пусто - выберите визиты и нажмите Gemini</td></tr>";
+            : "<tr><td colspan='7'>Пока пусто - выберите визиты и нажмите LLM</td></tr>";
         }
       })
       .catch(function (e) {
@@ -24346,8 +24343,8 @@
     } catch (e1) {}
     if (msg.indexOf("is not found") !== -1 || msg.indexOf("not supported for generateContent") !== -1) {
       return (
-        "Неверное имя модели в .env. Задайте GEMINI_METHODIST_MODEL=gemini-2.5-pro " +
-        "(или gemini-2.5-flash). Сейчас в API нет gemini-3.1-pro. " +
+        "Неверное имя модели в настройках сервера. Укажите поддерживаемую LLM " +
+        "для методиста и перезапустите сервис. " +
         msg.slice(0, 180)
       );
     }
@@ -24402,7 +24399,7 @@
     if (meta) {
       meta.textContent =
         "Модель: " +
-        (ai.model_used || window.__methodistAiReviewModel || "Gemini") +
+        (ai.model_used || window.__methodistAiReviewModel || "LLM") +
         " · уверенность: " +
         (ai.confidence || "medium");
     }
@@ -32501,7 +32498,7 @@
           consultCtrl.abort();
         }, timeoutRef.ms);
         if (!health.gemini_configured && !health.consult_l2_fast) {
-          throw new Error("На сервере не настроен ключ доступа к обработке запросов (Gemini).");
+          throw new Error("На сервере не настроен ключ доступа к обработке запросов (LLM).");
         }
         return fetch(base + "/api/consult-review/stream", {
           method: "POST",
@@ -32871,7 +32868,7 @@
           if (st) st.textContent = "Нет токена методиста.";
           return;
         }
-        if (st) st.textContent = "Gemini: прогон " + ids.length + "…";
+        if (st) st.textContent = "LLM: прогон " + ids.length + "…";
         fetch("/api/methodist/mis-kz-quality/gemini-review", {
           method: "POST",
           headers: {
@@ -32890,15 +32887,12 @@
             if (!res.ok || !res.data || !res.data.ok) {
               if (st)
                 st.textContent =
-                  (res.data && (res.data.hint_ru || res.data.error)) || "Ошибка Gemini";
+                  (res.data && (res.data.hint_ru || res.data.error)) || "Ошибка LLM";
               return;
             }
             if (st)
               st.textContent =
-                "Готово: " +
-                ((res.data.batch || []).length || 0) +
-                " · " +
-                (res.data.model || "gemini");
+                "Готово: " + ((res.data.batch || []).length || 0) + " визит(ов) через LLM";
             if (typeof loadMethodistMisKzPanel === "function") loadMethodistMisKzPanel();
           })
           .catch(function (e) {

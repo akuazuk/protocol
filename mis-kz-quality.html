@@ -198,11 +198,11 @@
 
       <section class="card" style="margin-top:14px">
         <h2>Топ-50 слабых визитов (все врачи)</h2>
-        <p class="sub" id="worst-meta">L1 overall по всему месяцу; рядом L2 и комментарии. Отметьте чекбоксами визиты для Gemini.</p>
+        <p class="sub" id="worst-meta">L1 overall по всему месяцу; рядом L2 и комментарии. Отметьте чекбоксами визиты для LLM.</p>
         <div class="hero-actions" style="margin:0 0 12px; gap:8px">
           <button class="btn" type="button" id="btn-select-all" style="background:var(--teal);color:#fff">Выбрать все</button>
           <button class="btn btn--ghost" type="button" id="btn-select-none" style="background:#eef5f2;color:var(--teal-deep)">Снять</button>
-          <button class="btn" type="button" id="btn-gemini" style="background:var(--teal-deep);color:#fff">Прогнать выбранные через Gemini</button>
+          <button class="btn" type="button" id="btn-gemini" style="background:var(--teal-deep);color:#fff">Прогнать выбранные через LLM</button>
         </div>
         <p class="sub" id="gemini-status" style="margin-top:0"></p>
         <div style="overflow:auto;max-height:620px">
@@ -227,8 +227,8 @@
       </section>
 
       <section class="card" style="margin-top:14px">
-        <h2>Gemini-разбор выбранных визитов</h2>
-        <p class="sub" id="gemini-meta">Модель methodist (обычно gemini-2.5-pro; 3.6 в API нет)</p>
+        <h2>LLM-разбор выбранных визитов</h2>
+        <p class="sub" id="gemini-meta">Выборочная оценка качества КЗ языковой моделью</p>
         <div style="overflow:auto;max-height:480px">
           <table>
             <thead>
@@ -238,7 +238,7 @@
                 <th>Visit ID</th>
                 <th>Patient ID</th>
                 <th>Врач</th>
-                <th>Gemini %</th>
+                <th>LLM %</th>
                 <th>Комментарий</th>
               </tr>
             </thead>
@@ -371,10 +371,7 @@
     var gmeta = data.gemini_meta || {};
     var gmetaEl = document.getElementById("gemini-meta");
     if (gmetaEl) {
-      gmetaEl.textContent =
-        (gmeta.note_ru || "Выборочный Gemini-разбор") +
-        (gmeta.model ? " · модель " + gmeta.model : "") +
-        (gmeta.model_warn ? " · " + gmeta.model_warn : "");
+      gmetaEl.textContent = gmeta.note_ru || "Выборочный LLM-разбор";
     }
     var greviews = data.gemini_reviews || [];
     document.getElementById("gemini-reviews").innerHTML = greviews.length
@@ -385,7 +382,7 @@
             "</td><td>" + scorePill(v.overall_pct) + "</td><td>" +
             esc(v.comment || v.error || " - ") + "</td></tr>";
         }).join("")
-      : "<tr><td colspan='7'>Пока пусто - отметьте визиты выше и нажмите «Прогнать через Gemini»</td></tr>";
+      : "<tr><td colspan='7'>Пока пусто - отметьте визиты выше и нажмите «Прогнать через LLM»</td></tr>";
     document.getElementById("notes").textContent = (data.notes || []).join(" ");
   }
 
@@ -442,7 +439,7 @@
       st.textContent = "Нужен токен методиста.";
       return;
     }
-    st.textContent = "Gemini: прогон " + ids.length + " визит(ов)…";
+    st.textContent = "LLM: прогон " + ids.length + " визит(ов)…";
     try {
       var res = await fetch("/api/methodist/mis-kz-quality/gemini-review", {
         method: "POST",
@@ -458,9 +455,7 @@
         st.textContent = data.hint_ru || data.error || ("HTTP " + res.status);
         return;
       }
-      st.textContent =
-        "Готово: " + (data.batch || []).length + " · модель " + (data.model || " - ") +
-        (data.model_warn ? " (" + data.model_warn + ")" : "");
+      st.textContent = "Готово: " + (data.batch || []).length + " визит(ов) через LLM";
       await load();
     } catch (e) {
       st.textContent = String(e && e.message || e);

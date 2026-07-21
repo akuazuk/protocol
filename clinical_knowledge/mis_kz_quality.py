@@ -121,9 +121,6 @@ def build_mis_kz_quality_view(*, month: str | None = None) -> dict[str, Any]:
     month_s = str(summary.get("month") or month or "2026-07")
     gem = load_gemini_reviews(month=month_s)
     doctors = summary.get("doctors") or []
-    from clinical_knowledge.gemini_model_config import methodist_gemini_model_name
-
-    model_name, model_warn = methodist_gemini_model_name()
     return {
         "ok": True,
         "available": True,
@@ -148,13 +145,13 @@ def build_mis_kz_quality_view(*, month: str | None = None) -> dict[str, Any]:
         "worst_visits_meta": summary.get("worst_visits_meta") or {},
         "gemini_reviews": gem.get("reviews") or summary.get("gemini_reviews") or [],
         "gemini_meta": {
-            **(summary.get("gemini_meta") or {}),
-            **(gem.get("meta") or {}),
-            "model": model_name,
-            "model_warn": model_warn,
+            "note_ru": "Выборочный LLM-разбор качества КЗ.",
             "storage_path": gem.get("path"),
         },
-        "notes": summary.get("notes") or [],
+        "notes": [
+            str(n).replace("Gemini", "LLM").replace("gemini", "LLM")
+            for n in (summary.get("notes") or [])
+        ],
         "doctors_n": len(doctors),
     }
 
@@ -217,7 +214,7 @@ def review_visits_with_gemini(
         return {
             "ok": False,
             "error": "gemini_unavailable",
-            "hint_ru": "Gemini недоступен (нет ключа или модели).",
+            "hint_ru": "LLM недоступен (нет ключа или модели).",
             "model": model_name,
             "model_warn": model_warn,
             "reviews": [],
@@ -300,7 +297,7 @@ def review_visits_with_gemini(
                 "date": (row.get("date") or "")[:19],
                 "doctor_fio": (row.get("doctor_fio") or "").strip(),
                 "error": str(e)[:300],
-                "comment": f"Ошибка Gemini: {e}"[:300],
+                "comment": f"Ошибка LLM: {e}"[:300],
                 "model": model_name,
                 "model_warn": model_warn,
                 "ts": _utc(),
@@ -318,7 +315,7 @@ def review_visits_with_gemini(
     meta = {
         "model": model_name,
         "model_warn": model_warn,
-        "note_ru": "Gemini 3.6 в API нет; используется methodist-модель (обычно gemini-2.5-pro).",
+        "note_ru": "Выборочный LLM-разбор качества КЗ.",
         "last_batch_n": len(new_rows),
         "last_batch_at": _utc(),
     }

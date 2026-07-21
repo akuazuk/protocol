@@ -627,13 +627,13 @@ def build_summary(cases: list[dict], *, month: str, source: str) -> dict:
         "gemini_reviews": [],
         "gemini_meta": {
             "model_preferred": "gemini-2.5-pro",
-            "note_ru": "Gemini 3.6 в API нет; methodist-модель: gemini-2.5-pro. Выборочный прогон из UI.",
+            "note_ru": "Выборочный LLM-разбор качества КЗ из UI.",
         },
         "notes": [
             "L1 = structured без RAG/LLM; стоимость API ~$0.",
             "*_print поля MIS = флаги on/off; в текст брались клинические столбцы.",
             "Полный jsonl с кейсами хранится только на /var/data (ПДн).",
-            "worst_visits: топ-50 слабых визитов overall + patient_id; L2/Gemini - отдельные поля.",
+            "worst_visits: топ-50 слабых визитов overall + patient_id; L2/LLM - отдельные поля.",
         ],
     }
 
