@@ -17,6 +17,11 @@
     "doctor_fio",
     "doctor_specialization",
     "specialist_id_from_visit",
+    "pay_type",
+    "filial",
+    "service_codes",
+    "service_names",
+    "service_row_count",
     "doctor_extra",
     "anamnesis_doctor",
     "exam_data",
@@ -60,9 +65,18 @@
     "result_raw"
   ],
   "doctor_fio_filled": 7846,
-  "doctor_fio_source": "mis_data.specialist_name via visit_id",
+  "mis_data_join_fields": [
+    "doctor_fio",
+    "doctor_specialization",
+    "pay_type",
+    "filial",
+    "service_codes",
+    "service_names",
+    "service_row_count"
+  ],
+  "doctor_fio_source": "mis_data via visit_id (services aggregated with ' | ')",
   "parquet": "data/mis_protocol/mis_protocol_2026-07.parquet",
   "csv": "data/mis_protocol/mis_protocol_2026-07.csv",
   "source": "kravira_mc.mis_protocol + mis_data",
-  "exported_at": "2026-07-21T11:06:22"
+  "exported_at": "2026-07-21T11:15:23"
 }

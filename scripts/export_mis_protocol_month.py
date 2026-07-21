@@ -112,8 +112,9 @@ def main() -> int:
     # Сырой result оставляем для отладки, но в конце.
     out["result_raw"] = df["result"].values
 
-    # ФИО врача из mis_data по visit_id (specialist_name).
-    print("Joining mis_data specialist_name by visit_id …", flush=True)
+    # Реквизиты визита из mis_data по visit_id (1 строка протокола = 1 визит).
+    # Услуг на визит может быть несколько → code/serv_name склеиваем через « | ».
+    print("Joining mis_data (doctor, pay, filial, services) by visit_id …", flush=True)
     vids = out["visit_id"].dropna().astype(int).unique().tolist()
     chunks: list[pd.DataFrame] = []
     engine = _engine()
@@ -126,7 +127,14 @@ def main() -> int:
                 SELECT visit_id,
                        MIN(specialist_id) AS specialist_id_from_visit,
                        MIN(specialist_name) AS doctor_fio,
-                       MIN(specialization) AS doctor_specialization
+                       MIN(specialization) AS doctor_specialization,
+                       MIN(pay_type) AS pay_type,
+                       MIN(filial) AS filial,
+                       GROUP_CONCAT(DISTINCT NULLIF(TRIM(code), '')
+                                    ORDER BY code SEPARATOR ' | ') AS service_codes,
+                       GROUP_CONCAT(DISTINCT NULLIF(TRIM(serv_name), '')
+                                    ORDER BY serv_name SEPARATOR ' | ') AS service_names,
+                       COUNT(*) AS service_row_count
                 FROM mis_data
                 WHERE visit_id IN ({ph})
                 GROUP BY visit_id
@@ -136,20 +144,42 @@ def main() -> int:
     engine.dispose()
     if chunks:
         doc = pd.concat(chunks, ignore_index=True)
+        drop_old = [
+            "doctor_fio",
+            "doctor_specialization",
+            "specialist_id_from_visit",
+            "pay_type",
+            "filial",
+            "service_codes",
+            "service_names",
+            "service_row_count",
+        ]
+        out = out.drop(columns=[c for c in drop_old if c in out.columns], errors="ignore")
         out = out.merge(doc, on="visit_id", how="left")
-        # doctor_fio рядом с doctor_id
+        # порядок: после doctor_id
         cols = list(out.columns)
-        for c in ("doctor_fio", "doctor_specialization", "specialist_id_from_visit"):
+        extra = [
+            "doctor_fio",
+            "doctor_specialization",
+            "specialist_id_from_visit",
+            "pay_type",
+            "filial",
+            "service_codes",
+            "service_names",
+            "service_row_count",
+        ]
+        for c in extra:
             if c in cols:
                 cols.remove(c)
         if "doctor_id" in cols:
             i = cols.index("doctor_id") + 1
-            cols[i:i] = ["doctor_fio", "doctor_specialization", "specialist_id_from_visit"]
+            cols[i:i] = extra
         else:
-            cols += ["doctor_fio", "doctor_specialization", "specialist_id_from_visit"]
+            cols += extra
         out = out[cols]
         fio_n = int(out["doctor_fio"].fillna("").astype(str).str.strip().ne("").sum())
         print(f"doctor_fio filled: {fio_n}/{len(out)} ({100 * fio_n / max(1, len(out)):.1f}%)", flush=True)
+        print(f"rows after join (must equal protocol): {len(out)}", flush=True)
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
     parquet_path = args.out_dir / f"mis_protocol_{tag}.parquet"
@@ -171,7 +201,16 @@ def main() -> int:
         "doctor_fio_filled": int(out["doctor_fio"].fillna("").astype(str).str.strip().ne("").sum())
         if "doctor_fio" in out.columns
         else 0,
-        "doctor_fio_source": "mis_data.specialist_name via visit_id",
+        "mis_data_join_fields": [
+            "doctor_fio",
+            "doctor_specialization",
+            "pay_type",
+            "filial",
+            "service_codes",
+            "service_names",
+            "service_row_count",
+        ],
+        "doctor_fio_source": "mis_data via visit_id (services aggregated with ' | ')",
         "parquet": str(parquet_path.relative_to(ROOT)),
         "csv": str(csv_path.relative_to(ROOT)),
         "source": "kravira_mc.mis_protocol + mis_data",
