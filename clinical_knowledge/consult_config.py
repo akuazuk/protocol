@@ -99,6 +99,22 @@ def load_compliance_weights() -> dict[str, Any]:
 
 
 @lru_cache(maxsize=1)
+def load_axes_thresholds() -> dict[str, Any] | None:
+    """Калиброванные пороги статусов для axes-режима (Э4).
+
+    Файл config/axes_thresholds.yaml создаётся калибровкой на эталоне/распределении.
+    Нет файла или yaml → None (axes-режим тогда падает на дефолтные пороги и остаётся
+    загейтленным - overall не включают).
+    """
+    path = CONFIG_DIR / "axes_thresholds.yaml"
+    if not path.is_file():
+        return None
+    data = _load_yaml("axes_thresholds.yaml", {})
+    thr = data.get("status_thresholds") if isinstance(data, dict) else None
+    return thr if isinstance(thr, dict) and thr else None
+
+
+@lru_cache(maxsize=1)
 def load_red_flags() -> dict[str, dict[str, Any]]:
     cfg = _load_yaml("red_flags.yaml", _DEFAULT_RED_FLAGS)
     rf = cfg.get("red_flags") if isinstance(cfg, dict) else None

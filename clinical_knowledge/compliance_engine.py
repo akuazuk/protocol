@@ -611,8 +611,17 @@ def build_compliance_report(
     )
     has_protocol = bool(_applicable_matches(matches))
     force_manual = has_unhandled_critical(safety)
+    # Э4: в axes-режиме (блоки переопределены alignment-оценками) применяем
+    # калиброванные пороги статусов, если они есть; иначе - дефолтные (режим остаётся
+    # загейтленным, overall не включают до калибровки).
+    _axes_thr = None
+    if alignment_block_scores:
+        from .consult_config import load_axes_thresholds
+
+        _axes_thr = load_axes_thresholds()
     overall, status = compute_overall(
         breakdown, force_manual_review=force_manual, has_protocol_data=has_protocol,
+        status_thresholds=_axes_thr,
     )
     sparse_min = max(0, int(os.environ.get("CONSULT_MIN_TEXT_LEN", "0")))
     text_len = _doc_raw_text_len(doc)

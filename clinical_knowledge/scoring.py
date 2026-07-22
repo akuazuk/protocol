@@ -58,13 +58,19 @@ def compute_overall(
     force_manual_review: bool = False,
     has_protocol_data: bool = True,
     min_blocks: int = 2,
+    status_thresholds: dict | None = None,
 ) -> tuple[float | None, str]:
-    """Возвращает (overall_score, overall_status)."""
+    """Возвращает (overall_score, overall_status).
+
+    status_thresholds: переопределяет пороги статусов (Э4). Нужен для axes-режима,
+    где overall считается по более строгим alignment-блокам и требует своих
+    (калиброванных на эталоне) порогов - иначе прежние 90/75/50 заливают non_compliant.
+    """
     breakdown = sync_score_aliases(breakdown)
     cfg = load_compliance_weights()
     weights = cfg.get("weights") or {}
     legacy = cfg.get("legacy_weights") or {}
-    thr = cfg.get("status_thresholds") or {}
+    thr = status_thresholds if status_thresholds else (cfg.get("status_thresholds") or {})
 
     present: list[tuple[float, float]] = []
     seen_vals: set[str] = set()

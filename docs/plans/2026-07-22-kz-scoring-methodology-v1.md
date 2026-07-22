@@ -409,6 +409,66 @@ per-condition red_flags → cap; vitals-check (t/АД/ЧСС/SpO2 без реа�
 high-alert ISMP (доза/длительность/мониторинг обязательны). Safety-additive,
 не зависит от калибровки (ужесточает опасные кейсы).
 
+## 14. Этап 4 - gold-выборка + калибровка порогов осей (ВЫПОЛНЕНО)
+
+Разблокирует оси (13.2): даёт калиброванные пороги статусов для axes-режима, при
+которых включение осей **не роняет** распределение статусов.
+
+### 14.1. Стратифицированная gold-выборка (ВЫПОЛНЕНО)
+`scripts/build_kz_gold_sample.py`: страты (специальность × L1-банд) из L1 cases.jsonl,
+исключены неклинические роли (медсестра/стоматолог/логопед/лаборатория), гарантировано
+покрытие справок (pay_type=12) и red-flag. Отобрано **309 КЗ / 8105 клинич.**
+(21 специальность, 48 справок, 30 red-flag). Манифест с visit_id - на /var/data;
+в git - агрегат без ПДн (`data/ml/kz_gold/strata_summary.md`).
+
+### 14.2. LLM-предразметка (proxy-метки, ИДЁТ)
+`scripts/label_kz_gold_llm.py`: полный L2+LLM-обзор (`review_one_visit_full`) →
+{visit_id, llm_overall_pct, llm_status}, резюмируемо. Это **не** методист-gold
+(ручная разметка - следующая итерация), а воспроизводимая proxy-метка сильной модели
+для проверки калибровки. Батч (~1 мин/КЗ) идёт в фоне на Render.
+
+### 14.3. Калибровка порогов (ВЫПОЛНЕНО)
+`scripts/calibrate_axes_thresholds.py`: distribution-preserving - пороги ставятся так,
+чтобы доли статусов в axes-режиме совпали с baseline (стабильный flag-rate, но лучшая
+нацеленность). Результат → `config/axes_thresholds.yaml`:
+`compliant≥72.8, mostly≥55.5, partially≥38.2`.
+
+| | compliant | mostly | partially | non |
+|--|--|--|--|--|
+| baseline (градуир.) | 0% | 28% | 66% | 6% |
+| axes + калибровка | 1% | 28% | 65% | 6% |
+
+QWK(статус vs LLM) на первых метках: baseline **0.321** → axes+калибровка **0.364**
+(n=12, растёт по мере батча).
+
+### 14.4. Проводка порогов + A/B (ВЫПОЛНЕНО)
+- `compute_overall(status_thresholds=…)` - переопределение порогов; `consult_config.
+  load_axes_thresholds()` грузит `config/axes_thresholds.yaml`.
+- `build_compliance_report` в axes-режиме (есть `alignment_block_scores`) применяет
+  калиброванные пороги; нет файла → дефолтные (режим остаётся загейтленным).
+
+**A/B на 8123 (sample 250), пороги из файла активны:**
+| Конфигурация | exams | non | mostly | partially | compliant |
+|--|--|--|--|--|--|
+| baseline (прод) | 17.9 | 4 | 48 | 188 | 0 |
+| +axes overall (дефолт. пороги) | 23.5 | **110** | 0 | 130 | 0 |
+| +axes overall (**калибр. пороги**) | 23.5 | **13** | 47 | 177 | 3 |
+
+Калибровка убрала залив non_compliant (110→13); распределение статусов вернулось к
+baseline, при этом блоки (exams +5.6) улучшены. `overall_score` (число) остаётся 50.6 -
+это реальная, более строгая оценка покрытия; для UI-статуса значим не сам балл, а банд.
+
+### 14.5. Включение (ОТЛОЖЕНО до полного QWK)
+Механизм и калибровка готовы. `CONSULT_AXES_OVERALL` **по-прежнему дефолт ВЫКЛ** -
+включаем после завершения LLM-батча и подтверждения QWK на ~150 метках (сейчас n=12).
+Включение - смена одного флага + повторная калибровка (`calibrate_axes_thresholds.py`)
+на полном наборе меток.
+
+**Артефакты Э4:** `build_kz_gold_sample.py`, `label_kz_gold_llm.py`,
+`calibrate_axes_thresholds.py`, `config/axes_thresholds.yaml`,
+`consult_config.load_axes_thresholds`, `scoring.compute_overall(status_thresholds=)`,
+`data/ml/kz_gold/strata_summary.md`, `data/ml/kz_gold/calibration_report.md`.
+
 ## 10. Риски
 
 - **ПДн:** gold-разметка и cases.jsonl - только на /var/data; в git агрегаты/кодбук.
