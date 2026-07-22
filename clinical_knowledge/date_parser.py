@@ -15,6 +15,8 @@ _MONTHS_RU = {
 }
 
 RE_NUMERIC_DATE = re.compile(r"\b(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{2,4})\b")
+# ISO из колонки mis_protocol.date / CSV (YYYY-MM-DD), часто попадает в текст КЗ как есть.
+RE_ISO_DATE = re.compile(r"\b(\d{4})-(\d{2})-(\d{2})\b")
 RE_WORD_DATE = re.compile(
     r"\b(\d{1,2})\s+([а-яё]{3,})\.?\s+(\d{4})\b",
     re.I,
@@ -29,6 +31,11 @@ def _normalize_year(y: int) -> int:
     return y
 
 
+def format_date_dmy(d: _dt.date) -> str:
+    """ДД.ММ.ГГГГ - формат, который понимает consult_parser / PDF КЗ."""
+    return f"{d.day:02d}.{d.month:02d}.{d.year}"
+
+
 def parse_date(text: str | None) -> _dt.date | None:
     """Первая распознанная дата из строки/фрагмента."""
     if not text:
@@ -36,6 +43,13 @@ def parse_date(text: str | None) -> _dt.date | None:
     m = RE_NUMERIC_DATE.search(text)
     if m:
         d, mo, y = int(m.group(1)), int(m.group(2)), _normalize_year(int(m.group(3)))
+        try:
+            return _dt.date(y, mo, d)
+        except ValueError:
+            pass
+    m = RE_ISO_DATE.search(text)
+    if m:
+        y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
         try:
             return _dt.date(y, mo, d)
         except ValueError:
@@ -67,6 +81,13 @@ def parse_all_dates(text: str | None) -> list[_dt.date]:
     spans: list[tuple[int, _dt.date]] = []
     for m in RE_NUMERIC_DATE.finditer(text):
         d, mo, y = int(m.group(1)), int(m.group(2)), _normalize_year(int(m.group(3)))
+        try:
+            dt = _dt.date(y, mo, d)
+        except ValueError:
+            continue
+        spans.append((m.start(), dt))
+    for m in RE_ISO_DATE.finditer(text):
+        y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
         try:
             dt = _dt.date(y, mo, d)
         except ValueError:

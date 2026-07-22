@@ -93,10 +93,17 @@ def _utc() -> str:
 
 def build_kz_text(row: dict) -> str:
     parts: list[str] = []
-    # Дата и мета - чтобы L1 не штрафовал consultation_date системно.
-    date = (row.get("date") or row.get("visit_date_text") or "").strip()
-    if date:
-        parts.append(f"Дата приёма: {date[:19]}")
+    # Дата консультации: в PDF КЗ формат ДД.ММ.ГГГГ («Дата и время проведения…»).
+    # Колонка date из БД часто ISO (2026-07-13) - парсер раньше её не видел и ложно
+    # ставил «Не распознана дата консультации». Предпочитаем visit_date_text (слот ::1),
+    # иначе нормализуем ISO → ДД.ММ.ГГГГ.
+    from clinical_knowledge.date_parser import format_date_dmy, parse_date
+
+    date_raw = (row.get("visit_date_text") or row.get("date") or "").strip()
+    if date_raw:
+        parsed = parse_date(date_raw[:32])
+        date_label = format_date_dmy(parsed) if parsed else date_raw[:19]
+        parts.append(f"Дата консультации: {date_label}")
     fio = (row.get("doctor_fio") or "").strip()
     spec = (row.get("doctor_specialization") or "").strip()
     if fio or spec:
