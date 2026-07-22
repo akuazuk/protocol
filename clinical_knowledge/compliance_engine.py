@@ -532,8 +532,15 @@ def build_compliance_report(
     not_applicable_matches: list[dict[str, Any]] | None = None,
     analysis_mode: str = "legacy",
     summary_meta: dict[str, Any] | None = None,
+    alignment_block_scores: dict[str, float] | None = None,
 ) -> ComplianceReport:
-    """Собрать ComplianceReport из разобранного КЗ, матчей и результата проверки правил."""
+    """Собрать ComplianceReport из разобранного КЗ, матчей и результата проверки правил.
+
+    alignment_block_scores (Э3): переопределяет блоки diagnosis/exams/treatment/follow_up
+    оценками из детерминированных alignment-карточек (структурные items + семантика),
+    до применения всех caps и compute_overall - чтобы улучшение блоков дошло до overall,
+    но safety/oncology/neurology gates по-прежнему действовали.
+    """
     matches = matches or []
     rules_check = rules_check or {}
 
@@ -553,6 +560,16 @@ def build_compliance_report(
     )
     if treat_score is None:
         treat_score = treat_score_base
+    # Э3: переопределяем блоки оценками alignment-карточек ДО применения caps,
+    # чтобы safety/oncology/neurology gates по-прежнему ограничивали overall.
+    if alignment_block_scores:
+        _abs = alignment_block_scores
+        if isinstance(_abs.get("diagnosis"), (int, float)):
+            diag_score = float(_abs["diagnosis"])
+        if isinstance(_abs.get("exams"), (int, float)):
+            exams_score = float(_abs["exams"])
+        if isinstance(_abs.get("treatment"), (int, float)):
+            treat_score = float(_abs["treatment"])
     section_q, doc_score = _section_quality(doc)
     safety_score = _safety_score(safety, has_content=has_content)
     diag_score, treat_score, safety_score = _apply_sparse_neurology_score_caps(
@@ -563,6 +580,8 @@ def build_compliance_report(
     )
     pm_score = _protocol_match_score(matches)
     follow_score = _follow_up_score(doc, structural)
+    if alignment_block_scores and isinstance(alignment_block_scores.get("follow_up"), (int, float)):
+        follow_score = float(alignment_block_scores["follow_up"])
     proto_assess = _protocol_assessment(matches, rules_check)
     pm_score, treat_score, _ = _apply_oncology_priority_score_caps(
         doc, pm_score=pm_score, treat_score=treat_score, overall=None,
@@ -604,6 +623,19 @@ def build_compliance_report(
     )
     breakdown = sync_score_aliases(breakdown)
     breakdown.overall_score = overall
+    # Ось B (клиническая согласованность): взвешенное среднее блоков diagnosis/exams/
+    # treatment/follow_up (для дашборда 3 осей; overall по-прежнему по всем весам).
+    _conc_w = {"diagnosis_score": 0.20, "required_exams_score": 0.15,
+               "treatment_score": 0.15, "follow_up_score": 0.05}
+    _conc_num = 0.0
+    _conc_den = 0.0
+    for _k, _w in _conc_w.items():
+        _v = getattr(breakdown, _k, None)
+        if isinstance(_v, (int, float)):
+            _conc_num += float(_v) * _w
+            _conc_den += _w
+    if _conc_den > 0:
+        breakdown.clinical_concordance_score = round(_conc_num / _conc_den, 1)
 
     evidence_map = build_evidence_map(
         doc, rules_check,

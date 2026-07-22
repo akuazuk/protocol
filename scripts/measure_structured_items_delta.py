@@ -18,6 +18,7 @@ import random
 import sys
 from pathlib import Path
 from statistics import mean
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 if not (ROOT / "clinical_knowledge").is_dir():
@@ -33,8 +34,10 @@ from scripts.run_mis_protocol_l1_batch import (  # noqa: E402
 from scripts.measure_semantic_match_delta import _block_scores  # noqa: E402
 
 
-def _run(rows: list[dict], tag: str) -> dict[str, list[float]]:
+def _run(rows: list[dict], tag: str) -> dict[str, Any]:
+    from collections import Counter
     acc: dict[str, list[float]] = {"exams": [], "treatment": [], "overall": []}
+    status: Counter = Counter()
     for i, row in enumerate(rows, 1):
         vid = str(row.get("visit_id") or row.get("id") or "")
         try:
@@ -48,9 +51,10 @@ def _run(rows: list[dict], tag: str) -> dict[str, list[float]]:
         ov = res.get("overall_score")
         if isinstance(ov, (int, float)):
             acc["overall"].append(float(ov))
+        status[str(res.get("overall_status") or "?")] += 1
         if i % 100 == 0:
             print(f"  ... {i}/{len(rows)}", flush=True)
-    return acc
+    return {"acc": acc, "status": status}
 
 
 def _fmt(acc: dict[str, list[float]]) -> str:
@@ -78,35 +82,41 @@ def main() -> int:
     import clinical_knowledge.term_catalog as tc
     orig = srf._catalog_aliases
 
-    def set_cfg(structured: bool, catalog: bool) -> None:
+    def set_cfg(structured: bool, catalog: bool, axes: bool) -> None:
         os.environ["CONSULT_STRUCTURED_ITEMS"] = "1" if structured else "0"
+        os.environ["CONSULT_AXES_OVERALL"] = "1" if axes else "0"
         srf._catalog_aliases = orig if catalog else (lambda term: [])  # type: ignore[assignment]
         tc.clear_cache()
 
     print("catalog_available:", tc.catalog_available())
 
-    print("\n[1] baseline (structured OFF, catalog OFF)...", flush=True)
-    set_cfg(False, False)
+    print("\n[1] baseline (struct OFF, catalog OFF, axes OFF = как на проде)...", flush=True)
+    set_cfg(False, False, False)
     base = _run(rows, "base")
-    print("baseline:      ", _fmt(base))
+    print("baseline:        ", _fmt(base["acc"]))
 
-    print("\n[2] structured items ON (catalog OFF)...", flush=True)
-    set_cfg(True, False)
-    struct = _run(rows, "struct")
-    print("structured:    ", _fmt(struct))
+    print("\n[2] struct+catalog, axes OFF (дельта блоков)...", flush=True)
+    set_cfg(True, True, False)
+    blocks = _run(rows, "blk")
+    print("struct+catalog:  ", _fmt(blocks["acc"]))
 
-    print("\n[3] structured + catalog ON...", flush=True)
-    set_cfg(True, True)
-    both = _run(rows, "both")
-    print("struct+catalog:", _fmt(both))
+    print("\n[3] struct+catalog+axes ON (дельта overall)...", flush=True)
+    set_cfg(True, True, True)
+    full = _run(rows, "axes")
+    print("struct+cat+axes: ", _fmt(full["acc"]))
 
     def d(a: dict, b: dict, k: str) -> str:
-        x, y = a.get(k) or [], b.get(k) or []
+        x, y = a["acc"].get(k) or [], b["acc"].get(k) or []
         return f"{mean(y) - mean(x):+.1f}" if x and y else "n/a"
 
     print("\n=== ДЕЛЬТА к baseline ===")
-    for label, cfg in (("structured", struct), ("struct+catalog", both)):
+    for label, cfg in (("struct+catalog", blocks), ("+axes overall", full)):
         print(f"{label:16s} exams {d(base,cfg,'exams')}  treatment {d(base,cfg,'treatment')}  overall {d(base,cfg,'overall')}")
+
+    def _top(st: dict) -> str:
+        return ", ".join(f"{k}:{v}" for k, v in sorted(st.items(), key=lambda x: -x[1]))
+    print("\nstatus baseline: ", _top(base["status"]))
+    print("status +axes:    ", _top(full["status"]))
     return 0
 
 

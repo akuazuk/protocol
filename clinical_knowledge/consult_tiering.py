@@ -140,6 +140,43 @@ def run_l1_structured_review(
             append_alignment_evidence(structured_analysis, alignment_result)
             if alignment_result.get("limitations_ru"):
                 review["limitations_ru"] = alignment_result["limitations_ru"]
+
+            # Э3.2: маршрут alignment-блоков в overall (все caps сохраняются).
+            # ВАЖНО: по умолчанию ВЫКЛ. alignment даёт более строгую (реалистичную)
+            # оценку покрытия, чем rules-based; при текущих порогах 90/75/50 включение
+            # роняет overall (-17.5) и заливает non_compliant. Включать только после
+            # рекалибровки порогов на эталоне (Э4).
+            if (
+                os.environ.get("CONSULT_AXES_OVERALL", "0").strip().lower()
+                in ("1", "true", "yes", "on")
+            ):
+                cards = {
+                    str(c.get("block_id") or ""): c
+                    for c in (alignment_result.get("alignment_cards") or [])
+                }
+                abs_scores: dict[str, float] = {}
+                for bid in ("diagnosis", "exams", "treatment", "follow_up"):
+                    card = cards.get(bid)
+                    sc = card.get("score_pct") if card else None
+                    if isinstance(sc, (int, float)):
+                        abs_scores[bid] = float(sc)
+                if abs_scores:
+                    from .compliance_engine import build_compliance_report
+                    from .consult_analysis import report_to_json
+
+                    report2 = build_compliance_report(
+                        doc,
+                        matches=sa.get("matches") or [],
+                        rules_check=sa.get("rules_check") or {},
+                        analysis_mode=mode,
+                        alignment_block_scores=abs_scores,
+                    )
+                    comp2 = report_to_json(report2, doc)
+                    comp2["send_gate"] = evaluate_send_gate_from_compliance(comp2)
+                    structured_analysis["compliance"] = comp2
+                    sync_structured_with_alignment(structured_analysis, alignment_result)
+                    comp = comp2
+                    send_gate = comp2["send_gate"]
         except Exception:
             alignment_result = None
             alignment_paths = []

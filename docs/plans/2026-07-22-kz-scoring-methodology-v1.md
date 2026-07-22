@@ -382,14 +382,32 @@ default ON; fallback на прежний путь по чанкам).
 (rules-based), а не из alignment-карточек. Улучшение блоков дойдёт до overall
 только после 13.2 (3 оси).
 
-### 13.2. Три оси в ScoreBreakdown (СЛЕДУЮЩЕЕ)
-`documentation_score` / `clinical_concordance_score` (из alignment-блоков
-diagnosis+exams+treatment+follow_up) / `safety_score`; overall = взвешенная сумма
-осей × risk-gate.
+### 13.2. Три оси + маршрут alignment-блоков в overall (ВЫПОЛНЕНО, но ЗАГЕЙТЛЕНО)
+- `ScoreBreakdown.clinical_concordance_score` (ось B) - взвешенное среднее блоков
+  diagnosis/exams/treatment/follow_up; считается всегда, для дашборда.
+- `build_compliance_report(alignment_block_scores=…)` переопределяет блоки оценками
+  alignment-карточек **до всех caps** (safety/oncology/neurology сохраняются), затем
+  `compute_overall`. В L1 (`consult_tiering`) - повторный проход с этими override
+  (env `CONSULT_AXES_OVERALL`).
 
-### 13.3. Risk-gate (СЛЕДУЮЩЕЕ)
+**A/B на 8123 (sample 250): включение маршрута роняет overall.**
+| Конфигурация | exams | treatment | overall | non_compliant |
+|--|--|--|--|--|
+| baseline (прод) | 17.9 | 20.6 | 68.0 | 4 |
+| +struct+catalog (блоки) | 23.5 | 21.0 | 68.0 | 4 |
+| +axes overall ON | 23.5 | 21.0 | **50.6 (-17.5)** | **110** |
+
+**Вывод:** alignment даёт **более строгую и реалистичную** оценку покрытия
+(врач покрывает ~23% обязательных обследований протокола), чем прежний rules-based
+блок. При порогах 90/75/50 (калиброваны под мягкую оценку) включение маршрута
+заливает `non_compliant`. Поэтому **`CONSULT_AXES_OVERALL` по умолчанию ВЫКЛ** -
+механизм готов, но включать только после **рекалибровки порогов на эталоне (Э4)**.
+Это прямой мост к Э4: сначала gold + калибровка порогов/весов, затем включаем оси.
+
+### 13.3. Risk-gate (СЛЕДУЮЩЕЕ, параллельно Э4)
 per-condition red_flags → cap; vitals-check (t/АД/ЧСС/SpO2 без реакции);
-high-alert ISMP (доза/длительность/мониторинг обязательны).
+high-alert ISMP (доза/длительность/мониторинг обязательны). Safety-additive,
+не зависит от калибровки (ужесточает опасные кейсы).
 
 ## 10. Риски
 

@@ -396,6 +396,8 @@ class ScoreBreakdown(_Base):
     safety_score: float | None = None
     follow_up_score: float | None = None
     confidence_score: float | None = None
+    # 3 оси (Э3): агрегаты для дашборда; overall считается по блокам через веса
+    clinical_concordance_score: float | None = None
     # legacy aliases (backward compat)
     structural_score: float | None = None
     protocol_match_score: float | None = None
