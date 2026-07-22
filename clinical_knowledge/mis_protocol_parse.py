@@ -2,8 +2,15 @@
 
 Индекс N в схеме = parts[N] после split('::').
 Поле 22 (диагноз) дополнительно: split('##'), [0]=список через '|', [3]=индекс основного.
+
+Плюс детерминированная классификация строки `classify_kz_kind`: КЗ / справка /
+диагностика (УЗИ, рентген, функц., эндоскопия, лаборатория) / неклиническое / пустое.
+Модуль намеренно на чистом stdlib (без clinical_knowledge.__init__), т.к. импортируется
+экспортёром через importlib.
 """
 from __future__ import annotations
+
+import re
 
 # Индекс в ::-массиве → имя столбца (латиница, для parquet/csv).
 RESULT_FIELD_MAP: dict[int, str] = {
@@ -73,6 +80,100 @@ KZ_CORE_FIELDS: tuple[str, ...] = (
     "doctor_extra",
     "return_date",
 )
+
+
+# --- Классификация строки: КЗ vs не-КЗ ------------------------------------
+
+# Диагностические / лабораторные специальности: их протоколы - НЕ КЗ, не оцениваем.
+_DIAGNOSTIC_RE = re.compile(
+    r"(ультразвук|рентген|лучев|эндоскоп|гастроскоп|колоноскоп|"
+    r"функциональн\w*\s+диагност|лаборат|цитолог|патоморфолог|"
+    r"патологоанат|гистолог)",
+    re.IGNORECASE,
+)
+
+# Неклинические роли (нет врачебного заключения).
+_NON_CLINICAL_RE = re.compile(
+    r"(стоматолог|зубн|медсестр|медицинск\w*\s+сестр|логопед|фельдшер|регистратор)",
+    re.IGNORECASE,
+)
+
+# Только пунктуация / пробелы / прочерки - пустая специальность.
+_ONLY_DASH_RE = re.compile(r"^[\s\-\u2013\u2014\u2212\u2011._]+$")
+
+_EMPTY_FIELD_TOKENS = frozenset({"", "on", "off", "0", "1", "nan", "none", "null"})
+
+
+def is_diagnostic_specialty(name: str | None) -> bool:
+    """True для диагностических/лабораторных специальностей (УЗИ, рентген, лаба и т.п.)."""
+    return bool(_DIAGNOSTIC_RE.search((name or "").strip().lower()))
+
+
+def _field_nonempty(row: dict, *names: str) -> bool:
+    for name in names:
+        v = str(row.get(name) or "").strip().lower()
+        if v and v not in _EMPTY_FIELD_TOKENS:
+            return True
+    return False
+
+
+def _norm_pay_code(raw) -> str:
+    if raw is None:
+        return ""
+    s = str(raw).strip()
+    if not s or s.lower() in {"nan", "none", "null"}:
+        return ""
+    try:
+        f = float(s)
+        if f == int(f):
+            return str(int(f))
+    except (TypeError, ValueError):
+        pass
+    return s
+
+
+# Валидные значения kz_kind (в оценку идут только KZ_SCORED_KINDS).
+KZ_SCORED_KINDS: frozenset[str] = frozenset({"kz", "certificate"})
+
+
+def classify_kz_kind(row: dict) -> tuple[str, str]:
+    """Определить тип строки mis_protocol и причину.
+
+    Возвращает (kz_kind, reason_ru):
+      - "kz"           клиническое консультативное заключение (оцениваем);
+      - "certificate"  справка/профосмотр pay_type=12 (оцениваем отдельной рубрикой);
+      - "diagnostic"   УЗИ/рентген/функц./эндоскопия/лаборатория (НЕ оцениваем);
+      - "non_clinical" медсестра/стоматология/логопед/пустая спец. (НЕ оцениваем);
+      - "empty"        нет клинического содержания (НЕ оцениваем).
+
+    Порядок: диагностика → неклиническое → справка → контентный guard → КЗ.
+    Опирается на doctor_specialization (автор), pay_type и клинические поля строки.
+    """
+    spec = str(row.get("doctor_specialization") or "").strip()
+    low = spec.lower()
+
+    if is_diagnostic_specialty(spec):
+        return "diagnostic", f"диагностическая специальность: {spec}"
+    if _NON_CLINICAL_RE.search(low):
+        return "non_clinical", f"неклиническая специальность: {spec}"
+    if not spec or _ONLY_DASH_RE.match(spec):
+        # Специальность неизвестна - решаем по содержанию (guard ниже),
+        # но помечаем как неклиническое, если содержания тоже нет.
+        spec = ""
+
+    if _norm_pay_code(row.get("pay_type")) == "12":
+        return "certificate", "справка/профосмотр (pay_type=12)"
+
+    has_dx = _field_nonempty(row, "clinical_diagnosis", "diagnosis_list")
+    has_subjective = _field_nonempty(
+        row, "complaints", "anamnesis_doctor", "anamnesis_auto", "objective_status"
+    )
+    has_plan = _field_nonempty(row, "exam_recommendations", "treatment_recommendations")
+    if not (has_dx or has_subjective or has_plan):
+        return "empty", "нет клинического содержания (диагноз/жалобы/статус/рекомендации пусты)"
+    if not spec:
+        return "kz", "специальность не распознана; есть клиническое содержание"
+    return "kz", ""
 
 
 def parse_result(result: str | None) -> dict[str, str]:

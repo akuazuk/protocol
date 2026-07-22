@@ -46,6 +46,14 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 try:
+    from clinical_knowledge.mis_protocol_parse import KZ_SCORED_KINDS, classify_kz_kind
+except ImportError:  # pragma: no cover - fallback if copied alone on Render
+    KZ_SCORED_KINDS = frozenset({"kz", "certificate"})
+
+    def classify_kz_kind(row):  # type: ignore[misc]
+        return ("kz", "")
+
+try:
     from clinical_knowledge.mis_pay_type import pay_type_label_ru, normalize_pay_type_code
 except ImportError:  # pragma: no cover - fallback if copied alone on Render
     def normalize_pay_type_code(raw):  # type: ignore[misc]
@@ -394,6 +402,46 @@ def select_rows_for_l1(rows: list[dict]) -> list[dict]:
     return selected
 
 
+def kz_kind_of(row: dict) -> str:
+    """kz_kind строки: из готового столбца CSV или классификатором на месте."""
+    kind = str(row.get("kz_kind") or "").strip()
+    return kind or classify_kz_kind(row)[0]
+
+
+def split_kz_rows(rows: list[dict]) -> tuple[list[dict], dict]:
+    """Разделить строки на оцениваемые КЗ (kz/certificate) и исключённые.
+
+    Возвращает (scored_rows, excluded_breakdown) - breakdown идёт в summary для
+    панели «Гигиена данных»: сколько КЗ / справок / диагностики / пустых и почему.
+    """
+    scored: list[dict] = []
+    by_kind: Counter = Counter()
+    by_spec: dict[str, Counter] = defaultdict(Counter)
+    for row in rows:
+        kind = kz_kind_of(row)
+        by_kind[kind] += 1
+        if kind in KZ_SCORED_KINDS:
+            scored.append(row)
+        else:
+            spec = (row.get("doctor_specialization") or "").strip() or " - "
+            by_spec[kind][spec] += 1
+    breakdown = {
+        "n_total": len(rows),
+        "n_scored": len(scored),
+        "n_excluded": len(rows) - len(scored),
+        "by_kind": dict(by_kind),
+        "excluded_top_specialties": {
+            kind: dict(sorted(spec.items(), key=lambda x: -x[1])[:8])
+            for kind, spec in by_spec.items()
+        },
+        "rule_ru": (
+            "В оценку идут только kz и certificate. diagnostic (УЗИ/рентген/функц./"
+            "эндоскопия/лаборатория), non_clinical и empty исключены (classify_kz_kind)."
+        ),
+    }
+    return scored, breakdown
+
+
 def dedupe_cases_by_visit(cases: list[dict]) -> list[dict]:
     """Оставляем лучший успешный кейс на visit_id (длиннее текст / новее ts)."""
     by_vid: dict[str, dict] = {}
@@ -533,13 +581,24 @@ def build_worst_visits(
     return rows[: max(0, int(limit))]
 
 
-def load_csv_by_visit(csv_path: Path) -> dict[str, dict]:
-    """visit_id → лучшая (самая полная) строка CSV + _n_kz_per_visit."""
+def load_csv_rows(csv_path: Path) -> list[dict]:
     if not csv_path.is_file():
-        return {}
+        return []
     with csv_path.open(encoding="utf-8", newline="") as f:
-        raw = list(csv.DictReader(f))
-    selected = select_rows_for_l1(raw)
+        return list(csv.DictReader(f))
+
+
+def load_csv_by_visit(csv_path: Path) -> dict[str, dict]:
+    """visit_id → лучшая (самая полная) строка КЗ + _n_kz_per_visit.
+
+    Только строки-КЗ (kz/certificate): диагностика/пустые не должны подтягивать
+    patient_id и не идут в L2.
+    """
+    raw = load_csv_rows(csv_path)
+    if not raw:
+        return {}
+    scored, _ = split_kz_rows(raw)
+    selected = select_rows_for_l1(scored)
     return {str(r.get("visit_id") or "").strip(): r for r in selected if r.get("visit_id")}
 
 
@@ -676,7 +735,13 @@ def enrich_worst_visits_l2(
     return worst
 
 
-def build_summary(cases: list[dict], *, month: str, source: str) -> dict:
+def build_summary(
+    cases: list[dict],
+    *,
+    month: str,
+    source: str,
+    excluded_breakdown: dict | None = None,
+) -> dict:
     cases = dedupe_cases_by_visit(cases)
     by_doctor: dict[str, list] = defaultdict(list)
     by_spec: dict[str, list] = defaultdict(list)
@@ -919,6 +984,7 @@ def build_summary(cases: list[dict], *, month: str, source: str) -> dict:
             ),
         },
         "llm_review_queue": llm_review_queue,
+        "excluded_breakdown": excluded_breakdown or {},
         "gemini_reviews": [],
         "gemini_meta": {
             "model_preferred": "gemini-2.5-pro",
@@ -929,6 +995,7 @@ def build_summary(cases: list[dict], *, month: str, source: str) -> dict:
             "*_print поля MIS = флаги on/off; в текст брались клинические столбцы.",
             "Полный jsonl с кейсами хранится только на /var/data (ПДн).",
             "worst_visits: топ-50 слабых визитов overall + patient_id; L2/LLM - отдельные поля.",
+            "excluded_breakdown: диагностика (УЗИ и пр.)/пустые/неклинич. вне оценки (classify_kz_kind).",
             "core_overall = среднее блоков без exams/treatment/limitations (эвристика MIS).",
             "exams/treatment часто проседают из-за пустых полей или жёсткого матча с КП.",
             "pay_type: 0 не указан, 2 наличный, 3 ДМС, 12 справки/профосмотры.",
@@ -1018,7 +1085,15 @@ def main() -> int:
 
     if args.rebuild_summary_only or args.enrich_l2_worst:
         cases = load_cases_from_jsonl(cases_path)
+        _, kz_breakdown = split_kz_rows(load_csv_rows(args.csv))
         csv_by_visit = load_csv_by_visit(args.csv)
+        # cases.jsonl мог быть собран старым кодом (все визиты, вкл. диагностику/пустые).
+        # Оставляем только КЗ-визиты (те, что прошли split_kz_rows и есть в csv_by_visit).
+        kz_vids = set(csv_by_visit.keys())
+        if kz_vids:
+            before = len(cases)
+            cases = [c for c in cases if str(c.get("visit_id") or "") in kz_vids]
+            print(f"kz filter cases: {before} -> {len(cases)} (по КЗ-визитам из CSV)", flush=True)
         attach_patient_ids(cases, csv_by_visit)
         # preserve prior L2 fields if rebuilding without re-enrich
         prior_l2: dict[str, dict] = {}
@@ -1037,7 +1112,9 @@ def main() -> int:
                         }
             except (OSError, json.JSONDecodeError):
                 prior_l2 = {}
-        summary = build_summary(cases, month=args.month, source=str(args.csv))
+        summary = build_summary(
+            cases, month=args.month, source=str(args.csv), excluded_breakdown=kz_breakdown
+        )
         if prior_l2:
             for w in summary.get("worst_visits") or []:
                 extra = prior_l2.get(str(w.get("visit_id") or ""))
@@ -1102,11 +1179,14 @@ def main() -> int:
             if i < args.offset:
                 continue
             raw_rows.append(row)
-    rows = select_rows_for_l1(raw_rows)
+    scored_rows, kz_breakdown = split_kz_rows(raw_rows)
+    rows = select_rows_for_l1(scored_rows)
     if args.limit:
         rows = rows[: args.limit]
     print(
-        f"csv_rows={len(raw_rows)} unique_visits={len(rows)} "
+        f"csv_rows={len(raw_rows)} scored_rows={len(scored_rows)} "
+        f"excluded={kz_breakdown.get('n_excluded')} by_kind={kz_breakdown.get('by_kind')} "
+        f"unique_visits={len(rows)} "
         f"multi_kz={sum(1 for r in rows if int(r.get('_n_kz_per_visit') or 1) > 1)}",
         flush=True,
     )
@@ -1184,7 +1264,9 @@ def main() -> int:
     all_cases = load_cases_from_jsonl(cases_path)
     csv_by_visit = load_csv_by_visit(args.csv)
     attach_patient_ids(all_cases, csv_by_visit)
-    summary = build_summary(all_cases, month=args.month, source=str(args.csv))
+    summary = build_summary(
+        all_cases, month=args.month, source=str(args.csv), excluded_breakdown=kz_breakdown
+    )
     _write_summary(summary)
     print(
         f"DONE ok={ok} fail={fail} total_unique={summary.get('n_cases')} "

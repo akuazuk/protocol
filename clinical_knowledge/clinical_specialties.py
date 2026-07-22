@@ -9,6 +9,22 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from clinical_knowledge.mis_protocol_parse import (
+    KZ_SCORED_KINDS,
+    classify_kz_kind,
+    is_diagnostic_specialty,
+)
+
+__all__ = [
+    "normalize_specialty",
+    "is_clinical_specialty",
+    "is_diagnostic_specialty",
+    "filter_clinical_rows",
+    "filter_clinical_doctors",
+    "filter_clinical_visits",
+    "filter_kz_rows",
+]
+
 # Подстроки / точные имена неклинических ролей (lower).
 # Прочерки/пустые - через unicode-коды, чтобы normalize_ui_dashes не схлопнул их в "-".
 _NON_CLINICAL_EXACT = {
@@ -40,12 +56,19 @@ def normalize_specialty(name: str | None) -> str:
 
 
 def is_clinical_specialty(name: str | None) -> bool:
-    """True, если специальность врачебная (для отчёта качества КЗ)."""
+    """True, если специальность врачебная клиническая (для отчёта качества КЗ).
+
+    Исключаются неклинические роли (медсестра/стоматология/логопед/лаборатория) И
+    диагностические специальности (УЗИ, рентген, функц. диагностика, эндоскопия) -
+    их протоколы не являются консультативными заключениями.
+    """
     s = normalize_specialty(name)
     low = s.lower()
     if not s or low in _NON_CLINICAL_EXACT or _ONLY_DASH_RE.match(s):
         return False
     if _NON_CLINICAL_RE.search(low):
+        return False
+    if is_diagnostic_specialty(s):
         return False
     return True
 
@@ -77,3 +100,19 @@ def filter_clinical_visits(rows: list[dict[str, Any]] | None) -> list[dict[str, 
         if isinstance(r, dict)
         and is_clinical_specialty(r.get("doctor_specialization") or r.get("specialization"))
     ]
+
+
+def filter_kz_rows(rows: list[dict[str, Any]] | None) -> list[dict[str, Any]]:
+    """Оставить только строки-КЗ, идущие в оценку (kz / certificate).
+
+    Предпочитает готовый столбец `kz_kind` (из экспортёра); если его нет -
+    классифицирует строку на месте через classify_kz_kind.
+    """
+    out: list[dict[str, Any]] = []
+    for r in rows or []:
+        if not isinstance(r, dict):
+            continue
+        kind = str(r.get("kz_kind") or "").strip() or classify_kz_kind(r)[0]
+        if kind in KZ_SCORED_KINDS:
+            out.append(r)
+    return out

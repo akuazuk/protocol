@@ -14,6 +14,21 @@ python3 scripts/export_mis_protocol_month.py --month 2026-07
 
 Схема полей: `epam/scheme_mis_protocols.docx`, парсер: `clinical_knowledge/mis_protocol_parse.py`.
 
+### Разделение КЗ и не-КЗ (`kz_kind`)
+
+Экспортёр тянет `type` (в схеме КЗ = 9), резолвит специальность автора по `doctor_id`
+протокола и классифицирует каждую строку (`classify_kz_kind`) в столбец `kz_kind`:
+
+- `kz` - клиническое консультативное заключение (оцениваем);
+- `certificate` - справка/профосмотр `pay_type=12` (оцениваем отдельной рубрикой);
+- `diagnostic` - УЗИ / рентген / функц. диагностика / эндоскопия / лаборатория (**НЕ оцениваем**);
+- `non_clinical` - медсестра / стоматология / логопед (НЕ оцениваем);
+- `empty` - нет клинического содержания (НЕ оцениваем).
+
+В L1/L2 идут только `kz` + `certificate`; остальное сводится в `excluded_breakdown`
+summary (панель «Гигиена данных»). Счётчики `doc_type_distribution` / `kz_kind_counts`
+пишутся в `*.meta.json`. См. `docs/plans/2026-07-22-kz-data-separation-viz-v1.md`.
+
 ## Массовый L1-анализ качества КЗ
 
 Детерминированный L1 (без LLM, API cost ~$0). Полный прогон июля (~7.6k уникальных визитов) на Render: ~15-25 мин при `--direct --workers 1`.
