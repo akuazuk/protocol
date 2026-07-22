@@ -364,6 +364,84 @@ def _completeness_section_card(
     )
 
 
+def _structured_items(
+    protocol_paths: list[str] | None,
+    ctx: dict[str, Any],
+    kind: str,
+) -> list[tuple[str, str]]:
+    """Чистые пункты обследований/лечения из структурных полей ProtocolSummary (Э3).
+
+    Возвращает [(text, obligation)]. Заменяет обрывки прозы из чанков
+    (`profile["diagnostics"]`) на реальные названия обследований/препаратов -
+    тогда каталог синонимов (Э2) начинает работать. Пусто → вызывающий код
+    откатывается на прежний путь по чанкам.
+    """
+    if not _env_bool("CONSULT_STRUCTURED_ITEMS", True):
+        return []
+    try:
+        from clinical_knowledge.protocol_summary.loader import load_summary_by_path
+    except Exception:
+        return []
+
+    icd = {str(c).upper() for c in (ctx.get("icd_codes") or []) if c}
+    icd_roots = {c[:3] for c in icd}
+    out: list[tuple[str, str]] = []
+    seen: set[str] = set()
+
+    def _add(text: str | None, obligation: str) -> None:
+        t = (text or "").strip()
+        if not t or len(t) < 5 or len(t) > 180:
+            return
+        key = t.lower()
+        if key in seen or not is_kp_checklist_item(t):
+            return
+        seen.add(key)
+        out.append((t, obligation))
+
+    for path in (protocol_paths or [])[:4]:
+        try:
+            summary = load_summary_by_path(str(path), usable_only=False)
+        except Exception:
+            summary = None
+        if summary is None:
+            continue
+        conds = list(summary.conditions or [])
+        if icd:
+            picked = [
+                c for c in conds
+                if any(
+                    (str(code).upper() in icd) or (str(code)[:3].upper() in icd_roots)
+                    for code in (c.icd10_codes or [])
+                )
+            ]
+            conds = picked or conds
+        for c in conds:
+            if kind == "exams":
+                for ex in (c.required_exams or []):
+                    ob = "required" if str(getattr(ex, "requirement_level", "")) == "required" else "recommended"
+                    _add(getattr(ex, "name", None), ob)
+                for ex in (c.conditional_exams or []):
+                    _add(getattr(ex, "name", None), "recommended")
+            else:  # treatment
+                tr = getattr(c, "treatment", None)
+                if not tr:
+                    continue
+                for g in (getattr(tr, "drug_groups", None) or []):
+                    _add(getattr(g, "drug_group", None), "recommended")
+                for d in (getattr(tr, "drugs", None) or []):
+                    _add(getattr(d, "drug_name", None) or getattr(d, "active_substance", None)
+                         or getattr(d, "drug_group", None), "recommended")
+                for pr in (getattr(tr, "procedures", None) or []):
+                    _add(getattr(pr, "name", None), "recommended")
+                for sg in (getattr(tr, "surgery", None) or []):
+                    _add(getattr(sg, "name", None), "recommended")
+                for nd in (getattr(tr, "non_drug", None) or []):
+                    _add(getattr(nd, "text", None), "recommended")
+        if len(out) >= 14:
+            break
+    return out[:14]
+
+
 def _exams_card(
     doc: ConsultationDocument,
     profile: dict[str, Any],
@@ -385,6 +463,10 @@ def _exams_card(
         limit=12,
     )
     required = [r["text"] for r in ranked if is_kp_checklist_item(r.get("text") or "")]
+    struct_exams = _structured_items(protocol_paths or profile.get("paths"), ctx, "exams")
+    if struct_exams:
+        ranked = [{"text": t, "obligation": ob} for t, ob in struct_exams]
+        required = [t for t, _ in struct_exams]
     kz_blob = expand_kz_blob(doc, "exams")
     raw_text = (getattr(doc, "raw_text", None) or "").strip()
     cite = next(
@@ -513,6 +595,10 @@ def _treatment_card(
         limit=12,
     )
     required = [r["text"] for r in ranked if is_kp_checklist_item(r.get("text") or "")]
+    struct_treat = _structured_items(protocol_paths or profile.get("paths"), ctx, "treatment")
+    if struct_treat:
+        ranked = [{"text": t, "obligation": ob} for t, ob in struct_treat]
+        required = [t for t, _ in struct_treat]
     kz_blob = expand_kz_blob(doc, "treatment")
     raw_text = (getattr(doc, "raw_text", None) or "").strip()
     cite = next(

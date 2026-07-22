@@ -8383,7 +8383,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-22-r6-synonym-catalog-fix"
+BUILD_VERSION = "2026-07-22-r7-structured-alignment-items"
 
 
 def _app_version() -> str:

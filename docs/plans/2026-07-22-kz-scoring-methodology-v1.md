@@ -358,6 +358,39 @@ gated на подаче в alignment **структурных `required_exams` /
 `scripts/measure_semantic_match_delta.py`, правки `semantic_rule_fallback.py`,
 чистый `data/catalog/exam_drug_synonyms.json` (52 записи с вариантами).
 
+## 13. Этап 3 - структурные items + 3 оси + risk-gate (В РАБОТЕ)
+
+### 13.1. Структурные items в alignment (ВЫПОЛНЕНО, разблокировка Э2)
+`consult_alignment._structured_items()` берёт пункты для сверки из
+`ProtocolSummary.required_exams/conditional_exams` (exams) и `treatment.drugs/
+drug_groups/procedures/surgery/non_drug` (treatment) вместо обрывков чанков.
+`_exams_card`/`_treatment_card` предпочитают их (env `CONSULT_STRUCTURED_ITEMS`,
+default ON; fallback на прежний путь по чанкам).
+
+**A/B на реальных 8123 КЗ (`measure_structured_items_delta.py`, sample 300):**
+| Конфигурация | exams | treatment | overall |
+|--|--|--|--|
+| baseline (как на проде) | 17.7 | 20.5 | 68.2 |
+| + структурные items | 22.6 (+4.9) | 20.6 | 68.2 |
+| + структурные + каталог (Э2) | **23.5 (+5.8)** | 21.0 | 68.2 |
+
+Каталог синонимов теперь **даёт эффект** (+0.9 к exams поверх структурных). Лечение
+почти не двигается (+0.4): матч свободного текста назначений врача с названиями
+препаратов протокола - отдельная задача (нормализация препаратов/доз).
+
+**overall не изменился:** `overall_score` считается из `ScoreBreakdown`
+(rules-based), а не из alignment-карточек. Улучшение блоков дойдёт до overall
+только после 13.2 (3 оси).
+
+### 13.2. Три оси в ScoreBreakdown (СЛЕДУЮЩЕЕ)
+`documentation_score` / `clinical_concordance_score` (из alignment-блоков
+diagnosis+exams+treatment+follow_up) / `safety_score`; overall = взвешенная сумма
+осей × risk-gate.
+
+### 13.3. Risk-gate (СЛЕДУЮЩЕЕ)
+per-condition red_flags → cap; vitals-check (t/АД/ЧСС/SpO2 без реакции);
+high-alert ISMP (доза/длительность/мониторинг обязательны).
+
 ## 10. Риски
 
 - **ПДн:** gold-разметка и cases.jsonl - только на /var/data; в git агрегаты/кодбук.
