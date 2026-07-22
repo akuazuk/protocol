@@ -301,6 +301,7 @@ def build_mis_kz_quality_view(
         "bottom_doctors": bottom_doctors,
         "worst_visits": worst_visits,
         "worst_visits_meta": summary.get("worst_visits_meta") or {},
+        "excluded_breakdown": summary.get("excluded_breakdown") or {},
         "llm_review_queue": summary.get("llm_review_queue") or {},
         "gemini_reviews": gem.get("reviews") or summary.get("gemini_reviews") or [],
         "gemini_meta": {

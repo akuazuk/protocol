@@ -167,6 +167,14 @@
         <div class="kpi"><div class="label">Врачей</div><div class="value" id="kpi-docs"> - </div><div class="hint">уникальных ФИО</div></div>
       </div>
 
+      <section class="card" id="hygiene-card" style="margin-top:14px" hidden>
+        <h2>Гигиена данных: что оценивается</h2>
+        <p class="sub" id="hygiene-note">Разделение строк выгрузки МИС на КЗ и не-КЗ. Диагностику (УЗИ, рентген, функц. диагностика, эндоскопия, лаборатория), неклинические роли и пустые записи не оцениваем.</p>
+        <div id="hygiene-bar" style="display:flex;height:28px;border-radius:10px;overflow:hidden;margin:12px 0 6px;background:#eef2f0"></div>
+        <div id="hygiene-legend" style="display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:10px"></div>
+        <p class="sub" id="hygiene-hint" style="margin-top:10px"></p>
+      </section>
+
       <section class="card" id="compare-card" style="margin-top:14px" hidden>
         <h2>Динамика: январь → июль</h2>
         <p class="sub" id="compare-note">Сравнение клинических специальностей</p>
@@ -177,7 +185,7 @@
       <div class="grid-2">
         <section class="card">
           <h2>Распределение баллов</h2>
-          <p class="sub">Гистограмма overall % по всем успешно разобранным КЗ</p>
+          <p class="sub">Гистограмма overall % по КЗ (цветовые зоны: красная &lt;60, жёлтая 60-79, зелёная 80+)</p>
           <div class="bars" id="hist-bars"></div>
         </section>
         <section class="card">
@@ -199,6 +207,12 @@
           <div style="overflow:auto;max-height:420px"><table><thead><tr><th>Врач</th><th>Спец.</th><th>N</th><th>Avg</th></tr></thead><tbody id="bottom-docs"></tbody></table></div>
         </section>
       </div>
+
+      <section class="card" style="margin-top:14px">
+        <h2>Специальности относительно медианы</h2>
+        <p class="sub" id="spec-dev-note">Отклонение среднего overall специальности от общей медианы (кто реально выбивается)</p>
+        <div id="spec-dev-bars" style="margin-top:10px"></div>
+      </section>
 
       <div class="grid-2" style="margin-top:14px">
         <section class="card">
@@ -402,6 +416,120 @@
     return "#b91c1c";
   }
 
+  var KZ_KIND_META = {
+    kz: { label: "КЗ (оцениваем)", color: "#2f8f78", scored: true },
+    certificate: { label: "Справки / профосмотры", color: "#7bc4ad", scored: true },
+    diagnostic: { label: "Диагностика (УЗИ и пр.)", color: "#e0a04a", scored: false },
+    non_clinical: { label: "Неклинические роли", color: "#9aa6b2", scored: false },
+    empty: { label: "Пустые записи", color: "#cbd3da", scored: false }
+  };
+  var KZ_KIND_ORDER = ["kz", "certificate", "diagnostic", "non_clinical", "empty"];
+
+  function renderHygiene(data) {
+    var card = document.getElementById("hygiene-card");
+    if (!card) return;
+    var eb = data.excluded_breakdown || {};
+    var byKind = eb.by_kind || {};
+    var total = 0;
+    KZ_KIND_ORDER.forEach(function (k) { total += Number(byKind[k] || 0); });
+    if (!total) { card.hidden = true; return; }
+    card.hidden = false;
+
+    var barEl = document.getElementById("hygiene-bar");
+    var legEl = document.getElementById("hygiene-legend");
+    var segs = [], legend = [];
+    KZ_KIND_ORDER.forEach(function (k) {
+      var n = Number(byKind[k] || 0);
+      if (!n) return;
+      var meta = KZ_KIND_META[k] || { label: k, color: "#bbb", scored: false };
+      var pct = (n / total) * 100;
+      segs.push('<div title="' + esc(meta.label) + ': ' + n + '" style="width:' + pct.toFixed(2) +
+        '%;background:' + meta.color + '"></div>');
+      legend.push('<div style="display:flex;align-items:center;gap:7px;font-size:13px">' +
+        '<span style="width:12px;height:12px;border-radius:3px;background:' + meta.color +
+        ';display:inline-block;flex:none"></span>' +
+        '<span>' + esc(meta.label) + ' <b>' + n + '</b> <span style="color:var(--muted)">(' +
+        pct.toFixed(1) + '%)' + (meta.scored ? '' : ' · не в оценке') + '</span></span></div>');
+    });
+    barEl.innerHTML = segs.join("");
+    legEl.innerHTML = legend.join("");
+
+    var scored = (eb.n_scored != null) ? eb.n_scored : ((byKind.kz || 0) + (byKind.certificate || 0));
+    var excluded = (eb.n_excluded != null) ? eb.n_excluded : (total - scored);
+    var hint = "Всего строк выгрузки: " + total + " · в оценку идёт " + scored +
+      " (КЗ+справки) · исключено " + excluded + ".";
+    var ts = eb.excluded_top_specialties || {};
+    var detail = [];
+    ["diagnostic", "non_clinical", "empty"].forEach(function (k) {
+      var specs = ts[k];
+      if (!specs) return;
+      var names = Object.keys(specs).slice(0, 4).map(function (s) { return s + " (" + specs[s] + ")"; });
+      if (names.length) detail.push((KZ_KIND_META[k] ? KZ_KIND_META[k].label : k) + ": " + names.join(", "));
+    });
+    if (!byKind.diagnostic) {
+      detail.push("diagnostic=0: УЗИ/рентген не отделяются из текущих CSV (нужен пере-экспорт с автором по doctor_id).");
+    }
+    document.getElementById("hygiene-hint").innerHTML = esc(hint) +
+      (detail.length ? "<br>" + esc(detail.join(" · ")) : "");
+  }
+
+  function renderHistZones(data) {
+    var hist = data.score_histogram || {};
+    var order = ["0-49", "50-59", "60-69", "70-79", "80-89", "90-100"];
+    var zoneColor = {
+      "0-49": "#d9534f", "50-59": "#e0913a", "60-69": "#e0b84a",
+      "70-79": "#9ac47f", "80-89": "#5fae7e", "90-100": "#2f8f78"
+    };
+    var max = Math.max.apply(null, order.map(function (k) { return Number(hist[k] || 0); }).concat([1]));
+    var median = data.median_overall_pct;
+    var html = order.map(function (k) {
+      var n = Number(hist[k] || 0);
+      var pct = Math.max(0, Math.min(100, (n / max) * 100));
+      var isMedian = median != null && bandOf(median) === k;
+      return '<div class="bar-row"><div class="name">' + k + '%' +
+        (isMedian ? ' <span style="color:var(--teal-deep);font-weight:700">◂ медиана</span>' : '') +
+        '</div><div class="bar-track"><div class="bar-fill" style="width:' + pct +
+        '%;background:' + zoneColor[k] + '"></div></div><div class="pct">' + n + '</div></div>';
+    }).join("");
+    document.getElementById("hist-bars").innerHTML = html;
+  }
+  function bandOf(v) {
+    v = Number(v);
+    if (v < 50) return "0-49"; if (v < 60) return "50-59"; if (v < 70) return "60-69";
+    if (v < 80) return "70-79"; if (v < 90) return "80-89"; return "90-100";
+  }
+
+  function renderSpecDeviation(data) {
+    var el = document.getElementById("spec-dev-bars");
+    if (!el) return;
+    var specs = (data.specialties || []).filter(function (s) { return s.avg_overall_pct != null; });
+    var ref = data.median_overall_pct != null ? Number(data.median_overall_pct)
+      : (data.avg_overall_pct != null ? Number(data.avg_overall_pct) : 70);
+    if (!specs.length) { el.innerHTML = "<div class='sub'>Нет данных</div>"; return; }
+    var rows = specs.map(function (s) {
+      return { name: s.specialization || s.doctor_specialization || " - ", n: s.n || 0,
+        avg: Number(s.avg_overall_pct), dev: Number(s.avg_overall_pct) - ref };
+    }).sort(function (a, b) { return b.dev - a.dev; });
+    var maxAbs = Math.max.apply(null, rows.map(function (r) { return Math.abs(r.dev); }).concat([1]));
+    document.getElementById("spec-dev-note").textContent =
+      "Отклонение среднего overall специальности от медианы " + ref + "% (сортировка по отклонению)";
+    el.innerHTML = rows.map(function (r) {
+      var half = (Math.abs(r.dev) / maxAbs) * 50;
+      var pos = r.dev >= 0;
+      var color = pos ? "#2f8f78" : "#d9534f";
+      var barLeft = pos ? 50 : (50 - half);
+      var label = (r.dev > 0 ? "+" : "") + r.dev.toFixed(1);
+      return '<div style="display:flex;align-items:center;gap:8px;margin:3px 0;font-size:13px">' +
+        '<div style="width:150px;flex:none;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + esc(r.name) + '">' + esc(r.name) + '</div>' +
+        '<div style="flex:1;position:relative;height:16px;background:#f1f5f3;border-radius:4px">' +
+        '<div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:#c2ccc8"></div>' +
+        '<div style="position:absolute;top:2px;bottom:2px;left:' + barLeft + '%;width:' + half + '%;background:' + color + ';border-radius:3px"></div>' +
+        '</div>' +
+        '<div style="width:96px;flex:none;color:var(--muted)">' + label + ' п.п. · ' + Math.round(r.avg) + '% · n' + r.n + '</div>' +
+        '</div>';
+    }).join("");
+  }
+
   function render(data) {
     document.getElementById("loading").hidden = true;
     document.getElementById("dashboard").hidden = false;
@@ -458,12 +586,9 @@
       }
     }
 
-    var hist = data.score_histogram || {};
-    var histOrder = ["0-49", "50-59", "60-69", "70-79", "80-89", "90-100"];
-    var histMax = Math.max.apply(null, histOrder.map(function (k) { return Number(hist[k] || 0); }).concat([1]));
-    document.getElementById("hist-bars").innerHTML = histOrder.map(function (k) {
-      return bar(k + "%", hist[k] || 0, histMax);
-    }).join("");
+    renderHygiene(data);
+    renderHistZones(data);
+    renderSpecDeviation(data);
 
     var blocks = data.block_avg || {};
     var blockLabels = {
