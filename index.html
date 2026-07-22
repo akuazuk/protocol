@@ -14388,6 +14388,12 @@
           <div id="methodist-mis-kz-hygiene-legend" style="display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:0.6rem"></div>
           <p class="methodist-tier-hint" id="methodist-mis-kz-hygiene-hint" style="margin:0.6rem 0 0"></p>
         </div>
+        <div id="methodist-mis-kz-reg55" hidden style="margin-top:1.25rem;padding:1rem 1.1rem;border:1px solid rgba(15,107,92,.12);border-radius:14px;background:#f8faf9">
+          <h3 style="margin:0 0 0.25rem;font-size:1.05rem;font-family:Outfit,DM Sans,sans-serif;color:#0f6b5c">Постановление МЗ РБ 2021 №55: невыполненные критерии</h3>
+          <p class="methodist-tier-hint" style="margin:0 0 0.65rem">Доля выполненных пофакторных критериев уровня случая. Ниже - какие критерии чаще не выполнены (доля КЗ).</p>
+          <div id="methodist-mis-kz-reg55-bars"></div>
+          <p class="methodist-tier-hint" id="methodist-mis-kz-reg55-hint" style="margin:0.6rem 0 0"></p>
+        </div>
         <div id="methodist-mis-kz-compare" hidden style="margin-top:1.25rem;padding:1rem 1.1rem;border:1px solid rgba(15,107,92,.12);border-radius:14px;background:#f8faf9"></div>
         <div class="methodist-ml-table-wrap" style="margin-top:1rem">
           <h3 style="margin:0 0 0.5rem;font-size:1.05rem">Клинические специальности</h3>
@@ -14450,6 +14456,7 @@
                 <th>Patient ID</th>
                 <th>Врач</th>
                 <th>L1 %</th>
+                <th>№55</th>
                 <th>L1 комментарий</th>
                 <th>L2 %</th>
                 <th>L2 комментарий</th>
@@ -23801,8 +23808,45 @@
             '</div></div>' +
             '<div class="analytics-kpi"><div class="analytics-kpi__label">Врачей</div><div class="analytics-kpi__value">' +
             (data.doctors_n != null ? data.doctors_n : " - ") +
-            "</div></div>";
+            '</div></div>' +
+            '<div class="analytics-kpi"><div class="analytics-kpi__label">Соответствие №55</div><div class="analytics-kpi__value">' +
+            (data.avg_regulatory_compliance_pct != null ? data.avg_regulatory_compliance_pct + "%" : " - ") +
+            '</div>' +
+            (data.reg55_p0_defect_n ? '<div class="analytics-kpi__hint" style="color:#c0392b">P0: ' + data.reg55_p0_defect_n + '</div>' : '') +
+            "</div>";
         }
+        function methodistReg55Cell(v) {
+          if (!v || v.reg55_pct == null || v.reg55_pct === "") return " - ";
+          var n = Number(v.reg55_pct);
+          var failed = v.reg55_failed || [];
+          var tips = failed.map(function (f) { return "• " + (f.title || f.id); }).join("\n");
+          var dot = v.reg55_has_p0 ? '<span title="Критический дефект (P0)" style="color:#c0392b;font-weight:700">&#9679;</span> ' : "";
+          var attr = failed.length ? " title=\"Не выполнено:\n" + tips.replace(/"/g, "'") + "\"" : "";
+          return "<span" + attr + ">" + dot + n.toFixed(0) + "%</span>";
+        }
+        (function renderMisKzReg55() {
+          var card = document.getElementById("methodist-mis-kz-reg55");
+          if (!card) return;
+          var failed = data.reg55_top_failed || [];
+          if (!failed.length) { card.hidden = true; return; }
+          card.hidden = false;
+          var sev = { P0: "#c0392b", P1: "#e08a1e", P2: "#5b8def", P3: "#8a94a6" };
+          function esc3(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+          document.getElementById("methodist-mis-kz-reg55-bars").innerHTML = failed.map(function (f) {
+            var pct = f.pct != null ? Number(f.pct) : 0;
+            var col = sev[f.severity] || "#8a94a6";
+            var w = Math.max(2, Math.min(100, pct));
+            return '<div style="display:flex;align-items:center;gap:10px;margin:6px 0">' +
+              '<div style="flex:0 0 300px;font-size:12.5px"><span style="color:' + col + ';font-weight:700;min-width:24px;display:inline-block">' + esc3(f.severity || "") + '</span> ' +
+              esc3(f.title || f.id) + ' <span style="color:#64748b;font-size:11px">(' + esc3(f.point || "") + ')</span></div>' +
+              '<div style="flex:1;height:15px;border-radius:8px;background:#eef2f0;overflow:hidden"><div style="height:100%;width:' + w + '%;background:' + col + '"></div></div>' +
+              '<div style="flex:0 0 92px;text-align:right;font-size:12px;color:#64748b">' + pct.toFixed(1) + '% · ' + (f.n || 0) + '</div></div>';
+          }).join("");
+          document.getElementById("methodist-mis-kz-reg55-hint").textContent =
+            "Оценено по №55: " + (data.reg55_scored_n != null ? data.reg55_scored_n : " - ") +
+            " КЗ. P0 (критич., риск вреда): " + (data.reg55_p0_defect_n || 0) +
+            ". P1 - клинич. дефект, P2 - документирование, P3 - формальный.";
+        })();
         (function renderMisKzHygiene() {
           var card = document.getElementById("methodist-mis-kz-hygiene");
           if (!card) return;
@@ -24021,6 +24065,8 @@
                     "</td><td>" +
                     (l1 != null ? l1 : " - ") +
                     "</td><td>" +
+                    methodistReg55Cell(v) +
+                    "</td><td>" +
                     l1c +
                     "</td><td>" +
                     (v.l2_overall_pct != null ? v.l2_overall_pct : " - ") +
@@ -24030,7 +24076,7 @@
                   );
                 })
                 .join("")
-            : "<tr><td colspan='10'>Нет данных worst_visits</td></tr>";
+            : "<tr><td colspan='11'>Нет данных worst_visits</td></tr>";
         }
         var geminiMeta = document.getElementById("methodist-mis-kz-gemini-meta");
         var geminiBody = document.querySelector("#methodist-mis-kz-gemini-table tbody");

@@ -165,7 +165,15 @@
         <div class="kpi"><div class="label">Core overall</div><div class="value" id="kpi-core"> - </div><div class="hint">без exams / treatment</div></div>
         <div class="kpi"><div class="label">Специальностей</div><div class="value" id="kpi-specs"> - </div><div class="hint">только клинические врачи</div></div>
         <div class="kpi"><div class="label">Врачей</div><div class="value" id="kpi-docs"> - </div><div class="hint">уникальных ФИО</div></div>
+        <div class="kpi"><div class="label">Соответствие №55</div><div class="value" id="kpi-reg55"> - </div><div class="hint" id="kpi-reg55-hint">критерии МЗ РБ 2021 №55</div></div>
       </div>
+
+      <section class="card" id="reg55-card" style="margin-top:14px" hidden>
+        <h2>Постановление МЗ РБ 21.05.2021 №55: невыполненные критерии</h2>
+        <p class="sub" id="reg55-note">Доля выполненных пофакторных критериев уровня случая. Ниже - какие критерии чаще всего не выполнены (доля КЗ).</p>
+        <div id="reg55-bars" style="margin-top:12px"></div>
+        <p class="sub" id="reg55-hint" style="margin-top:10px"></p>
+      </section>
 
       <section class="card" id="hygiene-card" style="margin-top:14px" hidden>
         <h2>Гигиена данных: что оценивается</h2>
@@ -281,6 +289,7 @@
                 <th>Patient ID</th>
                 <th>Врач</th>
                 <th>L1</th>
+                <th>№55</th>
                 <th>L1: что не так</th>
                 <th>L2</th>
                 <th>L2: комментарий</th>
@@ -350,6 +359,17 @@
   function esc(s) {
     return String(s == null ? "" : s)
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function reg55Cell(v) {
+    if (v == null || v.reg55_pct == null || v.reg55_pct === "") return " - ";
+    var n = Number(v.reg55_pct);
+    var failed = v.reg55_failed || [];
+    var titles = failed.map(function (f) { return "• " + (f.title || f.id); }).join("\n");
+    var p0 = v.reg55_has_p0
+      ? '<span title="Критический дефект (P0)" style="color:#c0392b;font-weight:700">&#9679;</span> '
+      : "";
+    var tip = failed.length ? " title=\"Не выполнено:\n" + esc(titles) + "\"" : "";
+    return '<span' + tip + '>' + p0 + '<span class="score ' + scoreClass(n) + '">' + n.toFixed(0) + '%</span></span>';
   }
   function bar(name, value, max) {
     var v = Number(value) || 0;
@@ -530,6 +550,32 @@
     }).join("");
   }
 
+  function renderReg55(data) {
+    var card = document.getElementById("reg55-card");
+    if (!card) return;
+    var failed = data.reg55_top_failed || [];
+    if (!failed.length) { card.hidden = true; return; }
+    card.hidden = false;
+    var sevColor = { P0: "#c0392b", P1: "#e08a1e", P2: "#5b8def", P3: "#8a94a6" };
+    document.getElementById("reg55-bars").innerHTML = failed.map(function (f) {
+      var pct = f.pct != null ? Number(f.pct) : 0;
+      var col = sevColor[f.severity] || "#8a94a6";
+      var w = Math.max(2, Math.min(100, pct));
+      return '<div style="display:flex;align-items:center;gap:10px;margin:6px 0">' +
+        '<div style="flex:0 0 320px;font-size:13px">' +
+        '<span style="display:inline-block;min-width:26px;color:' + col + ';font-weight:700">' + esc(f.severity || "") + '</span> ' +
+        esc(f.title || f.id) + ' <span style="color:var(--muted);font-size:11px">(' + esc(f.point || "") + ')</span></div>' +
+        '<div style="flex:1;height:16px;border-radius:8px;background:#eef2f0;overflow:hidden">' +
+        '<div style="height:100%;width:' + w + '%;background:' + col + '"></div></div>' +
+        '<div style="flex:0 0 90px;text-align:right;font-size:12px;color:var(--muted)">' + pct.toFixed(1) + '% · ' + (f.n || 0) + '</div>' +
+        '</div>';
+    }).join("");
+    var p0 = data.reg55_p0_defect_n || 0;
+    document.getElementById("reg55-hint").textContent =
+      "Оценено по №55: " + (data.reg55_scored_n != null ? data.reg55_scored_n : " - ") +
+      " КЗ. P0 (критические, риск вреда): " + p0 +
+      ". P1 - клинический дефект, P2 - документирование, P3 - формальный.";
+  }
   function render(data) {
     document.getElementById("loading").hidden = true;
     document.getElementById("dashboard").hidden = false;
@@ -546,6 +592,15 @@
     var specsKpi = document.getElementById("kpi-specs");
     if (specsKpi) specsKpi.textContent = data.specialties_n != null ? data.specialties_n : ((data.specialties || []).length || " - ");
     document.getElementById("kpi-docs").textContent = data.doctors_n != null ? data.doctors_n : ((data.doctors || []).length || " - ");
+    var reg55El = document.getElementById("kpi-reg55");
+    if (reg55El) {
+      reg55El.textContent = data.avg_regulatory_compliance_pct != null ? data.avg_regulatory_compliance_pct + "%" : " - ";
+      var rh = document.getElementById("kpi-reg55-hint");
+      if (rh) rh.textContent = data.reg55_p0_defect_n
+        ? ("критич. дефектов P0: " + data.reg55_p0_defect_n)
+        : "критерии МЗ РБ 2021 №55";
+    }
+    renderReg55(data);
     var nHint = document.getElementById("kpi-n-hint");
     if (nHint) {
       var multi = data.n_multi_kz_visits != null ? (" · multi-КЗ визитов " + data.n_multi_kz_visits) : "";
@@ -672,11 +727,11 @@
             "<td>" + (i + 1) + "</td><td>" + esc(v.date || " - ") +
             "</td><td><code>" + esc(v.visit_id || " - ") + "</code></td><td><code>" +
             esc(v.patient_id || " - ") + "</code></td><td>" + esc(v.doctor_fio || " - ") +
-            "</td><td>" + scorePill(l1) + "</td><td>" + esc(l1c) +
+            "</td><td>" + scorePill(l1) + "</td><td>" + reg55Cell(v) + "</td><td>" + esc(l1c) +
             "</td><td>" + scorePill(v.l2_overall_pct) + "</td><td>" +
             esc(v.l2_comment || v.l2_error || " - ") + "</td></tr>";
         }).join("")
-      : "<tr><td colspan='10'>Нет worst_visits в summary - пересоберите batch summary</td></tr>";
+      : "<tr><td colspan='11'>Нет worst_visits в summary - пересоберите batch summary</td></tr>";
 
     var gmeta = data.gemini_meta || {};
     var gmetaEl = document.getElementById("gemini-meta");

@@ -54,6 +54,16 @@ except ImportError:  # pragma: no cover - fallback if copied alone on Render
         return ("kz", "")
 
 try:
+    from clinical_knowledge.reg55_criteria import evaluate_reg55, regulation_meta
+except ImportError:  # pragma: no cover - fallback if copied alone on Render
+    def evaluate_reg55(case):  # type: ignore[misc]
+        return {"regulatory_compliance_pct": None, "failed": [], "critical_failed": [],
+                "has_p0_defect": False, "passed": 0, "total": 0, "na": 0, "by_group": {}}
+
+    def regulation_meta():  # type: ignore[misc]
+        return {"regulation_id": "mz_2021_55", "regulation_title": "", "criteria_total": 0}
+
+try:
     from clinical_knowledge.mis_pay_type import pay_type_label_ru, normalize_pay_type_code
 except ImportError:  # pragma: no cover - fallback if copied alone on Render
     def normalize_pay_type_code(raw):  # type: ignore[misc]
@@ -543,6 +553,7 @@ def build_worst_visits(
         except (TypeError, ValueError):
             continue
         comment = comment_for_visit(c)
+        r55 = evaluate_reg55(c)
         rows.append(
             {
                 "visit_id": str(c.get("visit_id") or ""),
@@ -569,6 +580,9 @@ def build_worst_visits(
                 "l2_status": c.get("l2_status"),
                 "l2_comment": c.get("l2_comment"),
                 "l2_error": c.get("l2_error"),
+                "reg55_pct": r55.get("regulatory_compliance_pct"),
+                "reg55_failed": r55.get("failed") or [],
+                "reg55_has_p0": bool(r55.get("has_p0_defect")),
             }
         )
     rows.sort(
@@ -757,6 +771,10 @@ def build_summary(
     errors = 0
     scores: list[float] = []
     core_scores: list[float] = []
+    reg55_scores: list[float] = []
+    reg55_failed_c: Counter = Counter()
+    reg55_titles: dict[str, dict] = {}
+    reg55_p0_n = 0
     multi_kz_n = 0
     multi_kz_extra = 0
 
@@ -787,6 +805,17 @@ def build_summary(
             field_fill_n[str(bid)] += 1
             if ok:
                 field_fill_ok[str(bid)] += 1
+        r55 = evaluate_reg55(c)
+        r55_pct = r55.get("regulatory_compliance_pct")
+        if isinstance(r55_pct, (int, float)):
+            reg55_scores.append(float(r55_pct))
+        if r55.get("has_p0_defect"):
+            reg55_p0_n += 1
+        for f in r55.get("failed") or []:
+            fid = str(f.get("id") or "")
+            if fid:
+                reg55_failed_c[fid] += 1
+                reg55_titles.setdefault(fid, f)
         st = str(c.get("status") or "unknown")
         status_c[st] += 1
         sc = c.get("overall_pct")
@@ -965,6 +994,23 @@ def build_summary(
         "block_avg": block_avg,
         "block_avg_when_filled": block_avg_when_filled,
         "field_fill_rate": field_fill_rate,
+        "avg_regulatory_compliance_pct": (
+            round(sum(reg55_scores) / len(reg55_scores), 1) if reg55_scores else None
+        ),
+        "reg55_p0_defect_n": reg55_p0_n,
+        "reg55_scored_n": len(reg55_scores),
+        "reg55_top_failed": [
+            {
+                "id": fid,
+                "title": (reg55_titles.get(fid) or {}).get("title"),
+                "point": (reg55_titles.get(fid) or {}).get("point"),
+                "severity": (reg55_titles.get(fid) or {}).get("severity"),
+                "n": cnt,
+                "pct": round(100.0 * cnt / len(cases), 1) if cases else None,
+            }
+            for fid, cnt in reg55_failed_c.most_common()
+        ],
+        "reg55_meta": regulation_meta(),
         "doctors": doctors,
         "specialties": specialties,
         "filials": filials,
