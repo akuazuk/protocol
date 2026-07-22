@@ -8383,7 +8383,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-22-r9-axes-threshold-calibration"
+BUILD_VERSION = "2026-07-22-r10-clinical-specs-jan-compare"
 
 
 def _app_version() -> str:
@@ -10618,12 +10618,20 @@ def api_methodist_patient_quality(request: "Request") -> dict:
 def api_methodist_mis_kz_quality(
     request: "Request",
     month: str = Query("2026-07", min_length=7, max_length=7),
+    compare_month: str = Query("2026-01", min_length=0, max_length=7),
 ) -> dict:
-    """Агрегаты L1/L2-анализа mis_protocol (врачи / worst visits / Gemini)."""
+    """Агрегаты L1/L2-анализа mis_protocol (врачи / worst visits / Gemini).
+
+    По умолчанию сравнивает с январём того же года (compare_month=2026-01).
+    Только клинические специальности врачей (без стоматологов / медсестёр / т.п.).
+    """
     _require_methodist_auth(request)
     from clinical_knowledge.mis_kz_quality import build_mis_kz_quality_view
 
-    return build_mis_kz_quality_view(month=month)
+    return build_mis_kz_quality_view(
+        month=month,
+        compare_month=(compare_month or "").strip() or None,
+    )
 
 
 class MisKzGeminiReviewIn(BaseModel):

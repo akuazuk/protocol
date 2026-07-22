@@ -104,7 +104,133 @@ def save_gemini_reviews(*, month: str, reviews: list[dict], meta: dict | None = 
     return path
 
 
-def build_mis_kz_quality_view(*, month: str | None = None) -> dict[str, Any]:
+def _recompute_avg_from_groups(groups: list[dict[str, Any]]) -> float | None:
+    """Взвешенное среднее overall по агрегатам с полем n / avg_overall_pct."""
+    num = den = 0.0
+    for g in groups:
+        n = g.get("n")
+        avg = g.get("avg_overall_pct")
+        if isinstance(n, (int, float)) and n > 0 and isinstance(avg, (int, float)):
+            num += float(avg) * float(n)
+            den += float(n)
+    return round(num / den, 1) if den else None
+
+
+def build_month_compare(*, base_month: str, compare_month: str) -> dict[str, Any] | None:
+    """Сравнение двух месяцев по клиническим специальностям (янв vs июль и т.п.)."""
+    from .clinical_specialties import filter_clinical_rows
+
+    a = load_mis_kz_summary(month=base_month)
+    b = load_mis_kz_summary(month=compare_month)
+    if a is None or b is None:
+        return {
+            "available": False,
+            "base_month": base_month,
+            "compare_month": compare_month,
+            "missing": [
+                m
+                for m, s in ((base_month, a), (compare_month, b))
+                if s is None
+            ],
+            "hint_ru": "Нет summary за один или оба месяца - дождитесь L1-батча.",
+        }
+
+    specs_a = {
+        str(r.get("specialization") or ""): r
+        for r in filter_clinical_rows(a.get("specialties") or [])
+    }
+    specs_b = {
+        str(r.get("specialization") or ""): r
+        for r in filter_clinical_rows(b.get("specialties") or [])
+    }
+    names = sorted(set(specs_a) | set(specs_b), key=lambda n: -(specs_b.get(n) or specs_a.get(n) or {}).get("n") or 0)
+    by_spec: list[dict[str, Any]] = []
+    up = down = flat = 0
+    for name in names:
+        ra, rb = specs_a.get(name) or {}, specs_b.get(name) or {}
+        avg_a = ra.get("avg_overall_pct")
+        avg_b = rb.get("avg_overall_pct")
+        delta = None
+        direction = "na"
+        if isinstance(avg_a, (int, float)) and isinstance(avg_b, (int, float)):
+            delta = round(float(avg_b) - float(avg_a), 1)
+            if delta > 0.5:
+                direction = "up"
+                up += 1
+            elif delta < -0.5:
+                direction = "down"
+                down += 1
+            else:
+                direction = "flat"
+                flat += 1
+        by_spec.append({
+            "specialization": name,
+            "n_base": ra.get("n"),
+            "n_compare": rb.get("n"),
+            "avg_base": avg_a,
+            "avg_compare": avg_b,
+            "delta": delta,
+            "direction": direction,
+            "core_base": ra.get("avg_core_overall_pct"),
+            "core_compare": rb.get("avg_core_overall_pct"),
+        })
+
+    clin_a = filter_clinical_rows(a.get("specialties") or [])
+    clin_b = filter_clinical_rows(b.get("specialties") or [])
+    avg_a = _recompute_avg_from_groups(clin_a)
+    avg_b = _recompute_avg_from_groups(clin_b)
+    n_a = sum(int(r.get("n") or 0) for r in clin_a)
+    n_b = sum(int(r.get("n") or 0) for r in clin_b)
+    delta_avg = (
+        round(float(avg_b) - float(avg_a), 1)
+        if isinstance(avg_a, (int, float)) and isinstance(avg_b, (int, float))
+        else None
+    )
+
+    blocks_a = a.get("block_avg") or {}
+    blocks_b = b.get("block_avg") or {}
+    block_keys = sorted(set(blocks_a) | set(blocks_b))
+    blocks: list[dict[str, Any]] = []
+    for k in block_keys:
+        va, vb = blocks_a.get(k), blocks_b.get(k)
+        d = None
+        if isinstance(va, (int, float)) and isinstance(vb, (int, float)):
+            d = round(float(vb) - float(va), 1)
+        blocks.append({"block": k, "avg_base": va, "avg_compare": vb, "delta": d})
+
+    return {
+        "available": True,
+        "base_month": base_month,
+        "compare_month": compare_month,
+        "clinical_only": True,
+        "n_base": n_a,
+        "n_compare": n_b,
+        "avg_base": avg_a,
+        "avg_compare": avg_b,
+        "delta_avg": delta_avg,
+        "specialties_up": up,
+        "specialties_down": down,
+        "specialties_flat": flat,
+        "specialties": by_spec,
+        "blocks": blocks,
+        "note_ru": (
+            f"Сравнение клинических специальностей: {base_month} → {compare_month}. "
+            "Исключены стоматологи, медсёстры, логопед, лаборатория и пустые роли."
+        ),
+    }
+
+
+def build_mis_kz_quality_view(
+    *,
+    month: str | None = None,
+    compare_month: str | None = "2026-01",
+) -> dict[str, Any]:
+    from .clinical_specialties import (
+        filter_clinical_doctors,
+        filter_clinical_rows,
+        filter_clinical_visits,
+    )
+
     summary = load_mis_kz_summary(month=month)
     if summary is None:
         return {
@@ -120,7 +246,26 @@ def build_mis_kz_quality_view(*, month: str | None = None) -> dict[str, Any]:
         }
     month_s = str(summary.get("month") or month or "2026-07")
     gem = load_gemini_reviews(month=month_s)
-    doctors = summary.get("doctors") or []
+    doctors_all = summary.get("doctors") or []
+    doctors = filter_clinical_doctors(doctors_all)
+    specialties = filter_clinical_rows(summary.get("specialties") or [])
+    top_doctors = filter_clinical_doctors(summary.get("top_doctors") or doctors[:15])
+    bottom_doctors = filter_clinical_doctors(summary.get("bottom_doctors") or [])
+    worst_visits = filter_clinical_visits(summary.get("worst_visits") or [])
+    # Пересчёт KPI только по клиническим специальностям (взвешенно по n).
+    avg_clinical = _recompute_avg_from_groups(specialties)
+    n_clinical = sum(int(r.get("n") or 0) for r in specialties)
+    n_all_spec = sum(
+        int(r.get("n") or 0)
+        for r in (summary.get("specialties") or [])
+        if isinstance(r, dict)
+    )
+    excluded_n = max(0, n_all_spec - n_clinical)
+
+    compare = None
+    if compare_month and str(compare_month).strip() and str(compare_month) != month_s:
+        compare = build_month_compare(base_month=str(compare_month).strip(), compare_month=month_s)
+
     return {
         "ok": True,
         "available": True,
@@ -129,9 +274,13 @@ def build_mis_kz_quality_view(*, month: str | None = None) -> dict[str, Any]:
         "generated_at": summary.get("generated_at"),
         "source_path": summary.get("_source_path"),
         "n_cases": summary.get("n_cases"),
-        "n_ok": summary.get("n_ok"),
+        "n_ok": n_clinical if n_clinical else summary.get("n_ok"),
+        "n_ok_all": summary.get("n_ok"),
+        "n_clinical": n_clinical,
+        "n_excluded_nonclinical": excluded_n,
         "n_errors": summary.get("n_errors"),
-        "avg_overall_pct": summary.get("avg_overall_pct"),
+        "avg_overall_pct": avg_clinical if avg_clinical is not None else summary.get("avg_overall_pct"),
+        "avg_overall_pct_all": summary.get("avg_overall_pct"),
         "median_overall_pct": summary.get("median_overall_pct"),
         "score_histogram": summary.get("score_histogram") or {},
         "status_counts": summary.get("status_counts") or {},
@@ -142,13 +291,15 @@ def build_mis_kz_quality_view(*, month: str | None = None) -> dict[str, Any]:
         "n_multi_kz_visits": summary.get("n_multi_kz_visits"),
         "n_multi_kz_extra_rows": summary.get("n_multi_kz_extra_rows"),
         "doctors": doctors,
-        "specialties": summary.get("specialties") or [],
+        "specialties": specialties,
+        "specialties_n": len(specialties),
+        "clinical_filter": True,
         "filials": summary.get("filials") or [],
         "pay_types": summary.get("pay_types") or [],
         "top_services": summary.get("top_services") or [],
-        "top_doctors": summary.get("top_doctors") or doctors[:15],
-        "bottom_doctors": summary.get("bottom_doctors") or [],
-        "worst_visits": summary.get("worst_visits") or [],
+        "top_doctors": top_doctors[:15] if top_doctors else doctors[:15],
+        "bottom_doctors": bottom_doctors,
+        "worst_visits": worst_visits,
         "worst_visits_meta": summary.get("worst_visits_meta") or {},
         "llm_review_queue": summary.get("llm_review_queue") or {},
         "gemini_reviews": gem.get("reviews") or summary.get("gemini_reviews") or [],
@@ -156,9 +307,15 @@ def build_mis_kz_quality_view(*, month: str | None = None) -> dict[str, Any]:
             "note_ru": "Выборочный LLM-разбор качества КЗ.",
             "storage_path": gem.get("path"),
         },
+        "month_compare": compare,
         "notes": [
             str(n).replace("Gemini", "LLM").replace("gemini", "LLM")
             for n in (summary.get("notes") or [])
+        ]
+        + [
+            "В отчёте только клинические специальности врачей "
+            f"({len(specialties)} шт.): без стоматологов, медсестёр, логопеда, лаборатории и пустых ролей."
+            + (f" Исключено визитов: {excluded_n}." if excluded_n else ""),
         ],
         "doctors_n": len(doctors),
     }
@@ -344,8 +501,8 @@ def _build_full_llm_prompt(*, row: dict, visit_id: str, text: str, l2_ctx: dict)
         f"Visit ID: {visit_id}\n"
         f"Patient ID: {str(row.get('patient_id') or '').strip()}\n"
         f"L2 overall: {l2_ctx.get('l2_overall_pct')} / {l2_ctx.get('l2_status')}\n"
-        f"L2 summary: {l2_ctx.get('l2_summary') or '—'}\n"
-        f"Баллы блоков L2: {block_line or '—'}\n"
+        f"L2 summary: {l2_ctx.get('l2_summary') or ' - '}\n"
+        f"Баллы блоков L2: {block_line or ' - '}\n"
         "Протоколы МЗ (кандидаты):\n"
         + ("\n".join(proto_lines) if proto_lines else "- (не найдены)")
         + "\nЗамечания L2:\n"
@@ -512,7 +669,10 @@ def review_one_visit_full(*, month: str, visit_id: str) -> dict[str, Any]:
             parsed = {
                 "overall_pct": l2_ctx.get("l2_overall_pct"),
                 "status": l2_ctx.get("l2_status"),
-                "executive_summary_ru": (raw or "")[:800] or l2_ctx.get("l2_summary"),
+                "executive_summary_ru": (
+                    (l2_ctx.get("l2_summary") or "").strip()
+                    or "LLM вернул ответ без валидного JSON - показан контекст L2."
+                ),
                 "critical_gaps_ru": l2_ctx.get("gaps_l2") or [],
                 "recommendations_ru": [],
                 "protocol_review": [
@@ -527,6 +687,15 @@ def review_one_visit_full(*, month: str, visit_id: str) -> dict[str, Any]:
             overall_f = round(float(overall), 1) if overall is not None else l2_ctx.get("l2_overall_pct")
         except (TypeError, ValueError):
             overall_f = l2_ctx.get("l2_overall_pct")
+        # Если парсер вернул сырой JSON в executive_summary - переразбираем.
+        exec_s = str(parsed.get("executive_summary_ru") or "").strip()
+        if exec_s.startswith("{"):
+            repaired = _parse_gemini_json(exec_s)
+            if repaired.get("executive_summary_ru"):
+                parsed = {**parsed, **{k: repaired[k] for k in repaired if repaired.get(k) is not None}}
+                exec_s = str(parsed.get("executive_summary_ru") or "").strip()
+                if isinstance(parsed.get("overall_pct"), (int, float)):
+                    overall_f = round(float(parsed["overall_pct"]), 1)
         report_text = _format_full_report_text(parsed, l2_ctx)
         item = {
             "visit_id": vid,

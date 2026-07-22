@@ -160,12 +160,19 @@
 
     <div id="dashboard" hidden>
       <div class="kpi-grid">
-        <div class="kpi"><div class="label">КЗ в срезе</div><div class="value" id="kpi-n"> - </div><div class="hint" id="kpi-n-hint"></div></div>
+        <div class="kpi"><div class="label">КЗ клинич.</div><div class="value" id="kpi-n"> - </div><div class="hint" id="kpi-n-hint"></div></div>
         <div class="kpi"><div class="label">Средний overall</div><div class="value" id="kpi-avg"> - </div><div class="hint" id="kpi-avg-hint"></div></div>
         <div class="kpi"><div class="label">Core overall</div><div class="value" id="kpi-core"> - </div><div class="hint">без exams / treatment</div></div>
-        <div class="kpi"><div class="label">Врачей</div><div class="value" id="kpi-docs"> - </div><div class="hint">уникальных ФИО в выгрузке</div></div>
-        <div class="kpi"><div class="label">Ошибки анализа</div><div class="value" id="kpi-err"> - </div><div class="hint">сбоев L1 / сети</div></div>
+        <div class="kpi"><div class="label">Специальностей</div><div class="value" id="kpi-specs"> - </div><div class="hint">только клинические врачи</div></div>
+        <div class="kpi"><div class="label">Врачей</div><div class="value" id="kpi-docs"> - </div><div class="hint">уникальных ФИО</div></div>
       </div>
+
+      <section class="card" id="compare-card" style="margin-top:14px" hidden>
+        <h2>Динамика: январь → июль</h2>
+        <p class="sub" id="compare-note">Сравнение клинических специальностей</p>
+        <div id="compare-kpis" class="kpi-grid" style="margin-top:10px"></div>
+        <div id="compare-blocks" class="bars" style="margin-top:12px"></div>
+      </section>
 
       <div class="grid-2">
         <section class="card">
@@ -195,8 +202,9 @@
 
       <div class="grid-2" style="margin-top:14px">
         <section class="card">
-          <h2>Специальности</h2>
-          <div style="overflow:auto;max-height:360px"><table><thead><tr><th>Специальность</th><th>N</th><th>Avg</th></tr></thead><tbody id="specs"></tbody></table></div>
+          <h2>Клинические специальности</h2>
+          <p class="sub">Без стоматологов, медсестёр, логопеда, лаборатории · Δ к январю</p>
+          <div style="overflow:auto;max-height:360px"><table><thead><tr><th>Специальность</th><th>N</th><th>Avg</th><th>Δ янв.</th></tr></thead><tbody id="specs"></tbody></table></div>
         </section>
         <section class="card">
           <h2>Филиалы</h2>
@@ -289,9 +297,12 @@
             <tbody id="gemini-reviews"></tbody>
           </table>
         </div>
-        <div id="llm-report-detail" class="card" style="margin-top:14px;display:none;background:#f7fbf9">
-          <h3 style="margin:0 0 8px;font-family:Outfit,DM Sans,sans-serif">Расширенный отчёт</h3>
-          <div id="llm-report-body" style="font-size:14px;line-height:1.55;white-space:pre-wrap"></div>
+        <div id="llm-report-detail" class="card" style="margin-top:14px;display:none;background:linear-gradient(180deg,#f7fbf9,#f3f7f5);padding:0;overflow:hidden">
+          <div style="padding:12px 16px;border-bottom:1px solid rgba(15,107,92,.1);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+            <h3 style="margin:0;font-family:Outfit,DM Sans,sans-serif;color:var(--teal-deep)">Расширенный отчёт</h3>
+            <button class="btn btn--ghost" type="button" id="btn-close-report" style="padding:4px 10px">Закрыть</button>
+          </div>
+          <div id="llm-report-body" style="padding:14px 16px 18px;font-size:14px;line-height:1.55"></div>
         </div>
       </section>
 
@@ -350,6 +361,47 @@
     }).join("") || "<tr><td colspan='3'>Нет данных</td></tr>";
   }
 
+  function normalizeLlmReview(v) {
+    if (!v || typeof v !== "object") return v || {};
+    var out = Object.assign({}, v);
+    var candidates = [v.executive_summary_ru, v.report_full_ru, v.comment];
+    for (var i = 0; i < candidates.length; i++) {
+      var t = String(candidates[i] || "").trim();
+      if (!t || t.charAt(0) !== "{") continue;
+      try {
+        var parsed = JSON.parse(t);
+        if (!parsed || typeof parsed !== "object") continue;
+        ["overall_pct", "status", "executive_summary_ru", "protocol_review", "block_review",
+          "critical_gaps_ru", "recommendations_ru", "mz_notes_ru"].forEach(function (k) {
+          if (parsed[k] != null && (out[k] == null || out[k] === "" ||
+              (typeof out[k] === "string" && String(out[k]).charAt(0) === "{"))) {
+            out[k] = parsed[k];
+          }
+        });
+        if (typeof out.executive_summary_ru === "string" && out.executive_summary_ru.charAt(0) === "{") {
+          out.executive_summary_ru = parsed.executive_summary_ru || "";
+        }
+        break;
+      } catch (e) {}
+    }
+    return out;
+  }
+
+  function statusRu(st) {
+    var m = {
+      compliant: "Соответствует", mostly_compliant: "В основном соответствует",
+      partially_compliant: "Частично соответствует", non_compliant: "Не соответствует",
+      manual_review_required: "Нужен ручной разбор", insufficient_protocol_data: "Мало данных протокола"
+    };
+    return m[st] || st || " - ";
+  }
+  function scoreTone(n) {
+    if (n == null || !isFinite(n)) return "#6b7280";
+    if (n >= 75) return "var(--teal-deep)";
+    if (n >= 55) return "#b45309";
+    return "#b91c1c";
+  }
+
   function render(data) {
     document.getElementById("loading").hidden = true;
     document.getElementById("dashboard").hidden = false;
@@ -363,13 +415,48 @@
     document.getElementById("kpi-avg-hint").textContent = "медиана " + (data.median_overall_pct != null ? data.median_overall_pct + "%" : " - ");
     var coreEl = document.getElementById("kpi-core");
     if (coreEl) coreEl.textContent = data.avg_core_overall_pct != null ? data.avg_core_overall_pct + "%" : " - ";
+    var specsKpi = document.getElementById("kpi-specs");
+    if (specsKpi) specsKpi.textContent = data.specialties_n != null ? data.specialties_n : ((data.specialties || []).length || " - ");
     document.getElementById("kpi-docs").textContent = data.doctors_n != null ? data.doctors_n : ((data.doctors || []).length || " - ");
     var nHint = document.getElementById("kpi-n-hint");
     if (nHint) {
       var multi = data.n_multi_kz_visits != null ? (" · multi-КЗ визитов " + data.n_multi_kz_visits) : "";
-      nHint.textContent = "из " + (data.n_cases || " - ") + " уникальных визитов" + multi;
+      var excl = data.n_excluded_nonclinical ? (" · исключено неклинич. " + data.n_excluded_nonclinical) : "";
+      nHint.textContent = "клинические КЗ" + multi + excl;
     }
-    document.getElementById("kpi-err").textContent = data.n_errors != null ? data.n_errors : " - ";
+
+    var cmp = data.month_compare || {};
+    var cmpCard = document.getElementById("compare-card");
+    if (cmpCard) {
+      if (cmp.available) {
+        cmpCard.hidden = false;
+        document.getElementById("compare-note").textContent = cmp.note_ru || "";
+        var dAvg = cmp.delta_avg;
+        var dTone = dAvg == null ? "mid" : (dAvg > 0.5 ? "good" : (dAvg < -0.5 ? "low" : "mid"));
+        document.getElementById("compare-kpis").innerHTML =
+          '<div class="kpi"><div class="label">Avg ' + esc(cmp.base_month) + '</div><div class="value">' +
+          (cmp.avg_base != null ? cmp.avg_base + "%" : " - ") + '</div></div>' +
+          '<div class="kpi"><div class="label">Avg ' + esc(cmp.compare_month) + '</div><div class="value">' +
+          (cmp.avg_compare != null ? cmp.avg_compare + "%" : " - ") + '</div></div>' +
+          '<div class="kpi"><div class="label">Δ overall</div><div class="value"><span class="score ' + dTone + '">' +
+          (dAvg == null ? " - " : ((dAvg > 0 ? "+" : "") + dAvg + " п.п.")) + '</span></div></div>' +
+          '<div class="kpi"><div class="label">Спец. ↑ / ↓ / ≈</div><div class="value" style="font-size:1.1rem">' +
+          (cmp.specialties_up || 0) + " / " + (cmp.specialties_down || 0) + " / " + (cmp.specialties_flat || 0) +
+          '</div></div>';
+        document.getElementById("compare-blocks").innerHTML = (cmp.blocks || []).map(function (b) {
+          var bd = b.delta;
+          var label = (b.block || "") + (bd != null ? " (" + (bd > 0 ? "+" : "") + bd + ")" : "");
+          return bar(label, b.avg_compare != null ? b.avg_compare : b.avg_base, 100);
+        }).join("") || "<div class='sub'>Нет блоков</div>";
+      } else {
+        cmpCard.hidden = false;
+        document.getElementById("compare-note").textContent =
+          (cmp.hint_ru || "Сравнение появится после L1 за январь 2026.") +
+          (cmp.missing && cmp.missing.length ? " Нет: " + cmp.missing.join(", ") : "");
+        document.getElementById("compare-kpis").innerHTML = "";
+        document.getElementById("compare-blocks").innerHTML = "";
+      }
+    }
 
     var hist = data.score_histogram || {};
     var histOrder = ["0-49", "50-59", "60-69", "70-79", "80-89", "90-100"];
@@ -400,7 +487,17 @@
     var minN = top.some(function (d) { return (d.n || 0) >= 3; }) ? 3 : 1;
     document.getElementById("top-docs").innerHTML = doctorRows(top, minN);
     document.getElementById("bottom-docs").innerHTML = doctorRows(bottom, minN);
-    document.getElementById("specs").innerHTML = simpleRows(data.specialties, "specialization");
+    var deltaBySpec = {};
+    ((data.month_compare && data.month_compare.specialties) || []).forEach(function (s) {
+      deltaBySpec[s.specialization] = s;
+    });
+    document.getElementById("specs").innerHTML = (data.specialties || []).slice(0, 30).map(function (d) {
+      var delta = (deltaBySpec[d.specialization] || {}).delta;
+      var dHtml = delta == null ? " - " : ('<span class="score ' + (delta > 0.5 ? "good" : delta < -0.5 ? "low" : "mid") + '">' +
+        (delta > 0 ? "+" : "") + delta + "</span>");
+      return "<tr><td>" + esc(d.specialization) + "</td><td>" + esc(d.n) + "</td><td>" +
+        scorePill(d.avg_overall_pct) + "</td><td>" + dHtml + "</td></tr>";
+    }).join("") || "<tr><td colspan='4'>Нет данных</td></tr>";
     document.getElementById("filials").innerHTML = simpleRows(data.filials, "filial");
     var payEl = document.getElementById("pay-types");
     if (payEl) {
@@ -484,57 +581,72 @@
 
   function showFullReport(idx) {
     var list = window.__misKzLlmReviews || [];
-    var v = list[idx];
+    var raw = list[idx];
     var box = document.getElementById("llm-report-detail");
     var body = document.getElementById("llm-report-body");
-    if (!v || !box || !body) return;
-    var lines = [];
-    lines.push("Visit " + (v.visit_id || "-") + " · patient " + (v.patient_id || "-") + " · " + (v.date || "-"));
-    lines.push("Врач: " + (v.doctor_fio || "-") + (v.doctor_specialization ? " · " + v.doctor_specialization : ""));
-    lines.push("LLM: " + (v.overall_pct != null ? v.overall_pct + "%" : "-") + " · L2: " + (v.l2_overall_pct != null ? v.l2_overall_pct + "%" : "-"));
-    lines.push("");
-    lines.push(v.executive_summary_ru || v.report_full_ru || v.comment || "Нет текста отчёта");
-    if (v.mz_notes_ru) {
-      lines.push("");
-      lines.push("Протоколы / оформление МЗ:");
-      lines.push(v.mz_notes_ru);
+    if (!raw || !box || !body) return;
+    var v = normalizeLlmReview(raw);
+    function pill(label, val, tone) {
+      return '<span style="display:inline-flex;gap:6px;align-items:center;padding:5px 10px;border-radius:999px;background:rgba(15,107,92,.08);font-size:13px">' +
+        '<span style="opacity:.7">' + esc(label) + '</span><strong style="color:' + (tone || "var(--teal-deep)") + '">' +
+        esc(val) + "</strong></span>";
     }
-    var protos = v.protocol_review || [];
-    if (protos.length) {
-      lines.push("");
-      lines.push("Разбор по протоколам:");
-      protos.forEach(function (p) {
-        lines.push("• " + (p.protocol || "протокол") + ": " + (p.compliance_ru || ""));
-        (p.gaps_ru || []).slice(0, 4).forEach(function (g) { lines.push("   - " + g); });
-      });
-    } else if ((v.protocols_mz || []).length) {
-      lines.push("");
-      lines.push("Кандидаты протоколов МЗ:");
-      (v.protocols_mz || []).forEach(function (p) {
-        lines.push("• " + (p.title || p.path || ""));
-      });
+    function section(title, html, accent) {
+      if (!html) return "";
+      return '<section style="margin-top:1rem;padding-top:.85rem;border-top:1px solid rgba(15,107,92,.1)">' +
+        '<div style="font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:' + (accent || "var(--teal-deep)") +
+        ';font-weight:600;margin-bottom:.4rem">' + esc(title) + "</div>" + html + "</section>";
     }
-    var blocks = v.block_review || [];
-    if (blocks.length) {
-      lines.push("");
-      lines.push("По блокам КЗ:");
-      blocks.forEach(function (b) {
-        lines.push("• " + (b.block || "") + (b.score_pct != null ? " (" + b.score_pct + "%)" : "") + ": " + (b.comment_ru || ""));
-      });
+    function bullets(items, color) {
+      items = (items || []).filter(Boolean);
+      if (!items.length) return "";
+      return '<ul style="margin:0;padding-left:1.15rem">' + items.slice(0, 10).map(function (g) {
+        return '<li style="margin:.35rem 0;color:' + (color || "inherit") + '">' + esc(g) + "</li>";
+      }).join("") + "</ul>";
     }
-    var gaps = v.critical_gaps_ru || v.l2_gaps || [];
-    if (gaps.length) {
-      lines.push("");
-      lines.push("Критичные пробелы:");
-      gaps.slice(0, 8).forEach(function (g) { lines.push("• " + g); });
+    var llm = v.overall_pct, l2 = v.l2_overall_pct;
+    var summary = String(v.executive_summary_ru || "").trim();
+    if (summary.charAt(0) === "{") summary = "";
+    var protoHtml = (v.protocol_review || []).slice(0, 6).map(function (p) {
+      var gaps = (p.gaps_ru || []).slice(0, 4);
+      return '<div style="padding:.7rem .85rem;margin:.45rem 0;border-radius:10px;background:#fff;border:1px solid rgba(15,107,92,.1)">' +
+        '<div style="font-weight:600;font-size:13px;color:var(--teal-deep);margin-bottom:.25rem">' + esc(p.protocol || "Протокол МЗ") + "</div>" +
+        '<div style="font-size:13.5px">' + esc(p.compliance_ru || "Оценка не указана") + "</div>" +
+        (gaps.length ? '<ul style="margin:.4rem 0 0;padding-left:1.1rem;font-size:13px;color:#9a3412">' +
+          gaps.map(function (g) { return "<li>" + esc(g) + "</li>"; }).join("") + "</ul>" : "") +
+        "</div>";
+    }).join("");
+    var blocksHtml = "";
+    if ((v.block_review || []).length) {
+      blocksHtml = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px">' +
+        (v.block_review || []).slice(0, 8).map(function (b) {
+          var sc = b.score_pct;
+          return '<div style="padding:.65rem .75rem;border-radius:10px;background:#fff;border:1px solid rgba(15,107,92,.1)">' +
+            '<div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:.25rem">' +
+            '<span style="font-size:12px;text-transform:capitalize;color:var(--muted)">' + esc(b.block || "блок") +
+            '</span><strong style="color:' + scoreTone(sc) + '">' + (sc != null ? Number(sc).toFixed(0) + "%" : " - ") +
+            "</strong></div><div style=\"font-size:13px\">" + esc(b.comment_ru || "") + "</div></div>";
+        }).join("") + "</div>";
     }
-    var rec = v.recommendations_ru || [];
-    if (rec.length) {
-      lines.push("");
-      lines.push("Рекомендации:");
-      rec.slice(0, 8).forEach(function (g) { lines.push("• " + g); });
-    }
-    body.textContent = lines.join("\n");
+    body.innerHTML =
+      '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:.85rem">' +
+      pill("LLM", llm != null ? Number(llm).toFixed(1) + "%" : " - ", scoreTone(llm)) +
+      pill("L2", l2 != null ? Number(l2).toFixed(1) + "%" : " - ", scoreTone(l2)) +
+      pill("Статус", statusRu(v.status), scoreTone(llm)) + "</div>" +
+      '<div style="font-size:14px;margin-bottom:.3rem"><strong>' + esc(v.doctor_fio || "Врач не указан") + "</strong>" +
+      (v.doctor_specialization ? " · " + esc(v.doctor_specialization) : "") +
+      (v.filial ? " · " + esc(v.filial) : "") + "</div>" +
+      '<div style="font-size:12px;color:var(--muted)">Визит <code>' + esc(v.visit_id || "-") +
+      "</code> · пациент <code>" + esc(v.patient_id || "-") + "</code> · " + esc(v.date || "-") + "</div>" +
+      section("Итог для методиста", summary
+        ? '<p style="margin:0;font-size:15px;line-height:1.6">' + esc(summary) + "</p>"
+        : '<p style="margin:0;opacity:.7">Краткое резюме отсутствует.</p>') +
+      section("Протоколы Минздрава", protoHtml) +
+      section("Блоки КЗ", blocksHtml) +
+      section("Критичные пробелы", bullets(v.critical_gaps_ru || v.l2_gaps || [], "#9a3412"), "#9a3412") +
+      section("Рекомендации", bullets(v.recommendations_ru || [])) +
+      section("Оформление / МЗ", v.mz_notes_ru
+        ? '<p style="margin:0">' + esc(v.mz_notes_ru) + "</p>" : "");
     box.style.display = "block";
     box.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
@@ -573,7 +685,7 @@
     var headers = { "Accept": "application/json" };
     if (token) headers["X-Methodist-Token"] = token;
     try {
-      var res = await fetch("/api/methodist/mis-kz-quality?month=" + encodeURIComponent(month), { headers: headers });
+      var res = await fetch("/api/methodist/mis-kz-quality?month=" + encodeURIComponent(month) + "&compare_month=2026-01", { headers: headers });
       if (res.status === 401 || res.status === 403) {
         document.getElementById("loading").hidden = true;
         document.getElementById("auth").hidden = false;
@@ -654,6 +766,13 @@
     document.querySelectorAll(".worst-cb").forEach(function (el) { el.checked = false; });
   });
   document.getElementById("btn-gemini").addEventListener("click", runGemini);
+  var btnCloseReport = document.getElementById("btn-close-report");
+  if (btnCloseReport) {
+    btnCloseReport.addEventListener("click", function () {
+      var box = document.getElementById("llm-report-detail");
+      if (box) box.style.display = "none";
+    });
+  }
   load();
 })();
 </script>

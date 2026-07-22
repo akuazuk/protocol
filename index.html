@@ -14381,7 +14381,25 @@
         </div>
         <div id="methodist-mis-kz-error" class="methodist-ml-error" hidden></div>
         <div id="methodist-mis-kz-kpi" class="analytics-kpi-grid" hidden></div>
+        <div id="methodist-mis-kz-compare" hidden style="margin-top:1.25rem;padding:1rem 1.1rem;border:1px solid rgba(15,107,92,.12);border-radius:14px;background:#f8faf9"></div>
         <div class="methodist-ml-table-wrap" style="margin-top:1rem">
+          <h3 style="margin:0 0 0.5rem;font-size:1.05rem">Клинические специальности</h3>
+          <p class="methodist-tier-hint" style="margin-bottom:0.75rem">Только врачебные роли (без стоматологов, медсестёр, логопеда, лаборатории)</p>
+          <table class="methodist-ml-table" id="methodist-mis-kz-specs-table">
+            <thead>
+              <tr>
+                <th>Специальность</th>
+                <th>N</th>
+                <th>Avg %</th>
+                <th>Core %</th>
+                <th>Δ к янв.</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="methodist-ml-table-wrap" style="margin-top:1rem">
+          <h3 style="margin:0 0 0.5rem;font-size:1.05rem">Врачи (клинические)</h3>
           <table class="methodist-ml-table" id="methodist-mis-kz-table">
             <thead>
               <tr>
@@ -14451,9 +14469,12 @@
             </thead>
             <tbody></tbody>
           </table>
-          <div id="methodist-mis-kz-report-detail" hidden style="margin-top:1rem;padding:1rem;border:1px solid rgba(15,107,92,.15);border-radius:12px;background:#f7fbf9">
-            <h4 style="margin:0 0 0.5rem">Расширенный отчёт</h4>
-            <pre id="methodist-mis-kz-report-body" style="white-space:pre-wrap;font:inherit;margin:0;line-height:1.5"></pre>
+          <div id="methodist-mis-kz-report-detail" hidden style="margin-top:1rem;padding:0;border:1px solid rgba(15,107,92,.14);border-radius:14px;background:linear-gradient(180deg,#f7fbf9 0%,#f3f7f5 100%);overflow:hidden">
+            <div style="padding:0.85rem 1.1rem;border-bottom:1px solid rgba(15,107,92,.1);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <h4 style="margin:0;font-size:1.05rem;font-family:Outfit,DM Sans,sans-serif;color:#0f6b5c">Расширенный отчёт</h4>
+              <button type="button" class="btn-ml-dash-refresh" id="methodist-mis-kz-report-close" style="padding:4px 10px">Закрыть</button>
+            </div>
+            <div id="methodist-mis-kz-report-body" style="padding:1rem 1.1rem 1.2rem;font:inherit;line-height:1.55"></div>
           </div>
         </div>
       </div>
@@ -23719,7 +23740,7 @@
       errEl.textContent = "";
     }
     if (root) root.classList.add("is-loading");
-    fetch("/api/methodist/mis-kz-quality?month=2026-07", {
+    fetch("/api/methodist/mis-kz-quality?month=2026-07&compare_month=2026-01", {
       headers: {
         Accept: "application/json",
         "X-Methodist-Token": window.__methodistToken,
@@ -23750,29 +23771,155 @@
           metaEl.textContent =
             "Месяц " +
             (data.month || " - ") +
+            " · клинич. спец. " +
+            (data.specialties_n != null ? data.specialties_n : " - ") +
             " · avg " +
             (data.avg_overall_pct != null ? data.avg_overall_pct + "%" : " - ") +
             " · КЗ " +
             (data.n_ok != null ? data.n_ok : " - ") +
-            "/" +
-            (data.n_cases != null ? data.n_cases : " - ") +
+            (data.n_excluded_nonclinical ? " (исключено неклинич. " + data.n_excluded_nonclinical + ")" : "") +
             (data.generated_at ? " · " + data.generated_at : "");
         }
         if (kpiEl) {
           kpiEl.hidden = false;
           kpiEl.innerHTML =
-            '<div class="analytics-kpi"><div class="analytics-kpi__label">КЗ</div><div class="analytics-kpi__value">' +
+            '<div class="analytics-kpi"><div class="analytics-kpi__label">КЗ (клинич.)</div><div class="analytics-kpi__value">' +
             (data.n_ok != null ? data.n_ok : " - ") +
             '</div></div>' +
             '<div class="analytics-kpi"><div class="analytics-kpi__label">Avg overall</div><div class="analytics-kpi__value">' +
             (data.avg_overall_pct != null ? data.avg_overall_pct + "%" : " - ") +
             '</div></div>' +
+            '<div class="analytics-kpi"><div class="analytics-kpi__label">Специальностей</div><div class="analytics-kpi__value">' +
+            (data.specialties_n != null ? data.specialties_n : " - ") +
+            '</div></div>' +
             '<div class="analytics-kpi"><div class="analytics-kpi__label">Врачей</div><div class="analytics-kpi__value">' +
             (data.doctors_n != null ? data.doctors_n : " - ") +
-            '</div></div>' +
-            '<div class="analytics-kpi"><div class="analytics-kpi__label">Ошибки</div><div class="analytics-kpi__value">' +
-            (data.n_errors != null ? data.n_errors : " - ") +
             "</div></div>";
+        }
+        var cmp = data.month_compare || {};
+        var cmpEl = document.getElementById("methodist-mis-kz-compare");
+        if (cmpEl) {
+          if (cmp.available) {
+            cmpEl.hidden = false;
+            var dAvg = cmp.delta_avg;
+            var dTone = dAvg == null ? "#64748b" : dAvg > 0.5 ? "#0f6b5c" : dAvg < -0.5 ? "#b91c1c" : "#64748b";
+            var dTxt =
+              dAvg == null ? " - " : (dAvg > 0 ? "+" : "") + Number(dAvg).toFixed(1) + " п.п.";
+            cmpEl.innerHTML =
+              '<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;margin-bottom:0.75rem">' +
+              "<div><h3 style=\"margin:0 0 0.25rem;font-size:1.05rem;font-family:Outfit,DM Sans,sans-serif;color:#0f6b5c\">Динамика: " +
+              (cmp.base_month || "янв") +
+              " → " +
+              (cmp.compare_month || "июль") +
+              "</h3><p class=\"methodist-tier-hint\" style=\"margin:0\">" +
+              (cmp.note_ru || "Сравнение клинических специальностей") +
+              "</p></div>" +
+              '<div style="display:flex;flex-wrap:wrap;gap:8px">' +
+              '<span style="padding:6px 10px;border-radius:999px;background:#fff;border:1px solid rgba(15,107,92,.12);font-size:13px">Avg ' +
+              (cmp.avg_base != null ? cmp.avg_base : "-") +
+              "% → <strong style=\"color:" +
+              dTone +
+              '">' +
+              (cmp.avg_compare != null ? cmp.avg_compare + "%" : "-") +
+              "</strong> (" +
+              dTxt +
+              ")</span>" +
+              '<span style="padding:6px 10px;border-radius:999px;background:rgba(15,107,92,.08);font-size:13px">↑ ' +
+              (cmp.specialties_up || 0) +
+              "</span>" +
+              '<span style="padding:6px 10px;border-radius:999px;background:rgba(185,28,28,.08);font-size:13px">↓ ' +
+              (cmp.specialties_down || 0) +
+              "</span>" +
+              '<span style="padding:6px 10px;border-radius:999px;background:rgba(100,116,139,.1);font-size:13px">≈ ' +
+              (cmp.specialties_flat || 0) +
+              "</span></div></div>" +
+              '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px">' +
+              '<div style="padding:0.65rem 0.8rem;border-radius:10px;background:#fff;border:1px solid rgba(15,107,92,.1)"><div style="font-size:11px;opacity:.7">КЗ ' +
+              (cmp.base_month || "") +
+              '</div><div style="font-size:1.15rem;font-weight:600">' +
+              (cmp.n_base != null ? cmp.n_base : "-") +
+              "</div></div>" +
+              '<div style="padding:0.65rem 0.8rem;border-radius:10px;background:#fff;border:1px solid rgba(15,107,92,.1)"><div style="font-size:11px;opacity:.7">КЗ ' +
+              (cmp.compare_month || "") +
+              '</div><div style="font-size:1.15rem;font-weight:600">' +
+              (cmp.n_compare != null ? cmp.n_compare : "-") +
+              "</div></div>" +
+              ((cmp.blocks || [])
+                .slice(0, 6)
+                .map(function (b) {
+                  var bd = b.delta;
+                  var bt =
+                    bd == null ? "#64748b" : bd > 0 ? "#0f6b5c" : bd < 0 ? "#b91c1c" : "#64748b";
+                  return (
+                    '<div style="padding:0.65rem 0.8rem;border-radius:10px;background:#fff;border:1px solid rgba(15,107,92,.1)"><div style="font-size:11px;opacity:.7">' +
+                    (b.block || "") +
+                    '</div><div style="font-size:13px">' +
+                    (b.avg_base != null ? Number(b.avg_base).toFixed(0) : "-") +
+                    ' → <strong style="color:' +
+                    bt +
+                    '">' +
+                    (b.avg_compare != null ? Number(b.avg_compare).toFixed(0) : "-") +
+                    "</strong>" +
+                    (bd != null ? " (" + (bd > 0 ? "+" : "") + bd + ")" : "") +
+                    "</div></div>"
+                  );
+                })
+                .join("") || "") +
+              "</div>";
+          } else {
+            cmpEl.hidden = false;
+            cmpEl.innerHTML =
+              '<h3 style="margin:0 0 0.35rem;font-size:1.05rem;color:#0f6b5c">Динамика январь → июль</h3>' +
+              '<p class="methodist-tier-hint" style="margin:0">' +
+              ((cmp && cmp.hint_ru) ||
+                "Сравнение появится, когда будет готов L1-summary за январь 2026.") +
+              (cmp && cmp.missing && cmp.missing.length
+                ? " Нет: " + cmp.missing.join(", ") + "."
+                : "") +
+              "</p>";
+          }
+        }
+        var deltaBySpec = {};
+        (cmp.specialties || []).forEach(function (s) {
+          deltaBySpec[s.specialization] = s;
+        });
+        var specsBody = document.querySelector("#methodist-mis-kz-specs-table tbody");
+        if (specsBody) {
+          var specs = (data.specialties || []).slice().sort(function (a, b) {
+            return (b.n || 0) - (a.n || 0);
+          });
+          specsBody.innerHTML = specs.length
+            ? specs
+                .map(function (s) {
+                  var d = deltaBySpec[s.specialization] || {};
+                  var delta = d.delta;
+                  var tone =
+                    delta == null ? "#64748b" : delta > 0.5 ? "#0f6b5c" : delta < -0.5 ? "#b91c1c" : "#64748b";
+                  var dLabel =
+                    delta == null
+                      ? " - "
+                      : '<strong style="color:' +
+                        tone +
+                        '">' +
+                        (delta > 0 ? "+" : "") +
+                        delta +
+                        "</strong>";
+                  return (
+                    "<tr><td>" +
+                    (s.specialization || " - ") +
+                    "</td><td>" +
+                    (s.n != null ? s.n : " - ") +
+                    "</td><td>" +
+                    (s.avg_overall_pct != null ? s.avg_overall_pct : " - ") +
+                    "</td><td>" +
+                    (s.avg_core_overall_pct != null ? s.avg_core_overall_pct : " - ") +
+                    "</td><td>" +
+                    dLabel +
+                    "</td></tr>"
+                  );
+                })
+                .join("")
+            : "<tr><td colspan='5'>Нет клинических специальностей</td></tr>";
         }
         var docs = (data.doctors || []).slice().sort(function (a, b) {
           return (b.avg_overall_pct || 0) - (a.avg_overall_pct || 0);
@@ -32855,6 +33002,14 @@
         if (typeof loadMethodistMisKzPanel === "function") loadMethodistMisKzPanel();
       });
     }
+    var misKzReportClose = document.getElementById("methodist-mis-kz-report-close");
+    if (misKzReportClose && !misKzReportClose.getAttribute("data-wired")) {
+      misKzReportClose.setAttribute("data-wired", "1");
+      misKzReportClose.addEventListener("click", function () {
+        var box = document.getElementById("methodist-mis-kz-report-detail");
+        if (box) box.hidden = true;
+      });
+    }
     var misKzSelectAll = document.getElementById("methodist-mis-kz-select-all");
     if (misKzSelectAll && !misKzSelectAll.getAttribute("data-wired")) {
       misKzSelectAll.setAttribute("data-wired", "1");
@@ -32939,41 +33094,212 @@
     }
     window.showMethodistMisKzFullReport = function (idx) {
       var list = window.__methodistMisKzLlmReviews || [];
-      var v = list[idx];
+      var raw = list[idx];
       var box = document.getElementById("methodist-mis-kz-report-detail");
       var body = document.getElementById("methodist-mis-kz-report-body");
-      if (!v || !box || !body) return;
-      var lines = [];
-      lines.push("Visit " + (v.visit_id || "—") + " · patient " + (v.patient_id || "—") + " · " + (v.date || "—"));
-      lines.push("Врач: " + (v.doctor_fio || "—"));
-      lines.push("LLM: " + (v.overall_pct != null ? v.overall_pct + "%" : "—") + " · L2: " + (v.l2_overall_pct != null ? v.l2_overall_pct + "%" : "—"));
-      lines.push("");
-      lines.push(v.executive_summary_ru || v.report_full_ru || v.comment || "Нет текста отчёта");
-      if (v.mz_notes_ru) {
-        lines.push("");
-        lines.push("Протоколы / оформление МЗ:");
-        lines.push(v.mz_notes_ru);
+      if (!raw || !box || !body) return;
+      var v = window.__misKzNormalizeLlmReview ? window.__misKzNormalizeLlmReview(raw) : raw;
+      function esc(s) {
+        return String(s == null ? "" : s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
       }
-      (v.protocol_review || []).slice(0, 6).forEach(function (p) {
-        lines.push("• " + (p.protocol || "протокол") + ": " + (p.compliance_ru || ""));
-      });
-      if ((v.critical_gaps_ru || []).length) {
-        lines.push("");
-        lines.push("Критичные пробелы:");
-        (v.critical_gaps_ru || []).slice(0, 8).forEach(function (g) {
-          lines.push("• " + g);
-        });
+      function statusRu(st) {
+        var m = {
+          compliant: "Соответствует",
+          mostly_compliant: "В основном соответствует",
+          partially_compliant: "Частично соответствует",
+          non_compliant: "Не соответствует",
+          manual_review_required: "Нужен ручной разбор",
+          insufficient_protocol_data: "Мало данных протокола",
+          insufficient_data: "Недостаточно данных",
+        };
+        return m[st] || st || " - ";
       }
-      if ((v.recommendations_ru || []).length) {
-        lines.push("");
-        lines.push("Рекомендации:");
-        (v.recommendations_ru || []).slice(0, 8).forEach(function (g) {
-          lines.push("• " + g);
-        });
+      function scoreTone(n) {
+        if (n == null || !isFinite(n)) return "#6b7280";
+        if (n >= 75) return "#0f6b5c";
+        if (n >= 55) return "#b45309";
+        return "#b91c1c";
       }
-      body.textContent = lines.join("\n");
+      function pill(label, val, tone) {
+        return (
+          '<span style="display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:rgba(15,107,92,.08);font-size:13px">' +
+          '<span style="opacity:.7">' +
+          esc(label) +
+          "</span><strong style=\"color:" +
+          (tone || "#0f6b5c") +
+          '">' +
+          esc(val) +
+          "</strong></span>"
+        );
+      }
+      function section(title, html, accent) {
+        if (!html) return "";
+        return (
+          '<section style="margin-top:1rem;padding-top:0.85rem;border-top:1px solid rgba(15,107,92,.1)">' +
+          '<div style="font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:' +
+          (accent || "#0f6b5c") +
+          ';font-weight:600;margin-bottom:0.45rem">' +
+          esc(title) +
+          "</div>" +
+          html +
+          "</section>"
+        );
+      }
+      function bullets(items, color) {
+        items = (items || []).filter(Boolean);
+        if (!items.length) return "";
+        return (
+          '<ul style="margin:0;padding-left:1.15rem">' +
+          items
+            .slice(0, 10)
+            .map(function (g) {
+              return (
+                '<li style="margin:0.35rem 0;color:' +
+                (color || "inherit") +
+                '">' +
+                esc(g) +
+                "</li>"
+              );
+            })
+            .join("") +
+          "</ul>"
+        );
+      }
+      var llm = v.overall_pct;
+      var l2 = v.l2_overall_pct;
+      var head =
+        '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:0.85rem">' +
+        pill("LLM", llm != null ? Number(llm).toFixed(1) + "%" : " - ", scoreTone(llm)) +
+        pill("L2", l2 != null ? Number(l2).toFixed(1) + "%" : " - ", scoreTone(l2)) +
+        pill("Статус", statusRu(v.status), scoreTone(llm)) +
+        "</div>" +
+        '<div style="font-size:14px;color:#334155;margin-bottom:0.35rem"><strong>' +
+        esc(v.doctor_fio || "Врач не указан") +
+        "</strong>" +
+        (v.doctor_specialization ? " · " + esc(v.doctor_specialization) : "") +
+        (v.filial ? " · " + esc(v.filial) : "") +
+        "</div>" +
+        '<div style="font-size:12px;color:#64748b">Визит <code>' +
+        esc(v.visit_id || "-") +
+        "</code> · пациент <code>" +
+        esc(v.patient_id || "-") +
+        "</code> · " +
+        esc(v.date || "-") +
+        "</div>";
+
+      var summary = String(v.executive_summary_ru || "").trim();
+      if (summary.charAt(0) === "{") summary = "";
+      var summaryHtml = summary
+        ? '<p style="margin:0;font-size:15px;color:#1e293b;line-height:1.6">' + esc(summary) + "</p>"
+        : '<p style="margin:0;opacity:.7">Краткое резюме отсутствует - см. блоки ниже.</p>';
+
+      var protoHtml = "";
+      var protos = v.protocol_review || [];
+      if (protos.length) {
+        protoHtml = protos
+          .slice(0, 6)
+          .map(function (p) {
+            var gaps = (p.gaps_ru || []).slice(0, 4);
+            return (
+              '<div style="padding:0.7rem 0.85rem;margin:0.45rem 0;border-radius:10px;background:#fff;border:1px solid rgba(15,107,92,.1)">' +
+              '<div style="font-weight:600;font-size:13px;color:#0f6b5c;margin-bottom:0.3rem">' +
+              esc(p.protocol || "Протокол МЗ") +
+              "</div>" +
+              '<div style="font-size:13.5px;color:#334155">' +
+              esc(p.compliance_ru || "Оценка не указана") +
+              "</div>" +
+              (gaps.length
+                ? '<ul style="margin:0.4rem 0 0;padding-left:1.1rem;font-size:13px;color:#9a3412">' +
+                  gaps.map(function (g) { return "<li>" + esc(g) + "</li>"; }).join("") +
+                  "</ul>"
+                : "") +
+              "</div>"
+            );
+          })
+          .join("");
+      } else if ((v.protocols_mz || []).length) {
+        protoHtml =
+          '<ul style="margin:0;padding-left:1.1rem">' +
+          (v.protocols_mz || [])
+            .slice(0, 5)
+            .map(function (p) {
+              return "<li>" + esc(p.title || p.path || "") + "</li>";
+            })
+            .join("") +
+          "</ul>";
+      }
+
+      var blocksHtml = "";
+      var blocks = v.block_review || [];
+      if (blocks.length) {
+        blocksHtml =
+          '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px">' +
+          blocks
+            .slice(0, 8)
+            .map(function (b) {
+              var sc = b.score_pct;
+              return (
+                '<div style="padding:0.65rem 0.75rem;border-radius:10px;background:#fff;border:1px solid rgba(15,107,92,.1)">' +
+                '<div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:0.25rem">' +
+                '<span style="font-size:12px;text-transform:capitalize;color:#64748b">' +
+                esc(b.block || "блок") +
+                '</span><strong style="color:' +
+                scoreTone(sc) +
+                '">' +
+                (sc != null ? Number(sc).toFixed(0) + "%" : " - ") +
+                "</strong></div>" +
+                '<div style="font-size:13px;color:#334155">' +
+                esc(b.comment_ru || "") +
+                "</div></div>"
+              );
+            })
+            .join("") +
+          "</div>";
+      }
+
+      body.innerHTML =
+        head +
+        section("Итог для методиста", summaryHtml) +
+        section("Протоколы Минздрава", protoHtml) +
+        section("Блоки КЗ", blocksHtml) +
+        section("Критичные пробелы", bullets(v.critical_gaps_ru || v.l2_gaps || [], "#9a3412"), "#9a3412") +
+        section("Рекомендации", bullets(v.recommendations_ru || [], "#0f6b5c")) +
+        section(
+          "Оформление / МЗ",
+          v.mz_notes_ru
+            ? '<p style="margin:0;font-size:14px;color:#334155">' + esc(v.mz_notes_ru) + "</p>"
+            : ""
+        );
       box.hidden = false;
       box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    };
+    window.__misKzNormalizeLlmReview = function (v) {
+      if (!v || typeof v !== "object") return v || {};
+      var out = Object.assign({}, v);
+      var candidates = [v.executive_summary_ru, v.report_full_ru, v.comment];
+      for (var i = 0; i < candidates.length; i++) {
+        var t = String(candidates[i] || "").trim();
+        if (!t || t.charAt(0) !== "{") continue;
+        try {
+          var parsed = JSON.parse(t);
+          if (parsed && typeof parsed === "object") {
+            ["overall_pct", "status", "executive_summary_ru", "protocol_review", "block_review", "critical_gaps_ru", "recommendations_ru", "mz_notes_ru"].forEach(function (k) {
+              if (parsed[k] != null && (out[k] == null || out[k] === "" || (typeof out[k] === "string" && out[k].charAt(0) === "{"))) {
+                out[k] = parsed[k];
+              }
+            });
+            if (typeof out.executive_summary_ru === "string" && out.executive_summary_ru.charAt(0) === "{") {
+              out.executive_summary_ru = parsed.executive_summary_ru || "";
+            }
+            break;
+          }
+        } catch (e) {}
+      }
+      return out;
     };
     var b2cRefresh = document.getElementById("methodist-b2c-refresh");
     if (b2cRefresh && !b2cRefresh.getAttribute("data-wired")) {
