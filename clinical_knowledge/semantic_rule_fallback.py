@@ -39,9 +39,31 @@ def _token_set(s: str) -> set[str]:
     return {t for t in re.findall(r"[а-яёa-z0-9]{3,}", _norm(s)) if len(t) >= 3}
 
 
+def _alias_hit(alias: str, low_text: str) -> bool:
+    """Совпадение алиаса в тексте: подстрока для длинных, граница слова для 3-буквенных."""
+    if not alias:
+        return False
+    if len(alias) >= 4:
+        return alias in low_text
+    if len(alias) == 3:
+        return re.search(rf"(?<![а-яёa-z0-9]){re.escape(alias)}(?![а-яёa-z0-9])", low_text) is not None
+    return False
+
+
+def _catalog_aliases(term: str) -> list[str]:
+    """Синонимы из data/catalog/exam_drug_synonyms.json (Э2), если каталог доступен."""
+    try:
+        from .term_catalog import expand_term
+
+        return list(expand_term(term))
+    except Exception:
+        return []
+
+
 def _aliases(term: str) -> list[str]:
     low = _norm(term)
     out = [low] if low else []
+    out.extend(_catalog_aliases(term))
     for key, vals in _ALIAS_MAP.items():
         if key in low or low in key:
             out.extend([key] + vals)
@@ -68,7 +90,7 @@ def fuzzy_term_in_text(text: str, term: str) -> tuple[bool, float, str | None]:
     if not low or not term:
         return False, 0.0, None
     for alias in _aliases(term):
-        if len(alias) >= 4 and alias in low:
+        if _alias_hit(alias, low):
             return True, 0.92, alias
     term_tokens = _token_set(term)
     if len(term_tokens) < 2:
@@ -136,7 +158,7 @@ def semantic_presence_check(
 
     aliases = list(rule.get("semantic_aliases") or []) if rule else []
     for alias in _aliases(term) + [_norm(a) for a in aliases if a]:
-        if len(alias) >= 4 and alias in low:
+        if _alias_hit(alias, low):
             return {
                 "matched": True,
                 "method": "alias",
