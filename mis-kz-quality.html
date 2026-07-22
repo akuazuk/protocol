@@ -6,79 +6,86 @@
 <title>MIS · качество КЗ (L1) | Кабинет методиста · Protocol</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --ink: #14241f;
-    --muted: #5a726a;
-    --line: #d7e6df;
-    --card: #ffffff;
-    --bg0: #eef6f2;
-    --bg1: #f7fbf9;
-    --teal: #0f6b5c;
-    --teal-deep: #0a4a40;
-    --mint: #c8ebe0;
-    --good: #1a8a72;
-    --mid: #c9851a;
-    --low: #b42318;
-    --shadow: 0 18px 50px rgba(10, 74, 64, 0.10);
-    --radius: 18px;
+    --ink: #3d4a55;
+    --muted: #7a8b98;
+    --line: #e4ebe8;
+    --card: rgba(255,255,255,.86);
+    --bg0: #f4f7f5;
+    --bg1: #faf8f6;
+    --teal: #7a9e95;
+    --teal-deep: #5f7d76;
+    --mint: #d8ebe4;
+    --lavender: #e4e0f0;
+    --peach: #f3e4d8;
+    --sky: #d9e6f2;
+    --rose: #eddde3;
+    --good: #6f9e8c;
+    --mid: #c4a574;
+    --low: #c4898a;
+    --shadow: 0 14px 40px rgba(95, 125, 118, 0.08);
+    --radius: 20px;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
     color: var(--ink);
-    font-family: "DM Sans", system-ui, sans-serif;
+    font-family: "DM Sans", "Outfit", system-ui, sans-serif;
     background:
-      radial-gradient(900px 420px at 12% -10%, #d9f3ea 0%, transparent 60%),
-      radial-gradient(800px 380px at 100% 0%, #e7f0ff 0%, transparent 55%),
-      linear-gradient(180deg, var(--bg0), var(--bg1) 40%, #fff);
+      radial-gradient(900px 420px at 8% -8%, #e5f0ea 0%, transparent 58%),
+      radial-gradient(780px 360px at 100% 0%, #ebe6f4 0%, transparent 55%),
+      radial-gradient(700px 300px at 50% 100%, #f3e9df 0%, transparent 50%),
+      linear-gradient(180deg, var(--bg0), var(--bg1) 45%, #fff);
     min-height: 100vh;
   }
-  h1, h2, h3 { font-family: "Fraunces", Georgia, serif; font-weight: 700; letter-spacing: -0.02em; }
+  h1, h2, h3 { font-family: "Outfit", "DM Sans", system-ui, sans-serif; font-weight: 650; letter-spacing: -0.02em; color: var(--teal-deep); }
   .wrap { max-width: 1180px; margin: 0 auto; padding: 22px 18px 64px; }
   .hero {
     position: relative;
     overflow: hidden;
     border-radius: 28px;
     padding: 28px 28px 24px;
-    color: #f4fffb;
+    color: var(--teal-deep);
     background:
-      linear-gradient(135deg, rgba(15,107,92,.96), rgba(10,74,64,.92)),
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 40 40'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M0 20h40v1H0zM20 0v40h1V0z'/%3E%3C/g%3E%3C/svg%3E");
+      linear-gradient(135deg, rgba(216,235,228,.95), rgba(228,224,240,.9) 55%, rgba(243,228,216,.88)),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 40 40'%3E%3Cg fill='%235f7d76' fill-opacity='0.04'%3E%3Cpath d='M0 20h40v1H0zM20 0v40h1V0z'/%3E%3C/g%3E%3C/svg%3E");
     box-shadow: var(--shadow);
+    border: 1px solid rgba(122,158,149,.18);
   }
   .hero::after {
     content: "";
     position: absolute; right: -40px; top: -40px; width: 220px; height: 220px;
-    border-radius: 50%; background: rgba(255,255,255,.08);
+    border-radius: 50%; background: rgba(255,255,255,.35);
   }
   .hero-top { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: flex-start; }
   .eyebrow {
     display: inline-flex; align-items: center; gap: .4rem;
     font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
-    color: #b7ebe0; margin-bottom: 8px;
+    color: var(--teal); margin-bottom: 8px;
   }
   .hero h1 { margin: 0 0 8px; font-size: clamp(1.6rem, 3vw, 2.2rem); }
-  .hero p { margin: 0; max-width: 62ch; color: #d7f3ec; font-size: 15px; line-height: 1.5; }
+  .hero p { margin: 0; max-width: 62ch; color: var(--muted); font-size: 15px; line-height: 1.5; }
   .hero-actions { display: flex; flex-wrap: wrap; gap: 8px; }
   .btn {
     appearance: none; border: 0; cursor: pointer; border-radius: 999px;
     padding: 10px 14px; font: inherit; font-size: 13px; font-weight: 600;
     background: #fff; color: var(--teal-deep); text-decoration: none;
   }
-  .btn--ghost { background: rgba(255,255,255,.12); color: #fff; border: 1px solid rgba(255,255,255,.25); }
-  .meta { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px 16px; font-size: 13px; color: #cceee5; }
+  .btn--ghost { background: rgba(255,255,255,.55); color: var(--teal-deep); border: 1px solid rgba(122,158,149,.28); }
+  .meta { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px 16px; font-size: 13px; color: var(--muted); }
   .kpi-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 18px 0 8px;
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 18px 0 8px;
   }
-  @media (max-width: 900px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 700px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
   .kpi {
     background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
     padding: 16px 16px 14px; box-shadow: 0 8px 24px rgba(20,36,31,.04);
   }
   .kpi .label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
-  .kpi .value { margin-top: 6px; font-family: "Fraunces", serif; font-size: 1.85rem; color: var(--teal-deep); }
+  .kpi .value { margin-top: 6px; font-family: "Outfit", "DM Sans", sans-serif; font-size: 1.85rem; color: var(--teal-deep); font-weight: 650; }
   .kpi .hint { margin-top: 4px; font-size: 12px; color: var(--muted); }
   .grid-2 { display: grid; grid-template-columns: 1.1fr .9fr; gap: 14px; margin-top: 14px; }
   @media (max-width: 960px) { .grid-2 { grid-template-columns: 1fr; } }
@@ -91,10 +98,10 @@
   .bars { display: flex; flex-direction: column; gap: 8px; }
   .bar-row { display: grid; grid-template-columns: 72px 1fr 48px; gap: 10px; align-items: center; }
   .bar-row .name { font-size: 12px; color: var(--muted); font-weight: 600; }
-  .bar-track { height: 12px; border-radius: 999px; background: #eef5f2; overflow: hidden; }
-  .bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #1a8a72, #3cb89a); }
-  .bar-fill.is-mid { background: linear-gradient(90deg, #c9851a, #e3b04a); }
-  .bar-fill.is-low { background: linear-gradient(90deg, #b42318, #e35d4f); }
+  .bar-track { height: 12px; border-radius: 999px; background: #eef2f0; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #a8c9be, #c5d8e8); }
+  .bar-fill.is-mid { background: linear-gradient(90deg, #e2c9a8, #f0d9b8); }
+  .bar-fill.is-low { background: linear-gradient(90deg, #e2b8bc, #edd0d4); }
   .bar-row .pct { font-size: 12px; font-weight: 700; text-align: right; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   th, td { padding: 9px 8px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
@@ -104,9 +111,9 @@
     display: inline-flex; min-width: 52px; justify-content: center;
     padding: 3px 8px; border-radius: 999px; font-weight: 700; font-size: 12px;
   }
-  .score.good { background: #e5f7f1; color: var(--good); }
-  .score.mid { background: #fff4df; color: #9a6410; }
-  .score.low { background: #fdecec; color: var(--low); }
+  .score.good { background: #e8f2ee; color: #4f7a6a; }
+  .score.mid { background: #f6eee3; color: #8a6b3d; }
+  .score.low { background: #f4e8ea; color: #9a6064; }
   .error {
     margin-top: 16px; padding: 14px 16px; border-radius: 14px;
     background: #fdecec; color: #7f1d1d; border: 1px solid #f5c2c2;
@@ -155,6 +162,7 @@
       <div class="kpi-grid">
         <div class="kpi"><div class="label">КЗ в срезе</div><div class="value" id="kpi-n"> - </div><div class="hint" id="kpi-n-hint"></div></div>
         <div class="kpi"><div class="label">Средний overall</div><div class="value" id="kpi-avg"> - </div><div class="hint" id="kpi-avg-hint"></div></div>
+        <div class="kpi"><div class="label">Core overall</div><div class="value" id="kpi-core"> - </div><div class="hint">без exams / treatment</div></div>
         <div class="kpi"><div class="label">Врачей</div><div class="value" id="kpi-docs"> - </div><div class="hint">уникальных ФИО в выгрузке</div></div>
         <div class="kpi"><div class="label">Ошибки анализа</div><div class="value" id="kpi-err"> - </div><div class="hint">сбоев L1 / сети</div></div>
       </div>
@@ -196,6 +204,32 @@
         </section>
       </div>
 
+      <div class="grid-2" style="margin-top:14px">
+        <section class="card">
+          <h2>Тип оплаты</h2>
+          <p class="sub">Срез L1 по pay_type (коды MIS → ярлыки)</p>
+          <div style="overflow:auto;max-height:320px"><table><thead><tr><th>Тип</th><th>N</th><th>Avg</th><th>Core</th></tr></thead><tbody id="pay-types"></tbody></table></div>
+        </section>
+        <section class="card">
+          <h2>Топ услуг</h2>
+          <p class="sub">По частоте в выгрузке (service_names)</p>
+          <div style="overflow:auto;max-height:320px"><table><thead><tr><th>Услуга</th><th>N</th><th>Avg</th></tr></thead><tbody id="services"></tbody></table></div>
+        </section>
+      </div>
+
+      <div class="grid-2" style="margin-top:14px">
+        <section class="card">
+          <h2>Заполненность полей КЗ</h2>
+          <p class="sub">Доля визитов, где блок реально заполнен в MIS</p>
+          <div class="bars" id="fill-bars"></div>
+        </section>
+        <section class="card">
+          <h2>Блоки при заполненном поле</h2>
+          <p class="sub">Средний alignment только когда поле не пустое</p>
+          <div class="bars" id="block-filled-bars"></div>
+        </section>
+      </div>
+
       <section class="card" style="margin-top:14px">
         <h2>Топ-50 слабых визитов (все врачи)</h2>
         <p class="sub" id="worst-meta">L1 overall по всему месяцу; рядом L2 и комментарии. Отметьте чекбоксами визиты для LLM.</p>
@@ -211,7 +245,7 @@
             <span id="llm-progress-pct">0%</span>
           </div>
           <div style="height:10px;border-radius:999px;background:#e8f2ee;overflow:hidden">
-            <div id="llm-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#0f6b5c,#3cb89a);transition:width .25s ease"></div>
+            <div id="llm-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#a8c9be,#c5b8d9);transition:width .25s ease"></div>
           </div>
         </div>
         <div style="overflow:auto;max-height:620px">
@@ -256,7 +290,7 @@
           </table>
         </div>
         <div id="llm-report-detail" class="card" style="margin-top:14px;display:none;background:#f7fbf9">
-          <h3 style="margin:0 0 8px;font-family:Fraunces,serif">Расширенный отчёт</h3>
+          <h3 style="margin:0 0 8px;font-family:Outfit,DM Sans,sans-serif">Расширенный отчёт</h3>
           <div id="llm-report-body" style="font-size:14px;line-height:1.55;white-space:pre-wrap"></div>
         </div>
       </section>
@@ -327,7 +361,14 @@
     document.getElementById("kpi-n-hint").textContent = "из " + (data.n_cases || " - ") + " строк выгрузки";
     document.getElementById("kpi-avg").textContent = data.avg_overall_pct != null ? data.avg_overall_pct + "%" : " - ";
     document.getElementById("kpi-avg-hint").textContent = "медиана " + (data.median_overall_pct != null ? data.median_overall_pct + "%" : " - ");
+    var coreEl = document.getElementById("kpi-core");
+    if (coreEl) coreEl.textContent = data.avg_core_overall_pct != null ? data.avg_core_overall_pct + "%" : " - ";
     document.getElementById("kpi-docs").textContent = data.doctors_n != null ? data.doctors_n : ((data.doctors || []).length || " - ");
+    var nHint = document.getElementById("kpi-n-hint");
+    if (nHint) {
+      var multi = data.n_multi_kz_visits != null ? (" · multi-КЗ визитов " + data.n_multi_kz_visits) : "";
+      nHint.textContent = "из " + (data.n_cases || " - ") + " уникальных визитов" + multi;
+    }
     document.getElementById("kpi-err").textContent = data.n_errors != null ? data.n_errors : " - ";
 
     var hist = data.score_histogram || {};
@@ -361,6 +402,39 @@
     document.getElementById("bottom-docs").innerHTML = doctorRows(bottom, minN);
     document.getElementById("specs").innerHTML = simpleRows(data.specialties, "specialization");
     document.getElementById("filials").innerHTML = simpleRows(data.filials, "filial");
+    var payEl = document.getElementById("pay-types");
+    if (payEl) {
+      payEl.innerHTML = (data.pay_types || []).map(function (d) {
+        return "<tr><td>" + esc(d.pay_type_label || d.pay_type || " - ") +
+          (d.pay_type ? " <span style=\"color:var(--muted);font-size:11px\">(" + esc(d.pay_type) + ")</span>" : "") +
+          "</td><td>" + esc(d.n) + "</td><td>" + scorePill(d.avg_overall_pct) +
+          "</td><td>" + scorePill(d.avg_core_overall_pct) + "</td></tr>";
+      }).join("") || "<tr><td colspan='4'>Нет среза pay_type - пересоберите summary</td></tr>";
+    }
+    var svcEl = document.getElementById("services");
+    if (svcEl) {
+      svcEl.innerHTML = simpleRows(data.top_services || [], "service_name");
+    }
+    var fill = data.field_fill_rate || {};
+    var fillKeys = Object.keys(fill);
+    var fillLabels = {
+      diagnosis: "Диагноз", complaints: "Жалобы", anamnesis: "Анамнез",
+      objective_status: "Объект. статус", exams: "Обследования", treatment: "Лечение", follow_up: "Наблюдение"
+    };
+    var fillBars = document.getElementById("fill-bars");
+    if (fillBars) {
+      fillBars.innerHTML = fillKeys.length
+        ? fillKeys.map(function (k) { return bar(fillLabels[k] || k, fill[k], 100); }).join("")
+        : "<div class='sub'>Нет field_fill_rate</div>";
+    }
+    var bf = data.block_avg_when_filled || {};
+    var bfBars = document.getElementById("block-filled-bars");
+    if (bfBars) {
+      var bfKeys = Object.keys(bf);
+      bfBars.innerHTML = bfKeys.length
+        ? bfKeys.map(function (k) { return bar(blockLabels[k] || k, bf[k], 100); }).join("")
+        : "<div class='sub'>Нет block_avg_when_filled</div>";
+    }
     var meta = data.worst_visits_meta || {};
     var worstMetaEl = document.getElementById("worst-meta");
     if (worstMetaEl) {
@@ -415,9 +489,9 @@
     var body = document.getElementById("llm-report-body");
     if (!v || !box || !body) return;
     var lines = [];
-    lines.push("Visit " + (v.visit_id || "—") + " · patient " + (v.patient_id || "—") + " · " + (v.date || "—"));
-    lines.push("Врач: " + (v.doctor_fio || "—") + (v.doctor_specialization ? " · " + v.doctor_specialization : ""));
-    lines.push("LLM: " + (v.overall_pct != null ? v.overall_pct + "%" : "—") + " · L2: " + (v.l2_overall_pct != null ? v.l2_overall_pct + "%" : "—"));
+    lines.push("Visit " + (v.visit_id || "-") + " · patient " + (v.patient_id || "-") + " · " + (v.date || "-"));
+    lines.push("Врач: " + (v.doctor_fio || "-") + (v.doctor_specialization ? " · " + v.doctor_specialization : ""));
+    lines.push("LLM: " + (v.overall_pct != null ? v.overall_pct + "%" : "-") + " · L2: " + (v.l2_overall_pct != null ? v.l2_overall_pct + "%" : "-"));
     lines.push("");
     lines.push(v.executive_summary_ru || v.report_full_ru || v.comment || "Нет текста отчёта");
     if (v.mz_notes_ru) {

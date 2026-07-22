@@ -45,6 +45,32 @@ if not (ROOT / "clinical_knowledge").is_dir():
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+try:
+    from clinical_knowledge.mis_pay_type import pay_type_label_ru, normalize_pay_type_code
+except ImportError:  # pragma: no cover - fallback if copied alone on Render
+    def normalize_pay_type_code(raw):  # type: ignore[misc]
+        if raw is None:
+            return ""
+        s = str(raw).strip()
+        if not s or s.lower() in {"nan", "none", "null"}:
+            return ""
+        try:
+            f = float(s)
+            if f == int(f):
+                return str(int(f))
+        except (TypeError, ValueError):
+            pass
+        return s
+
+    def pay_type_label_ru(raw):  # type: ignore[misc]
+        code = normalize_pay_type_code(raw)
+        return {
+            "0": "Не указан",
+            "2": "Наличный расчёт",
+            "3": "Страхование (ДМС)",
+            "12": "Справки и профосмотры",
+        }.get(code, f"Код {code}" if code else "Не указан")
+
 FIELD_BLOCKS = [
     ("Жалобы", "complaints"),
     ("Анамнез", "anamnesis_doctor"),
@@ -169,7 +195,7 @@ def summarize_case(row: dict, result: dict, ms: int, text_len: int) -> dict:
                 block_scores[str(bid)] = sc
             elif isinstance(val, (int, float)):
                 block_scores[str(bid)] = float(val)
-    return {
+    case = {
         "ts": _utc(),
         "mis_id": row.get("id"),
         "visit_id": row.get("visit_id"),
@@ -188,6 +214,13 @@ def summarize_case(row: dict, result: dict, ms: int, text_len: int) -> dict:
         "llm_used": bool(result.get("llm_used")),
         "error": None,
     }
+    n_kz = row.get("_n_kz_per_visit")
+    try:
+        n_kz_i = int(n_kz) if n_kz is not None else None
+    except (TypeError, ValueError):
+        n_kz_i = None
+    enrich_case_from_csv_row(case, row, n_kz=n_kz_i)
+    return case
 
 
 def load_done_ids(state_path: Path) -> set[str]:
@@ -234,12 +267,128 @@ STATUS_LABEL_RU = {
     "manual_review_required": "нужен ручной разбор",
 }
 
-# Блоки, которые обычно пустые в MIS-выгрузке - комментируем только при нуле/почти нуле.
+# Блоки, которые часто пусты в MIS или слабо матчятся с КП - мягче в комментариях
+# и исключаются из core_overall (рейтинг «ядра» записи).
 _SYSTEMICALLY_WEAK_BLOCKS = frozenset({"exams", "treatment", "limitations"})
+
+_EMPTY_FIELD_TOKENS = frozenset({"", "on", "off", "0", "1", "nan", "none", "null"})
+
+
+def _field_nonempty(row: dict, *names: str) -> bool:
+    for name in names:
+        v = str(row.get(name) or "").strip().lower()
+        if v and v not in _EMPTY_FIELD_TOKENS:
+            return True
+    return False
+
+
+def clinical_text_len(row: dict) -> int:
+    """Длина клинических полей - для выбора «богатого» КЗ при нескольких на визит."""
+    return len(build_kz_text(row))
+
+
+def fields_present_from_row(row: dict) -> dict[str, bool]:
+    return {
+        "complaints": _field_nonempty(row, "complaints"),
+        "anamnesis": _field_nonempty(row, "anamnesis_doctor", "anamnesis_auto"),
+        "objective_status": _field_nonempty(row, "objective_status"),
+        "exams": _field_nonempty(row, "exam_recommendations", "exam_data"),
+        "treatment": _field_nonempty(row, "treatment_recommendations"),
+        "diagnosis": _field_nonempty(row, "clinical_diagnosis", "diagnosis_list"),
+        "follow_up": _field_nonempty(row, "dispensary_info", "return_date"),
+    }
+
+
+def core_overall_from_blocks(block_scores: dict | None) -> float | None:
+    """Среднее по блокам без exams/treatment/limitations (эвристика MIS L1)."""
+    if not isinstance(block_scores, dict):
+        return None
+    vals: list[float] = []
+    for bid, bv in block_scores.items():
+        if str(bid) in _SYSTEMICALLY_WEAK_BLOCKS:
+            continue
+        if isinstance(bv, (int, float)):
+            vals.append(float(bv))
+    if not vals:
+        return None
+    return round(sum(vals) / len(vals), 1)
+
+
+def split_service_names(raw: str | None, *, limit: int = 8) -> list[str]:
+    text = str(raw or "").strip()
+    if not text:
+        return []
+    parts = [p.strip() for p in text.replace(";", "|").split("|")]
+    out: list[str] = []
+    seen: set[str] = set()
+    for p in parts:
+        if not p or p.lower() in _EMPTY_FIELD_TOKENS:
+            continue
+        key = p.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(p[:120])
+        if len(out) >= limit:
+            break
+    return out
+
+
+def enrich_case_from_csv_row(case: dict, row: dict | None, *, n_kz: int | None = None) -> None:
+    """Дописать pay/services/fill из CSV к кейсу (для агрегатов summary)."""
+    if not row:
+        if n_kz is not None:
+            case["n_kz_per_visit"] = int(n_kz)
+        if case.get("core_overall_pct") is None:
+            case["core_overall_pct"] = core_overall_from_blocks(case.get("block_scores"))
+        return
+    pt = normalize_pay_type_code(row.get("pay_type"))
+    case["pay_type"] = pt
+    case["pay_type_label"] = pay_type_label_ru(pt)
+    services = split_service_names(row.get("service_names"))
+    case["service_names"] = services
+    case["service_primary"] = services[0] if services else ""
+    case["fields_present"] = fields_present_from_row(row)
+    if n_kz is not None:
+        case["n_kz_per_visit"] = int(n_kz)
+    elif case.get("n_kz_per_visit") is None:
+        case["n_kz_per_visit"] = 1
+    case["core_overall_pct"] = core_overall_from_blocks(case.get("block_scores"))
+
+
+def select_rows_for_l1(rows: list[dict]) -> list[dict]:
+    """Один ряд на visit_id: самое богатое КЗ; проставляем n_kz_per_visit.
+
+    Правило: при нескольких mis_protocol на одном визите берём строку с
+    максимальной длиной клинического текста (build_kz_text), при равенстве -
+    больший mis id (новее).
+    """
+    by_vid: dict[str, list[dict]] = defaultdict(list)
+    for row in rows:
+        vid = str(row.get("visit_id") or "").strip()
+        if not vid:
+            continue
+        by_vid[vid].append(row)
+    selected: list[dict] = []
+    for vid, group in by_vid.items():
+        best = max(
+            group,
+            key=lambda r: (
+                clinical_text_len(r),
+                int(str(r.get("id") or "0").strip() or "0")
+                if str(r.get("id") or "").strip().isdigit()
+                else 0,
+            ),
+        )
+        best = dict(best)
+        best["_n_kz_per_visit"] = len(group)
+        selected.append(best)
+    selected.sort(key=lambda r: str(r.get("date") or ""))
+    return selected
 
 
 def dedupe_cases_by_visit(cases: list[dict]) -> list[dict]:
-    """Оставляем последний успешный кейс на visit_id (иначе - последний любой)."""
+    """Оставляем лучший успешный кейс на visit_id (длиннее текст / новее ts)."""
     by_vid: dict[str, dict] = {}
     for c in cases:
         vid = str(c.get("visit_id") or "")
@@ -253,7 +402,14 @@ def dedupe_cases_by_visit(cases: list[dict]) -> list[dict]:
         cur_ok = not c.get("error") and c.get("overall_pct") is not None
         if cur_ok and not prev_ok:
             by_vid[vid] = c
-        elif cur_ok == prev_ok and (c.get("ts") or "") >= (prev.get("ts") or ""):
+            continue
+        if prev_ok and not cur_ok:
+            continue
+        prev_len = int(prev.get("text_len") or 0)
+        cur_len = int(c.get("text_len") or 0)
+        if cur_len > prev_len:
+            by_vid[vid] = c
+        elif cur_len == prev_len and (c.get("ts") or "") >= (prev.get("ts") or ""):
             by_vid[vid] = c
     return list(by_vid.values())
 
@@ -265,6 +421,7 @@ def comment_for_visit(case: dict) -> str:
     if status and status not in {"compliant", "mostly_compliant"}:
         parts.append(STATUS_LABEL_RU.get(status, status))
 
+    present = case.get("fields_present") or {}
     blocks = case.get("block_scores") or {}
     scored: list[tuple[str, float]] = []
     for bid, bv in blocks.items():
@@ -275,7 +432,12 @@ def comment_for_visit(case: dict) -> str:
 
     weak: list[str] = []
     for bid, val in scored:
+        field_ok = present.get(bid)
         if bid in _SYSTEMICALLY_WEAK_BLOCKS:
+            if field_ok is False:
+                if val <= 5 and len(weak) < 3:
+                    weak.append(f"«{BLOCK_LABEL_RU.get(bid, bid)}» не заполнено в КЗ")
+                continue
             if val > 5:
                 continue
             weak.append(f"«{BLOCK_LABEL_RU.get(bid, bid)}» почти пустой ({val:.0f}%)")
@@ -295,6 +457,13 @@ def comment_for_visit(case: dict) -> str:
         tl = None
     if tl is not None and tl < 350:
         parts.append(f"очень короткий текст КЗ ({tl} симв.)")
+
+    n_kz = case.get("n_kz_per_visit")
+    try:
+        if n_kz is not None and int(n_kz) > 1:
+            parts.append(f"на визите {int(n_kz)} КЗ (взят самый полный)")
+    except (TypeError, ValueError):
+        pass
 
     if not parts:
         overall = case.get("overall_pct")
@@ -336,6 +505,11 @@ def build_worst_visits(
                 "comment": comment,
                 "l1_comment": comment,
                 "block_scores": c.get("block_scores") or {},
+                "core_overall_pct": c.get("core_overall_pct"),
+                "pay_type": c.get("pay_type") or "",
+                "pay_type_label": c.get("pay_type_label") or pay_type_label_ru(c.get("pay_type")),
+                "n_kz_per_visit": c.get("n_kz_per_visit") or 1,
+                "service_primary": (c.get("service_primary") or "")[:120],
                 "l2_overall_pct": c.get("l2_overall_pct"),
                 "l2_status": c.get("l2_status"),
                 "l2_comment": c.get("l2_comment"),
@@ -353,24 +527,27 @@ def build_worst_visits(
 
 
 def load_csv_by_visit(csv_path: Path) -> dict[str, dict]:
-    out: dict[str, dict] = {}
+    """visit_id → лучшая (самая полная) строка CSV + _n_kz_per_visit."""
     if not csv_path.is_file():
-        return out
+        return {}
     with csv_path.open(encoding="utf-8", newline="") as f:
-        for row in csv.DictReader(f):
-            vid = str(row.get("visit_id") or "").strip()
-            if vid:
-                out[vid] = row
-    return out
+        raw = list(csv.DictReader(f))
+    selected = select_rows_for_l1(raw)
+    return {str(r.get("visit_id") or "").strip(): r for r in selected if r.get("visit_id")}
 
 
 def attach_patient_ids(cases: list[dict], csv_by_visit: dict[str, dict]) -> None:
     for c in cases:
-        if str(c.get("patient_id") or "").strip():
-            continue
         row = csv_by_visit.get(str(c.get("visit_id") or ""))
-        if row:
+        if row and not str(c.get("patient_id") or "").strip():
             c["patient_id"] = str(row.get("patient_id") or "").strip()
+        n_kz = None
+        if row is not None:
+            try:
+                n_kz = int(row.get("_n_kz_per_visit") or 1)
+            except (TypeError, ValueError):
+                n_kz = 1
+        enrich_case_from_csv_row(c, row, n_kz=n_kz)
 
 
 def extract_l2_fields(result: dict) -> dict:
@@ -497,11 +674,19 @@ def build_summary(cases: list[dict], *, month: str, source: str) -> dict:
     by_doctor: dict[str, list] = defaultdict(list)
     by_spec: dict[str, list] = defaultdict(list)
     by_filial: dict[str, list] = defaultdict(list)
+    by_pay: dict[str, list] = defaultdict(list)
+    by_service: dict[str, list] = defaultdict(list)
     status_c: Counter = Counter()
     hist = Counter({"0-49": 0, "50-59": 0, "60-69": 0, "70-79": 0, "80-89": 0, "90-100": 0})
     block_sums: dict[str, list[float]] = defaultdict(list)
+    block_sums_when_present: dict[str, list[float]] = defaultdict(list)
+    field_fill_n: Counter = Counter()
+    field_fill_ok: Counter = Counter()
     errors = 0
     scores: list[float] = []
+    core_scores: list[float] = []
+    multi_kz_n = 0
+    multi_kz_extra = 0
 
     for c in cases:
         if c.get("error"):
@@ -513,6 +698,23 @@ def build_summary(cases: list[dict], *, month: str, source: str) -> dict:
         by_doctor[fio].append(c)
         by_spec[spec].append(c)
         by_filial[filial].append(c)
+        pay_label = (c.get("pay_type_label") or pay_type_label_ru(c.get("pay_type")) or "Не указан")
+        by_pay[pay_label].append(c)
+        for svc in (c.get("service_names") or ([c["service_primary"]] if c.get("service_primary") else [])):
+            if svc:
+                by_service[str(svc)[:120]].append(c)
+        try:
+            n_kz = int(c.get("n_kz_per_visit") or 1)
+        except (TypeError, ValueError):
+            n_kz = 1
+        if n_kz > 1:
+            multi_kz_n += 1
+            multi_kz_extra += n_kz - 1
+        present = c.get("fields_present") or {}
+        for bid, ok in present.items():
+            field_fill_n[str(bid)] += 1
+            if ok:
+                field_fill_ok[str(bid)] += 1
         st = str(c.get("status") or "unknown")
         status_c[st] += 1
         sc = c.get("overall_pct")
@@ -523,6 +725,12 @@ def build_summary(cases: list[dict], *, month: str, source: str) -> dict:
         except (TypeError, ValueError):
             continue
         scores.append(v)
+        core = c.get("core_overall_pct")
+        if core is None:
+            core = core_overall_from_blocks(c.get("block_scores"))
+            c["core_overall_pct"] = core
+        if isinstance(core, (int, float)):
+            core_scores.append(float(core))
         if v < 50:
             hist["0-49"] += 1
         elif v < 60:
@@ -538,14 +746,22 @@ def build_summary(cases: list[dict], *, month: str, source: str) -> dict:
         for bid, bv in (c.get("block_scores") or {}).items():
             if isinstance(bv, (int, float)):
                 block_sums[str(bid)].append(float(bv))
+                if present.get(str(bid), True):
+                    block_sums_when_present[str(bid)].append(float(bv))
 
     def _agg_group(items: list[dict], *, key_name: str, key_val: str) -> dict:
         ok = [c for c in items if c.get("overall_pct") is not None]
         vals = [float(c["overall_pct"]) for c in ok]
+        cores = [
+            float(c["core_overall_pct"])
+            for c in ok
+            if isinstance(c.get("core_overall_pct"), (int, float))
+        ]
         return {
             key_name: key_val,
             "n": len(items),
             "avg_overall_pct": round(sum(vals) / len(vals), 1) if vals else None,
+            "avg_core_overall_pct": round(sum(cores) / len(cores), 1) if cores else None,
             "min_overall_pct": round(min(vals), 1) if vals else None,
             "max_overall_pct": round(max(vals), 1) if vals else None,
             "mostly_compliant_n": sum(1 for c in items if str(c.get("status") or "").startswith("mostly")),
@@ -572,8 +788,35 @@ def build_summary(cases: list[dict], *, month: str, source: str) -> dict:
     ]
     filials.sort(key=lambda r: (-(r["avg_overall_pct"] or 0), -r["n"]))
 
+    pay_types = [
+        _agg_group(items, key_name="pay_type_label", key_val=k)
+        for k, items in by_pay.items()
+    ]
+    for row in pay_types:
+        # reverse-lookup code from first case
+        sample = next((c for c in by_pay[row["pay_type_label"]] if c.get("pay_type") is not None), None)
+        row["pay_type"] = (sample or {}).get("pay_type") or ""
+    pay_types.sort(key=lambda r: (-(r["n"] or 0), -(r["avg_overall_pct"] or 0)))
+
+    services = [
+        _agg_group(items, key_name="service_name", key_val=k)
+        for k, items in by_service.items()
+    ]
+    services.sort(key=lambda r: (-(r["n"] or 0), -(r["avg_overall_pct"] or 0)))
+    top_services = services[:25]
+
     block_avg = {
         k: round(sum(v) / len(v), 1) for k, v in sorted(block_sums.items()) if v
+    }
+    block_avg_when_filled = {
+        k: round(sum(v) / len(v), 1)
+        for k, v in sorted(block_sums_when_present.items())
+        if v
+    }
+    field_fill_rate = {
+        k: round(100.0 * field_fill_ok[k] / field_fill_n[k], 1)
+        for k in sorted(field_fill_n)
+        if field_fill_n[k]
     }
 
     scored_doctors = [
@@ -595,6 +838,42 @@ def build_summary(cases: list[dict], *, month: str, source: str) -> dict:
         limit=50,
     )
 
+    # Очередь LLM: worst 50 + bottom doctors sample (до 80 уникальных visit_id)
+    queue_vids: list[str] = []
+    seen_q: set[str] = set()
+    for w in worst_visits:
+        vid = str(w.get("visit_id") or "")
+        if vid and vid not in seen_q:
+            seen_q.add(vid)
+            queue_vids.append(vid)
+    bottom_names = {str(d["doctor_fio"]) for d in bottom_doctors}
+    bottom_cases = sorted(
+        [
+            c
+            for c in cases
+            if (c.get("doctor_fio") or "") in bottom_names
+            and c.get("overall_pct") is not None
+            and not c.get("error")
+        ],
+        key=lambda c: float(c["overall_pct"]),
+    )
+    for c in bottom_cases:
+        vid = str(c.get("visit_id") or "")
+        if not vid or vid in seen_q:
+            continue
+        seen_q.add(vid)
+        queue_vids.append(vid)
+        if len(queue_vids) >= 80:
+            break
+    llm_review_queue = {
+        "n": len(queue_vids),
+        "visit_ids": queue_vids,
+        "rule_ru": (
+            "До 80 визитов: сначала топ-50 worst overall, затем худшие КЗ врачей "
+            "из bottom_doctors (n>=3). Для UI / пакетного LLM."
+        ),
+    }
+
     return {
         "month": month,
         "tier": "L1",
@@ -604,14 +883,21 @@ def build_summary(cases: list[dict], *, month: str, source: str) -> dict:
         "n_cases": len(cases),
         "n_ok": len(cases) - errors,
         "n_errors": errors,
+        "n_multi_kz_visits": multi_kz_n,
+        "n_multi_kz_extra_rows": multi_kz_extra,
         "avg_overall_pct": round(sum(scores) / len(scores), 1) if scores else None,
         "median_overall_pct": round(sorted(scores)[len(scores) // 2], 1) if scores else None,
+        "avg_core_overall_pct": round(sum(core_scores) / len(core_scores), 1) if core_scores else None,
         "score_histogram": dict(hist),
         "status_counts": dict(status_c),
         "block_avg": block_avg,
+        "block_avg_when_filled": block_avg_when_filled,
+        "field_fill_rate": field_fill_rate,
         "doctors": doctors,
         "specialties": specialties,
         "filials": filials,
+        "pay_types": pay_types,
+        "top_services": top_services,
         "top_doctors": [d for d in doctors if d.get("avg_overall_pct") is not None][:15],
         "bottom_doctors": bottom_doctors,
         "worst_visits": worst_visits,
@@ -621,9 +907,11 @@ def build_summary(cases: list[dict], *, month: str, source: str) -> dict:
             "min_doctor_n": 0,
             "rule_ru": (
                 "50 визитов с самым низким L1 overall среди всех врачей "
-                "(не только bottom_doctors); рядом колонки L2 после --enrich-l2-worst."
+                "(не только bottom_doctors); рядом колонки L2 после --enrich-l2-worst. "
+                "При нескольких КЗ на визит выбран самый полный текст."
             ),
         },
+        "llm_review_queue": llm_review_queue,
         "gemini_reviews": [],
         "gemini_meta": {
             "model_preferred": "gemini-2.5-pro",
@@ -634,8 +922,12 @@ def build_summary(cases: list[dict], *, month: str, source: str) -> dict:
             "*_print поля MIS = флаги on/off; в текст брались клинические столбцы.",
             "Полный jsonl с кейсами хранится только на /var/data (ПДн).",
             "worst_visits: топ-50 слабых визитов overall + patient_id; L2/LLM - отдельные поля.",
+            "core_overall = среднее блоков без exams/treatment/limitations (эвристика MIS).",
+            "exams/treatment часто проседают из-за пустых полей или жёсткого матча с КП.",
+            "pay_type: 0 не указан, 2 наличный, 3 ДМС, 12 справки/профосмотры.",
         ],
     }
+
 
 
 def load_cases_from_jsonl(path: Path) -> list[dict]:
@@ -702,6 +994,20 @@ def main() -> int:
             except (OSError, json.JSONDecodeError):
                 pass
         summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+        queue = summary.get("llm_review_queue") or {}
+        queue_path = out_dir / f"kz_l1_{args.month}_llm_queue.json"
+        queue_path.write_text(
+            json.dumps(
+                {
+                    "month": args.month,
+                    "generated_at": summary.get("generated_at"),
+                    **queue,
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
 
     if args.rebuild_summary_only or args.enrich_l2_worst:
         cases = load_cases_from_jsonl(cases_path)
@@ -783,14 +1089,20 @@ def main() -> int:
             return 2
 
     done = load_done_ids(state_path) if args.resume else set()
-    rows: list[dict] = []
+    raw_rows: list[dict] = []
     with args.csv.open(encoding="utf-8", newline="") as f:
         for i, row in enumerate(csv.DictReader(f)):
             if i < args.offset:
                 continue
-            rows.append(row)
-            if args.limit and len(rows) >= args.limit:
-                break
+            raw_rows.append(row)
+    rows = select_rows_for_l1(raw_rows)
+    if args.limit:
+        rows = rows[: args.limit]
+    print(
+        f"csv_rows={len(raw_rows)} unique_visits={len(rows)} "
+        f"multi_kz={sum(1 for r in rows if int(r.get('_n_kz_per_visit') or 1) > 1)}",
+        flush=True,
+    )
 
     todo = []
     for row in rows:
@@ -863,11 +1175,14 @@ def main() -> int:
                     print(f"progress {processed}/{len(todo)} ok={ok} fail={fail}", flush=True)
 
     all_cases = load_cases_from_jsonl(cases_path)
+    csv_by_visit = load_csv_by_visit(args.csv)
+    attach_patient_ids(all_cases, csv_by_visit)
     summary = build_summary(all_cases, month=args.month, source=str(args.csv))
-    summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+    _write_summary(summary)
     print(
         f"DONE ok={ok} fail={fail} total_unique={summary.get('n_cases')} "
-        f"avg={summary.get('avg_overall_pct')} "
+        f"avg={summary.get('avg_overall_pct')} core={summary.get('avg_core_overall_pct')} "
+        f"pay_slices={len(summary.get('pay_types') or [])} "
         f"worst_visits={len(summary.get('worst_visits') or [])} -> {summary_path}",
         flush=True,
     )
