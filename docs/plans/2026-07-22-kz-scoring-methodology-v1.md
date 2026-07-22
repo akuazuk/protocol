@@ -230,9 +230,13 @@ KZ_score = calibrate(
   Все сгенерированные поля помечаются `review_status="not_reviewed"`. См. §11.
 - **Э2 - семантический матч exams/treatment:** синонимы + эмбеддинги вместо подстроки;
   быстрый эффект на всей базе без разметки (чинит exams 16 / treatment 20).
-- **Э3 - движок 3 осей + risk-gate:** `documentation_score` / `clinical_concordance_score`
-  / `safety_score` в `ScoreBreakdown`; per-condition red_flags → cap; vitals + high-alert +
-  safety-netting.
+- **Э3 - структурные items в alignment + движок 3 осей + risk-gate:**
+  **(приоритет, из вывода Э2)** источник exam/treatment пунктов для сверки -
+  `ProtocolSummary.required_exams[].name` + `kz_checklist` (Э1), а не обрывки чанков
+  (`profile["diagnostics"]`); тогда каталог синонимов (Э2) начнёт давать эффект и
+  exams/treatment (16/20) вырастут. Далее: `documentation_score` /
+  `clinical_concordance_score` / `safety_score` в `ScoreBreakdown`; per-condition
+  red_flags → cap; vitals + high-alert + safety-netting.
 - **Э4 - gold + калибровка:** стратифицированная выборка 600-800 → `data/ml/kz_gold/`;
   LLM-предразметка + двойное подтверждение методистами + арбитраж; kappa; пороги из ROC;
   held-out валидация (QWK, recall по harm).
@@ -321,16 +325,38 @@ KZ_score = calibrate(
   «общий анализ крови» ↔ «оак»). Матч аббревиатур из 3 букв - по границе слова (`_alias_hit`),
   без ложных подстрок. Работает для `required_exam` И treatment `keyword_presence`.
 
-**Метрики Э2 (offline-тест `scripts/test_semantic_exam_match.py`, 17 кейсов):**
-| | БЕЗ каталога | С каталогом |
+**Метрики Э2 (offline-тест `scripts/test_semantic_exam_match.py`, 17 кейсов, изолированно):**
+| Конфигурация | recall exam/treatment | false+ |
 |--|--|--|
-| recall exam/treatment | 47% (7/15) | **100% (15/15)** |
-| ложные срабатывания | 0/2 | **0/2** |
+| только токены | 0% (0/15) | 0/2 |
+| старый `_ALIAS_MAP` | 47% (7/15) | 0/2 |
+| **только каталог (Э2)** | **100% (15/15)** | 0/2 |
+
+Исправлен баг каталога: 2745 названий обследований из протоколов добавлялись как
+каноны БЕЗ вариантов и через точное совпадение затеняли курируемые записи
+(«общий анализ крови развернутый» перебивал «общий анализ крови»→«оак»). Теперь в
+индекс идут только записи с ≥1 вариантом (38 exam + 14 групп препаратов).
+
+**Верификация на реальных 8123 КЗ (A/B в одном процессе, `measure_semantic_match_delta.py`,
+sample 300):** дельта exams/treatment/overall = **+0.0**. Каталог корректен, но на проде
+эффекта нет.
+
+**Причина (диагностика 25 КЗ, 560 сверок item↔КЗ):** движок сверяет текст врача не с
+чистыми названиями обследований, а с **обрывками прозы протокола** из чанков
+(`profile["diagnostics"]`): «КЛИНИЧЕСКИЙ ПРОТОКОЛ», «„О правах ребенка"», «исходы
+заболевания…». Только **3%** таких «пунктов» - реальные названия обследований →
+синонимам нечего сопоставлять (0 flip'ов OFF→ON). Низкий exams=16/treatment=20 -
+следствие мусорных входов, а не подстрочного матча.
+
+**Вывод и рескоуп:** каталог синонимов - необходимая инфраструктура, но выигрыш
+gated на подаче в alignment **структурных `required_exams` / `kz_checklist` (Э1)**
+вместо обрывков чанков. Это переносится в **Э3** (подключение структурных полей к
+движку): источник exam/treatment items = `ProtocolSummary.required_exams[].name` +
+`kz_checklist.must_have/should_have`; тогда каталог начнёт давать эффект.
 
 **Артефакты Э2:** `term_catalog.py`, `scripts/test_semantic_exam_match.py`,
-правки `semantic_rule_fallback.py`.
-**Верификация на проде:** после деплоя - пересборка L1-сводки на Render, сравнение
-средних exams/treatment (было 16/20) на реальных 8123 КЗ.
+`scripts/measure_semantic_match_delta.py`, правки `semantic_rule_fallback.py`,
+чистый `data/catalog/exam_drug_synonyms.json` (52 записи с вариантами).
 
 ## 10. Риски
 

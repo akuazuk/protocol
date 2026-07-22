@@ -52,12 +52,14 @@ def _block_scores(result: dict) -> dict[str, float]:
     return out
 
 
-def _run(rows: list[dict]) -> dict[str, list[float]]:
+def _run(rows: list[dict], tag: str) -> dict[str, list[float]]:
     acc: dict[str, list[float]] = {"exams": [], "treatment": [], "overall": []}
     for i, row in enumerate(rows, 1):
         vid = str(row.get("visit_id") or row.get("id") or "")
         try:
-            res = _direct_tier(build_kz_text(row), f"ab-{vid}")
+            # префикс "mis-" обязателен: id на "ab" спец-обрабатывается движком → not_assessed;
+            # разные tag для OFF/ON, чтобы исключить кэш по consultation_id.
+            res = _direct_tier(build_kz_text(row), f"mis-{tag}-{vid}")
         except Exception:
             continue
         bs = _block_scores(res)
@@ -103,13 +105,13 @@ def main() -> int:
 
     print("\n[OFF] каталог синонимов выключен (базлайн)...", flush=True)
     srf._catalog_aliases = lambda term: []  # type: ignore[assignment]
-    off = _run(rows)
+    off = _run(rows, "off")
     print("OFF:", _fmt(off))
 
     print("\n[ON] каталог синонимов включён...", flush=True)
     srf._catalog_aliases = orig  # type: ignore[assignment]
     tc.clear_cache()
-    on = _run(rows)
+    on = _run(rows, "on")
     print("ON :", _fmt(on))
 
     def delta(k: str) -> str:

@@ -47,8 +47,14 @@ class _CatalogIndex:
             canon = _norm(canon_raw)
             if not canon:
                 continue
+            var_norm = {_norm(v) for v in (variants or []) if _norm(v)}
+            # Канон без вариантов бесполезен для синонимии и лишь затеняет курируемые
+            # записи через точное совпадение (напр. «общий анализ крови развернутый»
+            # перебивал бы «общий анализ крови» → «оак»). Такие пропускаем.
+            if not var_norm:
+                continue
             self.empty = False
-            all_forms = {canon} | {_norm(v) for v in (variants or []) if _norm(v)}
+            all_forms = {canon} | var_norm
             self.canon_to_variants.setdefault(canon, [])
             for form in all_forms:
                 if form and form not in self.variant_to_canon:

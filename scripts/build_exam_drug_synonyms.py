@@ -126,11 +126,13 @@ def main() -> int:
         "version": "1.0",
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "note_ru": "Синонимы обследований/препаратов: аббревиатуры КЗ ↔ полные названия протоколов. Для семантического матча (Э2).",
-        "exams": {k: sorted(v) for k, v in sorted(exams.items())},
-        "drug_groups": {k: sorted(v) for k, v in sorted(drugs.items())},
+        # Только записи с ≥1 вариантом: словарь синонимов, а не список названий.
+        # Канон без вариантов не помогает матчу и затеняет курируемые записи.
+        "exams": {k: sorted(v) for k, v in sorted(exams.items()) if v},
+        "drug_groups": {k: sorted(v) for k, v in sorted(drugs.items()) if v},
         "counts": {
-            "exams": len(exams),
-            "drug_groups": len(drugs),
+            "exams": sum(1 for v in exams.values() if v),
+            "drug_groups": sum(1 for v in drugs.values() if v),
             "seed_exams": len(EXAMS_SEED),
             "seed_drug_groups": len(DRUG_GROUPS_SEED),
         },
@@ -158,7 +160,10 @@ def main() -> int:
     hits = sum(1 for term, exp in tests if resolve(term) == exp)
     recall = hits / len(tests)
 
-    print(f"exams={len(exams)} drug_groups={len(drugs)} (proto aliases +{proto_exams}, proto groups +{proto_drugs})")
+    n_ex = sum(1 for v in exams.values() if v)
+    n_dr = sum(1 for v in drugs.values() if v)
+    print(f"exams_with_variants={n_ex} drug_groups_with_variants={n_dr} "
+          f"(отброшено безвариантных: {len(exams) - n_ex} exam; proto aliases +{proto_exams})")
     print(f"recall на тесте сокращений: {hits}/{len(tests)} = {recall:.2f} (цель ≥ 0.85)")
     print(f"-> {OUT}")
     return 0

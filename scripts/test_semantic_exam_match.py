@@ -53,10 +53,13 @@ CASES = [
 ]
 
 
-def run(srf, use_catalog: bool) -> tuple[int, int, list[str]]:
-    orig = srf._catalog_aliases
+def run(srf, *, use_catalog: bool, use_aliasmap: bool) -> tuple[int, int, list[str]]:
+    orig_cat = srf._catalog_aliases
+    orig_map = srf._ALIAS_MAP
     if not use_catalog:
         srf._catalog_aliases = lambda term: []  # type: ignore[assignment]
+    if not use_aliasmap:
+        srf._ALIAS_MAP = {}  # type: ignore[assignment]
     tp = fp = 0
     misses: list[str] = []
     try:
@@ -71,7 +74,8 @@ def run(srf, use_catalog: bool) -> tuple[int, int, list[str]]:
                 fp += 1
                 misses.append(f"FALSE+: «{term}» в «{text[:40]}…» ({res.get('method')})")
     finally:
-        srf._catalog_aliases = orig  # type: ignore[assignment]
+        srf._catalog_aliases = orig_cat  # type: ignore[assignment]
+        srf._ALIAS_MAP = orig_map  # type: ignore[assignment]
     return tp, fp, misses
 
 
@@ -82,17 +86,21 @@ def main() -> int:
     print(f"catalog_available={tc.catalog_available()}  (exams+drugs indexed)")
     print(f"кейсов: {len(CASES)} (позитивных {pos}, негативных {neg})\n")
 
-    b_tp, b_fp, _ = run(srf, use_catalog=False)
-    a_tp, a_fp, a_miss = run(srf, use_catalog=True)
+    none_tp, none_fp, _ = run(srf, use_catalog=False, use_aliasmap=False)
+    map_tp, map_fp, _ = run(srf, use_catalog=False, use_aliasmap=True)
+    cat_tp, cat_fp, cat_miss = run(srf, use_catalog=True, use_aliasmap=False)
+    both_tp, both_fp, both_miss = run(srf, use_catalog=True, use_aliasmap=True)
 
-    print(f"БЕЗ каталога:  recall {b_tp}/{pos} = {b_tp/pos:.0%}   false+ {b_fp}/{neg}")
-    print(f"С каталогом:   recall {a_tp}/{pos} = {a_tp/pos:.0%}   false+ {a_fp}/{neg}")
-    print(f"Прирост recall: +{a_tp - b_tp} кейсов")
-    if a_miss:
-        print("\nОстаток:")
-        for m in a_miss:
+    print(f"нет синонимов (только токены): recall {none_tp}/{pos} = {none_tp/pos:.0%}  false+ {none_fp}/{neg}")
+    print(f"только старый _ALIAS_MAP:       recall {map_tp}/{pos} = {map_tp/pos:.0%}  false+ {map_fp}/{neg}")
+    print(f"только каталог (Э2):           recall {cat_tp}/{pos} = {cat_tp/pos:.0%}  false+ {cat_fp}/{neg}")
+    print(f"каталог + _ALIAS_MAP:          recall {both_tp}/{pos} = {both_tp/pos:.0%}  false+ {both_fp}/{neg}")
+    if cat_miss:
+        print("\nОстаток (только каталог):")
+        for m in cat_miss:
             print("  -", m)
-    ok = a_tp >= b_tp and a_fp == 0 and a_tp / pos >= 0.9
+    # Ключевое: каталог сам по себе должен давать высокий recall (не полагаться на _ALIAS_MAP).
+    ok = cat_tp / pos >= 0.9 and both_fp == 0
     print("\nИТОГ:", "OK" if ok else "ТРЕБУЕТ ВНИМАНИЯ")
     return 0 if ok else 1
 
