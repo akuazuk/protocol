@@ -21,10 +21,15 @@ Finding shape:
 """
 from __future__ import annotations
 
+import json
 import re
+from functools import lru_cache
+from pathlib import Path
 from typing import Any
 
 from .drug_normalizer import extract_drugs
+
+_DRUG_SAFETY_DIR = Path(__file__).resolve().parent.parent / "data" / "drug_safety"
 
 try:
     from .term_catalog import expand_term
@@ -381,6 +386,64 @@ def _apply_risk_gate(overall: float | None, findings: list[dict]) -> tuple[float
     if overall >= 60:
         return overall, "acceptable"
     return overall, "review"
+
+
+@lru_cache(maxsize=1)
+def load_drug_ctx() -> dict:
+    """Загрузить базы ЛС (DDInter/high-alert/STOPP) один раз. Мягкая деградация."""
+    ctx: dict[str, Any] = {}
+    for key, fname in (
+        ("ddinter", "ddinter_pairs.json"),
+        ("high_alert", "high_alert.json"),
+        ("stopp", "stopp_start_beers.json"),
+    ):
+        p = _DRUG_SAFETY_DIR / fname
+        if p.is_file():
+            try:
+                ctx[key] = json.loads(p.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                pass
+    return ctx
+
+
+def resolve_protocol_ctx(case: dict) -> dict | None:
+    """Подобрать протокол (ConditionSummary) по коду МКБ / тексту диагноза.
+
+    Возвращает плоский dict с required_exams/conditional_exams/red_flags/
+    diagnostic_criteria/treatment/kz_checklist или None. Мягкая деградация.
+    """
+    try:
+        from .protocol_summary.loader import find_conditions_by_icd, find_conditions_by_text
+    except Exception:  # noqa: BLE001
+        return None
+
+    conds = []
+    code = str(case.get("mkb_code_main") or "").strip()
+    if code:
+        try:
+            conds = find_conditions_by_icd(code) or []
+        except Exception:  # noqa: BLE001
+            conds = []
+    if not conds:
+        dx = _txt(case, "clinical_diagnosis", "diagnosis_main_text")
+        if dx:
+            try:
+                conds = find_conditions_by_text(dx, limit=3) or []
+            except Exception:  # noqa: BLE001
+                conds = []
+    if not conds:
+        return None
+    c = conds[0]
+    return {
+        "condition_id": _get(c, "condition_id"),
+        "name": _get(c, "name"),
+        "required_exams": _get(c, "required_exams") or [],
+        "conditional_exams": _get(c, "conditional_exams") or [],
+        "red_flags": _get(c, "red_flags") or [],
+        "diagnostic_criteria": _get(c, "diagnostic_criteria") or [],
+        "treatment": _get(c, "treatment") or [],
+        "kz_checklist": _get(c, "kz_checklist") or [],
+    }
 
 
 def evaluate_kz_deep(case: dict, protocol_ctx=None, drug_ctx: dict | None = None, icd_client=None) -> dict:

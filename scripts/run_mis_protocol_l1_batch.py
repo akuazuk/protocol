@@ -251,6 +251,45 @@ def summarize_case(row: dict, result: dict, ms: int, text_len: int) -> dict:
     return case
 
 
+def _aggregate_deep(cases: list[dict]) -> dict:
+    """Агрегаты глубокой оценки по всем КЗ (для summary/дашборда)."""
+    from collections import Counter
+
+    deep = [c["deep"] for c in cases if isinstance(c.get("deep"), dict)]
+    n = len(deep)
+    if not n:
+        return {"n": 0}
+    axis_sums = {a: 0.0 for a in ("documentation", "clinical_concordance", "safety", "regulatory")}
+    axis_cnt = {a: 0 for a in axis_sums}
+    sev_total = Counter()
+    status_dist = Counter()
+    finding_codes = Counter()
+    harm = 0
+    for d in deep:
+        for a in axis_sums:
+            v = (d.get("axes") or {}).get(a)
+            if isinstance(v, (int, float)):
+                axis_sums[a] += v
+                axis_cnt[a] += 1
+        for s, cnt in (d.get("n_by_severity") or {}).items():
+            sev_total[s] += int(cnt or 0)
+        status_dist[d.get("status") or "na"] += 1
+        if d.get("has_potential_harm"):
+            harm += 1
+        for f in d.get("findings") or []:
+            if not f.get("passed"):
+                finding_codes[f.get("code")] += 1
+    return {
+        "n": n,
+        "axis_means": {a: (round(axis_sums[a] / axis_cnt[a], 1) if axis_cnt[a] else None) for a in axis_sums},
+        "severity_totals": dict(sev_total),
+        "status_distribution": dict(status_dist),
+        "n_potential_harm": harm,
+        "pct_potential_harm": round(100.0 * harm / n, 1),
+        "top_findings": finding_codes.most_common(20),
+    }
+
+
 def load_done_ids(state_path: Path) -> set[str]:
     done: set[str] = set()
     if not state_path.is_file():
@@ -1104,6 +1143,11 @@ def main() -> int:
         action="store_true",
         help="Перед запуском убрать fail из state (повторить 429/ошибки)",
     )
+    ap.add_argument(
+        "--deep-eval",
+        action="store_true",
+        help="Глубокая оценка (kz_deep_eval): оси A/B/C/D, детекторы диагноза/лечения, findings, risk-gate",
+    )
     args = ap.parse_args()
 
     base = (args.base or "").strip() or f"http://127.0.0.1:{os.environ.get('PORT', '10000')}"
@@ -1270,7 +1314,31 @@ def main() -> int:
             else:
                 result = _post_tier(base, text, f"mis-{vid}")
             ms = int((time.perf_counter() - t0) * 1000)
-            return summarize_case(row, result, ms, len(text))
+            case = summarize_case(row, result, ms, len(text))
+            if args.deep_eval:
+                try:
+                    from clinical_knowledge.kz_deep_eval import (
+                        evaluate_kz_deep,
+                        load_drug_ctx,
+                        resolve_protocol_ctx,
+                    )
+
+                    deep_case = {**row, **case}
+                    proto = resolve_protocol_ctx(deep_case)
+                    deep = evaluate_kz_deep(deep_case, protocol_ctx=proto, drug_ctx=load_drug_ctx())
+                    case["deep"] = {
+                        "axes": deep["axes"],
+                        "overall_pct": deep["overall_pct"],
+                        "status": deep["overall_status"],
+                        "n_findings": deep["n_findings"],
+                        "n_by_severity": deep["n_by_severity"],
+                        "has_potential_harm": deep["has_potential_harm"],
+                        "protocol_used": deep["protocol_used"],
+                        "findings": deep["findings"][:20],
+                    }
+                except Exception as e:  # noqa: BLE001
+                    case["deep_error"] = str(e)[:200]
+            return case
         except Exception as e:
             ms = int((time.perf_counter() - t0) * 1000)
             return {
@@ -1326,6 +1394,8 @@ def main() -> int:
     summary = build_summary(
         all_cases, month=args.month, source=str(args.csv), excluded_breakdown=kz_breakdown
     )
+    if args.deep_eval:
+        summary["deep_eval"] = _aggregate_deep(all_cases)
     _write_summary(summary)
     print(
         f"DONE ok={ok} fail={fail} total_unique={summary.get('n_cases')} "
