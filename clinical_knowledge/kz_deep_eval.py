@@ -30,6 +30,41 @@ from typing import Any
 from .drug_normalizer import extract_drugs
 
 _DRUG_SAFETY_DIR = Path(__file__).resolve().parent.parent / "data" / "drug_safety"
+_CONFIG_DIR = Path(__file__).resolve().parent.parent / "config"
+
+# Дефолтные пороги risk-gate; переопределяются config/deep_thresholds.yaml (Э4-калибровка).
+_DEFAULT_DEEP_CFG = {
+    "t_good": 80.0,
+    "t_acc": 60.0,
+    "min_axis_review": None,        # если задан: любая ось ниже -> не выше "review"
+    "harm_flag_overall_cutoff": 0.0,
+}
+
+
+@lru_cache(maxsize=1)
+def load_deep_config() -> dict:
+    """Пороги deep-оценки из config/deep_thresholds.yaml. Мягкая деградация к дефолтам."""
+    cfg = dict(_DEFAULT_DEEP_CFG)
+    p = _CONFIG_DIR / "deep_thresholds.yaml"
+    if not p.is_file():
+        return cfg
+    try:
+        import yaml
+
+        data = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
+    except Exception:  # noqa: BLE001
+        return cfg
+    stt = data.get("status_thresholds") or {}
+    if stt.get("good") is not None:
+        cfg["t_good"] = float(stt["good"])
+    if stt.get("acceptable") is not None:
+        cfg["t_acc"] = float(stt["acceptable"])
+    ma = data.get("min_axis_review")
+    cfg["min_axis_review"] = None if ma in (None, "null", "None") else float(ma)
+    hc = data.get("harm_flag_overall_cutoff")
+    if hc is not None:
+        cfg["harm_flag_overall_cutoff"] = float(hc)
+    return cfg
 
 try:
     from .term_catalog import expand_term
@@ -370,7 +405,13 @@ def _axis_safety(case: dict, protocol_ctx, drug_ctx: dict | None) -> tuple[float
 # ---------------------------------------------------------------------------
 # Итог + risk-gate
 # ---------------------------------------------------------------------------
-def _apply_risk_gate(overall: float | None, findings: list[dict]) -> tuple[float | None, str]:
+def _apply_risk_gate(
+    overall: float | None,
+    findings: list[dict],
+    axes: dict | None = None,
+    cfg: dict | None = None,
+) -> tuple[float | None, str]:
+    cfg = cfg or load_deep_config()
     worst = min((SEVERITY_ORDER.get(f["severity"], 9) for f in findings if not f["passed"]), default=9)
     if overall is None:
         return None, "insufficient_data"
@@ -381,9 +422,15 @@ def _apply_risk_gate(overall: float | None, findings: list[dict]) -> tuple[float
         capped = min(overall, 60.0)
         status = "review" if capped >= 50 else "poor"
         return capped, status
-    if overall >= 80:
+    # правило слабой оси: сильная ось не должна маскировать провал другой (Э4-калибровка)
+    min_axis = cfg.get("min_axis_review")
+    if min_axis is not None and axes:
+        present = [v for v in axes.values() if isinstance(v, (int, float))]
+        if present and min(present) < float(min_axis):
+            return overall, "review"
+    if overall >= cfg.get("t_good", 80.0):
         return overall, "good"
-    if overall >= 60:
+    if overall >= cfg.get("t_acc", 60.0):
         return overall, "acceptable"
     return overall, "review"
 
@@ -480,7 +527,7 @@ def evaluate_kz_deep(case: dict, protocol_ctx=None, drug_ctx: dict | None = None
     # overall: среднее доступных осей (объективность - без штрафа за отсутствие протокола)
     present_axes = [v for k, v in axes.items() if v is not None]
     overall = round(sum(present_axes) / len(present_axes), 1) if present_axes else None
-    overall, status = _apply_risk_gate(overall, findings)
+    overall, status = _apply_risk_gate(overall, findings, axes=axes)
 
     n_by_sev = {s: sum(1 for f in findings if f["severity"] == s and not f["passed"])
                 for s in ("P0", "P1", "P2", "P3")}

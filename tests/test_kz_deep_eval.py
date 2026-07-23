@@ -8,7 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from clinical_knowledge.kz_deep_eval import evaluate_kz_deep, icd_validate
+from clinical_knowledge.kz_deep_eval import _apply_risk_gate, evaluate_kz_deep, icd_validate
 
 
 def _drug_ctx():
@@ -30,6 +30,26 @@ def test_documentation_missing_blocks():
     codes = {f["code"] for f in r["findings"]}
     assert "A_missing_complaints" in codes
     assert r["axes"]["documentation"] < 100
+
+
+def test_risk_gate_min_axis_rule():
+    # Высокое среднее (мягкий дефолт -> good), но слабая ось concordance=45.
+    axes = {"documentation": 95, "clinical_concordance": 45, "safety": 100, "regulatory": 90}
+    findings = []  # без P0/P1
+    ovr = round(sum(axes.values()) / 4, 1)  # 82.5
+    # без min-axis правила: good
+    _, st_default = _apply_risk_gate(ovr, findings, axes=axes, cfg={"t_good": 80, "t_acc": 60, "min_axis_review": None})
+    assert st_default == "good"
+    # с min-axis=55: слабая ось не маскируется -> review
+    _, st_cal = _apply_risk_gate(ovr, findings, axes=axes, cfg={"t_good": 80, "t_acc": 60, "min_axis_review": 55})
+    assert st_cal == "review"
+
+
+def test_risk_gate_p0_overrides_min_axis():
+    axes = {"documentation": 95, "clinical_concordance": 45, "safety": 100, "regulatory": 90}
+    findings = [{"severity": "P0", "passed": False}]
+    _, st = _apply_risk_gate(85.0, findings, axes=axes, cfg={"t_good": 80, "t_acc": 60, "min_axis_review": 55})
+    assert st == "critical"
 
 
 def test_icd_validate_format():

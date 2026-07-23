@@ -69,7 +69,7 @@ def test_flat_case_normalization():
     assert rec["score_band"] == "<50"
     assert rec["overall_pct"] == 48.0
     assert "\r" not in rec["diagnosis_short"] and "  " not in rec["diagnosis_short"]
-    assert rec["status"] == "acceptable"  # fallback на deep-status
+    assert rec["status"] == "review"  # статус пересчитан из overall(48)+axes через risk-gate
 
 
 @pytest.fixture()

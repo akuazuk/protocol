@@ -1,0 +1,12 @@
+# Калибровка deep-порогов КЗ (Э4). Источник: gold + LLM-прокси (proxy, не методист).
+# n=411, LLM-bad=279, corr(overall)=0.605, MAE=15.5
+status_thresholds:
+  good: 78
+  acceptable: 58
+harm_flag_overall_cutoff: 0
+min_axis_review: 60
+# равные веса осей по умолчанию; корреляции осей с LLM для справки:
+#   documentation: corr=0.571
+#   clinical_concordance: corr=0.352
+#   safety: corr=0.1
+#   regulatory: corr=0.556

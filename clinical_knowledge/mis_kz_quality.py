@@ -476,6 +476,26 @@ _AXIS_RU = {
 }
 
 
+def _deep_status_calibrated(deep: dict) -> Any:
+    """Пересчёт deep-статуса из overall+axes+severity через каноническую risk-gate
+    движка с текущим config/deep_thresholds.yaml (Э4-калибровка). Отражает калибровку
+    без перегенерации датасета. Фолбэк - сохранённый статус."""
+    overall = deep.get("overall_pct")
+    axes = deep.get("axes") or {}
+    sev = deep.get("n_by_severity") or {}
+    if overall is None and not sev:
+        return deep.get("status")
+    try:
+        from .kz_deep_eval import _apply_risk_gate
+
+        findings = [{"severity": s, "passed": False}
+                    for s, cnt in sev.items() for _ in range(int(cnt or 0))]
+        _, status = _apply_risk_gate(overall, findings, axes=axes)
+        return status
+    except Exception:  # noqa: BLE001
+        return deep.get("status")
+
+
 def _flat_case(case: dict[str, Any], csvrow: dict | None) -> dict[str, Any]:
     deep = case.get("deep") or {}
     axes = deep.get("axes") or {}
@@ -504,8 +524,8 @@ def _flat_case(case: dict[str, Any], csvrow: dict | None) -> dict[str, Any]:
         "diagnosis_short": diag,
         "overall_pct": overall,
         "l1_overall_pct": case.get("overall_pct"),
-        "deep_status": deep.get("status"),
-        "status": case.get("status") or deep.get("status") or "unknown",
+        "deep_status": _deep_status_calibrated(deep),
+        "status": _deep_status_calibrated(deep) or case.get("status") or "unknown",
         "axis_documentation": axes.get("documentation"),
         "axis_concordance": axes.get("clinical_concordance"),
         "axis_safety": axes.get("safety"),
@@ -823,7 +843,7 @@ def build_kz_case_detail(*, month: str | None = None, visit_id: str) -> dict[str
         "record": rec,
         "axes": deep.get("axes") or {},
         "deep_overall_pct": deep.get("overall_pct"),
-        "deep_status": deep.get("status"),
+        "deep_status": _deep_status_calibrated(deep),
         "n_by_severity": deep.get("n_by_severity") or {},
         "has_potential_harm": bool(deep.get("has_potential_harm")),
         "protocol_used": bool(deep.get("protocol_used")),

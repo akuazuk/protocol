@@ -8383,7 +8383,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-23-r7-kz-deep-eval-dashboard"
+BUILD_VERSION = "2026-07-23-r8-kz-deep-calibration"
 
 
 def _app_version() -> str:
