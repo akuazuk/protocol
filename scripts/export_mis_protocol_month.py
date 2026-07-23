@@ -80,6 +80,8 @@ def main() -> int:
     ap.add_argument("--to", dest="date_to", type=str, default="", help="exclusive")
     ap.add_argument("--out-dir", type=Path, default=DEFAULT_OUT)
     args = ap.parse_args()
+    # Всегда абсолютный out_dir - иначе relative_to(ROOT) падает на относительном пути.
+    args.out_dir = args.out_dir.expanduser().resolve()
 
     if args.date_from and args.date_to:
         d0, d1 = args.date_from, args.date_to
@@ -91,9 +93,11 @@ def main() -> int:
 
     print(f"Fetching mis_protocol [{d0}, {d1}) …", flush=True)
     engine = _engine()
-    # `type` (в схеме КЗ = 9) - для аудита разделения КЗ/не-КЗ. Экранируем: reserved word.
+    # В живой БД Kravira у mis_protocol только id/date/visit_id/patient_id/result
+    # (колонки `type` из EPAM-схемы нет). doc_type заполняем NULL; разделение
+    # КЗ/не-КЗ - через classify_kz_kind по специальности/содержимому.
     q = text(
-        "SELECT id, date, visit_id, patient_id, `type` AS doc_type, result "
+        "SELECT id, date, visit_id, patient_id, result "
         "FROM mis_protocol "
         "WHERE date >= :d0 AND date < :d1 "
         "ORDER BY id"
@@ -102,11 +106,13 @@ def main() -> int:
         df = pd.read_sql(q, conn, params={"d0": d0, "d1": d1})
     engine.dispose()
     print(f"rows: {len(df)}", flush=True)
-    try:
-        type_counts = df["doc_type"].value_counts(dropna=False).to_dict()
-        print(f"doc_type distribution: {type_counts}", flush=True)
-    except Exception:
-        type_counts = {}
+    df["doc_type"] = pd.NA
+    type_counts: dict = {"<absent_in_db>": int(len(df))}
+    print(
+        "doc_type: колонки type нет в БД - оставляем пустым; "
+        "kz_kind считается эвристикой по спец./содержимому",
+        flush=True,
+    )
 
     parsed = df["result"].map(parse_result)
     parsed_df = pd.DataFrame(list(parsed))
@@ -138,6 +144,11 @@ def main() -> int:
                        MIN(specialization) AS doctor_specialization,
                        MIN(pay_type) AS pay_type,
                        MIN(filial) AS filial,
+                       MIN(vdate) AS mis_vdate,
+                       MIN(vtime) AS mis_vtime,
+                       MIN(patient_bdate) AS patient_bdate,
+                       GROUP_CONCAT(DISTINCT NULLIF(TRIM(diagnos), '')
+                                    ORDER BY diagnos SEPARATOR ' | ') AS mis_diagnos,
                        GROUP_CONCAT(DISTINCT NULLIF(TRIM(code), '')
                                     ORDER BY code SEPARATOR ' | ') AS service_codes,
                        GROUP_CONCAT(DISTINCT NULLIF(TRIM(serv_name), '')
@@ -158,6 +169,10 @@ def main() -> int:
             "specialist_id_from_visit",
             "pay_type",
             "filial",
+            "mis_vdate",
+            "mis_vtime",
+            "patient_bdate",
+            "mis_diagnos",
             "service_codes",
             "service_names",
             "service_row_count",
@@ -172,6 +187,10 @@ def main() -> int:
             "specialist_id_from_visit",
             "pay_type",
             "filial",
+            "mis_vdate",
+            "mis_vtime",
+            "patient_bdate",
+            "mis_diagnos",
             "service_codes",
             "service_names",
             "service_row_count",
@@ -243,10 +262,89 @@ def main() -> int:
     except Exception as e:  # noqa: BLE001 - экспортёр не должен падать из-за резолва
         print(f"WARN author specialization resolve skipped: {e}", flush=True)
 
+    # --- Каноническая дата визита (ISO) + валидация согласованности источников ---
+    # Три источника: mis_protocol.date (ISO), слот ::1 visit_date_text (ДД.ММ.ГГГГ),
+    # mis_data.vdate (join). Даты должны совпадать; формат приводим к ISO.
+    to_iso_date = parse_mod.to_iso_date
+    d_db = out["date"].map(to_iso_date) if "date" in out.columns else ""
+    d_slot = out["visit_date_text"].map(to_iso_date) if "visit_date_text" in out.columns else ""
+    d_mis = out["mis_vdate"].map(to_iso_date) if "mis_vdate" in out.columns else ""
+    out["visit_date_iso_db"] = d_db
+    out["visit_date_iso_slot"] = d_slot
+    out["visit_date_iso_mis"] = d_mis
+
+    def _canon_date(row) -> str:
+        # Приоритет: слот КЗ (ДД.ММ.ГГГГ, то что видит врач) → date БД → mis_data.
+        for k in ("visit_date_iso_slot", "visit_date_iso_db", "visit_date_iso_mis"):
+            v = str(row.get(k) or "").strip()
+            if v:
+                return v
+        return ""
+
+    out["visit_date"] = out.apply(_canon_date, axis=1)
+
+    def _date_mismatch(row) -> str:
+        vals = {
+            str(row.get(k) or "").strip()
+            for k in ("visit_date_iso_db", "visit_date_iso_slot", "visit_date_iso_mis")
+            if str(row.get(k) or "").strip()
+        }
+        return "1" if len(vals) > 1 else "0"
+
+    out["date_mismatch"] = out.apply(_date_mismatch, axis=1)
+    n_mismatch = int((out["date_mismatch"] == "1").sum())
+    print(f"date_mismatch (источники не совпали): {n_mismatch}/{len(out)}", flush=True)
+
+    # --- Возраст пациента на дату визита (для доз/педиатрии) ---
+    def _age_years(row) -> object:
+        bd = to_iso_date(row.get("patient_bdate"))
+        vd = str(row.get("visit_date") or "").strip()
+        if not bd or not vd:
+            return pd.NA
+        try:
+            b = datetime.strptime(bd, "%Y-%m-%d").date()
+            v = datetime.strptime(vd, "%Y-%m-%d").date()
+        except ValueError:
+            return pd.NA
+        years = v.year - b.year - ((v.month, v.day) < (b.month, b.day))
+        return years if 0 <= years <= 120 else pd.NA
+
+    if "patient_bdate" in out.columns:
+        out["patient_age_years"] = out.apply(_age_years, axis=1)
+
+    # --- Кросс-чек кода МКБ: inline (слот 22) ↔ mis_data.diagnos ---
+    def _mis_first_code(v) -> str:
+        return parse_mod.extract_mkb_code(str(v or "").split(" | ")[0])
+
+    if "mis_diagnos" in out.columns:
+        out["mkb_code_mis"] = out["mis_diagnos"].map(_mis_first_code)
+
+        def _mkb_agree(row) -> str:
+            a = str(row.get("mkb_code_main") or "").strip().upper()
+            b = str(row.get("mkb_code_mis") or "").strip().upper()
+            if not a or not b:
+                return "unknown"
+            if a == b:
+                return "match"
+            # Совпадение по 3-значной рубрике (K29 == K29.3) считаем частичным.
+            if a.split(".")[0] == b.split(".")[0]:
+                return "partial"
+            return "mismatch"
+
+        out["mkb_code_agreement"] = out.apply(_mkb_agree, axis=1)
+
     # Классификация каждой строки: КЗ / справка / диагностика / неклиническое / пустое.
     kinds = out.apply(lambda r: classify_kz_kind(r.to_dict()), axis=1)
     out["kz_kind"] = [k for k, _ in kinds]
     out["kz_exclude_reason"] = [reason for _, reason in kinds]
+    # Флаги для отбора.
+    # is_scored - строка идёт в оценку качества КЗ (консультации + медосмотры/справки).
+    # is_clinical - специальность врачебная клиническая (не УЗИ/лаб./медсестра); при пустом
+    #   содержании остаётся clinical, но не scored.
+    out["is_scored"] = out["kz_kind"].isin(["kz", "certificate"]).map({True: "1", False: "0"})
+    out["is_clinical"] = out["kz_kind"].isin(["kz", "certificate", "empty"]).map(
+        {True: "1", False: "0"}
+    )
     kz_kind_counts = out["kz_kind"].value_counts(dropna=False).to_dict()
     scored_kinds = {"kz", "certificate"}
     n_scored = int(out["kz_kind"].isin(scored_kinds).sum())
@@ -267,11 +365,50 @@ def main() -> int:
 
     import json
 
+    def _col_nonempty(col: str) -> int:
+        if col not in out.columns:
+            return 0
+        return int(out[col].fillna("").astype(str).str.strip().ne("").sum())
+
+    mkb_agree_counts = (
+        out["mkb_code_agreement"].value_counts(dropna=False).to_dict()
+        if "mkb_code_agreement" in out.columns
+        else {}
+    )
+    parse_ok_n = (
+        int((out["parse_ok"].astype(str) == "1").sum()) if "parse_ok" in out.columns else 0
+    )
+    age_n = (
+        int(out["patient_age_years"].notna().sum())
+        if "patient_age_years" in out.columns
+        else 0
+    )
+
     meta = {
         "date_from": d0,
         "date_to_exclusive": d1,
         "rows": int(len(out)),
         "columns": list(out.columns),
+        "date_validation": {
+            "canonical_column": "visit_date (ISO)",
+            "sources": ["visit_date_iso_slot (::1)", "visit_date_iso_db (date)", "visit_date_iso_mis (mis_data.vdate)"],
+            "priority": "slot -> db -> mis_data",
+            "date_mismatch_rows": int((out["date_mismatch"] == "1").sum())
+            if "date_mismatch" in out.columns
+            else 0,
+            "visit_date_filled": _col_nonempty("visit_date"),
+        },
+        "mkb_validation": {
+            "mkb_code_main_filled": _col_nonempty("mkb_code_main"),
+            "mkb_code_mis_filled": _col_nonempty("mkb_code_mis"),
+            "agreement_counts": {str(k): int(v) for k, v in mkb_agree_counts.items()},
+            "note": "match=точное совпадение inline(слот22) и mis_data.diagnos; partial=по 3-знач. рубрике",
+        },
+        "parse_validation": {
+            "parse_ok_rows": parse_ok_n,
+            "note": "parse_ok=1 если слотов > max индекса схемы (строка не обрезана)",
+        },
+        "patient_age_filled": age_n,
         "doctor_fio_filled": int(out["doctor_fio"].fillna("").astype(str).str.strip().ne("").sum())
         if "doctor_fio" in out.columns
         else 0,
@@ -280,6 +417,10 @@ def main() -> int:
             "doctor_specialization",
             "pay_type",
             "filial",
+            "mis_vdate",
+            "mis_vtime",
+            "patient_bdate",
+            "mis_diagnos",
             "service_codes",
             "service_names",
             "service_row_count",
@@ -293,8 +434,8 @@ def main() -> int:
             "kz/certificate оцениваются; diagnostic (УЗИ/рентген/функц./эндоскопия/лаб.), "
             "non_clinical, empty - исключаются. См. classify_kz_kind."
         ),
-        "parquet": str(parquet_path.relative_to(ROOT)),
-        "csv": str(csv_path.relative_to(ROOT)),
+        "parquet": str(parquet_path.resolve().relative_to(ROOT)),
+        "csv": str(csv_path.resolve().relative_to(ROOT)),
         "source": "kravira_mc.mis_protocol + mis_data",
         "exported_at": datetime.now().isoformat(timespec="seconds"),
     }

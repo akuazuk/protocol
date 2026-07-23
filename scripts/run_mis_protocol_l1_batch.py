@@ -117,7 +117,10 @@ def build_kz_text(row: dict) -> str:
     # иначе нормализуем ISO → ДД.ММ.ГГГГ.
     from clinical_knowledge.date_parser import format_date_dmy, parse_date
 
-    date_raw = (row.get("visit_date_text") or row.get("date") or "").strip()
+    # visit_date - каноническая ISO-дата из экспортёра (сверена по 3 источникам).
+    date_raw = (
+        row.get("visit_date") or row.get("visit_date_text") or row.get("date") or ""
+    ).strip()
     if date_raw:
         parsed = parse_date(date_raw[:32])
         date_label = format_date_dmy(parsed) if parsed else date_raw[:19]
@@ -427,9 +430,16 @@ def split_kz_rows(rows: list[dict]) -> tuple[list[dict], dict]:
     scored: list[dict] = []
     by_kind: Counter = Counter()
     by_spec: dict[str, Counter] = defaultdict(Counter)
+    n_corrupt = 0
     for row in rows:
         kind = kz_kind_of(row)
         by_kind[kind] += 1
+        # Битая ::-строка (обрезана - слотов меньше схемы) в оценку не идёт: parse_ok=='0'.
+        # Это не «плохой КЗ», а некорректно выгруженная строка. При отсутствии столбца
+        # parse_ok (старые CSV) считаем строку валидной.
+        if str(row.get("parse_ok", "1")).strip() == "0":
+            n_corrupt += 1
+            continue
         if kind in KZ_SCORED_KINDS:
             scored.append(row)
         else:
@@ -439,14 +449,17 @@ def split_kz_rows(rows: list[dict]) -> tuple[list[dict], dict]:
         "n_total": len(rows),
         "n_scored": len(scored),
         "n_excluded": len(rows) - len(scored),
+        "n_corrupt_parse": n_corrupt,
         "by_kind": dict(by_kind),
         "excluded_top_specialties": {
             kind: dict(sorted(spec.items(), key=lambda x: -x[1])[:8])
             for kind, spec in by_spec.items()
         },
         "rule_ru": (
-            "В оценку идут только kz и certificate. diagnostic (УЗИ/рентген/функц./"
-            "эндоскопия/лаборатория), non_clinical и empty исключены (classify_kz_kind)."
+            "В оценку идут только kz и certificate с parse_ok. diagnostic (УЗИ/рентген/"
+            "функц./эндоскопия/лаборатория), non_clinical, empty и битые ::-строки "
+            "(parse_ok=0) исключены. Пустой/неполный клинический КЗ НЕ исключается - "
+            "оценивается низко (это дефект качества, а не мусор)."
         ),
     }
     return scored, breakdown

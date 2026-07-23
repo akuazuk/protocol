@@ -4,24 +4,31 @@ from __future__ import annotations
 import os
 import re
 
-# Алиасы на случай опечаток / несуществующих имён в .env
+# Алиасы: несуществующие/устаревшие имена → ближайшая РЕАЛЬНО доступная модель.
+# Проверено ListModels+generateContent через Render 2026-07-23: доступны 3.6-flash,
+# 3.5-flash, 3.1-pro-preview; gemini-3-pro-preview снят (404) → маппим на 3.1-pro-preview.
+_PRO_MAX = "gemini-3.1-pro-preview"
+_FLASH_MAX = "gemini-3.6-flash"
 _MODEL_ALIASES: dict[str, str] = {
-    "gemini-3.6-pro": "gemini-2.5-pro",
-    "gemini-3.6-flash": "gemini-2.5-flash",
-    "gemini-3.6": "gemini-2.5-pro",
-    "gemini-3.5-pro": "gemini-2.5-pro",
-    "gemini-3.5-flash": "gemini-2.5-flash",
-    "gemini-3.1-pro": "gemini-2.5-pro",
-    "gemini-3-pro": "gemini-2.5-pro",
-    "gemini-3.1-flash": "gemini-2.5-flash",
-    "gemini-3-flash": "gemini-2.5-flash",
-    "gemini-pro": "gemini-2.5-pro",
-    "gemini-flash": "gemini-2.5-flash",
+    "gemini-3.6-pro": _PRO_MAX,
+    "gemini-3.6": _PRO_MAX,
+    "gemini-3.5-pro": _PRO_MAX,
+    "gemini-3.1-pro": _PRO_MAX,
+    "gemini-3-pro": _PRO_MAX,
+    "gemini-3-pro-preview": _PRO_MAX,  # снят в API → 3.1-pro-preview
+    "gemini-3.1-flash": _FLASH_MAX,
+    "gemini-3-flash": _FLASH_MAX,
+    "gemini-3-flash-preview": _FLASH_MAX,
+    "gemini-pro": _PRO_MAX,
+    "gemini-flash": _FLASH_MAX,
 }
 
-# Рекомендуемые для продакшена (generateContent)
+# Рекомендуемые для продакшена (generateContent) - проходят как есть.
 _KNOWN_MODELS = frozenset(
     {
+        "gemini-3.6-flash",
+        "gemini-3.5-flash",
+        "gemini-3.1-pro-preview",
         "gemini-2.5-flash",
         "gemini-2.5-pro",
         "gemini-2.0-flash",
@@ -65,10 +72,10 @@ def resolve_gemini_model(
     if low in _KNOWN_MODELS:
         return low, None
 
-    # gemini-2.5-* и прочие новые - пропускаем как есть, но 3.x без алиаса → flash
+    # прочие 3.x без явного алиаса → ближайшая реальная (pro/flash)
     if re.match(r"gemini-3[.\d-]*", low):
-        resolved = "gemini-2.5-pro" if "pro" in low else "gemini-2.5-flash"
-        return resolved, f"Модель «{name}» не поддерживается; используется «{resolved}»."
+        resolved = _PRO_MAX if "pro" in low else _FLASH_MAX
+        return resolved, f"Модель «{name}» не в списке известных; используется «{resolved}»."
 
     return name, None
 

@@ -10,6 +10,7 @@
 """
 from __future__ import annotations
 
+import datetime as _dt
 import re
 
 # Индекс в ::-массиве → имя столбца (латиница, для parquet/csv).
@@ -59,6 +60,62 @@ RESULT_FIELD_MAP: dict[int, str] = {
     102: "doctor2_id",
     103: "doctor2_extra",
 }
+
+# Максимальный индекс схемы: если слотов меньше - строка обрезана/битая (parse_ok=False).
+RESULT_MAX_INDEX = max(RESULT_FIELD_MAP)
+
+# --- Коды МКБ-10 в структурном диагнозе (слот 22) -------------------------
+# Каждый диагноз в списке (`|`) имеет вид «K29.3. Хронический гастрит» - код в начале.
+# МКБ-10: буква (кроме U) + 2 цифры + опц. «.цифры».
+_RE_MKB_HEAD = re.compile(r"^\s*([A-TV-Z][0-9]{2}(?:\.[0-9]{1,2})?)\b")
+_RE_MKB_ANY = re.compile(r"\b([A-TV-Z][0-9]{2}(?:\.[0-9]{1,2})?)\b")
+
+
+def extract_mkb_code(text: str | None) -> str:
+    """Первый код МКБ-10 из строки диагноза (предпочтительно в начале)."""
+    s = (text or "").strip()
+    if not s:
+        return ""
+    m = _RE_MKB_HEAD.match(s)
+    if m:
+        return m.group(1).upper()
+    m = _RE_MKB_ANY.search(s)
+    return m.group(1).upper() if m else ""
+
+
+def _diagnosis_entries(diagnosis_list: str | None) -> list[str]:
+    return [p.strip() for p in (diagnosis_list or "").split("|") if p.strip()]
+
+
+# --- Нормализация дат визита ----------------------------------------------
+_RE_DMY = re.compile(r"^\s*(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{2,4})")
+_RE_ISO = re.compile(r"^\s*(\d{4})-(\d{2})-(\d{2})")
+
+
+def to_iso_date(value) -> str:
+    """Дата в ISO 'YYYY-MM-DD' из date/datetime, ДД.ММ.ГГГГ или ISO-строки. Иначе ''."""
+    if value is None:
+        return ""
+    if isinstance(value, (_dt.date, _dt.datetime)):
+        return value.strftime("%Y-%m-%d")
+    s = str(value).strip()
+    if not s or s.lower() in {"nan", "none", "null"}:
+        return ""
+    m = _RE_ISO.match(s)
+    if m:
+        y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
+    else:
+        m = _RE_DMY.match(s)
+        if not m:
+            return ""
+        d, mo, y = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        if y < 100:
+            y = 2000 + y if y <= 69 else 1900 + y
+    try:
+        return _dt.date(y, mo, d).isoformat()
+    except ValueError:
+        return ""
+
 
 # Клинические поля КЗ (для анализа / consult-review).
 KZ_CORE_FIELDS: tuple[str, ...] = (
@@ -190,5 +247,28 @@ def parse_result(result: str | None) -> dict[str, str]:
     else:
         out["diagnosis_list"] = ""
         out["diagnosis_main_index"] = ""
+
+    # Коды МКБ-10 из структурного диагноза (inline в тексте каждого диагноза).
+    entries = _diagnosis_entries(out.get("diagnosis_list"))
+    codes = [c for c in (extract_mkb_code(e) for e in entries) if c]
+    out["mkb_codes"] = "|".join(codes)
+    # Основной диагноз по индексу (слот 22, ##[3]); fallback - первый.
+    main_idx = 0
+    idx_raw = (out.get("diagnosis_main_index") or "").strip()
+    if idx_raw.isdigit():
+        main_idx = int(idx_raw)
+    if entries and 0 <= main_idx < len(entries):
+        out["diagnosis_main_text"] = entries[main_idx]
+        out["mkb_code_main"] = extract_mkb_code(entries[main_idx])
+    elif entries:
+        out["diagnosis_main_text"] = entries[0]
+        out["mkb_code_main"] = extract_mkb_code(entries[0])
+    else:
+        out["diagnosis_main_text"] = ""
+        out["mkb_code_main"] = ""
+
     out["result_slots"] = str(len(parts))
+    # Строка считается корректно разобранной, если все поля схемы присутствуют
+    # (в живых КЗ ~300 слотов; < RESULT_MAX_INDEX+1 => обрезано/битый ::).
+    out["parse_ok"] = "1" if len(parts) > RESULT_MAX_INDEX else "0"
     return out
